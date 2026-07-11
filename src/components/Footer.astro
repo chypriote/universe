@@ -1,0 +1,64 @@
+  ---
+  // Footer component - shared across all pages
+  import Container from '@/components/Container.astro';
+  import { SITE } from '@/config/site';
+
+  export interface Props {
+    companyName?: string;
+    companyDescription?: string;
+    copyright?: string;
+  }
+
+  const {
+    companyName = SITE.name,
+    companyDescription = SITE.description,
+    copyright = `© ${new Date().getFullYear()} ${companyName}. All rights reserved.`
+  } = Astro.props;
+  ---
+
+  <footer class="bg-dark-background text-dark-foreground py-24 border-t border-dark-border" data-ps="src/components/Footer.astro:ikmf33">
+    <Container>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20" data-ps="src/components/Footer.astro:p4vf88">
+        <!-- Brand Info -->
+        <div class="lg:col-span-4" data-ps="src/components/Footer.astro:p4vf89">
+          <h2 class="text-3xl font-serif font-semibold text-dark-foreground mb-6 tracking-tight" data-ps="src/components/Footer.astro:f0091f">{companyName}</h2>
+          <p class="text-base text-dark-muted-foreground mb-8 max-w-sm leading-relaxed" data-ps="src/components/Footer.astro:euol">{companyDescription}</p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="lg:col-span-2" data-ps="src/components/Footer.astro:p4vf8a">
+          <h2 class="text-[10px] font-mono font-bold text-dark-muted-foreground mb-6 uppercase tracking-[0.2em]" data-ps="src/components/Footer.astro:f0091e">Exploration</h2>
+          <ul class="list-none p-0 m-0 flex flex-col gap-4">
+            <li data-ps="src/components/Footer.astro:wyji7c"><a href="/trips" class="text-sm text-dark-foreground no-underline hover:text-primary transition-colors" data-ps="src/components/Footer.astro:7gqc0k">Journals</a></li>
+            <li data-ps="src/components/Footer.astro:wyji7d"><a href="/planning" class="text-sm text-dark-foreground no-underline hover:text-primary transition-colors" data-ps="src/components/Footer.astro:7gqc0l">Route Planner</a></li>
+            <li data-ps="src/components/Footer.astro:wyji7e"><a href="/gallery" class="text-sm text-dark-foreground no-underline hover:text-primary transition-colors" data-ps="src/components/Footer.astro:7gqc0m">Photography</a></li>
+          </ul>
+        </div>
+
+        <!-- Utility -->
+        <div class="lg:col-span-2" data-ps="src/components/Footer.astro:p4vf8a2">
+          <h2 class="text-[10px] font-mono font-bold text-dark-muted-foreground mb-6 uppercase tracking-[0.2em]" data-ps="src/components/Footer.astro:f0091e2">Planning</h2>
+          <ul class="list-none p-0 m-0 flex flex-col gap-4">
+            <li data-ps="src/components/Footer.astro:wyji7c2"><a href="#" class="text-sm text-dark-foreground no-underline hover:text-primary transition-colors" data-ps="src/components/Footer.astro:7gqc0k2">Price Index</a></li>
+            <li data-ps="src/components/Footer.astro:wyji7d2"><a href="#" class="text-sm text-dark-foreground no-underline hover:text-primary transition-colors" data-ps="src/components/Footer.astro:7gqc0l2">Flight Matrix</a></li>
+            <li data-ps="src/components/Footer.astro:wyji7e2"><a href="#" class="text-sm text-dark-foreground no-underline hover:text-primary transition-colors" data-ps="src/components/Footer.astro:7gqc0m2">Transit Guides</a></li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="lg:col-span-4" data-ps="src/components/Footer.astro:p4vf8a3">
+          <h2 class="text-[10px] font-mono font-bold text-dark-muted-foreground mb-6 uppercase tracking-[0.2em]" data-ps="src/components/Footer.astro:f0091e3">The Dispatch</h2>
+          <p class="text-sm text-dark-muted-foreground mb-6" data-ps="src/components/Footer.astro:euol3">Curated routes and regional stories, delivered monthly.</p>
+          <div class="flex flex-col gap-4" data-ps="src/components/Footer.astro:n-form">
+            <input type="email" placeholder="Email address" class="bg-dark-border border-none px-4 py-3 text-dark-foreground text-sm focus:outline-none focus:ring-1 focus:ring-primary w-full" data-ps="src/components/Footer.astro:n-input" />
+            <button class="bg-primary text-primary-foreground py-3 font-sans font-bold text-xs uppercase tracking-widest hover:bg-primary-hover transition-colors" data-ps="src/components/Footer.astro:n-btn">Subscribe</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copyright -->
+      <div class="border-t border-dark-border pt-8 text-center" data-ps="src/components/Footer.astro:p4vf8b">
+        <p class="text-sm text-dark-muted" data-ps="src/components/Footer.astro:euom">{copyright}</p>
+      </div>
+    </Container>
+  </footer>

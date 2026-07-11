@@ -1,0 +1,144 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import { GalleryGrid } from '@/components/islands/GalleryGrid';
+
+const japanPhotos = [
+  {
+    url: "https://images.pexels.com/photos/29518215/pexels-photo-29518215.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/29518215/pexels-photo-29518215.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/29518215/pexels-photo-29518215.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/29518215/pexels-photo-29518215.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Tokyo street at night",
+    photographer: "G N"
+  },
+  {
+    url: "https://images.pexels.com/photos/30641513/pexels-photo-30641513.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/30641513/pexels-photo-30641513.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/30641513/pexels-photo-30641513.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/30641513/pexels-photo-30641513.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Neon lights in Tokyo",
+    photographer: "John One"
+  },
+  {
+    url: "https://images.pexels.com/photos/18848921/pexels-photo-18848921.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/18848921/pexels-photo-18848921.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/18848921/pexels-photo-18848921.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/18848921/pexels-photo-18848921.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Kyoto zen garden",
+    photographer: "AXP Photography"
+  }
+];
+
+const italyPhotos = [
+  {
+    url: "https://images.pexels.com/photos/3225528/pexels-photo-3225528.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/3225528/pexels-photo-3225528.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/3225528/pexels-photo-3225528.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/3225528/pexels-photo-3225528.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Amalfi Coast sunset",
+    photographer: "Michael Block"
+  },
+  {
+    url: "https://images.pexels.com/photos/33839189/pexels-photo-33839189.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/33839189/pexels-photo-33839189.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/33839189/pexels-photo-33839189.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/33839189/pexels-photo-33839189.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Positano cliff houses",
+    photographer: "Fran Zaina"
+  },
+  {
+    url: "https://images.pexels.com/photos/30861099/pexels-photo-30861099.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/30861099/pexels-photo-30861099.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/30861099/pexels-photo-30861099.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/30861099/pexels-photo-30861099.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Italian coastal town",
+    photographer: "Duc Tinh Ngo"
+  }
+];
+
+const moroccoPhotos = [
+  {
+    url: "https://images.pexels.com/photos/21563800/pexels-photo-21563800.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/21563800/pexels-photo-21563800.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/21563800/pexels-photo-21563800.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/21563800/pexels-photo-21563800.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Marrakech market",
+    photographer: "Gilmar Santos"
+  },
+  {
+    url: "https://images.pexels.com/photos/29038454/pexels-photo-29038454.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/29038454/pexels-photo-29038454.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/29038454/pexels-photo-29038454.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/29038454/pexels-photo-29038454.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Marrakech architecture",
+    photographer: "Salaheddine Es-sellak"
+  },
+  {
+    url: "https://images.pexels.com/photos/12378901/pexels-photo-12378901.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/12378901/pexels-photo-12378901.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/12378901/pexels-photo-12378901.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/12378901/pexels-photo-12378901.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Sahara dunes",
+    photographer: "Moussa Idrissi"
+  }
+];
+
+const icelandPhotos = [
+  {
+    url: "https://images.pexels.com/photos/1009136/pexels-photo-1009136.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/1009136/pexels-photo-1009136.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/1009136/pexels-photo-1009136.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/1009136/pexels-photo-1009136.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Icelandic mountains",
+    photographer: "Simon Migaj"
+  },
+  {
+    url: "https://images.pexels.com/photos/3607085/pexels-photo-3607085.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/3607085/pexels-photo-3607085.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/3607085/pexels-photo-3607085.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/3607085/pexels-photo-3607085.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Skogafoss waterfall",
+    photographer: "Tomáš Malík"
+  }
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ImageGallery",
+  "name": "SOJOURN Photography Archive",
+  "description": "A curated collection of travel photography across global expeditions.",
+  "url": "https://example.com/gallery"
+};
+---
+
+<BaseLayout title="Photography — SOJOURN" description="Explore our curated collection of travel photography across global expeditions." jsonLd={jsonLd}>
+  <main class="py-24 lg:py-32" data-ps="src/pages/gallery.astro:3b6zx">
+    <Container>
+      <div class="max-w-3xl mb-20 lg:mb-32" data-ps="src/pages/gallery.astro:5r9mu2">
+        <h1 class="text-h1 font-serif mb-8" data-ps="src/pages/gallery.astro:rpwpws">Photography</h1>
+        <p class="text-xl text-muted-foreground font-sans leading-relaxed" data-ps="src/pages/gallery.astro:befxb1">
+          Our photographic archive is more than a collection of images—it is a visual monograph of the places that shaped our perspective. Organized by journey, these chapters represent the intersection of time, light, and geography.
+        </p>
+      </div>
+
+      <div class="space-y-32" data-ps="src/pages/gallery.astro:5r9mu1">
+        <GalleryGrid 
+          client:load 
+          title="Neon Nights & Zen Gardens" 
+          tags={["Tokyo", "Kyoto", "Japan"]} 
+          photos={japanPhotos} 
+        />
+        
+        <GalleryGrid 
+          client:load 
+          title="The Amalfi Monographs" 
+          tags={["Positano", "Amalfi Coast", "Italy"]} 
+          photos={italyPhotos} 
+        />
+
+        <GalleryGrid 
+          client:load 
+          title="Ochre & Dust" 
+          tags={["Marrakech", "Sahara", "Morocco"]} 
+          photos={moroccoPhotos} 
+        />
+
+        <GalleryGrid 
+          client:load 
+          title="Fire & Ice" 
+          tags={["Skogafoss", "Reykjavik", "Iceland"]} 
+          photos={icelandPhotos} 
+        />
+      </div>
+
+      <div class="mt-32 pt-20 border-t border-border text-center" data-ps="src/pages/gallery.astro:5r9mu0">
+        <h3 class="text-2xl font-serif mb-6" data-ps="src/pages/gallery.astro:qrtfmz">Want to see more?</h3>
+        <p class="text-muted-foreground mb-10 max-w-lg mx-auto" data-ps="src/pages/gallery.astro:befxb0">
+          Our full archive is available for editorial licensing and private prints. Contact our studio for inquiries.
+        </p>
+        <a href="/trips" class="inline-block px-10 py-4 bg-primary text-primary-foreground font-sans font-bold text-xs uppercase tracking-[0.2em] hover:bg-primary-hover transition-colors" data-ps="src/pages/gallery.astro:b66pa8">
+          View Destination Journals
+        </a>
+      </div>
+    </Container>
+  </main>
+</BaseLayout>

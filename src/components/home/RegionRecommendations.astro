@@ -1,0 +1,69 @@
+---
+import Container from '@/components/Container.astro';
+---
+
+<section id="region-recommendations" class="py-24 lg:py-32 bg-dark-background text-dark-foreground" data-ps="src/components/home/RegionRecommendations.astro:1">
+  <Container>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20" data-ps="src/components/home/RegionRecommendations.astro:2">
+      <!-- Left: Sticky Index -->
+      <div class="lg:col-span-5 flex flex-col justify-start" data-ps="src/components/home/RegionRecommendations.astro:3">
+        <div class="sticky top-[var(--nav-height)] py-8 lg:py-12" data-ps="src/components/home/RegionRecommendations.astro:4">
+          <span class="font-mono text-primary text-xs tracking-widest uppercase mb-6 block reveal" data-ps="src/components/home/RegionRecommendations.astro:5">Global Index</span>
+          <h2 class="text-h2 font-serif font-semibold text-dark-foreground mb-8 reveal reveal-delay-1" data-ps="src/components/home/RegionRecommendations.astro:6">Explore by Territory</h2>
+          <p class="text-dark-muted-foreground text-lg mb-12 reveal reveal-delay-2" data-ps="src/components/home/RegionRecommendations.astro:7">Navigating the world through microclimates and cultural epicenters.</p>
+          
+          <ul class="flex flex-col gap-6 font-serif text-2xl reveal reveal-delay-3" data-ps="src/components/home/RegionRecommendations.astro:8">
+            <li class="group" data-ps="src/components/home/RegionRecommendations.astro:9">
+              <a href="#" class="flex items-center justify-between text-dark-muted-foreground hover:text-dark-foreground transition-colors group" data-ps="src/components/home/RegionRecommendations.astro:10">
+                <span data-ps="src/components/home/RegionRecommendations.astro:11">Mediterranean Ridge</span>
+                <span class="font-mono text-xs opacity-0 group-hover:opacity-100 transition-opacity" data-ps="src/components/home/RegionRecommendations.astro:12">01 / SOUTH</span>
+              </a>
+              <div class="h-px w-full bg-dark-border mt-2" data-ps="src/components/home/RegionRecommendations.astro:13"></div>
+            </li>
+            <li class="group" data-ps="src/components/home/RegionRecommendations.astro:14">
+              <a href="#" class="flex items-center justify-between text-dark-muted-foreground hover:text-dark-foreground transition-colors" data-ps="src/components/home/RegionRecommendations.astro:15">
+                <span data-ps="src/components/home/RegionRecommendations.astro:16">Nordic Archipelago</span>
+                <span class="font-mono text-xs opacity-0 group-hover:opacity-100 transition-opacity" data-ps="src/components/home/RegionRecommendations.astro:17">02 / NORTH</span>
+              </a>
+              <div class="h-px w-full bg-dark-border mt-2" data-ps="src/components/home/RegionRecommendations.astro:18"></div>
+            </li>
+            <li class="group" data-ps="src/components/home/RegionRecommendations.astro:19">
+              <a href="#" class="flex items-center justify-between text-dark-muted-foreground hover:text-dark-foreground transition-colors" data-ps="src/components/home/RegionRecommendations.astro:20">
+                <span data-ps="src/components/home/RegionRecommendations.astro:21">East Asian Monoliths</span>
+                <span class="font-mono text-xs opacity-0 group-hover:opacity-100 transition-opacity" data-ps="src/components/home/RegionRecommendations.astro:22">03 / EAST</span>
+              </a>
+              <div class="h-px w-full bg-dark-border mt-2" data-ps="src/components/home/RegionRecommendations.astro:23"></div>
+            </li>
+            <li class="group" data-ps="src/components/home/RegionRecommendations.astro:24">
+              <a href="#" class="flex items-center justify-between text-dark-muted-foreground hover:text-dark-foreground transition-colors" data-ps="src/components/home/RegionRecommendations.astro:25">
+                <span data-ps="src/components/home/RegionRecommendations.astro:26">Andean Corridors</span>
+                <span class="font-mono text-xs opacity-0 group-hover:opacity-100 transition-opacity" data-ps="src/components/home/RegionRecommendations.astro:27">04 / WEST</span>
+              </a>
+              <div class="h-px w-full bg-dark-border mt-2" data-ps="src/components/home/RegionRecommendations.astro:28"></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right: Asymmetric Image Spread -->
+      <div class="lg:col-span-7 grid grid-cols-2 gap-6 reveal reveal-scale" data-ps="src/components/home/RegionRecommendations.astro:29">
+        <div class="flex flex-col gap-6 pt-12" data-ps="src/components/home/RegionRecommendations.astro:30">
+          <div class="relative aspect-[3/4] overflow-hidden border border-dark-border" data-ps="src/components/home/RegionRecommendations.astro:31">
+             <img src="https://images.pexels.com/photos/28245154/pexels-photo-28245154.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Mediterranean cliffs" class="w-full h-full object-cover" loading="lazy" data-ps="src/components/home/RegionRecommendations.astro:32" />
+          </div>
+          <div class="relative aspect-[1/1] overflow-hidden border border-dark-border" data-ps="src/components/home/RegionRecommendations.astro:33">
+             <img src="https://images.pexels.com/photos/36055015/pexels-photo-36055015.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Andalucia landscape" class="w-full h-full object-cover" loading="lazy" data-ps="src/components/home/RegionRecommendations.astro:34" />
+          </div>
+        </div>
+        <div class="flex flex-col gap-6" data-ps="src/components/home/RegionRecommendations.astro:35">
+          <div class="relative aspect-[1/1] overflow-hidden border border-dark-border" data-ps="src/components/home/RegionRecommendations.astro:36">
+             <img src="https://images.pexels.com/photos/12813735/pexels-photo-12813735.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Nordic cabin" class="w-full h-full object-cover" loading="lazy" data-ps="src/components/home/RegionRecommendations.astro:37" />
+          </div>
+          <div class="relative aspect-[3/4] overflow-hidden border border-dark-border" data-ps="src/components/home/RegionRecommendations.astro:38">
+             <img src="https://images.pexels.com/photos/8991518/pexels-photo-8991518.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Japan mountain" class="w-full h-full object-cover" loading="lazy" data-ps="src/components/home/RegionRecommendations.astro:39" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </Container>
+</section>

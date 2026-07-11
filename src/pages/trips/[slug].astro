@@ -1,0 +1,204 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import { SITE } from '@/config/site';
+
+export function getStaticPaths() {
+  return [
+    { params: { slug: 'atlas-2024' } },
+    { params: { slug: 'kyoto-2023' } },
+    { params: { slug: 'amalfi-2025' } },
+    { params: { slug: 'sahara-2025' } },
+  ];
+}
+
+const { slug } = Astro.params;
+
+// Mock data mapping
+const TRIP_DATA = {
+  'atlas-2024': {
+    title: 'High Atlas Expedition',
+    dates: 'September 12 — 26, 2024',
+    destination: 'Morocco',
+    cities: 'Marrakech, Imlil, Aït Benhaddou, Ouarzazate',
+    description: 'A two-week monograph of the Berber villages and jagged peaks of the High Atlas.',
+    days: [
+      {
+        day: 1,
+        title: 'Descent into Marrakech',
+        description: 'The air in Marrakech is thick with the scent of orange blossoms and diesel. We arrived at dusk, just as the call to prayer began to echo across the Medina. The transition from the high-altitude silence of the plane to the chaotic rhythm of the souks is always jarring, yet familiar.',
+        activities: ['Arrival at Riad Jardin Secret', 'Sunset tea on the terrace', 'First evening walk through Jemaa el-Fnaa'],
+        gallery: [
+          'https://images.unsplash.com/photo-1539667468225-bda3c7caae01?auto=format&fit=crop&q=80&w=600',
+          'https://images.unsplash.com/photo-1548013146-72479768bbaa?auto=format&fit=crop&q=80&w=400',
+          'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=400'
+        ],
+        food: ['Traditional Lamb Tagine with Prunes', 'Mint Tea', 'Khobz Bread']
+      },
+      {
+        day: 2,
+        title: 'The Road to Imlil',
+        description: 'Leaving the city behind, the landscape shifts rapidly. The flat, dusty plains give way to the foothills of the Atlas. Imlil sits at 1,740 meters, a hub of walnut trees and stone houses clinging to the mountain. The temperature dropped ten degrees as we climbed.',
+        activities: ['Drive from Marrakech', 'Hike to Aroumd village', 'Visit to a local walnut press'],
+        gallery: [
+          'https://images.unsplash.com/photo-1505232750373-c6109dfb003c?auto=format&fit=crop&q=80&w=600',
+          'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=400'
+        ],
+        food: ['Berber Omelette', 'Walnut & Honey Pancakes', 'Mountain Harira Soup']
+      }
+    ]
+  },
+  'kyoto-2023': {
+    title: 'Kyoto Stone Gardens',
+    dates: 'November 05 — 18, 2023',
+    destination: 'Japan',
+    cities: 'Kyoto, Arashiyama, Uji',
+    description: 'Exploring the Zen concept of Ma (negative space) through the temple gardens of Kyoto.',
+    days: [
+      {
+        day: 1,
+        title: 'The Raking of Ryoan-ji',
+        description: 'We arrived at Ryoan-ji at opening. The fifteen stones remained silent, floating in their sea of raked white gravel. The monk was finishing the outer circle—a precise, meditative geometry that demands total presence. Here, the void is as important as the object.',
+        activities: ['Early visit to Ryoan-ji', 'Zen meditation session', 'Philosopher’s Path walk'],
+        gallery: [
+          'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=600',
+          'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=400',
+          'https://images.unsplash.com/photo-1528164344705-47542687990d?auto=format&fit=crop&q=80&w=400'
+        ],
+        food: ['Yudofu (Tofu Hot Pot)', 'Matcha & Wagashi', 'Seasonal Kaiseki']
+      }
+    ]
+  }
+};
+
+const trip = TRIP_DATA[slug as keyof typeof TRIP_DATA] || TRIP_DATA['atlas-2024'];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TravelAction",
+  "name": trip.title,
+  "description": trip.description,
+  "url": `${SITE.url}/trips/${slug}`,
+  "location": {
+    "@type": "Place",
+    "name": trip.destination
+  }
+};
+---
+
+<BaseLayout title={trip.title} description={trip.description} jsonLd={jsonLd}>
+  <article class="bg-background" data-ps="src/pages/trips/[slug].astro:7ntyud">
+    {/* Immersive Header */}
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 border-b border-border" data-ps="src/pages/trips/[slug].astro:tks92k">
+      <Container>
+        <div class="max-w-4xl space-y-12" data-ps="src/pages/trips/[slug].astro:zms72l">
+          <div class="space-y-4 animate-fade-in" data-ps="src/pages/trips/[slug].astro:qusn1m">
+            <div class="flex items-center gap-4 text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-primary" data-ps="src/pages/trips/[slug].astro:lkjs82">
+              <span data-ps="src/pages/trips/[slug].astro:125n64">{trip.destination}</span>
+              <span class="w-12 h-px bg-primary/30" data-ps="src/pages/trips/[slug].astro:125n5i"></span>
+              <span class="text-muted-foreground" data-ps="src/pages/trips/[slug].astro:125n5h">{trip.dates}</span>
+            </div>
+            <h1 class="text-h1 font-serif leading-tight italic" data-ps="src/pages/trips/[slug].astro:ps92mx">
+              {trip.title}
+            </h1>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 items-end" data-ps="src/pages/trips/[slug].astro:mnq29s">
+            <p class="text-xl text-muted-foreground font-serif leading-relaxed italic border-l-2 border-primary/20 pl-8" data-ps="src/pages/trips/[slug].astro:pqi19x">
+              {trip.description}
+            </p>
+            <div class="space-y-2" data-ps="src/pages/trips/[slug].astro:lmx82j">
+              <span class="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground" data-ps="src/pages/trips/[slug].astro:125n5g">Cities Visited</span>
+              <p class="text-sm font-sans font-medium uppercase tracking-wider" data-ps="src/pages/trips/[slug].astro:xq7d4">{trip.cities}</p>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </header>
+
+    {/* Day-by-Day Journey */}
+    <main class="py-20 lg:py-32" data-ps="src/pages/trips/[slug].astro:bvx82k">
+      <Container>
+        <div class="max-w-5xl mx-auto space-y-32 lg:space-y-48" data-ps="src/pages/trips/[slug].astro:ams92l">
+          {trip.days.map((day, __psIdx) => (
+            <section class="group" data-ps="src/pages/trips/[slug].astro:day-section">
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20" data-ps="src/pages/trips/[slug].astro:day-grid">
+                {/* Day Marker & Meta (Sticky-ish) */}
+                <div class="lg:col-span-3 lg:sticky lg:top-32 h-fit space-y-6" data-ps="src/pages/trips/[slug].astro:day-meta">
+                  <div class="space-y-2" data-ps={`src/pages/trips/[slug].astro:tdh240-${__psIdx}`}>
+                    <span class="text-[10px] font-sans font-bold uppercase tracking-[0.4em] text-primary" data-ps={`src/pages/trips/[slug].astro:125n5f-${__psIdx}`}>Day {day.day}</span>
+                    <h2 class="text-h3 font-serif italic" data-ps={`src/pages/trips/[slug].astro:fz2adx-${__psIdx}`}>{day.title}</h2>
+                  </div>
+                  
+                  <div class="pt-6 border-t border-border space-y-8" data-ps={`src/pages/trips/[slug].astro:tdh241-${__psIdx}`}>
+                    <div class="space-y-3" data-ps={`src/pages/trips/[slug].astro:tdh242-${__psIdx}`}>
+                      <span class="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground" data-ps={`src/pages/trips/[slug].astro:125n5e-${__psIdx}`}>Activities</span>
+                      <ul class="space-y-2">
+                        {day.activities.map(activity => (
+                          <li class="text-xs font-sans text-muted-foreground flex items-start gap-2" data-ps={`src/pages/trips/[slug].astro:19uj75-${__psIdx}`}>
+                            <span class="mt-1.5 w-1 h-1 rounded-full bg-primary/40 shrink-0" data-ps={`src/pages/trips/[slug].astro:125n5d-${__psIdx}`}></span>
+                            {activity}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div class="space-y-3" data-ps={`src/pages/trips/[slug].astro:tdh243-${__psIdx}`}>
+                      <span class="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground" data-ps={`src/pages/trips/[slug].astro:125n5c-${__psIdx}`}>Flavors of the Day</span>
+                      <ul class="space-y-2">
+                        {day.food.map(item => (
+                          <li class="text-xs font-serif italic text-foreground/80" data-ps={`src/pages/trips/[slug].astro:19uj74-${__psIdx}`}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Narrative & Gallery */}
+                <div class="lg:col-span-9 space-y-12" data-ps="src/pages/trips/[slug].astro:day-content">
+                  <div class="prose prose-lg max-w-none prose-serif italic leading-relaxed text-muted-foreground" data-ps={`src/pages/trips/[slug].astro:tdh244-${__psIdx}`}>
+                    <p data-ps={`src/pages/trips/[slug].astro:xq7d3-${__psIdx}`}>{day.description}</p>
+                  </div>
+
+                  <div class="grid grid-cols-2 md:grid-cols-3 gap-6" data-ps="src/pages/trips/[slug].astro:day-gallery">
+                    {day.gallery.map((photo, idx) => (
+                      <div class={`relative overflow-hidden bg-surface aspect-[4/5] ${idx === 0 ? 'col-span-2 md:col-span-2 aspect-[16/10]' : ''}`} data-ps={`src/pages/trips/[slug].astro:tdh245-${idx}`}>
+                        <img 
+                          src={photo} 
+                          alt={`Fragment of Day ${day.day}`}
+                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          loading="lazy" data-ps={`src/pages/trips/[slug].astro:hrwja-${idx}`} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+          ))}
+        </div>
+      </Container>
+    </main>
+
+    {/* Journey Navigation */}
+    <nav class="border-t border-border py-16 bg-surface" data-ps="src/pages/trips/[slug].astro:trip-nav">
+      <Container>
+        <div class="flex flex-col md:flex-row justify-between items-center gap-8" data-ps="src/pages/trips/[slug].astro:tn-wrap">
+          <a href="/trips" class="text-[10px] font-sans font-bold uppercase tracking-[0.3em] flex items-center gap-4 hover:text-primary transition-colors" data-ps="src/pages/trips/[slug].astro:667pbt">
+            <svg class="w-4 h-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+            Back to Archive
+          </a>
+          
+          <div class="flex gap-12" data-ps="src/pages/trips/[slug].astro:tn-share">
+             <span class="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground" data-ps="src/pages/trips/[slug].astro:125n5b">Share this monograph</span>
+             <div class="flex gap-6" data-ps="src/pages/trips/[slug].astro:tdh246">
+                <a href="#" class="text-xs font-sans font-bold hover:text-primary transition-colors" data-ps="src/pages/trips/[slug].astro:667pbu">TW</a>
+                <a href="#" class="text-xs font-sans font-bold hover:text-primary transition-colors" data-ps="src/pages/trips/[slug].astro:667pbv">IN</a>
+             </div>
+          </div>
+        </div>
+      </Container>
+    </nav>
+  </article>
+</BaseLayout>

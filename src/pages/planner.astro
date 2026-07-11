@@ -1,0 +1,53 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import FlightPlanner from '@/components/islands/FlightPlanner';
+
+const title = "Flight Planner — SOJOURN";
+const description = "Discover the best routes and optimal pricing for your next expedition with our precise travel planning tools.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description,
+  "url": Astro.url.href
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <main class="py-20 lg:py-32 bg-background" data-ps="src/pages/planner.astro:rzc47q">
+    <Container>
+      <header class="max-w-3xl mb-16 lg:mb-24" data-ps="src/pages/planner.astro:iy5mp7">
+        <div class="flex items-center gap-3 mb-6" data-ps="src/pages/planner.astro:fkodk5">
+          <span class="h-px w-12 bg-primary" data-ps="src/pages/planner.astro:cqktcr"></span>
+          <span class="text-xs font-sans font-bold uppercase tracking-[0.3em] text-primary" data-ps="src/pages/planner.astro:cqktcs">Technical Expedition Planning</span>
+        </div>
+        <h1 class="font-serif text-h1 font-bold leading-tight mb-8" data-ps="src/pages/planner.astro:qet8dl">
+          Precision Route <br /> & Pricing Analysis
+        </h1>
+        <p class="text-lg text-muted-foreground leading-relaxed font-sans max-w-2xl" data-ps="src/pages/planner.astro:nj15bx">
+          A high-fidelity tool for the modern explorer. Compare seasonal variations, identify optimal departure windows, and secure passage to your next destination with data-driven clarity.
+        </p>
+      </header>
+
+      {/* The Island */}
+      <FlightPlanner client:load />
+
+      <section class="mt-32 pt-20 border-t border-border grid grid-cols-1 md:grid-cols-3 gap-12" data-ps="src/pages/planner.astro:mdyi9o">
+        <div data-ps="src/pages/planner.astro:fkodk6">
+          <h3 class="font-serif text-2xl font-bold mb-4 text-foreground" data-ps="src/pages/planner.astro:823rnl">Route Optimization</h3>
+          <p class="text-muted-foreground text-sm leading-relaxed" data-ps="src/pages/planner.astro:nj15bw">Our algorithms prioritize direct passages and high-comfort carriers, ensuring your journey begins as intentionally as your stay.</p>
+        </div>
+        <div data-ps="src/pages/planner.astro:fkodk7">
+          <h3 class="font-serif text-2xl font-bold mb-4 text-foreground" data-ps="src/pages/planner.astro:pgpy3r">Market Clarity</h3>
+          <p class="text-muted-foreground text-sm leading-relaxed" data-ps="src/pages/planner.astro:nj15bv">Transparent pricing indices allow you to navigate the volatility of global airfare with the confidence of an seasoned traveler.</p>
+        </div>
+        <div data-ps="src/pages/planner.astro:fkodk8">
+          <h3 class="font-serif text-2xl font-bold mb-4 text-foreground" data-ps="src/pages/planner.astro:pgpy3s">Seamless Transit</h3>
+          <p class="text-muted-foreground text-sm leading-relaxed" data-ps="src/pages/planner.astro:nj15bu">Integrated baggage monitoring and lounge access verification available for all Platinum-tier route selections.</p>
+        </div>
+      </section>
+    </Container>
+  </main>
+</BaseLayout>

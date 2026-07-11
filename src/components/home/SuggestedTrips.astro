@@ -1,0 +1,87 @@
+---
+import Container from '@/components/Container.astro';
+---
+
+<section id="suggested-trips" class="py-24 lg:py-32 bg-surface border-y border-border" data-ps="src/components/home/SuggestedTrips.astro:1">
+  <Container>
+    <div class="flex flex-col gap-6 mb-16 reveal text-center items-center" data-ps="src/components/home/SuggestedTrips.astro:2">
+      <span class="font-mono text-primary text-xs tracking-widest uppercase" data-ps="src/components/home/SuggestedTrips.astro:3">Expert Curation</span>
+      <h2 class="text-h2 font-serif font-semibold text-foreground max-w-2xl" data-ps="src/components/home/SuggestedTrips.astro:4">Curated Expeditions</h2>
+      <p class="text-muted-foreground text-lg max-w-2xl" data-ps="src/components/home/SuggestedTrips.astro:5">Carefully calibrated travel routes designed around optimal seasons and logical flight connections.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12" data-ps="src/components/home/SuggestedTrips.astro:6">
+      <!-- Card 1 -->
+      <article class="flex flex-col reveal reveal-delay-1" data-ps="src/components/home/SuggestedTrips.astro:7">
+        <div class="relative aspect-[3/4] overflow-hidden border border-border mb-6" data-ps="src/components/home/SuggestedTrips.astro:8">
+          <img 
+            src="https://images.pexels.com/photos/36055015/pexels-photo-36055015.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+            srcset="https://images.pexels.com/photos/36055015/pexels-photo-36055015.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/36055015/pexels-photo-36055015.jpeg?auto=compress&cs=tinysrgb&w=480 480w, https://images.pexels.com/photos/36055015/pexels-photo-36055015.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/36055015/pexels-photo-36055015.jpeg?auto=compress&cs=tinysrgb&w=768 768w, https://images.pexels.com/photos/36055015/pexels-photo-36055015.jpeg?auto=compress&cs=tinysrgb&w=1024 1024w"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            alt="Andalucia white village" 
+            class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+            loading="lazy"
+            data-ps="src/components/home/SuggestedTrips.astro:9"
+          />
+        </div>
+        <div class="flex flex-col gap-3" data-ps="src/components/home/SuggestedTrips.astro:10">
+          <div class="flex justify-between items-center" data-ps="src/components/home/SuggestedTrips.astro:11">
+            <span class="font-mono text-[10px] text-muted-foreground uppercase tracking-widest" data-ps="src/components/home/SuggestedTrips.astro:12">12 Days // Spain</span>
+            <span class="font-mono text-primary text-xs font-medium" data-ps="src/components/home/SuggestedTrips.astro:13">From $2,400</span>
+          </div>
+          <h3 class="text-xl font-serif font-semibold text-foreground" data-ps="src/components/home/SuggestedTrips.astro:14">The White Villages of Andalusia</h3>
+          <p class="text-sm text-muted-foreground line-clamp-2" data-ps="src/components/home/SuggestedTrips.astro:15">A sensory journey through steep stone alleyways and sun-drenched mountain landscapes.</p>
+          <a href="/trips/andalusia" class="text-[10px] font-sans font-bold uppercase tracking-widest text-foreground hover:text-primary transition-colors underline decoration-primary/30 underline-offset-4" data-ps="src/components/home/SuggestedTrips.astro:16">View Curated Itinerary</a>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="flex flex-col reveal reveal-delay-2" data-ps="src/components/home/SuggestedTrips.astro:17">
+        <div class="relative aspect-[3/4] overflow-hidden border border-border mb-6" data-ps="src/components/home/SuggestedTrips.astro:18">
+          <img 
+            src="https://images.pexels.com/photos/12813735/pexels-photo-12813735.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+            srcset="https://images.pexels.com/photos/12813735/pexels-photo-12813735.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/12813735/pexels-photo-12813735.jpeg?auto=compress&cs=tinysrgb&w=480 480w, https://images.pexels.com/photos/12813735/pexels-photo-12813735.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/12813735/pexels-photo-12813735.jpeg?auto=compress&cs=tinysrgb&w=768 768w, https://images.pexels.com/photos/12813735/pexels-photo-12813735.jpeg?auto=compress&cs=tinysrgb&w=1024 1024w"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            alt="Nordic cabin forest winter" 
+            class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+            loading="lazy"
+            data-ps="src/components/home/SuggestedTrips.astro:19"
+          />
+        </div>
+        <div class="flex flex-col gap-3" data-ps="src/components/home/SuggestedTrips.astro:20">
+          <div class="flex justify-between items-center" data-ps="src/components/home/SuggestedTrips.astro:21">
+            <span class="font-mono text-[10px] text-muted-foreground uppercase tracking-widest" data-ps="src/components/home/SuggestedTrips.astro:22">9 Days // Finland</span>
+            <span class="font-mono text-primary text-xs font-medium" data-ps="src/components/home/SuggestedTrips.astro:23">From $3,100</span>
+          </div>
+          <h3 class="text-xl font-serif font-semibold text-foreground" data-ps="src/components/home/SuggestedTrips.astro:24">Nordic Winter Solitude</h3>
+          <p class="text-sm text-muted-foreground line-clamp-2" data-ps="src/components/home/SuggestedTrips.astro:25">A curated route through deep pine forests and remote lakeside cabins under the aurora.</p>
+          <a href="/trips/finland" class="text-[10px] font-sans font-bold uppercase tracking-widest text-foreground hover:text-primary transition-colors underline decoration-primary/30 underline-offset-4" data-ps="src/components/home/SuggestedTrips.astro:26">View Curated Itinerary</a>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="flex flex-col reveal reveal-delay-3" data-ps="src/components/home/SuggestedTrips.astro:27">
+        <div class="relative aspect-[3/4] overflow-hidden border border-border mb-6" data-ps="src/components/home/SuggestedTrips.astro:28">
+          <img 
+            src="https://images.pexels.com/photos/28245154/pexels-photo-28245154.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+            srcset="https://images.pexels.com/photos/28245154/pexels-photo-28245154.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/28245154/pexels-photo-28245154.jpeg?auto=compress&cs=tinysrgb&w=480 480w, https://images.pexels.com/photos/28245154/pexels-photo-28245154.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/28245154/pexels-photo-28245154.jpeg?auto=compress&cs=tinysrgb&w=768 768w, https://images.pexels.com/photos/28245154/pexels-photo-28245154.jpeg?auto=compress&cs=tinysrgb&w=1024 1024w"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            alt="Mediterranean limestone cliffs" 
+            class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+            loading="lazy"
+            data-ps="src/components/home/SuggestedTrips.astro:29"
+          />
+        </div>
+        <div class="flex flex-col gap-3" data-ps="src/components/home/SuggestedTrips.astro:30">
+          <div class="flex justify-between items-center" data-ps="src/components/home/SuggestedTrips.astro:31">
+            <span class="font-mono text-[10px] text-muted-foreground uppercase tracking-widest" data-ps="src/components/home/SuggestedTrips.astro:32">14 Days // Mediterranean</span>
+            <span class="font-mono text-primary text-xs font-medium" data-ps="src/components/home/SuggestedTrips.astro:33">From $3,800</span>
+          </div>
+          <h3 class="text-xl font-serif font-semibold text-foreground" data-ps="src/components/home/SuggestedTrips.astro:34">The Azure Archipelago Coast</h3>
+          <p class="text-sm text-muted-foreground line-clamp-2" data-ps="src/components/home/SuggestedTrips.astro:35">Navigating the limestone cliffs and clear turquoise waters of the remote Mediterranean edges.</p>
+          <a href="/trips/mediterranean" class="text-[10px] font-sans font-bold uppercase tracking-widest text-foreground hover:text-primary transition-colors underline decoration-primary/30 underline-offset-4" data-ps="src/components/home/SuggestedTrips.astro:36">View Curated Itinerary</a>
+        </div>
+      </article>
+    </div>
+  </Container>
+</section>

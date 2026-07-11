@@ -1,0 +1,225 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import { SITE } from '@/config/site';
+
+const title = "Prepare Your Trip — SOJOURN Travel Guide";
+const description = "Essential pre-departure guidance: apps, visas, and payment setup for your next journey.";
+
+const sections = [
+  { id: 'essential-apps', title: 'Essential Apps' },
+  { id: 'visa-entry', title: 'Visa & Entry' },
+  { id: 'payment-setup', title: 'Payment Setup' }
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description,
+  "url": `${SITE.url}/guide`
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <!-- Hero Section -->
+  <section class="relative h-[60vh] flex items-center overflow-hidden border-b border-border" data-ps="src/pages/guide.astro:w4uqlf">
+    <div class="absolute inset-0 z-0" data-ps="src/pages/guide.astro:tk3yy9">
+      <img 
+        crossorigin="anonymous"
+        src="https://images.pexels.com/photos/19671961/pexels-photo-19671961.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+        srcset="https://images.pexels.com/photos/19671961/pexels-photo-19671961.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/19671961/pexels-photo-19671961.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/19671961/pexels-photo-19671961.jpeg?auto=compress&cs=tinysrgb&w=1024 1024w, https://images.pexels.com/photos/19671961/pexels-photo-19671961.jpeg?auto=compress&cs=tinysrgb&w=1536 1536w"
+        sizes="100vw"
+        alt="Travel essentials header" 
+        class="w-full h-full object-cover grayscale-[20%] brightness-75"
+        loading="eager"
+        fetchpriority="high" data-ps="src/pages/guide.astro:w2d3al" />
+      <div class="absolute inset-0 bg-dark/20" data-ps="src/pages/guide.astro:tk3yy8"></div>
+    </div>
+    
+    <Container class="relative z-10">
+      <div class="max-w-2xl hero-animate" data-ps="src/pages/guide.astro:tk3yy7">
+        <span class="inline-block text-white font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4" data-ps="src/pages/guide.astro:h90tl6">Travel Handbook</span>
+        <h1 class="text-white text-h1 font-serif mb-6" data-ps="src/pages/guide.astro:j57nfe">Prepare Your Journey</h1>
+        <p class="text-white/90 text-lg md:text-xl font-sans leading-relaxed" data-ps="src/pages/guide.astro:8d0acw">
+          A practical, structured resource for modern explorers. Everything you need to settle before you depart.
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <Container class="py-20 lg:py-32">
+    <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 relative" data-ps="src/pages/guide.astro:tk3yy6">
+      <!-- Sticky Sidebar -->
+      <aside class="lg:w-64 flex-shrink-0" data-ps="src/pages/guide.astro:weow74">
+        <div class="lg:sticky lg:top-32 space-y-8" data-ps="src/pages/guide.astro:tk3yy5">
+          <div class="hidden lg:block" data-ps="src/pages/guide.astro:tk3yy4">
+            <h3 class="font-sans font-bold text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-6" data-ps="src/pages/guide.astro:mj2k3s">In this guide</h3>
+            <nav class="flex flex-col gap-4" data-ps="src/pages/guide.astro:rpq6nc">
+              {sections.map(section => (
+                <a 
+                  href={`#${section.id}`} 
+                  class="text-foreground hover:text-primary transition-colors text-sm font-sans font-medium border-l border-border pl-4 hover:border-primary py-1"
+                 data-ps="src/pages/guide.astro:192do0">
+                  {section.title}
+                </a>
+              ))}
+            </nav>
+          </div>
+          
+          <div class="p-6 bg-surface border border-border" data-ps="src/pages/guide.astro:tk3yxi">
+            <p class="text-[11px] font-sans font-bold uppercase tracking-[0.1em] text-muted-foreground mb-2" data-ps="src/pages/guide.astro:8d0acv">Checklist</p>
+            <ul class="text-xs space-y-3 text-foreground/80 font-sans">
+              <li class="flex items-start gap-2" data-ps="src/pages/guide.astro:x2no8j">
+                <span class="text-primary" data-ps="src/pages/guide.astro:h90tl7">✓</span> Verify Passport Validity
+              </li>
+              <li class="flex items-start gap-2" data-ps="src/pages/guide.astro:x2no8i">
+                <span class="text-primary" data-ps="src/pages/guide.astro:h90tl8">✓</span> Download Offline Maps
+              </li>
+              <li class="flex items-start gap-2" data-ps="src/pages/guide.astro:x2no8h">
+                <span class="text-primary" data-ps="src/pages/guide.astro:h90tl9">✓</span> Register Flight Itinerary
+              </li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 max-w-3xl" data-ps="src/pages/guide.astro:ajmyj9">
+        <!-- Essential Apps -->
+        <section id="essential-apps" class="mb-32 scroll-mt-32" data-ps="src/pages/guide.astro:w4uqkt">
+          <div class="flex items-center gap-4 mb-8" data-ps="src/pages/guide.astro:tk3yxh">
+            <span class="w-12 h-px bg-primary" data-ps="src/pages/guide.astro:h90tla"></span>
+            <h2 class="text-h2 font-serif" data-ps="src/pages/guide.astro:xtmknn">Essential Apps</h2>
+          </div>
+          
+          <p class="text-lg text-muted-foreground leading-relaxed mb-12" data-ps="src/pages/guide.astro:8d0acu">
+            Modern travel relies on a small constellation of digital tools. Setting these up before you hit the terminal ensures a seamless transition upon arrival.
+          </p>
+
+          <div class="grid gap-8" data-ps="src/pages/guide.astro:tk3yxg">
+            <!-- App Category -->
+            <div class="group border-b border-border pb-8" data-ps="src/pages/guide.astro:tk3yxf">
+              <h3 class="text-xl font-serif mb-3" data-ps="src/pages/guide.astro:mj2k3t">Navigation & Transport</h3>
+              <p class="text-muted-foreground mb-4" data-ps="src/pages/guide.astro:8d0act">Beyond Google Maps, ensure you have the local ride-sharing equivalents (Grab, Kakao, or Bolt) registered and verified.</p>
+              <div class="bg-surface p-4 text-xs font-mono flex items-center gap-3" data-ps="src/pages/guide.astro:tk3yxe">
+                <span class="text-primary" data-ps="src/pages/guide.astro:h90tlb">Tip:</span> Download offline maps for your destination city to save data and battery.
+              </div>
+            </div>
+
+            <div class="group border-b border-border pb-8" data-ps="src/pages/guide.astro:tk3yxd">
+              <h3 class="text-xl font-serif mb-3" data-ps="src/pages/guide.astro:mj2k3u">Messaging & Local Logic</h3>
+              <p class="text-muted-foreground mb-4" data-ps="src/pages/guide.astro:8d0acs">International messaging standards vary. Install WhatsApp, Signal, or Line depending on your destination's primary communication layer.</p>
+            </div>
+
+            <div class="group border-b border-border pb-8" data-ps="src/pages/guide.astro:tk3yxc">
+              <h3 class="text-xl font-serif mb-3" data-ps="src/pages/guide.astro:mj2k3v">Language & Translation</h3>
+              <p class="text-muted-foreground mb-4" data-ps="src/pages/guide.astro:8d0acr">Google Translate with offline language packs is essential, but specialized apps like DeepL often provide better nuance for formal settings.</p>
+            </div>
+          </div>
+          
+          <div class="mt-12 rounded-lg overflow-hidden border border-border" data-ps="src/pages/guide.astro:tk3yxb">
+            <img 
+              crossorigin="anonymous"
+              src="https://images.pexels.com/photos/5444625/pexels-photo-5444625.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+              alt="Digital interface for travel" 
+              class="w-full h-64 object-cover"
+              loading="lazy" data-ps="src/pages/guide.astro:w2d3ak" />
+          </div>
+        </section>
+
+        <!-- Visa & Entry -->
+        <section id="visa-entry" class="mb-32 scroll-mt-32" data-ps="src/pages/guide.astro:w4uqks">
+          <div class="flex items-center gap-4 mb-8" data-ps="src/pages/guide.astro:tk3yxa">
+            <span class="w-12 h-px bg-primary" data-ps="src/pages/guide.astro:h90tlc"></span>
+            <h2 class="text-h2 font-serif" data-ps="src/pages/guide.astro:xtmknm">Visa & Entry Information</h2>
+          </div>
+
+          <div class="prose max-w-none" data-ps="src/pages/guide.astro:tk3yx9">
+            <p data-ps="src/pages/guide.astro:8d0acq">Navigating international borders requires meticulous attention to current regulations. Entry requirements can change with little notice based on diplomatic shifts or public health policies.</p>
+            
+            <div class="my-10 p-8 bg-dark text-dark-foreground" data-ps="src/pages/guide.astro:x15fyj">
+              <h4 class="text-dark-foreground font-serif text-lg mb-4" data-ps="src/pages/guide.astro:7unmvj">Preparation Checklist</h4>
+              <ul class="space-y-4 m-0 p-0 list-none">
+                <li class="flex gap-4 border-b border-dark-border pb-4" data-ps="src/pages/guide.astro:x2no8g">
+                  <span class="text-primary font-bold" data-ps="src/pages/guide.astro:h90tld">01</span>
+                  <div data-ps="src/pages/guide.astro:x15fyi">
+                    <strong class="block text-sm uppercase tracking-wider mb-1">Validity Check</strong>
+                    <p class="text-sm text-dark-muted-foreground m-0" data-ps="src/pages/guide.astro:8d0ac4">Ensure your passport is valid for at least 6 months beyond your intended date of departure.</p>
+                  </div>
+                </li>
+                <li class="flex gap-4 border-b border-dark-border pb-4" data-ps="src/pages/guide.astro:x2no8f">
+                  <span class="text-primary font-bold" data-ps="src/pages/guide.astro:h90tlz">02</span>
+                  <div data-ps="src/pages/guide.astro:x15fyh">
+                    <strong class="block text-sm uppercase tracking-wider mb-1">Electronic Authorization</strong>
+                    <p class="text-sm text-dark-muted-foreground m-0" data-ps="src/pages/guide.astro:8d0ac3">Apply for ETAs or e-Visas at least 14 days before departure to account for processing delays.</p>
+                  </div>
+                </li>
+                <li class="flex gap-4" data-ps="src/pages/guide.astro:x2no8e">
+                  <span class="text-primary font-bold" data-ps="src/pages/guide.astro:h90tm0">03</span>
+                  <div data-ps="src/pages/guide.astro:x15fyg">
+                    <strong class="block text-sm uppercase tracking-wider mb-1">Proof of Onward Travel</strong>
+                    <p class="text-sm text-dark-muted-foreground m-0" data-ps="src/pages/guide.astro:8d0ac2">Keep a digital and physical copy of your return flight and initial lodging confirmation.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <h3 class="font-serif" data-ps="src/pages/guide.astro:mj2k3w">Transit & Visa-Free Entry</h3>
+            <p data-ps="src/pages/guide.astro:8d0ac1">Many regions offer transit-without-visa (TWOV) programs if you are remaining in the airport or transiting within a specific time window (usually 24–72 hours). Always verify if these require a specific arrival/departure terminal.</p>
+          </div>
+        </section>
+
+        <!-- Payment Setup -->
+        <section id="payment-setup" class="scroll-mt-32" data-ps="src/pages/guide.astro:w4uqkr">
+          <div class="flex items-center gap-4 mb-8" data-ps="src/pages/guide.astro:x15fyf">
+            <span class="w-12 h-px bg-primary" data-ps="src/pages/guide.astro:h90tm1"></span>
+            <h2 class="text-h2 font-serif" data-ps="src/pages/guide.astro:xtmkn0">Payment Setup</h2>
+          </div>
+
+          <p class="text-lg text-muted-foreground leading-relaxed mb-12" data-ps="src/pages/guide.astro:8d0ac0">
+            Arriving in a new economy requires a diversified approach to payments. Relying on a single card or method is a common pitfall for the modern traveler.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12" data-ps="src/pages/guide.astro:x15fye">
+            <div class="bg-surface p-8 border border-border" data-ps="src/pages/guide.astro:x15fyd">
+              <h4 class="font-sans font-bold text-xs uppercase tracking-widest text-primary mb-4" data-ps="src/pages/guide.astro:7unmw5">Digital Wallets</h4>
+              <p class="text-sm leading-relaxed" data-ps="src/pages/guide.astro:8d0abz">Ensure Apple Pay or Google Pay is configured with multiple cards from different banks. This is the primary payment method in most urban hubs.</p>
+            </div>
+            <div class="bg-surface p-8 border border-border" data-ps="src/pages/guide.astro:x15fyc">
+              <h4 class="font-sans font-bold text-xs uppercase tracking-widest text-primary mb-4" data-ps="src/pages/guide.astro:7unmw6">Physical Cards</h4>
+              <p class="text-sm leading-relaxed" data-ps="src/pages/guide.astro:8d0aby">Always carry at least one physical Visa and one Mastercard. Inform your bank of your travel dates to prevent fraud blocks.</p>
+            </div>
+          </div>
+
+          <div class="rounded-lg overflow-hidden border border-border mb-8" data-ps="src/pages/guide.astro:x15fyb">
+            <img 
+              crossorigin="anonymous"
+              src="https://images.pexels.com/photos/10330114/pexels-photo-10330114.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+              alt="Payment setup preparation" 
+              class="w-full h-72 object-cover"
+              loading="lazy" data-ps="src/pages/guide.astro:w2d3aj" />
+          </div>
+
+          <div class="p-8 border-l-2 border-primary bg-surface/50" data-ps="src/pages/guide.astro:x15fya">
+            <h4 class="font-serif text-xl mb-3" data-ps="src/pages/guide.astro:7unmw7">Pre-Arrival Readiness</h4>
+            <p class="text-muted-foreground" data-ps="src/pages/guide.astro:8d0abx">Download the local banking or digital payment app (like WeChat Pay or KakaoPay) and complete the verification process before you leave. Many require a one-time password sent to your home phone number.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </Container>
+
+  <!-- CTA Footer Section -->
+  <section class="py-20 bg-dark text-dark-foreground border-t border-dark-border" data-ps="src/pages/guide.astro:w4uqkq">
+    <Container class="text-center">
+      <h2 class="text-h2 font-serif mb-6" data-ps="src/pages/guide.astro:xtmkmz">Ready for takeoff?</h2>
+      <p class="text-dark-muted-foreground max-w-xl mx-auto mb-10" data-ps="src/pages/guide.astro:8d0abw">
+        Your prep is complete. Now, use our flight planner to organize the technical logistics of your route.
+      </p>
+      <a href="/planner" class="inline-block px-10 py-4 bg-primary text-primary-foreground font-sans font-bold text-xs uppercase tracking-[0.3em] hover:bg-primary-hover transition-colors" data-ps="src/pages/guide.astro:192dnz">
+        Open Flight Planner
+      </a>
+    </Container>
+  </section>
+</BaseLayout>

@@ -1,0 +1,26 @@
+---
+import { SITE } from '@/config/site';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HeroParallax from '@/components/home/HeroParallax.astro';
+import CompletedTrips from '@/components/home/CompletedTrips.astro';
+import SuggestedTrips from '@/components/home/SuggestedTrips.astro';
+import RegionRecommendations from '@/components/home/RegionRecommendations.astro';
+---
+
+<BaseLayout
+  title={SITE.title}
+  description={SITE.description}
+  type="website"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE.name,
+    url: new URL(Astro.url.pathname, SITE.url).toString(),
+    sameAs: Object.values(SITE.socials),
+  }}
+>
+  <HeroParallax />
+  <CompletedTrips />
+  <SuggestedTrips />
+  <RegionRecommendations />
+</BaseLayout>

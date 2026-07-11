@@ -1,0 +1,48 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import { TripArchive } from '@/components/islands/TripArchive';
+import { SITE } from '@/config/site';
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": `Journeys Archive — ${SITE.name}`,
+  "description": "A curated archive of travel experiences, monographs, and future route plans.",
+  "url": `${SITE.url}/trips/`
+};
+---
+
+<BaseLayout title="Journeys Archive" description="Explore our curated archive of completed trip monographs and upcoming travel plans." jsonLd={jsonLd}>
+  <main class="py-20 lg:py-32" data-ps="src/pages/trips.astro:ldy0vk">
+    <Container>
+      {/* Header Section */}
+      <header class="max-w-3xl mb-16 lg:mb-24 space-y-6" data-ps="src/pages/trips.astro:22tpch">
+        <h1 class="text-h1 font-serif" data-ps="src/pages/trips.astro:pswdn3">Journeys Archive</h1>
+        <p class="text-xl text-muted-foreground font-serif leading-relaxed italic" data-ps="src/pages/trips.astro:qun0xm">
+          A monograph of movement. From the jagged peaks of the High Atlas to the silent stone gardens of Kyoto, these are the archives of our slow travel philosophy.
+        </p>
+      </header>
+
+      {/* Interactive Trip Archive */}
+      <TripArchive client:load />
+    </Container>
+
+    {/* Footer CTA */}
+    <section class="mt-24 lg:mt-40 border-t border-border pt-20" data-ps="src/pages/trips.astro:529mjm">
+      <Container>
+        <div class="max-w-2xl mx-auto text-center space-y-8" data-ps="src/pages/trips.astro:14fpit">
+          <h2 class="text-h3 font-serif" data-ps="src/pages/trips.astro:pbuqi6">Have a destination in mind?</h2>
+          <p class="text-muted-foreground" data-ps="src/pages/trips.astro:qun0xl">
+            Our route planners are available for custom monograph mapping. Connect with us to plan your next slow travel expedition.
+          </p>
+          <div class="flex justify-center gap-6" data-ps="src/pages/trips.astro:14fpis">
+            <a href="/planner" class="px-8 py-3 bg-primary text-primary-foreground font-sans font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-primary-hover transition-colors" data-ps="src/pages/trips.astro:qmdswt">
+              Launch Planner
+            </a>
+          </div>
+        </div>
+      </Container>
+    </section>
+  </main>
+</BaseLayout>
