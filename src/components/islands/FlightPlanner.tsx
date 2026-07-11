@@ -1,8 +1,15 @@
-import React, { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FlightSearchRow } from '@/lib/flight-utils';
 import { priceToColor } from '@/lib/flight-utils';
 
 interface FlightPlannerProps {
+  flights: FlightSearchRow[];
+}
+
+interface CalendarDay {
+  date: string;
+  day: number;
+  month: string;
   flights: FlightSearchRow[];
 }
 
@@ -24,9 +31,115 @@ function formatPrice(price: number): string {
   return `${price.toLocaleString('fr-FR')}\u00a0€`;
 }
 
-export default function FlightPlanner({ flights }: FlightPlannerProps) {
+function toDateKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function addDays(date: Date, days: number): Date {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function buildCalendarDays(flights: FlightSearchRow[]): CalendarDay[] {
+  if (flights.length === 0) {
+    return [];
+  }
+
+  const outboundDates = flights.map((flight) => flight.outboundDate).sort();
+  const start = new Date(`${outboundDates[0]}T12:00:00`);
+  const end = new Date(`${outboundDates[outboundDates.length - 1]}T12:00:00`);
+
+  const flightsByDate = new Map<string, FlightSearchRow[]>();
+  for (const flight of flights) {
+    const dayFlights = flightsByDate.get(flight.outboundDate) ?? [];
+    dayFlights.push(flight);
+    flightsByDate.set(flight.outboundDate, dayFlights);
+  }
+
+  for (const dayFlights of flightsByDate.values()) {
+    dayFlights.sort((a, b) => a.price - b.price || a.airport.localeCompare(b.airport));
+  }
+
+  const days: CalendarDay[] = [];
+  for (let cursor = new Date(start); cursor <= end; cursor = addDays(cursor, 1)) {
+    const date = toDateKey(cursor);
+    days.push({
+      date,
+      day: cursor.getDate(),
+      month: cursor.toLocaleDateString('en-GB', { month: 'short' }),
+      flights: flightsByDate.get(date) ?? [],
+    });
+  }
+
+  return days;
+}
+
+export function FlightPlanner({ flights }: FlightPlannerProps) {
   const [selectedFlightId, setSelectedFlightId] = useState<string | null>(
     flights[0]?.id ?? null
+  );
+  const [airportFilter, setAirportFilter] = useState('');
+  const [bestValueOnly, setBestValueOnly] = useState(false);
+  const listRowRefs = useRef(new Map<string, HTMLTableRowElement>());
+  const calendarDayRefs = useRef(new Map<string, HTMLElement>());
+  const calendarPillRefs = useRef(new Map<string, HTMLButtonElement>());
+  const calendarPanelRef = useRef<HTMLDivElement>(null);
+  const pendingScrollTarget = useRef<'list' | 'calendar' | null>(null);
+  const [recentPanelHeight, setRecentPanelHeight] = useState<number | null>(null);
+
+  const selectFlight = (flightId: string, scrollTo: 'list' | 'calendar') => {
+    pendingScrollTarget.current = scrollTo;
+    setSelectedFlightId(flightId);
+  };
+
+  const selectFlightFromCalendar = (flight: FlightSearchRow) => {
+    if (airportFilter && flight.airport !== airportFilter) {
+      setAirportFilter('');
+    }
+    if (bestValueOnly && !flight.isCityLowest) {
+      setBestValueOnly(false);
+    }
+    selectFlight(flight.id, 'list');
+  };
+
+  const filterFlights = (
+    airport: string,
+    bestOnly: boolean,
+    source: FlightSearchRow[] = flights
+  ) =>
+    source.filter((flight) => {
+      if (airport && flight.airport !== airport) {
+        return false;
+      }
+      if (bestOnly && !flight.isCityLowest) {
+        return false;
+      }
+      return true;
+    });
+
+  const ensureSelectedInList = (nextFlights: FlightSearchRow[]) => {
+    if (!nextFlights.some((flight) => flight.id === selectedFlightId)) {
+      setSelectedFlightId(nextFlights[0]?.id ?? null);
+    }
+  };
+
+  const airportOptions = useMemo(() => {
+    const byAirport = new Map<string, string>();
+    for (const flight of flights) {
+      if (!byAirport.has(flight.airport)) {
+        byAirport.set(flight.airport, flight.cityLabel);
+      }
+    }
+
+    return [...byAirport.entries()]
+      .sort(([, a], [, b]) => a.localeCompare(b))
+      .map(([airport, cityLabel]) => ({ airport, cityLabel }));
+  }, [flights]);
+
+  const filteredFlights = useMemo(
+    () => filterFlights(airportFilter, bestValueOnly),
+    [airportFilter, bestValueOnly, flights]
   );
 
   const selectedFlight = flights.find((flight) => flight.id === selectedFlightId);
@@ -39,65 +152,90 @@ export default function FlightPlanner({ flights }: FlightPlannerProps) {
     return { min: Math.min(...prices), max: Math.max(...prices) };
   }, [flights]);
 
-  const calendarContext = useMemo(() => {
-    if (!selectedFlight) {
+  const calendarDays = useMemo(() => buildCalendarDays(flights), [flights]);
+
+  const calendarSummary = useMemo(() => {
+    if (calendarDays.length === 0) {
       return null;
     }
 
-    const anchor = new Date(`${selectedFlight.outboundDate}T12:00:00`);
-    const year = anchor.getFullYear();
-    const month = anchor.getMonth();
-    const monthLabel = anchor.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    const first = calendarDays[0];
+    const last = calendarDays[calendarDays.length - 1];
+    const daysWithResults = calendarDays.filter((day) => day.flights.length > 0).length;
 
-    const airportFlights = flights.filter((flight) => flight.airport === selectedFlight.airport);
-    const pricesByDate = new Map<string, number>();
-    for (const flight of airportFlights) {
-      const existing = pricesByDate.get(flight.outboundDate);
-      if (existing === undefined || flight.price < existing) {
-        pricesByDate.set(flight.outboundDate, flight.price);
-      }
+    return {
+      rangeLabel: `${formatShortDate(first.date)} — ${formatShortDate(last.date)}`,
+      daysWithResults,
+      totalDays: calendarDays.length,
+    };
+  }, [calendarDays]);
+
+  useEffect(() => {
+    const calendar = calendarPanelRef.current;
+    if (!calendar) {
+      return;
     }
 
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const startDay = new Date(year, month, 1).getDay();
-    const monthPrices = [...pricesByDate.values()];
-    const monthMin = monthPrices.length ? Math.min(...monthPrices) : priceRange.min;
-    const monthMax = monthPrices.length ? Math.max(...monthPrices) : priceRange.max;
+    const syncRecentPanelHeight = () => {
+      if (window.matchMedia('(min-width: 1024px)').matches) {
+        setRecentPanelHeight(calendar.offsetHeight);
+      } else {
+        setRecentPanelHeight(null);
+      }
+    };
 
-    const calendarDays = Array.from({ length: 42 }, (_, index) => {
-      const day = index - startDay + 1;
-      if (day < 1 || day > daysInMonth) {
-        return null;
+    syncRecentPanelHeight();
+
+    const observer = new ResizeObserver(syncRecentPanelHeight);
+    observer.observe(calendar);
+    window.addEventListener('resize', syncRecentPanelHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', syncRecentPanelHeight);
+    };
+  }, [calendarDays, flights.length]);
+
+  useEffect(() => {
+    const scrollTarget = pendingScrollTarget.current;
+    if (!selectedFlightId || !scrollTarget) {
+      return;
+    }
+
+    pendingScrollTarget.current = null;
+
+    requestAnimationFrame(() => {
+      if (scrollTarget === 'list') {
+        listRowRefs.current.get(selectedFlightId)?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+        return;
       }
 
-      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const price = pricesByDate.get(dateStr) ?? null;
+      const flight = flights.find((item) => item.id === selectedFlightId);
+      if (!flight) {
+        return;
+      }
 
-      return {
-        day,
-        date: dateStr,
-        price,
-        priceColor: price !== null ? priceToColor(price, monthMin, monthMax) : null,
-      };
+      calendarDayRefs.current.get(flight.outboundDate)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      calendarPillRefs.current.get(selectedFlightId)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
     });
-
-    return { monthLabel, calendarDays, monthMin };
-  }, [flights, priceRange.max, priceRange.min, selectedFlight]);
-
-  const isSelected = (date: string) => {
-    if (!selectedFlight) return false;
-    return date === selectedFlight.outboundDate || date === selectedFlight.returnDate;
-  };
-
-  const isInRange = (date: string) => {
-    if (!selectedFlight) return false;
-    return date > selectedFlight.outboundDate && date < selectedFlight.returnDate;
-  };
+  }, [selectedFlightId, airportFilter, bestValueOnly, filteredFlights, flights]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-      <div className="lg:col-span-1 border border-border bg-surface overflow-hidden">
-        <div className="p-4 border-b border-border bg-background">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+      <div
+        className="lg:col-span-1 border border-border bg-surface flex flex-col min-h-0 overflow-hidden"
+        style={recentPanelHeight ? { height: recentPanelHeight } : undefined}
+      >
+        <div className="shrink-0 p-4 border-b border-border bg-background">
           <h2 className="font-sans font-bold text-xs uppercase tracking-widest flex items-center gap-2">
             <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -109,17 +247,59 @@ export default function FlightPlanner({ flights }: FlightPlannerProps) {
           </p>
           {flights.length > 0 && (
             <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
-              {flights.length} results
+              {airportFilter || bestValueOnly
+                ? `${filteredFlights.length} of ${flights.length} results`
+                : `${flights.length} results`}
             </p>
+          )}
+          {airportOptions.length > 0 && (
+            <label className="mt-4 block">
+              <span className="sr-only">Filter by airport</span>
+              <select
+                value={airportFilter}
+                onChange={(event) => {
+                  const nextAirport = event.target.value;
+                  setAirportFilter(nextAirport);
+                  ensureSelectedInList(filterFlights(nextAirport, bestValueOnly));
+                }}
+                className="w-full mt-1 bg-background border border-border rounded-sm px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors font-sans appearance-none"
+              >
+                <option value="">All airports</option>
+                {airportOptions.map(({ airport, cityLabel }) => (
+                  <option key={airport} value={airport}>
+                    {cityLabel} ({airport})
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {flights.length > 0 && (
+            <label className="mt-3 flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={bestValueOnly}
+                onChange={(event) => {
+                  const nextBestValueOnly = event.target.checked;
+                  setBestValueOnly(nextBestValueOnly);
+                  ensureSelectedInList(filterFlights(airportFilter, nextBestValueOnly));
+                }}
+                className="h-3.5 w-3.5 rounded-sm border-border bg-background text-primary focus:ring-primary/30 focus:ring-offset-0"
+              />
+              <span className="text-sm text-foreground">Best value only</span>
+            </label>
           )}
         </div>
 
         {flights.length === 0 ? (
-          <div className="px-4 py-10 text-sm text-muted-foreground">
+          <div className="flex-1 px-4 py-10 text-sm text-muted-foreground">
             No flight searches found in <code className="text-xs">flights.db</code>.
           </div>
+        ) : filteredFlights.length === 0 ? (
+          <div className="flex-1 px-4 py-10 text-sm text-muted-foreground">
+            No results match the current filters.
+          </div>
         ) : (
-          <div className="overflow-x-auto max-h-[720px] overflow-y-auto">
+          <div className="flex-1 min-h-0 overflow-y-auto overflow-x-auto">
             <table className="w-full text-left font-sans text-sm">
               <thead className="sticky top-0 z-10">
                 <tr className="border-b border-border bg-background/95 text-[10px] uppercase tracking-wider text-muted-foreground backdrop-blur">
@@ -128,17 +308,24 @@ export default function FlightPlanner({ flights }: FlightPlannerProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
-                {flights.map((flight) => (
+                {filteredFlights.map((flight) => (
                   <tr
                     key={flight.id}
-                    onClick={() => setSelectedFlightId(flight.id)}
+                    ref={(element) => {
+                      if (element) {
+                        listRowRefs.current.set(flight.id, element);
+                      } else {
+                        listRowRefs.current.delete(flight.id);
+                      }
+                    }}
+                    onClick={() => selectFlight(flight.id, 'calendar')}
                     className={`group cursor-pointer transition-colors relative ${
-                      flight.isCityLowest
-                        ? 'bg-[color-mix(in_oklab,gold_12%,var(--color-surface))]'
-                        : selectedFlightId === flight.id
-                          ? 'bg-primary/5'
+                      selectedFlightId === flight.id
+                        ? 'bg-primary/5 ring-1 ring-inset ring-primary/20'
+                        : flight.isCityLowest
+                          ? 'bg-[color-mix(in_oklab,gold_12%,var(--color-surface))]'
                           : 'hover:bg-background'
-                    } ${selectedFlightId === flight.id ? 'ring-1 ring-inset ring-primary/20' : ''}`}
+                    }`}
                   >
                     <td className="px-4 py-4 pb-6">
                       <div className="font-bold text-foreground flex items-center gap-2 min-w-0">
@@ -182,105 +369,132 @@ export default function FlightPlanner({ flights }: FlightPlannerProps) {
         )}
       </div>
 
-      <div className="lg:col-span-2 border border-border bg-background p-6 lg:p-10">
-        <div className="flex justify-between items-end mb-8">
-          <div>
-            <h3 className="font-serif text-3xl font-bold mb-1">
-              {calendarContext?.monthLabel ?? 'Price Calendar'}
-            </h3>
-            <p className="text-muted-foreground text-sm font-sans">
-              {selectedFlight
-                ? `Compare ${selectedFlight.cityLabel} departure prices by date`
-                : 'Select a flight result to compare departure prices'}
-            </p>
-          </div>
-          <div className="flex gap-4 text-[10px] uppercase tracking-widest font-bold">
-            <div className="flex items-center gap-1.5 text-success">
-              <span className="w-2 h-2 rounded-full bg-success"></span> Lowest
+      <div ref={calendarPanelRef} className="lg:col-span-3 border border-border bg-background">
+        <div className="p-6 lg:p-8 border-b border-border">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h3 className="font-serif text-3xl font-bold mb-1">Price Calendar</h3>
+              <p className="text-muted-foreground text-sm font-sans">
+                {calendarSummary
+                  ? `${calendarSummary.rangeLabel} · ${calendarSummary.daysWithResults} departure days with fares`
+                  : 'Select a route from recent search results to inspect departure prices by date'}
+              </p>
             </div>
-            <div className="flex items-center gap-1.5 text-warning">
-              <span className="w-2 h-2 rounded-full bg-warning"></span> Mid-range
-            </div>
-            <div className="flex items-center gap-1.5 text-error">
-              <span className="w-2 h-2 rounded-full bg-error"></span> Highest
+            <div className="flex flex-wrap gap-4 text-[10px] uppercase tracking-widest font-bold">
+              <div className="flex items-center gap-1.5 text-success">
+                <span className="w-2 h-2 rounded-full bg-success"></span> Lowest
+              </div>
+              <div className="flex items-center gap-1.5 text-warning">
+                <span className="w-2 h-2 rounded-full bg-warning"></span> Mid-range
+              </div>
+              <div className="flex items-center gap-1.5 text-error">
+                <span className="w-2 h-2 rounded-full bg-error"></span> Highest
+              </div>
             </div>
           </div>
         </div>
 
-        {calendarContext ? (
-          <div className="grid grid-cols-7 gap-px bg-border border border-border">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-              <div key={day} className="bg-surface py-3 text-center text-[10px] uppercase tracking-widest font-bold text-muted-foreground">
-                {day}
-              </div>
-            ))}
-            {calendarContext.calendarDays.map((day, index) => (
-              <div
-                key={index}
-                className={`bg-background min-h-[80px] lg:min-h-[110px] p-2 transition-all relative group ${
-                  day ? 'cursor-default' : ''
-                } ${day && isSelected(day.date) ? 'ring-2 ring-primary z-10' : ''} ${
-                  day && isInRange(day.date) ? 'bg-primary/5' : ''
-                }`}
-              >
-                {day && (
-                  <>
-                    <span
-                      className={`text-xs font-sans font-bold ${
-                        isSelected(day.date) ? 'text-primary' : 'text-muted-foreground'
-                      }`}
-                    >
-                      {day.day}
-                    </span>
-                    {day.price !== null && (
-                      <div className="mt-auto pt-4 flex flex-col items-center">
-                        <span
-                          className="font-serif text-lg font-medium tabular-nums"
-                          style={{ color: day.priceColor ?? undefined }}
-                        >
-                          {day.price.toLocaleString('fr-FR')}€
+        {calendarDays.length > 0 ? (
+          <div>
+            <div className="grid grid-cols-7 border-b border-border bg-surface/80">
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                <div
+                  key={day}
+                  className="px-3 py-3 text-center text-[10px] uppercase tracking-widest font-bold text-muted-foreground border-r border-border/70 last:border-r-0"
+                >
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7">
+              {calendarDays.map((day) => {
+                const hasResults = day.flights.length > 0;
+                const isSelectedDay = selectedFlight?.outboundDate === day.date;
+
+                return (
+                  <article
+                    key={day.date}
+                    ref={(element) => {
+                      if (element) {
+                        calendarDayRefs.current.set(day.date, element);
+                      } else {
+                        calendarDayRefs.current.delete(day.date);
+                      }
+                    }}
+                    aria-label={`${day.day} ${day.month} ${day.date.slice(0, 4)} with ${day.flights.length} results`}
+                    className={`min-h-[12.5rem] p-3 border-r border-b border-border/70 grid gap-3 content-start ${
+                      hasResults ? 'bg-primary/[0.04]' : 'bg-surface/40'
+                    } ${isSelectedDay ? 'ring-2 ring-inset ring-primary/30 bg-primary/[0.07]' : ''}`}
+                  >
+                    <div className="flex items-baseline justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-bold tabular-nums">{day.day}</span>
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                          {day.month}
                         </span>
-                        {day.price === calendarContext.monthMin && (
-                          <div className="w-1 h-1 rounded-full bg-success mt-1"></div>
-                        )}
                       </div>
-                    )}
-                    {isSelected(day.date) && (
-                      <div className="absolute top-2 right-2">
-                        <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                        {hasResults
+                          ? `${day.flights.length} fare${day.flights.length === 1 ? '' : 's'}`
+                          : 'No results'}
+                      </span>
+                    </div>
+
+                    {hasResults ? (
+                      <div className="grid gap-2 min-w-0 overflow-y-auto max-h-[8.5rem]">
+                        {day.flights.map((flight) => {
+                          const isSelectedFlight = selectedFlightId === flight.id;
+
+                          return (
+                            <button
+                              key={flight.id}
+                              ref={(element) => {
+                                if (element) {
+                                  calendarPillRefs.current.set(flight.id, element);
+                                } else {
+                                  calendarPillRefs.current.delete(flight.id);
+                                }
+                              }}
+                              type="button"
+                              onClick={() => selectFlightFromCalendar(flight)}
+                              className={`flex items-center justify-between gap-2 min-w-0 min-h-8 px-2.5 py-1 rounded-md border text-left transition-colors ${
+                                isSelectedFlight
+                                  ? 'border-primary bg-primary/10 ring-1 ring-primary/30'
+                                  : 'border-border/80 bg-background/80 hover:bg-background'
+                              }`}
+                            >
+                              <span
+                                className="min-w-0 truncate text-[11px] text-muted-foreground"
+                                title={flight.cityLabel}
+                              >
+                                {flight.airport}
+                                {flight.isDirect ? '✈️' : ''}
+                              </span>
+                              <span
+                                className="shrink-0 text-xs font-bold tabular-nums"
+                                style={{ color: priceToColor(flight.price, priceRange.min, priceRange.max) }}
+                              >
+                                {formatPrice(flight.price)}
+                              </span>
+                            </button>
+                          );
+                        })}
                       </div>
+                    ) : (
+                      <p className="text-[11px] text-muted-foreground/60">No results</p>
                     )}
-                  </>
-                )}
-              </div>
-            ))}
+                  </article>
+                );
+              })}
+            </div>
           </div>
         ) : (
-          <div className="border border-dashed border-border rounded-sm px-6 py-16 text-center text-muted-foreground text-sm">
+          <div className="px-6 py-16 text-center text-muted-foreground text-sm">
             Choose a route from recent search results to inspect its price calendar.
           </div>
         )}
 
-        <div className="mt-8 pt-8 border-t border-border grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="flex gap-4 items-start">
-            <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center shrink-0">
-              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <h4 className="font-serif text-lg font-bold mb-1">Flexible Planning</h4>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Prices are loaded from your latest flight searches. Selecting a result highlights the specific window in the price calendar for easy comparison.
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-4 items-start text-sm">
-            <button className="w-full bg-primary text-primary-foreground font-sans font-bold text-xs uppercase tracking-[0.2em] py-4 hover:bg-primary-hover transition-colors">
-              Continue to Booking
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );

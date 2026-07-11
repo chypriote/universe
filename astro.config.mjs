@@ -41,7 +41,7 @@ const noIndexPaths = collectNoIndexPaths();
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  trailingSlash: 'always',
+  trailingSlash: 'never',
   adapter: cloudflare({
     imageService: 'passthrough',
     prerenderEnvironment: 'node',

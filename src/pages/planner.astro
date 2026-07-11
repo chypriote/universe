@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
-import FlightPlanner from '@/components/islands/FlightPlanner';
-import { getRecentFlightSearches } from '@/lib/flights';
+import { FlightPlanner } from '@/components/islands/FlightPlanner';
+import { getRecentFlightSearches } from '@/lib/flights.server';
 
 const flights = getRecentFlightSearches();
 
@@ -27,7 +27,7 @@ const jsonLd = {
           <span class="text-xs font-sans font-bold uppercase tracking-[0.3em] text-primary" data-ps="src/pages/planner.astro:cqktcs">Technical Expedition Planning</span>
         </div>
         <h1 class="font-serif text-h1 font-bold leading-tight mb-8" data-ps="src/pages/planner.astro:qet8dl">
-          Precision Route <br /> & Pricing Analysis
+          Best flights
         </h1>
         <p class="text-lg text-muted-foreground leading-relaxed font-sans max-w-2xl" data-ps="src/pages/planner.astro:nj15bx">
           A high-fidelity tool for the modern explorer. Compare seasonal variations, identify optimal departure windows, and secure passage to your next destination with data-driven clarity.
