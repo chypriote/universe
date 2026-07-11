@@ -2,6 +2,9 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import FlightPlanner from '@/components/islands/FlightPlanner';
+import { getRecentFlightSearches } from '@/lib/flights';
+
+const flights = getRecentFlightSearches();
 
 const title = "Flight Planner — SOJOURN";
 const description = "Discover the best routes and optimal pricing for your next expedition with our precise travel planning tools.";
@@ -32,7 +35,7 @@ const jsonLd = {
       </header>
 
       {/* The Island */}
-      <FlightPlanner client:load />
+      <FlightPlanner client:load flights={flights} />
 
       <section class="mt-32 pt-20 border-t border-border grid grid-cols-1 md:grid-cols-3 gap-12" data-ps="src/pages/planner.astro:mdyi9o">
         <div data-ps="src/pages/planner.astro:fkodk6">
