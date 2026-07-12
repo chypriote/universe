@@ -62,7 +62,10 @@ export default defineConfig({
     checkOrigin: true,
   },
   integrations: [
-    react(),
+    react({
+      include: ['**/islands/**'],
+      experimentalDisableStreaming: true,
+    }),
     // MDX support for blog posts, docs, and content
     mdx(),
     // Generate sitemap.xml, excluding pages flagged noIndex={true}
@@ -87,9 +90,10 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     resolve: {
-      alias: import.meta.env.PROD && {
-        'react-dom/server': 'react-dom/server.edge',
-      },
+      dedupe: ['react', 'react-dom'],
+      ...(import.meta.env.PROD
+        ? { alias: { 'react-dom/server': 'react-dom/server.edge' } }
+        : {}),
     },
   },
 });

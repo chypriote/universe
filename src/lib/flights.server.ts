@@ -3,7 +3,7 @@ import {
   getAirportLabel,
   priceToColor,
   type FlightSearchRow,
-} from '@/lib/flight-utils';
+} from './flight-utils';
 
 const MIN_OUTBOUND_DATE = '2027-01-01';
 

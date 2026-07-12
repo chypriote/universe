@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
-import { FlightPlanner } from '@/components/islands/FlightPlanner';
-import { getRecentFlightSearches } from '@/components/islands/flight-planner/getRecentFlightSearches';
+import { FlightPlanner } from '@/components/islands/flight-planner/FlightPlanner';
+import { getRecentFlightSearches } from '@/lib/flights.server';
 
 const flights = await getRecentFlightSearches();
 
