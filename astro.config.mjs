@@ -38,6 +38,42 @@ function collectNoIndexPaths() {
 
 const noIndexPaths = collectNoIndexPaths();
 
+// Pre-bundle React and Astro runtime deps during dev startup. Without this,
+// @astrojs/cloudflare can discover deps mid-request, reload the optimizer, and
+// invalidate React's hook dispatcher (resolveDispatcher() is null).
+// https://github.com/withastro/astro/issues/17166
+const reactOptimizerDeps = [
+  '@astrojs/react/client.js',
+  'react',
+  'react-dom',
+  'react-dom/client',
+  'react-dom/server',
+  'react/jsx-runtime',
+  'react/jsx-dev-runtime',
+];
+
+const ssrOptimizerDeps = [
+  ...reactOptimizerDeps,
+  'astro/assets/services/noop',
+  'astro/env/runtime',
+  'astro/virtual-modules/transitions.js',
+  'astro/zod',
+];
+
+/** @returns {import('vite').Plugin} */
+function prebundleCloudflareDevDeps() {
+  return {
+    name: 'prebundle-cloudflare-dev-deps',
+    configEnvironment(environmentName) {
+      if (environmentName === 'client') return;
+      return {
+        optimizeDeps: { include: ssrOptimizerDeps },
+        resolve: { dedupe: ['react', 'react-dom'] },
+      };
+    },
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
@@ -89,12 +125,15 @@ export default defineConfig({
     inlineStylesheets: 'always',
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), prebundleCloudflareDevDeps()],
     resolve: {
       dedupe: ['react', 'react-dom'],
       ...(import.meta.env.PROD
         ? { alias: { 'react-dom/server': 'react-dom/server.edge' } }
         : {}),
+    },
+    optimizeDeps: {
+      include: reactOptimizerDeps,
     },
   },
   fonts: [{

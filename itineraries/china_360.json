@@ -18,7 +18,12 @@
           "city": "Beijing",
           "rating": 5,
           "description": "Imperial palace complex with extensive courtyards and halls.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-03-26-10-53.jpg",
+              "caption": "2025-03-26 10:53"
+            }
+          ]
         },
         {
           "name": "Jingshan Park",
@@ -41,7 +46,68 @@
           "city": "Beijing",
           "rating": 5,
           "description": "Historic public square in the center of the city.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-09-44.jpg",
+              "caption": "2025-03-27 09:44"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-10-01.jpg",
+              "caption": "2025-03-27 10:01"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-10-02.jpg",
+              "caption": "2025-03-27 10:02"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-10-03.jpg",
+              "caption": "2025-03-27 10:03"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-10-08.jpg",
+              "caption": "2025-03-27 10:08"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-10-09.jpg",
+              "caption": "2025-03-27 10:09"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-10-43.jpg",
+              "caption": "2025-03-27 10:43"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-10-45.jpg",
+              "caption": "2025-03-27 10:45"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-10-50.jpg",
+              "caption": "2025-03-27 10:50"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-11-03.jpg",
+              "caption": "2025-03-27 11:03"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-11-04.jpg",
+              "caption": "2025-03-27 11:04"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-11-05.jpg",
+              "caption": "2025-03-27 11:05"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-11-23.jpg",
+              "caption": "2025-03-27 11:23"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-11-25.jpg",
+              "caption": "2025-03-27 11:25"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-27-16-50.jpg",
+              "caption": "2025-03-27 16:50"
+            }
+          ]
         },
         {
           "name": "Summer Palace",
@@ -73,7 +139,40 @@
           "city": "Pingyao",
           "rating": 4,
           "description": "Well-preserved historic city with traditional architecture.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-03-28-10-45.jpg",
+              "caption": "2025-03-28 10:45"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-28-10-47.jpg",
+              "caption": "2025-03-28 10:47"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-28-10-50.jpg",
+              "caption": "2025-03-28 10:50"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-28-10-57.jpg",
+              "caption": "2025-03-28 10:57"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-28-11-16.jpg",
+              "caption": "2025-03-28 11:16"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-28-16-48.jpg",
+              "caption": "2025-03-28 16:48"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-28-22-42.jpg",
+              "caption": "2025-03-28 22:42"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-28-22-44.jpg",
+              "caption": "2025-03-28 22:44"
+            }
+          ]
         }
       ],
       "train_trips": [
@@ -98,7 +197,28 @@
           "city": "Xi'an",
           "rating": 4,
           "description": "Iconic towers in the historic center.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-03-29-10-50.jpg",
+              "caption": "2025-03-29 10:50"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-29-10-51.jpg",
+              "caption": "2025-03-29 10:51"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-29-10-52.jpg",
+              "caption": "2025-03-29 10:52"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-29-10-53.jpg",
+              "caption": "2025-03-29 10:53"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-29-11-24.jpg",
+              "caption": "2025-03-29 11:24"
+            }
+          ]
         },
         {
           "name": "City Walls",
@@ -130,7 +250,20 @@
           "city": "Chengdu",
           "rating": 4,
           "description": "Modern shopping and dining district.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-03-30-21-55.jpg",
+              "caption": "2025-03-30 21:55"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-30-22-03.jpg",
+              "caption": "2025-03-30 22:03"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-30-22-04.jpg",
+              "caption": "2025-03-30 22:04"
+            }
+          ]
         },
         {
           "name": "People's Park",
@@ -153,7 +286,40 @@
           "city": "Chengdu",
           "rating": 5,
           "description": "Major panda conservation and viewing center.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-03-31-14-24.jpg",
+              "caption": "2025-03-31 14:24"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-31-15-10.jpg",
+              "caption": "2025-03-31 15:10"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-31-16-04.jpg",
+              "caption": "2025-03-31 16:04"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-31-21-58.jpg",
+              "caption": "2025-03-31 21:58"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-31-22-02.jpg",
+              "caption": "2025-03-31 22:02"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-31-22-05.jpg",
+              "caption": "2025-03-31 22:05"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-31-22-06.jpg",
+              "caption": "2025-03-31 22:06"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-03-31-23-08.jpg",
+              "caption": "2025-03-31 23:08"
+            }
+          ]
         },
         {
           "name": "Wenshu Monastery",
@@ -185,7 +351,40 @@
           "city": "Jiuzhaigou",
           "rating": 5,
           "description": "Scenic national park known for lakes and waterfalls.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-01-00-59.jpg",
+              "caption": "2025-04-01 00:59"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-01-08-11.jpg",
+              "caption": "2025-04-01 08:11"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-01-08-16.jpg",
+              "caption": "2025-04-01 08:16"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-01-08-17.jpg",
+              "caption": "2025-04-01 08:17"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-01-10-00.jpg",
+              "caption": "2025-04-01 10:00"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-01-17-24.jpg",
+              "caption": "2025-04-01 17:24"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-01-20-00.jpg",
+              "caption": "2025-04-01 20:00"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-01-20-02.jpg",
+              "caption": "2025-04-01 20:02"
+            }
+          ]
         },
         {
           "name": "Huanglong",
@@ -217,7 +416,24 @@
           "city": "Leshan",
           "rating": 5,
           "description": "Massive cliff-carved Buddha statue.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-02-01-02.jpg",
+              "caption": "2025-04-02 01:02"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-02-01-15.jpg",
+              "caption": "2025-04-02 01:15"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-02-08-12.jpg",
+              "caption": "2025-04-02 08:12"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-02-08-13.jpg",
+              "caption": "2025-04-02 08:13"
+            }
+          ]
         }
       ],
       "train_trips": [
@@ -250,7 +466,16 @@
           "city": "Chongqing",
           "rating": 4,
           "description": "Major riverside square and transport hub.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-03-01-03.jpg",
+              "caption": "2025-04-03 01:03"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-03-01-06.jpg",
+              "caption": "2025-04-03 01:06"
+            }
+          ]
         },
         {
           "name": "HongyaDong",
@@ -273,7 +498,36 @@
           "city": "Chongqing",
           "rating": 4,
           "description": "Historic town with narrow streets and local food.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-04-06-32.jpg",
+              "caption": "2025-04-04 06:32"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-04-06-40.jpg",
+              "caption": "2025-04-04 06:40"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-04-08-47.jpg",
+              "caption": "2025-04-04 08:47"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-04-08-48.jpg",
+              "caption": "2025-04-04 08:48"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-04-08-49.jpg",
+              "caption": "2025-04-04 08:49"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-04-08-52.jpg",
+              "caption": "2025-04-04 08:52"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-04-08-56.jpg",
+              "caption": "2025-04-04 08:56"
+            }
+          ]
         },
         {
           "name": "Liziba",
@@ -305,7 +559,44 @@
           "city": "Wulong",
           "rating": 5,
           "description": "Karst scenery area with dramatic formations.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-05-08-22.jpg",
+              "caption": "2025-04-05 08:22"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-05-08-24.jpg",
+              "caption": "2025-04-05 08:24"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-05-08-55.jpg",
+              "caption": "2025-04-05 08:55"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-05-08-56.jpg",
+              "caption": "2025-04-05 08:56"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-05-08-57.jpg",
+              "caption": "2025-04-05 08:57"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-05-09-32.jpg",
+              "caption": "2025-04-05 09:32"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-05-11-33.jpg",
+              "caption": "2025-04-05 11:33"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-05-16-46.jpg",
+              "caption": "2025-04-05 16:46"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-05-16-53.jpg",
+              "caption": "2025-04-05 16:53"
+            }
+          ]
         },
         {
           "name": "Three Natural Bridges",
@@ -337,7 +628,16 @@
           "city": "Chongqing",
           "rating": 4,
           "description": "Park with city views and walking paths.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-06-09-37.jpg",
+              "caption": "2025-04-06 09:37"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-06-11-32.jpg",
+              "caption": "2025-04-06 11:32"
+            }
+          ]
         }
       ],
       "train_trips": [
@@ -362,7 +662,20 @@
           "city": "Zhangjiajie",
           "rating": 5,
           "description": "Mountain area with steep cliffs and scenic access.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-07-12-05.jpg",
+              "caption": "2025-04-07 12:05"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-07-12-07.jpg",
+              "caption": "2025-04-07 12:07"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-07-15-00.jpg",
+              "caption": "2025-04-07 15:00"
+            }
+          ]
         },
         {
           "name": "Bailong Elevator",
@@ -385,7 +698,68 @@
           "city": "Wulingyuan",
           "rating": 5,
           "description": "Scenic national park area with pillar-like peaks.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-00-39.jpg",
+              "caption": "2025-04-08 00:39"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-01-00.jpg",
+              "caption": "2025-04-08 01:00"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-08-47.jpg",
+              "caption": "2025-04-08 08:47"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-10-57.jpg",
+              "caption": "2025-04-08 10:57"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-12-22.jpg",
+              "caption": "2025-04-08 12:22"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-12-24.jpg",
+              "caption": "2025-04-08 12:24"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-15-03.jpg",
+              "caption": "2025-04-08 15:03"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-15-06.jpg",
+              "caption": "2025-04-08 15:06"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-15-11.jpg",
+              "caption": "2025-04-08 15:11"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-15-18.jpg",
+              "caption": "2025-04-08 15:18"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-15-19.jpg",
+              "caption": "2025-04-08 15:19"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-15-21.jpg",
+              "caption": "2025-04-08 15:21"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-15-27.jpg",
+              "caption": "2025-04-08 15:27"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-15-29.jpg",
+              "caption": "2025-04-08 15:29"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-08-23-10.jpeg",
+              "caption": "2025-04-08 23:10"
+            }
+          ]
         },
         {
           "name": "Yuanjiajie",
@@ -408,7 +782,16 @@
           "city": "Wulingyuan",
           "rating": 5,
           "description": "Canyon area with bridge and cliff scenery.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-09-09-38.jpg",
+              "caption": "2025-04-09 09:38"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-09-23-10.jpeg",
+              "caption": "2025-04-09 23:10"
+            }
+          ]
         },
         {
           "name": "Golden Whip Stream",
@@ -440,7 +823,40 @@
           "city": "Changsha",
           "rating": 4,
           "description": "River island park and landmark view area.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-10-00-40.jpg",
+              "caption": "2025-04-10 00:40"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-10-00-42.jpg",
+              "caption": "2025-04-10 00:42"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-10-00-46.jpg",
+              "caption": "2025-04-10 00:46"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-10-00-47.jpg",
+              "caption": "2025-04-10 00:47"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-10-00-48.jpg",
+              "caption": "2025-04-10 00:48"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-10-13-49.jpg",
+              "caption": "2025-04-10 13:49"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-10-16-54.jpg",
+              "caption": "2025-04-10 16:54"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-10-54-00-35.jpg",
+              "caption": "2025-04-10 54:00"
+            }
+          ]
         },
         {
           "name": "Wuyi Square",
@@ -463,7 +879,36 @@
           "city": "Changsha",
           "rating": 5,
           "description": "Historic academy with long educational heritage.",
-          "pictures": []
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-11-10-12.jpg",
+              "caption": "2025-04-11 10:12"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-11-11-44.jpg",
+              "caption": "2025-04-11 11:44"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-11-12-00.jpg",
+              "caption": "2025-04-11 12:00"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-11-15-01.jpg",
+              "caption": "2025-04-11 15:01"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-11-17-58.jpg",
+              "caption": "2025-04-11 17:58"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-11-17-59.jpg",
+              "caption": "2025-04-11 17:59"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-11-18-21.jpg",
+              "caption": "2025-04-11 18:21"
+            }
+          ]
         },
         {
           "name": "Taiping Old Street",
@@ -487,15 +932,488 @@
     {
       "day_number": 18,
       "main_city": "Nanchang",
-      "title": "Final city day",
-      "notes": "Last stop of the trip.",
+      "title": "Nanchang landmarks",
+      "notes": "First stay in Nanchang before heading west again.",
       "attractions": [
         {
           "name": "Tengwang Pavilion",
           "city": "Nanchang",
           "rating": 5,
           "description": "Famous riverside pavilion and landmark.",
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-12-15-04.jpg",
+              "caption": "2025-04-12 15:04"
+            }
+          ]
+        },
+        {
+          "name": "Bayi Square",
+          "city": "Nanchang",
+          "rating": 4,
+          "description": "Central square and major urban landmark.",
           "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 19,
+      "main_city": "Wulong",
+      "title": "Return to the karst bridges",
+      "notes": "Second visit focused on the Three Natural Bridges trail.",
+      "attractions": [
+        {
+          "name": "Three Natural Bridges",
+          "city": "Wulong",
+          "rating": 5,
+          "description": "Well-known limestone bridge formations.",
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-13-15-10.jpg",
+              "caption": "2025-04-13 15:10"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-13-15-12.jpg",
+              "caption": "2025-04-13 15:12"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-13-15-13.jpg",
+              "caption": "2025-04-13 15:13"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-13-15-14.jpg",
+              "caption": "2025-04-13 15:14"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-13-15-15.jpg",
+              "caption": "2025-04-13 15:15"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-13-15-16.jpg",
+              "caption": "2025-04-13 15:16"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-13-15-17.jpg",
+              "caption": "2025-04-13 15:17"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-13-15-18.jpg",
+              "caption": "2025-04-13 15:18"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-13-16-24.jpg",
+              "caption": "2025-04-13 16:24"
+            }
+          ]
+        },
+        {
+          "name": "Wulong Karst",
+          "city": "Wulong",
+          "rating": 5,
+          "description": "Karst scenery area with dramatic formations.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Nanchang",
+          "destination_city": "Wulong",
+          "time_of_day": "morning",
+          "departure_time": "08:12",
+          "arrival_time": "14:45",
+          "duration_minutes": 393
+        }
+      ]
+    },
+    {
+      "day_number": 20,
+      "main_city": "Zhangjiajie",
+      "title": "Transfer to Zhangjiajie",
+      "notes": "Travel day between Wulong and the Zhangjiajie area.",
+      "attractions": [
+        {
+          "name": "TianMen Mountain",
+          "city": "Zhangjiajie",
+          "rating": 5,
+          "description": "Mountain area with steep cliffs and scenic access.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Wulong",
+          "destination_city": "Zhangjiajie",
+          "time_of_day": "afternoon",
+          "departure_time": "13:20",
+          "arrival_time": "17:08",
+          "duration_minutes": 228
+        }
+      ]
+    },
+    {
+      "day_number": 21,
+      "main_city": "Zhangjiajie",
+      "title": "Tianmen Mountain",
+      "notes": "Cable car and the Heaven's Gate staircase.",
+      "attractions": [
+        {
+          "name": "TianMen Mountain",
+          "city": "Zhangjiajie",
+          "rating": 5,
+          "description": "Mountain area with steep cliffs and scenic access.",
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-15-00-36.jpg",
+              "caption": "2025-04-15 00:36"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-15-00-39.jpg",
+              "caption": "2025-04-15 00:39"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-15-23-10.jpg",
+              "caption": "2025-04-15 23:10"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-15-23-11.jpg",
+              "caption": "2025-04-15 23:11"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-15-23-13.jpg",
+              "caption": "2025-04-15 23:13"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-15-23-14.jpg",
+              "caption": "2025-04-15 23:14"
+            }
+          ]
+        },
+        {
+          "name": "Bailong Elevator",
+          "city": "Zhangjiajie",
+          "rating": 4,
+          "description": "Glass elevator known for its height and views.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 22,
+      "main_city": "Wulingyuan",
+      "title": "Forest park viewpoints",
+      "notes": "Core scenic region of the national park.",
+      "attractions": [
+        {
+          "name": "ZJJ National Park",
+          "city": "Wulingyuan",
+          "rating": 5,
+          "description": "Scenic national park area with pillar-like peaks.",
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-00-41.jpg",
+              "caption": "2025-04-16 00:41"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-01-10.jpg",
+              "caption": "2025-04-16 01:10"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-11-55.jpg",
+              "caption": "2025-04-16 11:55"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-11-59.jpg",
+              "caption": "2025-04-16 11:59"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-12-03.jpg",
+              "caption": "2025-04-16 12:03"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-12-08.jpg",
+              "caption": "2025-04-16 12:08"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-12-17.jpg",
+              "caption": "2025-04-16 12:17"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-12-19.jpg",
+              "caption": "2025-04-16 12:19"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-20-50.jpg",
+              "caption": "2025-04-16 20:50"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-16-23-10.jpg",
+              "caption": "2025-04-16 23:10"
+            }
+          ]
+        },
+        {
+          "name": "Yuanjiajie",
+          "city": "Wulingyuan",
+          "rating": 5,
+          "description": "Famous viewpoint area in the park.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 23,
+      "main_city": "Wulingyuan",
+      "title": "Avatar mountains",
+      "notes": "More time on the park's high viewpoints.",
+      "attractions": [
+        {
+          "name": "Yuanjiajie",
+          "city": "Wulingyuan",
+          "rating": 5,
+          "description": "Famous viewpoint area in the park.",
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-17-00-44.jpg",
+              "caption": "2025-04-17 00:44"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-17-00-52.jpg",
+              "caption": "2025-04-17 00:52"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-17-00-53.jpg",
+              "caption": "2025-04-17 00:53"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-17-08-44.jpg",
+              "caption": "2025-04-17 08:44"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-17-16-26.jpeg",
+              "caption": "2025-04-17 16:26"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-17-17-19.jpg",
+              "caption": "2025-04-17 17:19"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-17-17-22.jpg",
+              "caption": "2025-04-17 17:22"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-17-17-26.jpg",
+              "caption": "2025-04-17 17:26"
+            }
+          ]
+        },
+        {
+          "name": "Golden Whip Stream",
+          "city": "Wulingyuan",
+          "rating": 4,
+          "description": "Popular walking trail through the park.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 24,
+      "main_city": "Wulingyuan",
+      "title": "Park trails and canyon",
+      "notes": "Final full day around Wulingyuan.",
+      "attractions": [
+        {
+          "name": "Zhangjiajie Grand Canyon",
+          "city": "Wulingyuan",
+          "rating": 5,
+          "description": "Canyon area with bridge and cliff scenery.",
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-18-00-41.jpg",
+              "caption": "2025-04-18 00:41"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-18-00-46.jpg",
+              "caption": "2025-04-18 00:46"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-18-09-55.jpg",
+              "caption": "2025-04-18 09:55"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-18-20-49.jpg",
+              "caption": "2025-04-18 20:49"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-18-23-10.jpg",
+              "caption": "2025-04-18 23:10"
+            }
+          ]
+        },
+        {
+          "name": "ZJJ National Park",
+          "city": "Wulingyuan",
+          "rating": 5,
+          "description": "Scenic national park area with pillar-like peaks.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Zhangjiajie",
+          "destination_city": "Changsha",
+          "time_of_day": "evening",
+          "departure_time": "18:22",
+          "arrival_time": "20:31",
+          "duration_minutes": 129
+        }
+      ]
+    },
+    {
+      "day_number": 25,
+      "main_city": "Changsha",
+      "title": "Xiang River views",
+      "notes": "Relaxed day along the riverfront.",
+      "attractions": [
+        {
+          "name": "Juzizhou Island",
+          "city": "Changsha",
+          "rating": 4,
+          "description": "River island park and landmark view area.",
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-19-00-35.jpg",
+              "caption": "2025-04-19 00:35"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-19-17-37.jpg",
+              "caption": "2025-04-19 17:37"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-19-23-10.jpg",
+              "caption": "2025-04-19 23:10"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-19-23-30.jpg",
+              "caption": "2025-04-19 23:30"
+            }
+          ]
+        },
+        {
+          "name": "Wuyi Square",
+          "city": "Changsha",
+          "rating": 4,
+          "description": "Busy downtown square and shopping area.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Changsha",
+          "destination_city": "Nanchang",
+          "time_of_day": "evening",
+          "departure_time": "19:14",
+          "arrival_time": "20:46",
+          "duration_minutes": 92
+        }
+      ]
+    },
+    {
+      "day_number": 26,
+      "main_city": "Nanchang",
+      "title": "Memorial and old town",
+      "notes": "Evening around Bayi Square and the riverside.",
+      "attractions": [
+        {
+          "name": "Bayi Square",
+          "city": "Nanchang",
+          "rating": 4,
+          "description": "Central square and major urban landmark.",
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-20-00-38.jpg",
+              "caption": "2025-04-20 00:38"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-20-00-40.jpg",
+              "caption": "2025-04-20 00:40"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-20-00-43.jpg",
+              "caption": "2025-04-20 00:43"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-20-00-47.jpg",
+              "caption": "2025-04-20 00:47"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-20-10-22.jpg",
+              "caption": "2025-04-20 10:22"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-20-17-13.jpg",
+              "caption": "2025-04-20 17:13"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-20-17-136.jpg",
+              "caption": "2025-04-20 17:136"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-20-17-15.jpg",
+              "caption": "2025-04-20 17:15"
+            }
+          ]
+        },
+        {
+          "name": "Tengwang Pavilion",
+          "city": "Nanchang",
+          "rating": 5,
+          "description": "Famous riverside pavilion and landmark.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 27,
+      "main_city": "Nanchang",
+      "title": "Final day and departure",
+      "notes": "Last stops before leaving China.",
+      "attractions": [
+        {
+          "name": "Tengwang Pavilion",
+          "city": "Nanchang",
+          "rating": 5,
+          "description": "Famous riverside pavilion and landmark.",
+          "pictures": [
+            {
+              "url": "src/assets/trips/china-360/2025-04-21-10-20.jpg",
+              "caption": "2025-04-21 10:20"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-21-17-07.jpg",
+              "caption": "2025-04-21 17:07"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-21-17-08.jpg",
+              "caption": "2025-04-21 17:08"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-21-17-09.jpg",
+              "caption": "2025-04-21 17:09"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-21-17-13.jpg",
+              "caption": "2025-04-21 17:13"
+            },
+            {
+              "url": "src/assets/trips/china-360/2025-04-21-18-22.jpg",
+              "caption": "2025-04-21 18:22"
+            }
+          ]
         },
         {
           "name": "Bayi Square",
@@ -518,7 +1436,7 @@
           "name": "Jialong Hotel Chaoyangmen Store",
           "address": "Chaoyang District, Beijing",
           "rating": 4,
-          "price": 88.0,
+          "price": 88,
           "pictures": []
         }
       ],

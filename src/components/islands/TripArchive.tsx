@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-interface Trip {
+interface TripArchiveEntry {
   id: string;
   title: string;
   regions: string[];
@@ -11,67 +11,14 @@ interface Trip {
   link: string;
 }
 
-const TRIPS: Trip[] = [
-  {
-    id: 'atlas-2024',
-    title: 'High Atlas Expedition',
-    regions: ['Morocco', 'High Atlas'],
-    dates: 'September 2024',
-    description: 'A two-week monograph of the Berber villages and jagged peaks of the High Atlas. We focused on the architecture of clay and the precision of ancient irrigation.',
-    type: 'report',
-    photos: [
-      'https://images.pexels.com/photos/20220332/pexels-photo-20220332.jpeg?auto=compress&cs=tinysrgb&w=600',
-      'https://images.pexels.com/photos/29865441/pexels-photo-29865441.jpeg?auto=compress&cs=tinysrgb&w=400',
-      'https://images.pexels.com/photos/9094864/pexels-photo-9094864.jpeg?auto=compress&cs=tinysrgb&w=400'
-    ],
-    link: '/trips/atlas-2024'
-  },
-  {
-    id: 'kyoto-2023',
-    title: 'Kyoto Stone Gardens',
-    regions: ['Japan', 'Kyoto'],
-    dates: 'November 2023',
-    description: 'Exploring the Zen concept of Ma (negative space) through the temple gardens of Kyoto. An exercise in slow photography and silent observation.',
-    type: 'report',
-    photos: [
-      'https://images.pexels.com/photos/29865441/pexels-photo-29865441.jpeg?auto=compress&cs=tinysrgb&w=600',
-      'https://images.pexels.com/photos/18912997/pexels-photo-18912997.jpeg?auto=compress&cs=tinysrgb&w=400',
-      'https://images.pexels.com/photos/20220332/pexels-photo-20220332.jpeg?auto=compress&cs=tinysrgb&w=400'
-    ],
-    link: '/trips/kyoto-2023'
-  },
-  {
-    id: 'amalfi-2025',
-    title: 'Amalfi Coast Monograph',
-    regions: ['Italy', 'Amalfi'],
-    dates: 'June 2025',
-    description: 'A planned route along the vertical architecture of the Amalfi Coast. Mapping the intersection of lemon groves and salt-blasted stone.',
-    type: 'plan',
-    photos: [
-      'https://images.pexels.com/photos/18912997/pexels-photo-18912997.jpeg?auto=compress&cs=tinysrgb&w=600',
-      'https://images.pexels.com/photos/29865441/pexels-photo-29865441.jpeg?auto=compress&cs=tinysrgb&w=400'
-    ],
-    link: '/trips/amalfi-2025'
-  },
-  {
-    id: 'sahara-2025',
-    title: 'Sahara Solitude',
-    regions: ['Morocco', 'Merzouga'],
-    dates: 'October 2025',
-    description: 'Navigating the Erg Chebbi dunes. A study in transient landscapes and the mathematics of wind-shaped sand.',
-    type: 'plan',
-    photos: [
-      'https://images.pexels.com/photos/9094864/pexels-photo-9094864.jpeg?auto=compress&cs=tinysrgb&w=600',
-      'https://images.pexels.com/photos/20220332/pexels-photo-20220332.jpeg?auto=compress&cs=tinysrgb&w=400'
-    ],
-    link: '/trips/sahara-2025'
-  }
-];
+interface TripArchiveProps {
+  trips: TripArchiveEntry[];
+}
 
-export function TripArchive() {
+export function TripArchive({ trips }: TripArchiveProps) {
   const [view, setView] = useState<'report' | 'plan'>('report');
 
-  const filteredTrips = TRIPS.filter(trip => trip.type === view);
+  const filteredTrips = trips.filter((trip) => trip.type === view);
 
   return (
     <div className="space-y-12 lg:space-y-20">
@@ -103,6 +50,11 @@ export function TripArchive() {
 
       {/* Trip List */}
       <div className="grid grid-cols-1 gap-12 lg:gap-24">
+        {filteredTrips.length === 0 && (
+          <p className="text-center text-muted-foreground font-serif italic">
+            No {view === 'report' ? 'trip reports' : 'trip plans'} in the archive yet.
+          </p>
+        )}
         {filteredTrips.map((trip) => (
           <article key={trip.id} className="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
             {/* Meta & Content */}
@@ -139,6 +91,7 @@ export function TripArchive() {
             </div>
 
             {/* Visuals */}
+            {trip.photos.length > 0 && (
             <div className="lg:col-span-7">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {trip.photos.map((photo, idx) => (
@@ -158,6 +111,7 @@ export function TripArchive() {
                 ))}
               </div>
             </div>
+            )}
           </article>
         ))}
       </div>

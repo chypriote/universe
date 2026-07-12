@@ -21,6 +21,17 @@ export type TripPageData = {
   days: TripDay[];
 };
 
+export type TripArchiveEntry = {
+  id: string;
+  title: string;
+  regions: string[];
+  dates: string;
+  description: string;
+  type: 'report' | 'plan';
+  photos: string[];
+  link: string;
+};
+
 const tripImages = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/trips/**/*.{jpg,jpeg,png,webp}',
   { eager: true },
@@ -61,8 +72,22 @@ function getOrderedCities(entry: ItineraryEntry): string[] {
   return cities;
 }
 
+function getTripPhotoPrefix(slug: string): string {
+  return `/src/assets/trips/${slug}/`;
+}
+
+function getTripPhotos(slug: string, limit = 3): string[] {
+  const prefix = getTripPhotoPrefix(slug);
+
+  return Object.entries(tripImages)
+    .filter(([path]) => path.startsWith(prefix))
+    .map(([, module]) => module.default.src)
+    .sort()
+    .slice(0, limit);
+}
+
 function getDayGallery(slug: string, dayDate: string): string[] {
-  const prefix = `/src/assets/trips/${slug}/`;
+  const prefix = getTripPhotoPrefix(slug);
 
   return Object.entries(tripImages)
     .filter(([path]) => path.startsWith(prefix) && path.includes(dayDate))
@@ -138,4 +163,45 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
 
 export function isPublishedItinerary(entry: ItineraryEntry): boolean {
   return !entry.id.startsWith('example');
+}
+
+function getTripRegions(entry: ItineraryEntry): string[] {
+  const firstCity = entry.data.cities[0];
+  if (!firstCity) {
+    return ['China'];
+  }
+
+  const regions = [firstCity.country];
+  if (firstCity.region && firstCity.region !== firstCity.country) {
+    regions.push(firstCity.region);
+  }
+
+  return regions;
+}
+
+function getTripType(entry: ItineraryEntry): 'report' | 'plan' {
+  const endDate = new Date(`${entry.data.released_itinerary.end_date}T00:00:00`);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return endDate < today ? 'report' : 'plan';
+}
+
+export function buildTripArchiveEntry(entry: ItineraryEntry): TripArchiveEntry {
+  const { data } = entry;
+  const slug = entry.id;
+  const orderedCities = getOrderedCities(entry);
+
+  return {
+    id: slug,
+    title: data.title,
+    regions: getTripRegions(entry),
+    dates: formatDateRange(
+      data.released_itinerary.start_date,
+      data.released_itinerary.end_date,
+    ),
+    description: buildTripDescription(entry, orderedCities),
+    type: getTripType(entry),
+    photos: getTripPhotos(slug),
+    link: `/trips/${slug}`,
+  };
 }
