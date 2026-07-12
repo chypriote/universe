@@ -94,7 +94,7 @@ interface PriceCalendarPanelProps {
   selectedFlight: FlightSearchRow | null;
   selectedFlightId: string | null;
   priceRange: PriceRange;
-  calendarPanelRef: RefObject<HTMLDivElement>;
+  calendarPanelRef: RefObject<HTMLDivElement | null>;
   calendarDayRefs: RefObject<Map<string, HTMLElement>>;
   calendarPillRefs: RefObject<Map<string, HTMLButtonElement>>;
   onSelectFlight: (flight: FlightSearchRow) => void;

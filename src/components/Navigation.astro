@@ -1,13 +1,7 @@
 ---
 // Navigation - working mobile menu + scroll glassmorphism
 import Container from '@/components/Container.astro';
-import { SITE } from '@/config/site';
 
-export interface Props {
-  logo?: string;
-}
-
-const { logo = SITE.name } = Astro.props;
 ---
 
 <header id="navbar" class="sticky top-0 z-40 bg-background border-b border-border" data-ps="src/components/Navigation.astro:dt8k87">
