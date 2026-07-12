@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import './fonts.css';
 @plugin "@tailwindcss/typography";
 
 :root {
@@ -23,14 +22,14 @@
   --color-success: hsl(142 76% 36%);
   --color-error: hsl(0 72% 51%);
   --color-warning: hsl(38 92% 50%);
-    --text-h1: clamp(2.25rem, 0.9rem + 4.6vw, 5rem);
-    --text-h2: clamp(1.75rem, 1.1rem + 2.2vw, 3rem);
-    --text-h3: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
+  --text-h1: clamp(2.25rem, 0.9rem + 4.6vw, 5rem);
+  --text-h2: clamp(1.75rem, 1.1rem + 2.2vw, 3rem);
+  --text-h3: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
 }
 
 @theme {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-serif: "Inter", var(--font-sans);
+  --font-serif: var(--font-inter), var(--font-sans);
 
   --color-background: var(--color-background);
   --color-foreground: var(--color-foreground);

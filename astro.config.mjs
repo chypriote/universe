@@ -4,8 +4,7 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'astro/config';
-import { sessionDrivers } from 'astro/config';
+import { defineConfig, fontProviders, sessionDrivers } from 'astro/config';
 import { globSync } from 'glob';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -96,4 +95,11 @@ export default defineConfig({
         : {}),
     },
   },
+  fonts: [{
+    provider: fontProviders.fontsource(),
+    name: "Inter",
+    cssVariable: "--font-inter",
+    styles: ["normal"],
+    weights: ["300 700"],
+  }]
 });
