@@ -2,76 +2,22 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { SITE } from '@/config/site';
+import { getCollection } from 'astro:content';
+import { buildTripPage, isPublishedItinerary } from '@/lib/itineraries.server';
 
-export function getStaticPaths() {
-  return [
-    { params: { slug: 'atlas-2024' } },
-    { params: { slug: 'kyoto-2023' } },
-    { params: { slug: 'amalfi-2025' } },
-    { params: { slug: 'sahara-2025' } },
-  ];
+export async function getStaticPaths() {
+  const itineraries = await getCollection('itineraries');
+
+  return itineraries
+    .filter(isPublishedItinerary)
+    .map((entry) => ({
+      params: { slug: entry.id },
+      props: { trip: buildTripPage(entry) },
+    }));
 }
 
+const { trip } = Astro.props;
 const { slug } = Astro.params;
-
-// Mock data mapping
-const TRIP_DATA = {
-  'atlas-2024': {
-    title: 'High Atlas Expedition',
-    dates: 'September 12 — 26, 2024',
-    destination: 'Morocco',
-    cities: 'Marrakech, Imlil, Aït Benhaddou, Ouarzazate',
-    description: 'A two-week monograph of the Berber villages and jagged peaks of the High Atlas.',
-    days: [
-      {
-        day: 1,
-        title: 'Descent into Marrakech',
-        description: 'The air in Marrakech is thick with the scent of orange blossoms and diesel. We arrived at dusk, just as the call to prayer began to echo across the Medina. The transition from the high-altitude silence of the plane to the chaotic rhythm of the souks is always jarring, yet familiar.',
-        activities: ['Arrival at Riad Jardin Secret', 'Sunset tea on the terrace', 'First evening walk through Jemaa el-Fnaa'],
-        gallery: [
-          'https://images.unsplash.com/photo-1539667468225-bda3c7caae01?auto=format&fit=crop&q=80&w=600',
-          'https://images.unsplash.com/photo-1548013146-72479768bbaa?auto=format&fit=crop&q=80&w=400',
-          'https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&q=80&w=400'
-        ],
-        food: ['Traditional Lamb Tagine with Prunes', 'Mint Tea', 'Khobz Bread']
-      },
-      {
-        day: 2,
-        title: 'The Road to Imlil',
-        description: 'Leaving the city behind, the landscape shifts rapidly. The flat, dusty plains give way to the foothills of the Atlas. Imlil sits at 1,740 meters, a hub of walnut trees and stone houses clinging to the mountain. The temperature dropped ten degrees as we climbed.',
-        activities: ['Drive from Marrakech', 'Hike to Aroumd village', 'Visit to a local walnut press'],
-        gallery: [
-          'https://images.unsplash.com/photo-1505232750373-c6109dfb003c?auto=format&fit=crop&q=80&w=600',
-          'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=400'
-        ],
-        food: ['Berber Omelette', 'Walnut & Honey Pancakes', 'Mountain Harira Soup']
-      }
-    ]
-  },
-  'kyoto-2023': {
-    title: 'Kyoto Stone Gardens',
-    dates: 'November 05 — 18, 2023',
-    destination: 'Japan',
-    cities: 'Kyoto, Arashiyama, Uji',
-    description: 'Exploring the Zen concept of Ma (negative space) through the temple gardens of Kyoto.',
-    days: [
-      {
-        day: 1,
-        title: 'The Raking of Ryoan-ji',
-        description: 'We arrived at Ryoan-ji at opening. The fifteen stones remained silent, floating in their sea of raked white gravel. The monk was finishing the outer circle—a precise, meditative geometry that demands total presence. Here, the void is as important as the object.',
-        activities: ['Early visit to Ryoan-ji', 'Zen meditation session', 'Philosopher’s Path walk'],
-        gallery: [
-          'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&q=80&w=600',
-          'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&q=80&w=400',
-          'https://images.unsplash.com/photo-1528164344705-47542687990d?auto=format&fit=crop&q=80&w=400'
-        ],
-        food: ['Yudofu (Tofu Hot Pot)', 'Matcha & Wagashi', 'Seasonal Kaiseki']
-      }
-    ]
-  }
-};
-
-const trip = TRIP_DATA[slug as keyof typeof TRIP_DATA] || TRIP_DATA['atlas-2024'];
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -131,26 +77,30 @@ const jsonLd = {
                   </div>
                   
                   <div class="pt-6 border-t border-border space-y-8" data-ps={`src/pages/trips/[slug].astro:tdh241-${__psIdx}`}>
-                    <div class="space-y-3" data-ps={`src/pages/trips/[slug].astro:tdh242-${__psIdx}`}>
-                      <span class="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground" data-ps={`src/pages/trips/[slug].astro:125n5e-${__psIdx}`}>Activities</span>
-                      <ul class="space-y-2">
-                        {day.activities.map(activity => (
-                          <li class="text-xs font-sans text-muted-foreground flex items-start gap-2" data-ps={`src/pages/trips/[slug].astro:19uj75-${__psIdx}`}>
-                            <span class="mt-1.5 w-1 h-1 rounded-full bg-primary/40 shrink-0" data-ps={`src/pages/trips/[slug].astro:125n5d-${__psIdx}`}></span>
-                            {activity}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    {day.activities.length > 0 && (
+                      <div class="space-y-3" data-ps={`src/pages/trips/[slug].astro:tdh242-${__psIdx}`}>
+                        <span class="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground" data-ps={`src/pages/trips/[slug].astro:125n5e-${__psIdx}`}>Activities</span>
+                        <ul class="space-y-2">
+                          {day.activities.map(activity => (
+                            <li class="text-xs font-sans text-muted-foreground flex items-start gap-2" data-ps={`src/pages/trips/[slug].astro:19uj75-${__psIdx}`}>
+                              <span class="mt-1.5 w-1 h-1 rounded-full bg-primary/40 shrink-0" data-ps={`src/pages/trips/[slug].astro:125n5d-${__psIdx}`}></span>
+                              {activity}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                    <div class="space-y-3" data-ps={`src/pages/trips/[slug].astro:tdh243-${__psIdx}`}>
-                      <span class="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground" data-ps={`src/pages/trips/[slug].astro:125n5c-${__psIdx}`}>Flavors of the Day</span>
-                      <ul class="space-y-2">
-                        {day.food.map(item => (
-                          <li class="text-xs font-serif italic text-foreground/80" data-ps={`src/pages/trips/[slug].astro:19uj74-${__psIdx}`}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
+                    {day.food.length > 0 && (
+                      <div class="space-y-3" data-ps={`src/pages/trips/[slug].astro:tdh243-${__psIdx}`}>
+                        <span class="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground" data-ps={`src/pages/trips/[slug].astro:125n5c-${__psIdx}`}>Flavors of the Day</span>
+                        <ul class="space-y-2">
+                          {day.food.map(item => (
+                            <li class="text-xs font-serif italic text-foreground/80" data-ps={`src/pages/trips/[slug].astro:19uj74-${__psIdx}`}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -160,17 +110,19 @@ const jsonLd = {
                     <p data-ps={`src/pages/trips/[slug].astro:xq7d3-${__psIdx}`}>{day.description}</p>
                   </div>
 
-                  <div class="grid grid-cols-2 md:grid-cols-3 gap-6" data-ps="src/pages/trips/[slug].astro:day-gallery">
-                    {day.gallery.map((photo, idx) => (
-                      <div class={`relative overflow-hidden bg-surface aspect-[4/5] ${idx === 0 ? 'col-span-2 md:col-span-2 aspect-[16/10]' : ''}`} data-ps={`src/pages/trips/[slug].astro:tdh245-${idx}`}>
-                        <img 
-                          src={photo} 
-                          alt={`Fragment of Day ${day.day}`}
-                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          loading="lazy" data-ps={`src/pages/trips/[slug].astro:hrwja-${idx}`} />
-                      </div>
-                    ))}
-                  </div>
+                  {day.gallery.length > 0 && (
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-6" data-ps="src/pages/trips/[slug].astro:day-gallery">
+                      {day.gallery.map((photo, idx) => (
+                        <div class={`relative overflow-hidden bg-surface aspect-[4/5] ${idx === 0 ? 'col-span-2 md:col-span-2 aspect-[16/10]' : ''}`} data-ps={`src/pages/trips/[slug].astro:tdh245-${idx}`}>
+                          <img 
+                            src={photo} 
+                            alt={`Fragment of Day ${day.day}`}
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy" data-ps={`src/pages/trips/[slug].astro:hrwja-${idx}`} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </section>
