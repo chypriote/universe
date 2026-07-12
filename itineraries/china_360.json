@@ -1,0 +1,701 @@
+{
+  "title": "China 360°",
+  "suggested_duration_days": 27,
+  "released_itinerary": {
+    "start_date": "2025-03-26",
+    "end_date": "2025-04-21",
+    "pictures": []
+  },
+  "days": [
+    {
+      "day_number": 1,
+      "main_city": "Beijing",
+      "title": "Arrival and city center",
+      "notes": "Light walking day after arrival.",
+      "attractions": [
+        {
+          "name": "Forbidden City",
+          "city": "Beijing",
+          "rating": 5,
+          "description": "Imperial palace complex with extensive courtyards and halls.",
+          "pictures": []
+        },
+        {
+          "name": "Jingshan Park",
+          "city": "Beijing",
+          "rating": 4,
+          "description": "Park with a panoramic view over the Forbidden City.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 2,
+      "main_city": "Beijing",
+      "title": "Museums and hutongs",
+      "notes": "Focus on local neighborhoods and a museum visit.",
+      "attractions": [
+        {
+          "name": "Tiananmen Square",
+          "city": "Beijing",
+          "rating": 5,
+          "description": "Historic public square in the center of the city.",
+          "pictures": []
+        },
+        {
+          "name": "Summer Palace",
+          "city": "Beijing",
+          "rating": 5,
+          "description": "Large imperial garden with lakes, temples, and pavilions.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Beijing",
+          "destination_city": "Pingyao",
+          "time_of_day": "afternoon",
+          "departure_time": "10:38",
+          "arrival_time": "14:18",
+          "duration_minutes": 220
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "main_city": "Pingyao",
+      "title": "Ancient city walls",
+      "notes": "Old town exploration and photography.",
+      "attractions": [
+        {
+          "name": "Pingyao Ancient City",
+          "city": "Pingyao",
+          "rating": 4,
+          "description": "Well-preserved historic city with traditional architecture.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Pingyao",
+          "destination_city": "Xi'an",
+          "time_of_day": "afternoon",
+          "departure_time": "14:42",
+          "arrival_time": "17:21",
+          "duration_minutes": 159
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "main_city": "Xi'an",
+      "title": "Historic landmarks",
+      "notes": "City walls and central attractions.",
+      "attractions": [
+        {
+          "name": "Bell and Drum Tower",
+          "city": "Xi'an",
+          "rating": 4,
+          "description": "Iconic towers in the historic center.",
+          "pictures": []
+        },
+        {
+          "name": "City Walls",
+          "city": "Xi'an",
+          "rating": 5,
+          "description": "Ancient defensive walls surrounding the old city.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Xi'an",
+          "destination_city": "Chengdu",
+          "time_of_day": "evening",
+          "departure_time": "18:10",
+          "arrival_time": "22:02",
+          "duration_minutes": 232
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "main_city": "Chengdu",
+      "title": "Central Chengdu",
+      "notes": "Urban exploration and food streets.",
+      "attractions": [
+        {
+          "name": "Chunxi Road Taikooli",
+          "city": "Chengdu",
+          "rating": 4,
+          "description": "Modern shopping and dining district.",
+          "pictures": []
+        },
+        {
+          "name": "People's Park",
+          "city": "Chengdu",
+          "rating": 4,
+          "description": "Popular city park with tea houses and local activity.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 6,
+      "main_city": "Chengdu",
+      "title": "Panda base and temples",
+      "notes": "Mix of wildlife and cultural sites.",
+      "attractions": [
+        {
+          "name": "Research Base of Giant Panda Breeding",
+          "city": "Chengdu",
+          "rating": 5,
+          "description": "Major panda conservation and viewing center.",
+          "pictures": []
+        },
+        {
+          "name": "Wenshu Monastery",
+          "city": "Chengdu",
+          "rating": 4,
+          "description": "Historic Buddhist monastery in the city.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Chengdu",
+          "destination_city": "HuanglongJiuzhaigou",
+          "time_of_day": "morning",
+          "departure_time": "07:30",
+          "arrival_time": "09:21",
+          "duration_minutes": 111
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "main_city": "Jiuzhaigou",
+      "title": "Jiuzhaigou valley",
+      "notes": "Nature-focused day trip area.",
+      "attractions": [
+        {
+          "name": "Jiuzhaigou",
+          "city": "Jiuzhaigou",
+          "rating": 5,
+          "description": "Scenic national park known for lakes and waterfalls.",
+          "pictures": []
+        },
+        {
+          "name": "Huanglong",
+          "city": "Jiuzhaigou",
+          "rating": 5,
+          "description": "High-altitude scenic area with colorful travertine pools.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Jiuzhaigou",
+          "destination_city": "Chengdu",
+          "time_of_day": "morning",
+          "departure_time": "11:51",
+          "arrival_time": "14:07",
+          "duration_minutes": 136
+        }
+      ]
+    },
+    {
+      "day_number": 8,
+      "main_city": "Leshan",
+      "title": "Grand Buddha visit",
+      "notes": "Short stop focused on the main attraction.",
+      "attractions": [
+        {
+          "name": "Leshan Grand Buddha",
+          "city": "Leshan",
+          "rating": 5,
+          "description": "Massive cliff-carved Buddha statue.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Chengdu",
+          "destination_city": "Leshan",
+          "time_of_day": "morning",
+          "departure_time": "09:00",
+          "arrival_time": "09:46",
+          "duration_minutes": 46
+        },
+        {
+          "outgoing_city": "Leshan",
+          "destination_city": "Chongqing",
+          "time_of_day": "afternoon",
+          "departure_time": "16:41",
+          "arrival_time": "19:09",
+          "duration_minutes": 148
+        }
+      ]
+    },
+    {
+      "day_number": 9,
+      "main_city": "Chongqing",
+      "title": "River city highlights",
+      "notes": "Downtown sightseeing and viewpoints.",
+      "attractions": [
+        {
+          "name": "Chaotianmen Square",
+          "city": "Chongqing",
+          "rating": 4,
+          "description": "Major riverside square and transport hub.",
+          "pictures": []
+        },
+        {
+          "name": "HongyaDong",
+          "city": "Chongqing",
+          "rating": 5,
+          "description": "Multi-level complex with lights, shops, and views.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 10,
+      "main_city": "Chongqing",
+      "title": "Old streets and urban views",
+      "notes": "Continue exploring the city center.",
+      "attractions": [
+        {
+          "name": "Ciqikou Ancient Town",
+          "city": "Chongqing",
+          "rating": 4,
+          "description": "Historic town with narrow streets and local food.",
+          "pictures": []
+        },
+        {
+          "name": "Liziba",
+          "city": "Chongqing",
+          "rating": 4,
+          "description": "Famous monorail-over-building sight.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Chongqing",
+          "destination_city": "Wulong",
+          "time_of_day": "morning",
+          "departure_time": "09:20",
+          "arrival_time": "11:05",
+          "duration_minutes": 105
+        }
+      ]
+    },
+    {
+      "day_number": 11,
+      "main_city": "Wulong",
+      "title": "Karst landscape",
+      "notes": "Day trip focused on natural scenery.",
+      "attractions": [
+        {
+          "name": "Wulong Karst",
+          "city": "Wulong",
+          "rating": 5,
+          "description": "Karst scenery area with dramatic formations.",
+          "pictures": []
+        },
+        {
+          "name": "Three Natural Bridges",
+          "city": "Wulong",
+          "rating": 5,
+          "description": "Well-known limestone bridge formations.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Wulong",
+          "destination_city": "Chongqing",
+          "time_of_day": "afternoon",
+          "departure_time": "17:02",
+          "arrival_time": "20:18",
+          "duration_minutes": 196
+        }
+      ]
+    },
+    {
+      "day_number": 12,
+      "main_city": "Chongqing",
+      "title": "Departure to Zhangjiajie",
+      "notes": "Transfer day with an afternoon train.",
+      "attractions": [
+        {
+          "name": "Eling Park",
+          "city": "Chongqing",
+          "rating": 4,
+          "description": "Park with city views and walking paths.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Chongqing",
+          "destination_city": "Zhangjiajie",
+          "time_of_day": "afternoon",
+          "departure_time": "12:36",
+          "arrival_time": "17:19",
+          "duration_minutes": 283
+        }
+      ]
+    },
+    {
+      "day_number": 13,
+      "main_city": "Zhangjiajie",
+      "title": "Mountain scenery",
+      "notes": "National park viewpoints and cableways.",
+      "attractions": [
+        {
+          "name": "TianMen Mountain",
+          "city": "Zhangjiajie",
+          "rating": 5,
+          "description": "Mountain area with steep cliffs and scenic access.",
+          "pictures": []
+        },
+        {
+          "name": "Bailong Elevator",
+          "city": "Zhangjiajie",
+          "rating": 4,
+          "description": "Glass elevator known for its height and views.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 14,
+      "main_city": "Wulingyuan",
+      "title": "Forest park area",
+      "notes": "Explore the core scenic region.",
+      "attractions": [
+        {
+          "name": "ZJJ National Park",
+          "city": "Wulingyuan",
+          "rating": 5,
+          "description": "Scenic national park area with pillar-like peaks.",
+          "pictures": []
+        },
+        {
+          "name": "Yuanjiajie",
+          "city": "Wulingyuan",
+          "rating": 5,
+          "description": "Famous viewpoint area in the park.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 15,
+      "main_city": "Wulingyuan",
+      "title": "Grand canyon area",
+      "notes": "More scenic highlights around the park.",
+      "attractions": [
+        {
+          "name": "Zhangjiajie Grand Canyon",
+          "city": "Wulingyuan",
+          "rating": 5,
+          "description": "Canyon area with bridge and cliff scenery.",
+          "pictures": []
+        },
+        {
+          "name": "Golden Whip Stream",
+          "city": "Wulingyuan",
+          "rating": 4,
+          "description": "Popular walking trail through the park.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Zhangjiajie",
+          "destination_city": "Changsha",
+          "time_of_day": "afternoon",
+          "departure_time": "15:11",
+          "arrival_time": "17:15",
+          "duration_minutes": 124
+        }
+      ]
+    },
+    {
+      "day_number": 16,
+      "main_city": "Changsha",
+      "title": "River island and city center",
+      "notes": "Relaxed urban sightseeing.",
+      "attractions": [
+        {
+          "name": "Juzizhou Island",
+          "city": "Changsha",
+          "rating": 4,
+          "description": "River island park and landmark view area.",
+          "pictures": []
+        },
+        {
+          "name": "Wuyi Square",
+          "city": "Changsha",
+          "rating": 4,
+          "description": "Busy downtown square and shopping area.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 17,
+      "main_city": "Changsha",
+      "title": "Academy and old street",
+      "notes": "Historical and local-food stops.",
+      "attractions": [
+        {
+          "name": "Yuelu Academy",
+          "city": "Changsha",
+          "rating": 5,
+          "description": "Historic academy with long educational heritage.",
+          "pictures": []
+        },
+        {
+          "name": "Taiping Old Street",
+          "city": "Changsha",
+          "rating": 4,
+          "description": "Traditional street lined with shops and food stalls.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Changsha",
+          "destination_city": "Nanchang",
+          "time_of_day": "evening",
+          "departure_time": "17:35",
+          "arrival_time": "19:07",
+          "duration_minutes": 92
+        }
+      ]
+    },
+    {
+      "day_number": 18,
+      "main_city": "Nanchang",
+      "title": "Final city day",
+      "notes": "Last stop of the trip.",
+      "attractions": [
+        {
+          "name": "Tengwang Pavilion",
+          "city": "Nanchang",
+          "rating": 5,
+          "description": "Famous riverside pavilion and landmark.",
+          "pictures": []
+        },
+        {
+          "name": "Bayi Square",
+          "city": "Nanchang",
+          "rating": 4,
+          "description": "Central square and major urban landmark.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    }
+  ],
+  "cities": [
+    {
+      "name": "Beijing",
+      "country": "China",
+      "region": "North China",
+      "hotels": [
+        {
+          "name": "Jialong Hotel Chaoyangmen Store",
+          "address": "Chaoyang District, Beijing",
+          "rating": 4,
+          "price": 88.0,
+          "pictures": []
+        }
+      ],
+      "restaurants": [
+        {
+          "name": "Quanjude",
+          "address": "Beijing, China",
+          "rating": 5,
+          "suggested_dishes": [
+            "Peking duck",
+            "Cucumber salad"
+          ],
+          "pictures": []
+        }
+      ]
+    },
+    {
+      "name": "Pingyao",
+      "country": "China",
+      "region": "Shanxi",
+      "hotels": [
+        {
+          "name": "ELseWhere-LeiFu Hotel",
+          "address": "Pingyao Ancient City",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Xi'an",
+      "country": "China",
+      "region": "Shaanxi",
+      "hotels": [
+        {
+          "name": "Sende Hotel",
+          "address": "Xi'an",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Chengdu",
+      "country": "China",
+      "region": "Sichuan",
+      "hotels": [
+        {
+          "name": "ATour Hotel Chengdu Taikoo Li Chun Xi",
+          "address": "Chengdu",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        },
+        {
+          "name": "ELEGANT AZURE HOTEL",
+          "address": "Chengdu",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Jiuzhaigou",
+      "country": "China",
+      "region": "Sichuan",
+      "hotels": [
+        {
+          "name": "Jiuzhaigou Paradise Village Boutique Inn",
+          "address": "Jiuzhaigou",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Leshan",
+      "country": "China",
+      "region": "Sichuan",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Chongqing",
+      "country": "China",
+      "region": "Chongqing",
+      "hotels": [
+        {
+          "name": "Chongqing Edmonton High Altitude Riverview Hotel",
+          "address": "Chongqing",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Wulong",
+      "country": "China",
+      "region": "Chongqing",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Zhangjiajie",
+      "country": "China",
+      "region": "Hunan",
+      "hotels": [
+        {
+          "name": "Tian Men Shan Qian Hotel",
+          "address": "Zhangjiajie",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Wulingyuan",
+      "country": "China",
+      "region": "Hunan",
+      "hotels": [
+        {
+          "name": "Maosao Inn",
+          "address": "Wulingyuan, Zhangjiajie",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        },
+        {
+          "name": "Jiezhi Hotel",
+          "address": "Wulingyuan",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Changsha",
+      "country": "China",
+      "region": "Hunan",
+      "hotels": [
+        {
+          "name": "FunGee Hotel",
+          "address": "Changsha",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        },
+        {
+          "name": "Grace Select Hotel",
+          "address": "Changsha",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Nanchang",
+      "country": "China",
+      "region": "Jiangxi",
+      "hotels": [],
+      "restaurants": []
+    }
+  ]
+}

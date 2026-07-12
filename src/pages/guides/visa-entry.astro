@@ -1,0 +1,88 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import { SITE } from '@/config/site';
+
+const title = "Visa & Entry Information — Travel Guide";
+const description = "Navigating international borders, ETAs, and passport requirements for the modern explorer.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description,
+  "url": `${SITE.url}/guides/visa-entry`
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="py-20 lg:py-32" data-ps="src/pages/guides/visa-entry.astro:q51x07">
+    <Container>
+      <div class="max-w-3xl mx-auto" data-ps="src/pages/guides/visa-entry.astro:31524s">
+        <nav class="mb-12" data-ps="src/pages/guides/visa-entry.astro:l3uzop">
+          <a href="/guides" class="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors flex items-center gap-2" data-ps="src/pages/guides/visa-entry.astro:devhbd">
+            ← Back to Guides
+          </a>
+        </nav>
+
+        <header class="mb-16" data-ps="src/pages/guides/visa-entry.astro:22a3pv">
+          <span class="text-primary font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 inline-block" data-ps="src/pages/guides/visa-entry.astro:ptgimx">Chapter 02</span>
+          <h1 class="text-h1 font-serif mb-8" data-ps="src/pages/guides/visa-entry.astro:dwg9bd">Visa & Entry Information</h1>
+          <p class="text-xl text-muted-foreground font-sans leading-relaxed" data-ps="src/pages/guides/visa-entry.astro:kite0d">
+            Navigating international borders requires meticulous attention to current regulations. Entry requirements can change with little notice based on diplomatic shifts or public health policies.
+          </p>
+        </header>
+
+        <div class="prose prose-lg max-w-none" data-ps="src/pages/guides/visa-entry.astro:31524r">
+          <div class="aspect-[16/9] overflow-hidden border border-border my-12" data-ps="src/pages/guides/visa-entry.astro:31524q">
+            <img 
+              src="https://images.pexels.com/photos/19671961/pexels-photo-19671961.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+              alt="International border crossing" 
+              class="w-full h-full object-cover grayscale-[20%]" data-ps="src/pages/guides/visa-entry.astro:pghwbu" />
+          </div>
+
+          <div class="my-16 p-8 bg-dark text-dark-foreground" data-ps="src/pages/guides/visa-entry.astro:31524p">
+            <h4 class="text-dark-foreground font-serif text-2xl mb-6" data-ps="src/pages/guides/visa-entry.astro:u4sibd">Preparation Checklist</h4>
+            <ul class="space-y-6 m-0 p-0 list-none">
+              <li class="flex gap-6 border-b border-dark-border pb-6" data-ps="src/pages/guides/visa-entry.astro:zrf8">
+                <span class="text-primary font-bold text-xl" data-ps="src/pages/guides/visa-entry.astro:ptgimw">01</span>
+                <div data-ps="src/pages/guides/visa-entry.astro:31524o">
+                  <strong class="block text-sm uppercase tracking-wider mb-2">Validity Check</strong>
+                  <p class="text-sm text-dark-muted-foreground m-0 leading-relaxed" data-ps="src/pages/guides/visa-entry.astro:kite0c">Ensure your passport is valid for at least 6 months beyond your intended date of departure. Many airlines will deny boarding at the terminal if this threshold is not met.</p>
+                </div>
+              </li>
+              <li class="flex gap-6 border-b border-dark-border pb-6" data-ps="src/pages/guides/visa-entry.astro:zrf7">
+                <span class="text-primary font-bold text-xl" data-ps="src/pages/guides/visa-entry.astro:ptgimv">02</span>
+                <div data-ps="src/pages/guides/visa-entry.astro:31524n">
+                  <strong class="block text-sm uppercase tracking-wider mb-2">Electronic Authorization</strong>
+                  <p class="text-sm text-dark-muted-foreground m-0 leading-relaxed" data-ps="src/pages/guides/visa-entry.astro:kitdzq">Apply for ETAs or e-Visas at least 14 days before departure. While some are instant, technical glitches or manual reviews can cause processing delays.</p>
+                </div>
+              </li>
+              <li class="flex gap-6" data-ps="src/pages/guides/visa-entry.astro:zrf6">
+                <span class="text-primary font-bold text-xl" data-ps="src/pages/guides/visa-entry.astro:ptgimu">03</span>
+                <div data-ps="src/pages/guides/visa-entry.astro:31524m">
+                  <strong class="block text-sm uppercase tracking-wider mb-2">Proof of Onward Travel</strong>
+                  <p class="text-sm text-dark-muted-foreground m-0 leading-relaxed" data-ps="src/pages/guides/visa-entry.astro:kitdzp">Immigration officers frequently request your return flight details and initial lodging confirmation. Keep both digital and physical copies accessible.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <h2 class="font-serif text-3xl mt-16 mb-8" data-ps="src/pages/guides/visa-entry.astro:rynw8">Transit & Visa-Free Entry</h2>
+          <p data-ps="src/pages/guides/visa-entry.astro:kitdzo">Many regions offer transit-without-visa (TWOV) programs if you are remaining in the airport or transiting within a specific time window—usually 24–72 hours. Always verify if these require a specific arrival or departure terminal before booking multi-leg itineraries.</p>
+        </div>
+
+        <footer class="mt-20 pt-20 border-t border-border flex justify-between items-center" data-ps="src/pages/guides/visa-entry.astro:4mejn0">
+          <div class="flex flex-col" data-ps="src/pages/guides/visa-entry.astro:31524l">
+            <span class="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2" data-ps="src/pages/guides/visa-entry.astro:ptgimt">Previous</span>
+            <a href="/guides/essential-apps" class="text-lg font-serif hover:text-primary transition-colors" data-ps="src/pages/guides/visa-entry.astro:devhar">← Essential Apps</a>
+          </div>
+          <div class="flex flex-col text-right" data-ps="src/pages/guides/visa-entry.astro:31524k">
+            <span class="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2" data-ps="src/pages/guides/visa-entry.astro:ptgims">Next Chapter</span>
+            <a href="/guides/payment-setup" class="text-lg font-serif hover:text-primary transition-colors" data-ps="src/pages/guides/visa-entry.astro:devhaq">Payment Setup →</a>
+          </div>
+        </footer>
+      </div>
+    </Container>
+  </article>
+</BaseLayout>

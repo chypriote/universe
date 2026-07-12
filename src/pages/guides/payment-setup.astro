@@ -1,0 +1,71 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import { SITE } from '@/config/site';
+
+const title = "Payment Setup — Travel Guide";
+const description = "Digital wallets, physical cards, and pre-arrival financial readiness for international travel.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description,
+  "url": `${SITE.url}/guides/payment-setup`
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="py-20 lg:py-32" data-ps="src/pages/guides/payment-setup.astro:p8lacf">
+    <Container>
+      <div class="max-w-3xl mx-auto" data-ps="src/pages/guides/payment-setup.astro:pug7ai">
+        <nav class="mb-12" data-ps="src/pages/guides/payment-setup.astro:lq3gpx">
+          <a href="/guides" class="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors flex items-center gap-2" data-ps="src/pages/guides/payment-setup.astro:c72air">
+            ← Back to Guides
+          </a>
+        </nav>
+
+        <header class="mb-16" data-ps="src/pages/guides/payment-setup.astro:5uoj9s">
+          <span class="text-primary font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 inline-block" data-ps="src/pages/guides/payment-setup.astro:8z3m7r">Chapter 03</span>
+          <h1 class="text-h1 font-serif mb-8" data-ps="src/pages/guides/payment-setup.astro:o4ats9">Payment & Financial Setup</h1>
+          <p class="text-xl text-muted-foreground font-sans leading-relaxed" data-ps="src/pages/guides/payment-setup.astro:jb078h">
+            Arriving in a new economy requires a diversified approach to payments. Relying on a single card or method is a common pitfall for the modern traveler.
+          </p>
+        </header>
+
+        <div class="prose prose-lg max-w-none" data-ps="src/pages/guides/payment-setup.astro:pug7aj">
+          <div class="aspect-[16/9] overflow-hidden border border-border my-12" data-ps="src/pages/guides/payment-setup.astro:pug7ak">
+            <img 
+              src="https://images.pexels.com/photos/10330114/pexels-photo-10330114.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+              alt="Payment preparation" 
+              class="w-full h-full object-cover" data-ps="src/pages/guides/payment-setup.astro:hdgk2s" />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-16" data-ps="src/pages/guides/payment-setup.astro:pug7al">
+            <div class="bg-surface p-8 border border-border" data-ps="src/pages/guides/payment-setup.astro:pug7am">
+              <h4 class="font-sans font-bold text-xs uppercase tracking-widest text-primary mb-4" data-ps="src/pages/guides/payment-setup.astro:2vkgk3">Digital Wallets</h4>
+              <p class="text-sm leading-relaxed m-0" data-ps="src/pages/guides/payment-setup.astro:jb078g">Ensure Apple Pay or Google Pay is configured with multiple cards from different banks. This is the primary payment method in most urban hubs globally.</p>
+            </div>
+            <div class="bg-surface p-8 border border-border" data-ps="src/pages/guides/payment-setup.astro:pug7an">
+              <h4 class="font-sans font-bold text-xs uppercase tracking-widest text-primary mb-4" data-ps="src/pages/guides/payment-setup.astro:2vkgk4">Physical Cards</h4>
+              <p class="text-sm leading-relaxed m-0" data-ps="src/pages/guides/payment-setup.astro:jb077u">Always carry at least one physical Visa and one Mastercard. Inform your bank of your travel dates to prevent automated fraud blocks.</p>
+            </div>
+          </div>
+
+          <h2 class="font-serif text-3xl mt-16 mb-8" data-ps="src/pages/guides/payment-setup.astro:w8eaz9">Pre-Arrival Readiness</h2>
+          <p data-ps="src/pages/guides/payment-setup.astro:jb077t">Download the local banking or digital payment app (like WeChat Pay or KakaoPay) and complete the verification process before you leave. Many systems require a one-time password (OTP) sent to your home phone number, which can be difficult to receive once you've swapped SIM cards or lost signal.</p>
+
+          <h2 class="font-serif text-3xl mt-16 mb-8" data-ps="src/pages/guides/payment-setup.astro:w8eaza">The Cash Reserve</h2>
+          <p data-ps="src/pages/guides/payment-setup.astro:jb077s">While most urban environments are leaning towards cashless transactions, many specialized services—traditional markets, small street vendors, or rural transit—still require local currency. Aim to carry the equivalent of $50–$100 in local cash as an emergency buffer.</p>
+        </div>
+
+        <footer class="mt-20 pt-20 border-t border-border flex justify-between items-center" data-ps="src/pages/guides/payment-setup.astro:5mx13l">
+          <div class="flex flex-col" data-ps="src/pages/guides/payment-setup.astro:pug7ao">
+            <span class="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2" data-ps="src/pages/guides/payment-setup.astro:8z3m7s">Previous</span>
+            <a href="/guides/visa-entry" class="text-lg font-serif hover:text-primary transition-colors" data-ps="src/pages/guides/payment-setup.astro:c72aiq">← Visa & Entry Information</a>
+          </div>
+        </footer>
+      </div>
+    </Container>
+  </article>
+</BaseLayout>

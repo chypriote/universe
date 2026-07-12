@@ -1,0 +1,617 @@
+{
+  "title": "Yunnan Winter",
+  "suggested_duration_days": 22,
+  "released_itinerary": {
+    "start_date": "2025-11-29",
+    "end_date": "2025-12-20",
+    "pictures": []
+  },
+  "days": [
+    {
+      "day_number": 1,
+      "main_city": "Hong Kong",
+      "title": "Arrival and harbor views",
+      "notes": "First day in Hong Kong with city landmarks.",
+      "attractions": [
+        {
+          "name": "Victoria Harbour",
+          "city": "Hong Kong",
+          "rating": 5,
+          "description": "Iconic harbor skyline and waterfront views.",
+          "pictures": []
+        },
+        {
+          "name": "Victoria Peak",
+          "city": "Hong Kong",
+          "rating": 5,
+          "description": "Famous viewpoint over the city.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 2,
+      "main_city": "Hong Kong",
+      "title": "Temples and neighborhoods",
+      "notes": "Explore major landmarks and residential areas.",
+      "attractions": [
+        {
+          "name": "Tian Tan Buddha",
+          "city": "Hong Kong",
+          "rating": 5,
+          "description": "Large seated Buddha statue on Lantau Island.",
+          "pictures": []
+        },
+        {
+          "name": "Monster Building",
+          "city": "Hong Kong",
+          "rating": 4,
+          "description": "Dense residential complex known for its striking appearance.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 3,
+      "main_city": "Guangzhou",
+      "title": "Arrival in Guangzhou",
+      "notes": "Urban sightseeing and riverside park areas.",
+      "attractions": [
+        {
+          "name": "Canton Tower",
+          "city": "Guangzhou",
+          "rating": 5,
+          "description": "Tall observation tower and city landmark.",
+          "pictures": []
+        },
+        {
+          "name": "Haixinsha Asian Games Park",
+          "city": "Guangzhou",
+          "rating": 4,
+          "description": "Riverside park near the Pearl River.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 4,
+      "main_city": "Guangzhou",
+      "title": "Historic island and museum",
+      "notes": "Shamian area and cultural sites.",
+      "attractions": [
+        {
+          "name": "Shamian Island",
+          "city": "Guangzhou",
+          "rating": 4,
+          "description": "Historic district with colonial-era architecture.",
+          "pictures": []
+        },
+        {
+          "name": "Nanyue King Museum",
+          "city": "Guangzhou",
+          "rating": 4,
+          "description": "Museum focused on the Nanyue Kingdom history.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 5,
+      "main_city": "Zhuhai",
+      "title": "Hot springs day",
+      "notes": "Relaxing stop in Zhuhai.",
+      "attractions": [
+        {
+          "name": "Zhuhai Imperial Hot Spring Resort",
+          "city": "Zhuhai",
+          "rating": 4,
+          "description": "Resort and hot spring complex.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 6,
+      "main_city": "Macao",
+      "title": "Historic Macao",
+      "notes": "Classic central landmarks.",
+      "attractions": [
+        {
+          "name": "Ruins of St. Paul's",
+          "city": "Macao",
+          "rating": 5,
+          "description": "Iconic church façade and heritage site.",
+          "pictures": []
+        },
+        {
+          "name": "Senado Square",
+          "city": "Macao",
+          "rating": 5,
+          "description": "Historic public square in the center of Macao.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 7,
+      "main_city": "Macao",
+      "title": "Fortress and gardens",
+      "notes": "More sightseeing across the peninsula.",
+      "attractions": [
+        {
+          "name": "Monte Fortress",
+          "city": "Macao",
+          "rating": 4,
+          "description": "Historic fortress with city views.",
+          "pictures": []
+        },
+        {
+          "name": "Lotus Garden",
+          "city": "Macao",
+          "rating": 4,
+          "description": "Public garden and scenic stop.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 8,
+      "main_city": "Macao",
+      "title": "Modern landmarks",
+      "notes": "Resort and entertainment area exploration.",
+      "attractions": [
+        {
+          "name": "Grand Lisboa",
+          "city": "Macao",
+          "rating": 4,
+          "description": "Major casino and hotel landmark.",
+          "pictures": []
+        },
+        {
+          "name": "Eiffel Tower at The Parisian Macao",
+          "city": "Macao",
+          "rating": 4,
+          "description": "Replica landmark and viewing attraction.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 9,
+      "main_city": "Shenzhen",
+      "title": "Border city stop",
+      "notes": "Short city visit between Macao and inland China.",
+      "attractions": [
+        {
+          "name": "Shenzhen city center",
+          "city": "Shenzhen",
+          "rating": 4,
+          "description": "Modern urban district and transport hub.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 10,
+      "main_city": "Kunming",
+      "title": "Arrival in Kunming",
+      "notes": "Start of the Yunnan leg.",
+      "attractions": [
+        {
+          "name": "Green Lake Park",
+          "city": "Kunming",
+          "rating": 4,
+          "description": "Popular park in central Kunming.",
+          "pictures": []
+        },
+        {
+          "name": "Kunming old street",
+          "city": "Kunming",
+          "rating": 4,
+          "description": "Historic pedestrian area and food street.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 11,
+      "main_city": "Kunming",
+      "title": "Stone Forest day trip",
+      "notes": "Major natural attraction outside the city.",
+      "attractions": [
+        {
+          "name": "Shilin Stone Forest",
+          "city": "Kunming",
+          "rating": 5,
+          "description": "Karst landscape of stone pillars and formations.",
+          "pictures": []
+        },
+        {
+          "name": "Dianchi Lake",
+          "city": "Kunming",
+          "rating": 4,
+          "description": "Large lake near the city.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 12,
+      "main_city": "Kunming",
+      "title": "Western hills and markets",
+      "notes": "More sights around the city.",
+      "attractions": [
+        {
+          "name": "Xishan",
+          "city": "Kunming",
+          "rating": 4,
+          "description": "Scenic western hills area.",
+          "pictures": []
+        },
+        {
+          "name": "Dounan flower market",
+          "city": "Kunming",
+          "rating": 4,
+          "description": "Large flower market and local trade hub.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 13,
+      "main_city": "Dali",
+      "title": "Old town and lake",
+      "notes": "Arrival in Dali with lakeside scenery.",
+      "attractions": [
+        {
+          "name": "Erhai Lake",
+          "city": "Dali",
+          "rating": 5,
+          "description": "Large lake and scenic regional landmark.",
+          "pictures": []
+        },
+        {
+          "name": "Xizhou Old Town",
+          "city": "Dali",
+          "rating": 4,
+          "description": "Historic town with traditional architecture.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 14,
+      "main_city": "Dali",
+      "title": "Temples and wharfs",
+      "notes": "Cultural attractions around the area.",
+      "attractions": [
+        {
+          "name": "Chongsheng Temple Three Pagodas",
+          "city": "Dali",
+          "rating": 5,
+          "description": "Famous temple complex and pagoda trio.",
+          "pictures": []
+        },
+        {
+          "name": "Caicun Wharf",
+          "city": "Dali",
+          "rating": 4,
+          "description": "Lakeside departure point and scenic stop.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 15,
+      "main_city": "Dali",
+      "title": "Shuanglang area",
+      "notes": "Lakeside exploration and viewpoints.",
+      "attractions": [
+        {
+          "name": "Shuanglang",
+          "city": "Dali",
+          "rating": 4,
+          "description": "Lakeside town with scenic views.",
+          "pictures": []
+        },
+        {
+          "name": "Jinshuo Island",
+          "city": "Dali",
+          "rating": 4,
+          "description": "Island stop in the lake area.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 16,
+      "main_city": "Lijiang",
+      "title": "Old town arrival",
+      "notes": "Transition to Lijiang and nearby scenic areas.",
+      "attractions": [
+        {
+          "name": "Lijiang Old Town",
+          "city": "Lijiang",
+          "rating": 5,
+          "description": "Historic UNESCO-listed old town.",
+          "pictures": []
+        },
+        {
+          "name": "Black Dragon Pool",
+          "city": "Lijiang",
+          "rating": 4,
+          "description": "Classic park and reflected mountain views.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 17,
+      "main_city": "Lijiang",
+      "title": "Snow mountain excursion",
+      "notes": "Full-day natural scenery around Lijiang.",
+      "attractions": [
+        {
+          "name": "Jade Dragon Snow Mountain",
+          "city": "Lijiang",
+          "rating": 5,
+          "description": "Major mountain and glacier scenery area.",
+          "pictures": []
+        },
+        {
+          "name": "Blue Moon Valley",
+          "city": "Lijiang",
+          "rating": 5,
+          "description": "Valley known for striking turquoise water.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 18,
+      "main_city": "Shangri-La",
+      "title": "Arrival in Shangri-La",
+      "notes": "Highland cultural and scenic stop.",
+      "attractions": [
+        {
+          "name": "Dukezong Ancient City",
+          "city": "Shangri-La",
+          "rating": 4,
+          "description": "Historic Tibetan-style old town.",
+          "pictures": []
+        },
+        {
+          "name": "Songzanlin Monastery",
+          "city": "Shangri-La",
+          "rating": 5,
+          "description": "Prominent Tibetan Buddhist monastery.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 19,
+      "main_city": "Shangri-La",
+      "title": "National park scenery",
+      "notes": "Nature-focused day in the region.",
+      "attractions": [
+        {
+          "name": "Potatso National Park",
+          "city": "Shangri-La",
+          "rating": 5,
+          "description": "Protected park with lakes, forest, and meadow scenery.",
+          "pictures": []
+        },
+        {
+          "name": "Tiger Leaping Gorge",
+          "city": "Shangri-La",
+          "rating": 5,
+          "description": "Dramatic canyon and hiking area.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 20,
+      "main_city": "Lijiang",
+      "title": "Return and final sights",
+      "notes": "Wrap up the Yunnan leg.",
+      "attractions": [
+        {
+          "name": "Lugu Lake",
+          "city": "Lijiang",
+          "rating": 5,
+          "description": "Scenic mountain lake region.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 21,
+      "main_city": "Hong Kong",
+      "title": "Return to Hong Kong",
+      "notes": "Final transit and city wrap-up.",
+      "attractions": [
+        {
+          "name": "Victoria Harbour",
+          "city": "Hong Kong",
+          "rating": 5,
+          "description": "Return stop for final harbor views.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 22,
+      "main_city": "Hong Kong",
+      "title": "Trip end",
+      "notes": "Final day of the winter trip.",
+      "attractions": [
+        {
+          "name": "Victoria Peak",
+          "city": "Hong Kong",
+          "rating": 5,
+          "description": "Final overlook before departure.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    }
+  ],
+  "cities": [
+    {
+      "name": "Hong Kong",
+      "country": "China",
+      "region": "Hong Kong",
+      "hotels": [
+        {
+          "name": "Double-K Inn HK",
+          "address": "Hong Kong",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Guangzhou",
+      "country": "China",
+      "region": "Guangdong",
+      "hotels": [
+        {
+          "name": "Yizhi Hotel Guangzhou Shamian Island",
+          "address": "Guangzhou",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Zhuhai",
+      "country": "China",
+      "region": "Guangdong",
+      "hotels": [
+        {
+          "name": "Zhuhai Imperial Hot Spring Resort",
+          "address": "Zhuhai",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Macao",
+      "country": "China",
+      "region": "Macao",
+      "hotels": [
+        {
+          "name": "Lisboeta Macau - LINE FRIENDS PRESENTS CASA DE AMIGO",
+          "address": "Macao",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        },
+        {
+          "name": "Treasure Island Hotel",
+          "address": "Macao",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        },
+        {
+          "name": "Luyue Hotel",
+          "address": "Macao",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Shenzhen",
+      "country": "China",
+      "region": "Guangdong",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Kunming",
+      "country": "China",
+      "region": "Yunnan",
+      "hotels": [
+        {
+          "name": "Yukai Linguang Suqi Hotel",
+          "address": "Kunming Old Street Cuihu Park Branch",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Dali",
+      "country": "China",
+      "region": "Yunnan",
+      "hotels": [
+        {
+          "name": "Chunshan · Sky City Hostel",
+          "address": "Dali",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Lijiang",
+      "country": "China",
+      "region": "Yunnan",
+      "hotels": [
+        {
+          "name": "Jinbi Club",
+          "address": "Nanping Pedestrian Street Jinma Bijifang Branch",
+          "rating": 4,
+          "price": null,
+          "pictures": []
+        }
+      ],
+      "restaurants": []
+    },
+    {
+      "name": "Shangri-La",
+      "country": "China",
+      "region": "Yunnan",
+      "hotels": [],
+      "restaurants": []
+    }
+  ]
+}

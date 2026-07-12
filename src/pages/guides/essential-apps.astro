@@ -1,0 +1,80 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import { SITE } from '@/config/site';
+
+const title = "Essential Apps — Travel Guide";
+const description = "The digital tools and local messaging standards you need to set up before your journey begins.";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description,
+  "url": `${SITE.url}/guides/essential-apps`
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <article class="py-20 lg:py-32" data-ps="src/pages/guides/essential-apps.astro:hyklxe">
+    <Container>
+      <div class="max-w-3xl mx-auto" data-ps="src/pages/guides/essential-apps.astro:50w5zh">
+        <nav class="mb-12" data-ps="src/pages/guides/essential-apps.astro:xv93h7">
+          <a href="/guides" class="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors flex items-center gap-2" data-ps="src/pages/guides/essential-apps.astro:xhfb7i">
+            ← Back to Guides
+          </a>
+        </nav>
+
+        <header class="mb-16" data-ps="src/pages/guides/essential-apps.astro:h8qb59">
+          <span class="text-primary font-sans font-bold text-xs uppercase tracking-[0.3em] mb-4 inline-block" data-ps="src/pages/guides/essential-apps.astro:s0zk5k">Chapter 01</span>
+          <h1 class="text-h1 font-serif mb-8" data-ps="src/pages/guides/essential-apps.astro:mhzqa0">Essential Digital Tools</h1>
+          <p class="text-xl text-muted-foreground font-sans leading-relaxed" data-ps="src/pages/guides/essential-apps.astro:qdheid">
+            Modern travel relies on a small constellation of digital tools. Setting these up before you hit the terminal ensures a seamless transition upon arrival.
+          </p>
+        </header>
+
+        <div class="prose prose-lg max-w-none" data-ps="src/pages/guides/essential-apps.astro:50w5zi">
+          <div class="aspect-[16/9] overflow-hidden border border-border my-12" data-ps="src/pages/guides/essential-apps.astro:50w5zj">
+            <img 
+              src="https://images.pexels.com/photos/5444625/pexels-photo-5444625.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+              alt="Digital interface for travel" 
+              class="w-full h-full object-cover" data-ps="src/pages/guides/essential-apps.astro:oucsnw" />
+          </div>
+
+          <h2 class="font-serif text-3xl mt-16 mb-8" data-ps="src/pages/guides/essential-apps.astro:xupehh">Navigation & Transport</h2>
+          <p data-ps="src/pages/guides/essential-apps.astro:qdheie">Beyond Google Maps, ensure you have the local ride-sharing equivalents registered and verified. Standards shift drastically once you cross borders:</p>
+          <ul>
+            <li data-ps="src/pages/guides/essential-apps.astro:yloaz4"><strong>Southeast Asia:</strong> Grab is the dominant layer for both transit and food delivery.</li>
+            <li data-ps="src/pages/guides/essential-apps.astro:yloaz5"><strong>South Korea:</strong> KakaoTaxi is essential, as Google Maps functionality is limited.</li>
+            <li data-ps="src/pages/guides/essential-apps.astro:yloaz6"><strong>Europe:</strong> Bolt and Uber share the market across most major capitals.</li>
+          </ul>
+
+          <div class="bg-surface p-8 border border-border my-12" data-ps="src/pages/guides/essential-apps.astro:50w5zk">
+            <p class="text-sm font-sans italic text-muted-foreground m-0" data-ps="src/pages/guides/essential-apps.astro:qdheif">
+              <strong class="text-primary not-italic">Technical Note:</strong> Download offline maps for your destination city to save data and battery during the critical first hours of arrival.
+            </p>
+          </div>
+
+          <h2 class="font-serif text-3xl mt-16 mb-8" data-ps="src/pages/guides/essential-apps.astro:xupehi">Messaging & Local Logic</h2>
+          <p data-ps="src/pages/guides/essential-apps.astro:qdheig">International messaging standards vary. Relying on SMS is often unreliable and expensive. Install the primary communication layer for your region:</p>
+          <ul>
+            <li data-ps="src/pages/guides/essential-apps.astro:yloaz7"><strong>WhatsApp:</strong> The default for most of Europe, South America, and Africa.</li>
+            <li data-ps="src/pages/guides/essential-apps.astro:yloaz8"><strong>Line:</strong> Essential for Japan, Taiwan, and Thailand.</li>
+            <li data-ps="src/pages/guides/essential-apps.astro:yloaz9"><strong>Signal:</strong> Recommended for privacy-conscious routing.</li>
+          </ul>
+
+          <h2 class="font-serif text-3xl mt-16 mb-8" data-ps="src/pages/guides/essential-apps.astro:xupehj">Language & Translation</h2>
+          <p data-ps="src/pages/guides/essential-apps.astro:qdheih">Google Translate with offline language packs is your baseline. However, for high-fidelity translation in formal settings or menu deciphering, specialized tools often perform better.</p>
+          <p data-ps="src/pages/guides/essential-apps.astro:qdheii">Apps like <strong>DeepL</strong> provide superior nuance for European languages, while <strong>Papago</strong> is unmatched for Korean and Japanese context.</p>
+        </div>
+
+        <footer class="mt-20 pt-20 border-t border-border flex justify-between items-center" data-ps="src/pages/guides/essential-apps.astro:h0ysz2">
+          <div class="flex flex-col" data-ps="src/pages/guides/essential-apps.astro:50w5zl">
+            <span class="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2" data-ps="src/pages/guides/essential-apps.astro:s0zk5j">Next Chapter</span>
+            <a href="/guides/visa-entry" class="text-xl font-serif hover:text-primary transition-colors" data-ps="src/pages/guides/essential-apps.astro:xhfb7j">Visa & Entry Information →</a>
+          </div>
+        </footer>
+      </div>
+    </Container>
+  </article>
+</BaseLayout>
