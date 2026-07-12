@@ -15,7 +15,7 @@ import remarkToc from './src/plugins/remark-toc.mjs';
 
 import netlify from '@astrojs/netlify';
 
-const siteUrl = process.env.SITE_URL || 'https://example.com';
+const siteUrl = process.env.SITE_URL || 'https://chypriote.github.io';
 const projectRoot = dirname(fileURLToPath(import.meta.url));
 
 // Scan pages once at config load for noIndex={true} so we can exclude them
@@ -52,6 +52,7 @@ export default defineConfig({
     driver: sessionDrivers.lruCache(),
   },
   site: siteUrl,
+  base: '/nico-zhongguo',
   // CSRF origin check for form-encoded POST/PUT/PATCH/DELETE. This is the
   // Astro 5/6 default; pinned explicitly so a template edit can't silently
   // disable it. Note it does NOT cover /api/auth/* (JSON posts) — those are
