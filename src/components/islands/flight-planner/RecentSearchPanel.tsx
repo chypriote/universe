@@ -106,7 +106,7 @@ export function RecentSearchPanel({
 
       {flights.length === 0 ? (
         <div className="flex-1 px-4 py-10 text-sm text-muted-foreground">
-          No flight searches found in <code className="text-xs">flights.db</code>.
+          No flight searches found in the flights content collection.
         </div>
       ) : filteredFlights.length === 0 ? (
         <div className="flex-1 px-4 py-10 text-sm text-muted-foreground">

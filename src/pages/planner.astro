@@ -2,9 +2,9 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { FlightPlanner } from '@/components/islands/FlightPlanner';
-import { getRecentFlightSearches } from '@/lib/flights.server';
+import { getRecentFlightSearches } from '@/components/islands/flight-planner/getRecentFlightSearches';
 
-const flights = getRecentFlightSearches();
+const flights = await getRecentFlightSearches();
 
 const title = "Flight Planner — SOJOURN";
 const description = "Discover the best routes and optimal pricing for your next expedition with our precise travel planning tools.";

@@ -1,4 +1,4 @@
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
 
 const blog = defineCollection({
@@ -71,4 +71,19 @@ const docs = defineCollection({
   }),
 });
 
-export const collections = { blog, docs };
+const flights = defineCollection({
+  loader: file('flights/flights.json'),
+  schema: z.object({
+    id: z.string(),
+    airport: z.string(),
+    stops: z.enum(['stop', 'nostop']),
+    price: z.number().nullable(),
+    outbound_date: z.string(),
+    return_date: z.string(),
+    response: z.string(),
+    searched_on: z.string(),
+    created_at: z.string(),
+  }),
+});
+
+export const collections = { blog, docs, flights };
