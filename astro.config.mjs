@@ -4,7 +4,8 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig, fontProviders, sessionDrivers } from 'astro/config';
+import { defineConfig } from 'astro/config';
+import { fontProviders, sessionDrivers } from 'astro/config';
 import { globSync } from 'glob';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -12,8 +13,6 @@ import { fileURLToPath } from 'node:url';
 import remarkGfm from 'remark-gfm';
 
 import remarkToc from './src/plugins/remark-toc.mjs';
-
-import netlify from '@astrojs/netlify';
 
 const siteUrl = process.env.SITE_URL || 'https://chypriote.github.io';
 const projectRoot = dirname(fileURLToPath(import.meta.url));
@@ -43,7 +42,10 @@ const noIndexPaths = collectNoIndexPaths();
 export default defineConfig({
   output: 'static',
   trailingSlash: 'never',
-  adapter: netlify(),
+  adapter: cloudflare({
+    imageService: 'passthrough',
+    prerenderEnvironment: 'node',
+  }),
   // Astro 6 + @astrojs/cloudflare 13 auto-provision a SESSION KV namespace
   // per deploy. Pinning a non-KV driver tells the adapter "sessions are
   // handled" so it skips emitting the SESSION binding. Our pages are static

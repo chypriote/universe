@@ -3,12 +3,18 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { GalleryGrid } from '@/components/islands/GalleryGrid';
 
-const japanPhotos = [
+const baseJapanPhotos = [
   {
     url: "https://images.pexels.com/photos/29518215/pexels-photo-29518215.jpeg?auto=compress&cs=tinysrgb&w=1200",
     srcset: "https://images.pexels.com/photos/29518215/pexels-photo-29518215.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/29518215/pexels-photo-29518215.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/29518215/pexels-photo-29518215.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
     alt: "Tokyo street at night",
     photographer: "G N"
+  },
+  {
+    url: "https://images.pexels.com/photos/22493463/pexels-photo-22493463.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/22493463/pexels-photo-22493463.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/22493463/pexels-photo-22493463.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/22493463/pexels-photo-22493463.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Tokyo Shibuya night street",
+    photographer: "Tony Wu"
   },
   {
     url: "https://images.pexels.com/photos/30641513/pexels-photo-30641513.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -17,19 +23,39 @@ const japanPhotos = [
     photographer: "John One"
   },
   {
+    url: "https://images.pexels.com/photos/20751494/pexels-photo-20751494.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/20751494/pexels-photo-20751494.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/20751494/pexels-photo-20751494.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/20751494/pexels-photo-20751494.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Kyoto Fushimi Inari temple",
+    photographer: "Huu Huynh"
+  },
+  {
     url: "https://images.pexels.com/photos/18848921/pexels-photo-18848921.jpeg?auto=compress&cs=tinysrgb&w=1200",
     srcset: "https://images.pexels.com/photos/18848921/pexels-photo-18848921.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/18848921/pexels-photo-18848921.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/18848921/pexels-photo-18848921.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
     alt: "Kyoto zen garden",
     photographer: "AXP Photography"
+  },
+  {
+    url: "https://images.pexels.com/photos/33368123/pexels-photo-33368123.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/33368123/pexels-photo-33368123.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/33368123/pexels-photo-33368123.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/33368123/pexels-photo-33368123.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Mount Fuji with cherry blossoms",
+    photographer: "Vinny Anugraha"
   }
 ];
 
-const italyPhotos = [
+const japanPhotos = [...baseJapanPhotos, ...baseJapanPhotos, ...baseJapanPhotos];
+
+const baseItalyPhotos = [
   {
     url: "https://images.pexels.com/photos/3225528/pexels-photo-3225528.jpeg?auto=compress&cs=tinysrgb&w=1200",
     srcset: "https://images.pexels.com/photos/3225528/pexels-photo-3225528.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/3225528/pexels-photo-3225528.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/3225528/pexels-photo-3225528.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
     alt: "Amalfi Coast sunset",
     photographer: "Michael Block"
+  },
+  {
+    url: "https://images.pexels.com/photos/27025482/pexels-photo-27025482.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/27025482/pexels-photo-27025482.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/27025482/pexels-photo-27025482.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/27025482/pexels-photo-27025482.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Positano summer vibes",
+    photographer: "Josh Withers"
   },
   {
     url: "https://images.pexels.com/photos/33839189/pexels-photo-33839189.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -38,19 +64,39 @@ const italyPhotos = [
     photographer: "Fran Zaina"
   },
   {
+    url: "https://images.pexels.com/photos/38191495/pexels-photo-38191495.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/38191495/pexels-photo-38191495.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/38191495/pexels-photo-38191495.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/38191495/pexels-photo-38191495.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Venice sunset canals",
+    photographer: "Gonzalo Mendiola"
+  },
+  {
     url: "https://images.pexels.com/photos/30861099/pexels-photo-30861099.jpeg?auto=compress&cs=tinysrgb&w=1200",
     srcset: "https://images.pexels.com/photos/30861099/pexels-photo-30861099.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/30861099/pexels-photo-30861099.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/30861099/pexels-photo-30861099.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
     alt: "Italian coastal town",
     photographer: "Duc Tinh Ngo"
+  },
+  {
+    url: "https://images.pexels.com/photos/15003388/pexels-photo-15003388.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/15003388/pexels-photo-15003388.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/15003388/pexels-photo-15003388.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/15003388/pexels-photo-15003388.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Florence Duomo cathedral",
+    photographer: "Efrem Efre"
   }
 ];
 
-const moroccoPhotos = [
+const italyPhotos = [...baseItalyPhotos, ...baseItalyPhotos, ...baseItalyPhotos];
+
+const baseMoroccoPhotos = [
   {
     url: "https://images.pexels.com/photos/21563800/pexels-photo-21563800.jpeg?auto=compress&cs=tinysrgb&w=1200",
     srcset: "https://images.pexels.com/photos/21563800/pexels-photo-21563800.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/21563800/pexels-photo-21563800.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/21563800/pexels-photo-21563800.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
     alt: "Marrakech market",
     photographer: "Gilmar Santos"
+  },
+  {
+    url: "https://images.pexels.com/photos/32013475/pexels-photo-32013475.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/32013475/pexels-photo-32013475.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/32013475/pexels-photo-32013475.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/32013475/pexels-photo-32013475.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Marrakech medina souk",
+    photographer: "Nathan Pineau"
   },
   {
     url: "https://images.pexels.com/photos/29038454/pexels-photo-29038454.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -59,14 +105,28 @@ const moroccoPhotos = [
     photographer: "Salaheddine Es-sellak"
   },
   {
+    url: "https://images.pexels.com/photos/14017951/pexels-photo-14017951.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/14017951/pexels-photo-14017951.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/14017951/pexels-photo-14017951.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/14017951/pexels-photo-14017951.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Sahara desert camel caravan",
+    photographer: "Gül Işık"
+  },
+  {
     url: "https://images.pexels.com/photos/12378901/pexels-photo-12378901.jpeg?auto=compress&cs=tinysrgb&w=1200",
     srcset: "https://images.pexels.com/photos/12378901/pexels-photo-12378901.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/12378901/pexels-photo-12378901.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/12378901/pexels-photo-12378901.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
     alt: "Sahara dunes",
     photographer: "Moussa Idrissi"
+  },
+  {
+    url: "https://images.pexels.com/photos/16639219/pexels-photo-16639219.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/16639219/pexels-photo-16639219.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/16639219/pexels-photo-16639219.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/16639219/pexels-photo-16639219.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Chefchaouen blue streets",
+    photographer: "maha mestassi"
   }
 ];
 
-const icelandPhotos = [
+const moroccoPhotos = [...baseMoroccoPhotos, ...baseMoroccoPhotos, ...baseMoroccoPhotos];
+
+const baseIcelandPhotos = [
   {
     url: "https://images.pexels.com/photos/1009136/pexels-photo-1009136.jpeg?auto=compress&cs=tinysrgb&w=1200",
     srcset: "https://images.pexels.com/photos/1009136/pexels-photo-1009136.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/1009136/pexels-photo-1009136.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/1009136/pexels-photo-1009136.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
@@ -74,12 +134,32 @@ const icelandPhotos = [
     photographer: "Simon Migaj"
   },
   {
+    url: "https://images.pexels.com/photos/3262554/pexels-photo-3262554.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/3262554/pexels-photo-3262554.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/3262554/pexels-photo-3262554.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/3262554/pexels-photo-3262554.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Iceland aurora northern lights",
+    photographer: "Gashif Rheza"
+  },
+  {
     url: "https://images.pexels.com/photos/3607085/pexels-photo-3607085.jpeg?auto=compress&cs=tinysrgb&w=1200",
     srcset: "https://images.pexels.com/photos/3607085/pexels-photo-3607085.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/3607085/pexels-photo-3607085.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/3607085/pexels-photo-3607085.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
     alt: "Skogafoss waterfall",
     photographer: "Tomáš Malík"
+  },
+  {
+    url: "https://images.pexels.com/photos/31781215/pexels-photo-31781215.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/31781215/pexels-photo-31781215.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/31781215/pexels-photo-31781215.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/31781215/pexels-photo-31781215.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Iceland glacier lagoon",
+    photographer: "Alec Doualetas"
+  },
+  {
+    url: "https://images.pexels.com/photos/29353508/pexels-photo-29353508.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    srcset: "https://images.pexels.com/photos/29353508/pexels-photo-29353508.jpeg?auto=compress&cs=tinysrgb&w=320 320w, https://images.pexels.com/photos/29353508/pexels-photo-29353508.jpeg?auto=compress&cs=tinysrgb&w=640 640w, https://images.pexels.com/photos/29353508/pexels-photo-29353508.jpeg?auto=compress&cs=tinysrgb&w=1200 1200w",
+    alt: "Iceland black sand beach",
+    photographer: "Hub JACQU"
   }
 ];
+
+const icelandPhotos = [...baseIcelandPhotos, ...baseIcelandPhotos, ...baseIcelandPhotos];
 
 const jsonLd = {
   "@context": "https://schema.org",

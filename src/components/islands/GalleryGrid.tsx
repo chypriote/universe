@@ -67,20 +67,18 @@ export function GalleryGrid({ title, tags, photos }: GalleryGridProps) {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 items-start">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-3 items-start">
         {photos.map((photo, index) => (
           <div
             key={index}
-            className={`group cursor-pointer overflow-hidden bg-surface relative ${
-              index % 5 === 0 ? 'md:col-span-2 md:row-span-2' : ''
-            }`}
+            className="group cursor-pointer overflow-hidden bg-surface relative aspect-[3/4]"
             onClick={() => openLightbox(index)}
           >
-            <div className="aspect-[4/5] md:aspect-auto h-full">
+            <div className="h-full w-full">
               <img
                 src={photo.url}
                 srcSet={photo.srcset}
-                sizes={index % 5 === 0 ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, 25vw"}
+                sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 16vw, 12vw"
                 alt={photo.alt}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 loading="lazy"
