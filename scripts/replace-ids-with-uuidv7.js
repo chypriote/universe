@@ -2,7 +2,7 @@
 // Usage: node replace-ids-with-uuidv7.js input.json output.json
 
 import fs from "node:fs";
-import crypto from "node:crypto";
+import {uuidv7FromDate} from "./db.js";
 
 const [, , inputPath, outputPath] = process.argv;
 
@@ -21,29 +21,6 @@ function parseCreatedAt(value) {
 
   if (Number.isNaN(date.getTime())) return null;
   return date;
-}
-
-function randomHex(bytes) {
-  return crypto.randomBytes(bytes).toString("hex");
-}
-
-function uuidv7FromDate(date) {
-  const ts = BigInt(date.getTime());
-  const tsHex = ts.toString(16).padStart(12, "0");
-
-  const randA = randomHex(2).slice(0, 3);
-  const randB = randomHex(8);
-
-  const part1 = tsHex.slice(0, 8);
-  const part2 = tsHex.slice(8, 12);
-  const part3 = "7" + randA;
-  const part4 =
-    ((parseInt(randB.slice(0, 2), 16) & 0x3f) | 0x80)
-      .toString(16)
-      .padStart(2, "0") + randB.slice(2, 4);
-  const part5 = randB.slice(4, 16);
-
-  return `${part1}-${part2}-${part3}-${part4}-${part5}`;
 }
 
 function walk(node) {

@@ -1,10 +1,51 @@
-const { getJson } = require("serpapi");
-const { format, getDay, addDays } = require("date-fns");
-const {getFreshFlightSearch, insertFlightSearch} = require("./db");
+import { getJson } from "serpapi";
+import { format, getDay, addDays } from "date-fns";
+import { readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import {getFreshFlightSearch, insertFlightSearch, uuidv7FromDate} from "./scripts/db.js";
 
 process.loadEnvFile();
 
+const root = join(dirname(fileURLToPath(import.meta.url)));
+const flightsJsonPath = join(root, "flights", "flights.json");
+
 const formatDate = date => format(date, 'yyyy-MM-dd')
+
+function formatSqliteDatetime(date = new Date()) {
+  return date.toISOString().replace("T", " ").slice(0, 19);
+}
+
+function upsertFlightJson({ airport, stops, price, outboundDate, returnDate, responseText, searchedOn, createdAt }) {
+  const flights = JSON.parse(readFileSync(flightsJsonPath, "utf8"));
+  const idx = flights.findIndex(
+    (f) =>
+      f.airport === airport &&
+      f.stops === stops &&
+      f.outbound_date === outboundDate &&
+      f.return_date === returnDate
+  );
+
+  const entry = {
+    id: idx >= 0 ? flights[idx].id : uuidv7FromDate(new Date(createdAt.replace(" ", "T") + "Z")),
+    airport,
+    stops,
+    price,
+    outbound_date: outboundDate,
+    return_date: returnDate,
+    response: responseText,
+    searched_on: searchedOn,
+    created_at: createdAt,
+  };
+
+  if (idx >= 0) {
+    flights[idx] = entry;
+  } else {
+    flights.push(entry);
+  }
+
+  writeFileSync(flightsJsonPath, JSON.stringify(flights, null, 2) + "\n", "utf8");
+}
 
 const requestObject = {
   engine: "google_flights",
@@ -125,8 +166,46 @@ async function getFlights(airport, start, end, stops) {
     return json
   }
 
-  await insertFlightSearch(airport, stopsValue, json.other_flights[0].price, outboundDate, returnDate, json, searchedOn)
+  const price = getFlightPrice(json)
+  const createdAt = formatSqliteDatetime()
+  const responseText = insertFlightSearch(
+    airport,
+    stopsValue,
+    price,
+    outboundDate,
+    returnDate,
+    json,
+    searchedOn,
+    createdAt
+  )
+  upsertFlightJson({
+    airport,
+    stops: stopsValue,
+    price,
+    outboundDate,
+    returnDate,
+    responseText,
+    searchedOn,
+    createdAt,
+  })
   return json
+}
+
+function getFlightPrice(json) {
+  const fromFlight = json?.other_flights?.[0]?.price
+  if (typeof fromFlight === 'number' && Number.isFinite(fromFlight)) {
+    return fromFlight
+  }
+  const fromInsights = json?.price_insights?.lowest_price
+  if (typeof fromInsights === 'number' && Number.isFinite(fromInsights)) {
+    return fromInsights
+  }
+  return null
+}
+
+function formatPriceLabel(json) {
+  const price = getFlightPrice(json)
+  return price == null ? 'n/a' : `${price}€`
 }
 
 function isAirportAvailable(airport, date) {
@@ -171,7 +250,7 @@ async function findWeeklyDirectFlights(date) {
         continue
       }
 
-      console.log(`${airport} (direct) ${formatDate(d)}: ${json["other_flights"][0]["price"]}€`)
+      console.log(`${airport} (direct) ${formatDate(d)}: ${formatPriceLabel(json)}`)
     }
   }
 }
@@ -202,7 +281,7 @@ async function run() {
         }
 
         const stopLabel = stopsParam === "2" ? " (1 stop)" : " (nostop)"
-        console.log(`${airport}${stopLabel} ${formatDate(start)} to ${formatDate(end)}: ${json["other_flights"][0]["price"]}€`)
+        console.log(`${airport}${stopLabel} ${formatDate(start)} to ${formatDate(end)}: ${formatPriceLabel(json)}`)
       }
     }
     await findWeeklyDirectFlights(startDate)
@@ -210,7 +289,4 @@ async function run() {
   console.log(`searched ${searches} flights`)
 }
 
-const result = async () => {
-  await run()
-}
-result()
+await run()
