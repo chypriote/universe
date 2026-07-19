@@ -1,0 +1,434 @@
+{
+  "title": "Qinghai Gansu",
+  "slug": "qinghai-gansu",
+  "suggested_duration_days": 15,
+  "released_itinerary": {
+    "start_date": "2026-05-15",
+    "end_date": "2026-05-29",
+    "pictures": [
+      "IMG_20260527.jpg",
+      "IMG_20260526_130131_1.jpg",
+      "IMG_20260524_210450.jpg",
+      "IMG_20260516_175722 (1).jpg",
+      "IMG_20260518_193357_1.jpg"
+    ]
+  },
+  "days": [
+    {
+      "day_number": 1,
+      "main_city": "Xian",
+      "title": "Arrival in Xi'an",
+      "notes": "Arrival day and time to settle in.",
+      "attractions": [],
+      "train_trips": []
+    },
+    {
+      "day_number": 2,
+      "main_city": "Xian",
+      "title": "Huashan from Xi'an",
+      "notes": "Day trip to Huashan and return to Xi'an.",
+      "attractions": [
+        {
+          "name": "Huashan",
+          "city": "Xian",
+          "rating": 5,
+          "description": "A famous mountain day trip from Xi'an.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 3,
+      "main_city": "Xining",
+      "title": "Shaanxi Museum to Xining",
+      "notes": "Visit the Shaanxi Museum, then travel from Xi'an to Xining.",
+      "attractions": [
+        {
+          "name": "Shaanxi Museum",
+          "city": "Xian",
+          "rating": 5,
+          "description": "Major museum in Xi'an focused on Shaanxi history.",
+          "pictures": []
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Xian",
+          "destination_city": "Xining",
+          "time_of_day": "afternoon",
+          "departure_time": "17:47",
+          "arrival_time": "21:35",
+          "duration_minutes": 228
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "main_city": "Chaka town",
+      "title": "Riyue Shan, Qinghai Lake, Chaka Salt Lake",
+      "notes": "Scenic route through Qinghai highlights.",
+      "attractions": [
+        {
+          "name": "RiyueShan",
+          "city": "Xining",
+          "rating": 4,
+          "description": "Sun and Moon Mountain area.",
+          "pictures": []
+        },
+        {
+          "name": "Qinghai Lake",
+          "city": "Xining",
+          "rating": 5,
+          "description": "Large high-altitude lake in Qinghai.",
+          "pictures": []
+        },
+        {
+          "name": "Chaka Salt Lake",
+          "city": "Chaka town",
+          "rating": 5,
+          "description": "Salt lake known for mirror-like reflections.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 5,
+      "main_city": "Charhan Salt Lake",
+      "title": "Charhan Salt Lake and Lonely Star",
+      "notes": "Visit Charhan Salt Lake and Lonely Star.",
+      "attractions": [
+        {
+          "name": "Charhan Salt Lake",
+          "city": "Charhan Salt Lake",
+          "rating": 5,
+          "description": "Salt lake in Qinghai.",
+          "pictures": []
+        },
+        {
+          "name": "Lonely Star",
+          "city": "Charhan Salt Lake",
+          "rating": 4,
+          "description": "Lonely star stop on the route.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 6,
+      "main_city": "Dunhuang",
+      "title": "Yardang and Heidu Mountain",
+      "notes": "Move to Dunhuang via desert landforms.",
+      "attractions": [
+        {
+          "name": "Yardang landform",
+          "city": "Dunhuang",
+          "rating": 5,
+          "description": "Wind-shaped desert landform.",
+          "pictures": []
+        },
+        {
+          "name": "Heidu Mountain",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Black mountain landscape near Dunhuang.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 7,
+      "main_city": "Dunhuang",
+      "title": "Mogao and Mingsha",
+      "notes": "Caves, dunes, and night market in Dunhuang.",
+      "attractions": [
+        {
+          "name": "Mogao caves",
+          "city": "Dunhuang",
+          "rating": 5,
+          "description": "Famous Buddhist cave temples.",
+          "pictures": []
+        },
+        {
+          "name": "Mingsha mountain",
+          "city": "Dunhuang",
+          "rating": 5,
+          "description": "Singing sand dunes and Crescent Lake area.",
+          "pictures": []
+        },
+        {
+          "name": "Shazhou night market",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Popular night market in Dunhuang.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 8,
+      "main_city": "Dunhuang",
+      "title": "Silk Road sites and Yadan",
+      "notes": "Heritage city, passes, and geologic park.",
+      "attractions": [
+        {
+          "name": "Silk Road Heritage City",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Cultural heritage site themed around the Silk Road.",
+          "pictures": []
+        },
+        {
+          "name": "Yangguan",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Historic frontier pass.",
+          "pictures": []
+        },
+        {
+          "name": "Yumenguan",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Historic Jade Gate pass.",
+          "pictures": []
+        },
+        {
+          "name": "Dunhuang Yadan",
+          "city": "Dunhuang",
+          "rating": 5,
+          "description": "Dunhuang Yadan geological park.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 9,
+      "main_city": "Jiayuguan",
+      "title": "Son of Earth and caves",
+      "notes": "Travel toward Jiayuguan with cultural stops.",
+      "attractions": [
+        {
+          "name": "Son of Earth",
+          "city": "Jiayuguan",
+          "rating": 4,
+          "description": "Large desert art installation.",
+          "pictures": []
+        },
+        {
+          "name": "Yulin Caves",
+          "city": "Jiayuguan",
+          "rating": 5,
+          "description": "Ancient cave complex in the region.",
+          "pictures": []
+        },
+        {
+          "name": "Jiayuguan Fortress",
+          "city": "Jiayuguan",
+          "rating": 5,
+          "description": "Historic fortress at the western end of the Great Wall.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 10,
+      "main_city": "Zhangye",
+      "title": "Overhanging Wall and Danxia",
+      "notes": "Great Wall and colorful landforms.",
+      "attractions": [
+        {
+          "name": "Overhanging great wall",
+          "city": "Jiayuguan",
+          "rating": 4,
+          "description": "Section of the Great Wall built on steep terrain.",
+          "pictures": []
+        },
+        {
+          "name": "Zhangye Danxia",
+          "city": "Zhangye",
+          "rating": 5,
+          "description": "Colorful Danxia landform area.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 11,
+      "main_city": "Xining",
+      "title": "Mati Temple and Qilian",
+      "notes": "Temple visit and steppe scenery en route to Xining.",
+      "attractions": [
+        {
+          "name": "Mati Temple",
+          "city": "Zhangye",
+          "rating": 5,
+          "description": "Temple and grotto site in the region.",
+          "pictures": []
+        },
+        {
+          "name": "Qilian Great Steppe",
+          "city": "Qilian",
+          "rating": 5,
+          "description": "Wide grasslands and mountain scenery.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 12,
+      "main_city": "Xining",
+      "title": "Dongguan Mosque and Kumbum",
+      "notes": "City sightseeing in Xining.",
+      "attractions": [
+        {
+          "name": "Dongguan Great Mosque",
+          "city": "Xining",
+          "rating": 5,
+          "description": "Major mosque in Xining.",
+          "pictures": []
+        },
+        {
+          "name": "Kumbum Monastery",
+          "city": "Xining",
+          "rating": 5,
+          "description": "Important Tibetan Buddhist monastery near Xining.",
+          "pictures": []
+        },
+        {
+          "name": "Xining wildlife Park",
+          "city": "Xining",
+          "rating": 4,
+          "description": "Urban wildlife park in Xining.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 13,
+      "main_city": "Lanzhou",
+      "title": "Lanzhou city highlights",
+      "notes": "Move to Lanzhou and explore the city.",
+      "attractions": [
+        {
+          "name": "Zhongshan bridge",
+          "city": "Lanzhou",
+          "rating": 4,
+          "description": "Historic bridge over the Yellow River.",
+          "pictures": []
+        },
+        {
+          "name": "Baitashan Park",
+          "city": "Lanzhou",
+          "rating": 4,
+          "description": "Park with views over Lanzhou.",
+          "pictures": []
+        },
+        {
+          "name": "Yellow River Tower",
+          "city": "Lanzhou",
+          "rating": 5,
+          "description": "Tower and scenic viewpoint in Lanzhou.",
+          "pictures": []
+        },
+        {
+          "name": "Lanzhou old street",
+          "city": "Lanzhou",
+          "rating": 4,
+          "description": "Old street area for walking and food.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 14,
+      "main_city": "Xian",
+      "title": "Return to Xi'an",
+      "notes": "Return to Xi'an before departure.",
+      "attractions": [],
+      "train_trips": []
+    },
+    {
+      "day_number": 15,
+      "main_city": "Xian",
+      "title": "Departure",
+      "notes": "Depart Xi'an at 20:30.",
+      "attractions": [],
+      "train_trips": []
+    }
+  ],
+  "cities": [
+    {
+      "name": "Xian",
+      "country": "China",
+      "region": "Shaanxi",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Xining",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Chaka town",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Charhan Salt Lake",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Dunhuang",
+      "country": "China",
+      "region": "Gansu",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Jiayuguan",
+      "country": "China",
+      "region": "Gansu",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Zhangye",
+      "country": "China",
+      "region": "Gansu",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Qilian",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Lanzhou",
+      "country": "China",
+      "region": "Gansu",
+      "hotels": [],
+      "restaurants": []
+    }
+  ]
+}

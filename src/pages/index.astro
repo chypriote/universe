@@ -5,6 +5,20 @@ import HeroParallax from '@/components/home/HeroParallax.astro';
 import CompletedTrips from '@/components/home/CompletedTrips.astro';
 import SuggestedTrips from '@/components/home/SuggestedTrips.astro';
 import RegionRecommendations from '@/components/home/RegionRecommendations.astro';
+import { getCollection } from 'astro:content';
+import { buildTripArchiveEntry, isPublishedItinerary } from '@/lib/itineraries.server';
+
+const itineraries = await getCollection('itineraries');
+const completedTrips = itineraries
+  .filter(isPublishedItinerary)
+  .sort(
+    (a, b) =>
+      b.data.released_itinerary.start_date.localeCompare(
+        a.data.released_itinerary.start_date,
+      ),
+  )
+  .map(buildTripArchiveEntry)
+  .filter((trip) => trip.type === 'report');
 ---
 
 <BaseLayout
@@ -20,7 +34,7 @@ import RegionRecommendations from '@/components/home/RegionRecommendations.astro
   }}
 >
   <HeroParallax />
-  <CompletedTrips />
+  <CompletedTrips trips={completedTrips} />
   <SuggestedTrips />
   <RegionRecommendations />
 </BaseLayout>

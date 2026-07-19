@@ -55,65 +55,101 @@ export function TripArchive({ trips }: TripArchiveProps) {
             No {view === 'report' ? 'trip reports' : 'trip plans'} in the archive yet.
           </p>
         )}
-        {filteredTrips.map((trip) => (
-          <article key={trip.id} className="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
-            {/* Meta & Content */}
-            <div className="lg:col-span-5 space-y-6 pt-2">
-              <div className="space-y-2">
-                <div className="flex flex-wrap gap-3">
-                  {trip.regions.map(region => (
-                    <span key={region} className="text-[10px] font-sans font-bold uppercase tracking-widest text-primary border border-primary/20 px-2 py-0.5 rounded">
-                      {region}
-                    </span>
-                  ))}
-                  <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground px-1 py-0.5">
+        {filteredTrips.map((trip) => {
+          const [landscape, ...portraits] = trip.photos;
+          const firstRowPortrait = portraits[0];
+          const secondRowPortraits = portraits.slice(1, 4);
+
+          return (
+            <article key={trip.id} className="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+              {/* Meta & Content */}
+              <div className="lg:col-span-5 space-y-6 pt-2">
+                <div className="space-y-2">
+                  <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground">
                     {trip.dates}
                   </span>
+                  <h2 className="text-h2 font-serif">
+                    <a href={trip.link} className="hover:text-primary transition-colors">
+                      {trip.title}
+                    </a>
+                  </h2>
                 </div>
-                <h2 className="text-h2 font-serif group-hover:text-primary transition-colors">
-                  {trip.title}
-                </h2>
-              </div>
 
-              <p className="text-muted-foreground leading-relaxed text-balance">
-                {trip.description}
-              </p>
+                <p className="text-muted-foreground leading-relaxed text-balance">
+                  {trip.description}
+                </p>
 
-              <a
-                href={trip.link}
-                className="inline-flex items-center gap-4 text-[11px] font-sans font-bold uppercase tracking-[0.3em] text-foreground hover:text-primary transition-colors group/link"
-              >
-                Explore Journey
-                <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-            </div>
-
-            {/* Visuals */}
-            {trip.photos.length > 0 && (
-            <div className="lg:col-span-7">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {trip.photos.map((photo, idx) => (
-                  <div
-                    key={idx}
-                    className={`relative aspect-[3/4] overflow-hidden bg-surface ${
-                      idx === 0 ? 'col-span-2 md:col-span-2 aspect-[4/3] md:aspect-[3/2]' : ''
-                    }`}
-                  >
-                    <img
-                      src={photo}
-                      alt={`${trip.title} visual fragment`}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
+                {trip.regions.length > 0 && (
+                  <div className="flex flex-wrap gap-3">
+                    {trip.regions.map(region => (
+                      <span key={region} className="text-[10px] font-sans font-bold uppercase tracking-widest text-primary border border-primary/20 px-2 py-0.5 rounded">
+                        {region}
+                      </span>
+                    ))}
                   </div>
-                ))}
+                )}
+
+                <a
+                  href={trip.link}
+                  className="inline-flex items-center gap-4 text-[11px] font-sans font-bold uppercase tracking-[0.3em] text-foreground hover:text-primary transition-colors group/link"
+                >
+                  Explore Journey
+                  <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </a>
               </div>
-            </div>
-            )}
-          </article>
-        ))}
+
+              {/* Visuals: 16:9 + 9:16, then three 9:16 */}
+              {trip.photos.length > 0 && (
+                <div className="lg:col-span-7 space-y-4">
+                  {(landscape || firstRowPortrait) && (
+                    <div
+                      className="grid gap-4 items-start"
+                      style={{ gridTemplateColumns: landscape && firstRowPortrait ? '256fr 81fr' : '1fr' }}
+                    >
+                      {landscape && (
+                        <div className="relative aspect-video overflow-hidden bg-surface">
+                          <img
+                            src={landscape}
+                            alt={`${trip.title} visual fragment`}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      {firstRowPortrait && (
+                        <div className="relative aspect-[9/16] overflow-hidden bg-surface">
+                          <img
+                            src={firstRowPortrait}
+                            alt={`${trip.title} visual fragment`}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {secondRowPortraits.length > 0 && (
+                    <div className="grid grid-cols-3 gap-4">
+                      {secondRowPortraits.map((photo, idx) => (
+                        <div key={idx} className="relative aspect-[9/16] overflow-hidden bg-surface">
+                          <img
+                            src={photo}
+                            alt={`${trip.title} visual fragment`}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </article>
+          );
+        })}
       </div>
     </div>
   );

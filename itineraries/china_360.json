@@ -1,10 +1,17 @@
 {
   "title": "China 360°",
+  "slug": "china-360",
   "suggested_duration_days": 27,
   "released_itinerary": {
     "start_date": "2025-03-26",
     "end_date": "2025-04-21",
-    "pictures": []
+    "pictures": [
+      "2025-03-29-09-02.jpg",
+      "2025-03-29-10-51.jpg",
+      "2025-04-01-08-17.jpg",
+      "2025-04-04-06-32.jpg",
+      "2025-04-15-23-10.jpg"
+    ]
   },
   "days": [
     {
@@ -1430,7 +1437,7 @@
     {
       "name": "Beijing",
       "country": "China",
-      "region": "North China",
+      "region": "Beijing",
       "hotels": [
         {
           "name": "Jialong Hotel Chaoyangmen Store",

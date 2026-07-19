@@ -150,11 +150,12 @@ const itineraries = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
+    slug: z.string(),
     suggested_duration_days: z.number(),
     released_itinerary: z.object({
       start_date: z.string(),
       end_date: z.string(),
-      pictures: z.array(pictureSchema).default([]),
+      pictures: z.array(z.string()).default([]),
     }),
     days: z.array(daySchema),
     cities: z.array(citySchema).default([]),

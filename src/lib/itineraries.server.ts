@@ -76,14 +76,74 @@ function getTripPhotoPrefix(slug: string): string {
   return `/src/assets/trips/${slug}/`;
 }
 
-function getTripPhotos(slug: string, limit = 3): string[] {
+function resolveTripPhoto(slug: string, filename: string): string | undefined {
+  const path = `${getTripPhotoPrefix(slug)}${filename}`;
+  return tripImages[path]?.default.src;
+}
+
+function getTripPhotos(slug: string, filenames: string[]): string[] {
+  return filenames
+    .map((filename) => resolveTripPhoto(slug, filename))
+    .filter((src): src is string => Boolean(src));
+}
+
+/** Parse capture time from common camera/export filename patterns. */
+function parsePhotoTakenAt(filename: string): number | null {
+  const name = filename.replace(/^.*[/\\]/, '');
+
+  // 2025-03-29-09-02.jpg
+  const dashed = name.match(
+    /^(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})(?:\.\w+)?$/,
+  );
+  if (dashed) {
+    const [, y, mo, d, h, mi] = dashed;
+    return Date.UTC(+y, +mo - 1, +d, +h, +mi);
+  }
+
+  // IMG_20260527_002709.jpg / IMG_20260527_002709_1.jpg / IMG_20260524_140624 (1).jpg
+  const imgUnderscore = name.match(
+    /^IMG_(\d{4})(\d{2})(\d{2})(?:_(\d{2})(\d{2})(\d{2}))?/,
+  );
+  if (imgUnderscore) {
+    const [, y, mo, d, h = '00', mi = '00', s = '00'] = imgUnderscore;
+    return Date.UTC(+y, +mo - 1, +d, +h, +mi, +s);
+  }
+
+  // IMG20260518143335.jpg / IMG20260519163124_01.jpg
+  const imgCompact = name.match(/^IMG(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
+  if (imgCompact) {
+    const [, y, mo, d, h, mi, s] = imgCompact;
+    return Date.UTC(+y, +mo - 1, +d, +h, +mi, +s);
+  }
+
+  // mmexport1779406449435_1.jpg (WeChat unix ms)
+  const mmexport = name.match(/^mmexport(\d{10,13})/);
+  if (mmexport) {
+    const raw = mmexport[1];
+    const ms = raw.length <= 10 ? +raw * 1000 : +raw;
+    return ms;
+  }
+
+  return null;
+}
+
+export function getAllTripPhotoMetadata(slug: string): ImageMetadata[] {
   const prefix = getTripPhotoPrefix(slug);
 
   return Object.entries(tripImages)
     .filter(([path]) => path.startsWith(prefix))
-    .map(([, module]) => module.default.src)
-    .sort()
-    .slice(0, limit);
+    .sort(([pathA], [pathB]) => {
+      const takenA = parsePhotoTakenAt(pathA);
+      const takenB = parsePhotoTakenAt(pathB);
+
+      if (takenA !== null && takenB !== null && takenA !== takenB) {
+        return takenA - takenB;
+      }
+      if (takenA !== null && takenB === null) return -1;
+      if (takenA === null && takenB !== null) return 1;
+      return pathA.localeCompare(pathB);
+    })
+    .map(([, module]) => module.default);
 }
 
 function getDayGallery(slug: string, dayDate: string): string[] {
@@ -128,7 +188,7 @@ function buildTripDescription(entry: ItineraryEntry, cities: string[]): string {
 
 export function buildTripPage(entry: ItineraryEntry): TripPageData {
   const { data } = entry;
-  const slug = entry.id;
+  const slug = data.slug;
   const orderedCities = getOrderedCities(entry);
   const destination = data.cities[0]?.country ?? 'China';
 
@@ -165,20 +225,6 @@ export function isPublishedItinerary(entry: ItineraryEntry): boolean {
   return !entry.id.startsWith('example');
 }
 
-function getTripRegions(entry: ItineraryEntry): string[] {
-  const firstCity = entry.data.cities[0];
-  if (!firstCity) {
-    return ['China'];
-  }
-
-  const regions = [firstCity.country];
-  if (firstCity.region && firstCity.region !== firstCity.country) {
-    regions.push(firstCity.region);
-  }
-
-  return regions;
-}
-
 function getTripType(entry: ItineraryEntry): 'report' | 'plan' {
   const endDate = new Date(`${entry.data.released_itinerary.end_date}T00:00:00`);
   const today = new Date();
@@ -188,20 +234,19 @@ function getTripType(entry: ItineraryEntry): 'report' | 'plan' {
 
 export function buildTripArchiveEntry(entry: ItineraryEntry): TripArchiveEntry {
   const { data } = entry;
-  const slug = entry.id;
   const orderedCities = getOrderedCities(entry);
 
   return {
-    id: slug,
+    id: data.slug,
     title: data.title,
-    regions: getTripRegions(entry),
+    regions: [...new Set(data.cities.map(city => city.region))],
     dates: formatDateRange(
       data.released_itinerary.start_date,
       data.released_itinerary.end_date,
     ),
     description: buildTripDescription(entry, orderedCities),
     type: getTripType(entry),
-    photos: getTripPhotos(slug),
-    link: `/trips/${slug}`,
+    photos: getTripPhotos(data.slug, data.released_itinerary.pictures),
+    link: `/trips/${data.slug}`,
   };
 }
