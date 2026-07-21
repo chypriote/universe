@@ -21,7 +21,7 @@ export const AIRPORT_LABELS: Record<string, string> = {
   KHN: '南昌 Nanchang',
   KMG: '昆明 Kunming',
   KWL: '贵林 Guilin',
-  LXA: '城关 Lhasa',
+  LXA: '拉萨 Lhasa',
   NKG: '南京 Nanjing',
   PEK: '北京 Beijing',
   PKX: '北京 Beijing DX',
