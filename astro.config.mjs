@@ -14,6 +14,8 @@ import remarkGfm from 'remark-gfm';
 
 import remarkToc from './src/plugins/remark-toc.mjs';
 
+import netlify from '@astrojs/netlify';
+
 const siteUrl = process.env.SITE_URL || 'https://chypriote.github.io';
 const projectRoot = dirname(fileURLToPath(import.meta.url));
 
@@ -78,10 +80,7 @@ function prebundleCloudflareDevDeps() {
 export default defineConfig({
   output: 'static',
   trailingSlash: 'never',
-  adapter: cloudflare({
-    imageService: 'passthrough',
-    prerenderEnvironment: 'node',
-  }),
+  adapter: netlify(),
   // Astro 6 + @astrojs/cloudflare 13 auto-provision a SESSION KV namespace
   // per deploy. Pinning a non-KV driver tells the adapter "sessions are
   // handled" so it skips emitting the SESSION binding. Our pages are static
