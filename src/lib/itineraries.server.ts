@@ -3,12 +3,19 @@ import type { ImageMetadata } from 'astro';
 
 type ItineraryEntry = CollectionEntry<'itineraries'>;
 
+export type PictureFormat = '16:9' | '9:16';
+
+export type TripGalleryPhoto = {
+  src: string;
+  format: PictureFormat;
+};
+
 export type TripDay = {
   day: number;
   title: string;
   description: string;
   activities: string[];
-  gallery: string[];
+  gallery: TripGalleryPhoto[];
   food: string[];
 };
 
@@ -76,14 +83,18 @@ function getTripPhotoPrefix(slug: string): string {
   return `/src/assets/trips/${slug}/`;
 }
 
-function resolveTripPhoto(slug: string, filename: string): string | undefined {
+function resolveTripPhoto(slug: string, filename: string): ImageMetadata | undefined {
   const path = `${getTripPhotoPrefix(slug)}${filename}`;
-  return tripImages[path]?.default.src;
+  return tripImages[path]?.default;
+}
+
+function formatFromMetadata(image: ImageMetadata): PictureFormat {
+  return image.width >= image.height ? '16:9' : '9:16';
 }
 
 function getTripPhotos(slug: string, filenames: string[]): string[] {
   return filenames
-    .map((filename) => resolveTripPhoto(slug, filename))
+    .map((filename) => resolveTripPhoto(slug, filename)?.src)
     .filter((src): src is string => Boolean(src));
 }
 
@@ -146,20 +157,34 @@ export function getAllTripPhotoMetadata(slug: string): ImageMetadata[] {
     .map(([, module]) => module.default);
 }
 
-function getDayGallery(slug: string, dayDate: string): string[] {
+function getDayGallery(slug: string, dayDate: string): TripGalleryPhoto[] {
   const prefix = getTripPhotoPrefix(slug);
 
   return Object.entries(tripImages)
     .filter(([path]) => path.startsWith(prefix) && path.includes(dayDate))
-    .map(([, module]) => module.default.src)
-    .sort();
+    .map(([, module]) => ({
+      src: module.default.src,
+      format: formatFromMetadata(module.default),
+    }))
+    .sort((a, b) => a.src.localeCompare(b.src));
 }
 
 function getAttractionPictures(
+  slug: string,
   attractions: ItineraryEntry['data']['days'][number]['attractions'],
-): string[] {
+): TripGalleryPhoto[] {
   return attractions.flatMap((attraction) =>
-    attraction.pictures.map((picture) => picture.url),
+    attraction.pictures
+      .map((picture) => {
+        const filename = picture.url.split('/').pop() ?? '';
+        const image = resolveTripPhoto(slug, filename);
+        if (!image) return undefined;
+        return {
+          src: image.src,
+          format: picture.format,
+        } satisfies TripGalleryPhoto;
+      })
+      .filter((photo): photo is TripGalleryPhoto => Boolean(photo)),
   );
 }
 
@@ -203,8 +228,19 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
     description: buildTripDescription(entry, orderedCities),
     days: data.days.map((day) => {
       const dayDate = getDayDate(data.released_itinerary.start_date, day.day_number);
+      const dayPictures = day.pictures
+        .map((picture) => {
+          const filename = picture.url.split('/').pop() ?? '';
+          const image = resolveTripPhoto(slug, filename);
+          if (!image) return undefined;
+          return {
+            src: image.src,
+            format: picture.format,
+          } satisfies TripGalleryPhoto;
+        })
+        .filter((photo): photo is TripGalleryPhoto => Boolean(photo));
       const assetGallery = getDayGallery(slug, dayDate);
-      const attractionGallery = getAttractionPictures(day.attractions);
+      const attractionGallery = getAttractionPictures(slug, day.attractions);
 
       return {
         day: day.day_number,
@@ -214,7 +250,12 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
           ...day.attractions.map((attraction) => attraction.name),
           ...day.train_trips.map(formatTrainTrip),
         ],
-        gallery: assetGallery.length > 0 ? assetGallery : attractionGallery,
+        gallery:
+          dayPictures.length > 0
+            ? dayPictures
+            : assetGallery.length > 0
+              ? assetGallery
+              : attractionGallery,
         food: getDayFood(data.cities, day.main_city),
       };
     }),

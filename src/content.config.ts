@@ -90,6 +90,7 @@ const flights = defineCollection({
 const pictureSchema = z.object({
   url: z.string(),
   caption: z.string().optional(),
+  format: z.enum(['16:9', '9:16']),
 });
 
 const attractionSchema = z.object({
@@ -114,6 +115,7 @@ const daySchema = z.object({
   main_city: z.string(),
   title: z.string(),
   notes: z.string(),
+  pictures: z.array(pictureSchema).default([]),
   attractions: z.array(attractionSchema),
   train_trips: z.array(trainTripSchema).default([]),
 });

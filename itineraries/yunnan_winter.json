@@ -17,21 +17,68 @@
     {
       "day_number": 1,
       "main_city": "Hong Kong",
-      "title": "Arrival and harbor views",
-      "notes": "First day in Hong Kong with city landmarks.",
+      "title": "Central Hong Kong",
+      "notes": "Trams along Des Voeux Road Central by day, then the Monster Building in Quarry Bay by evening.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-29-11-29.jpg",
+          "caption": "2025-11-29 11:29",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-29-11-42.jpg",
+          "caption": "2025-11-29 11:42",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-29-11-44.jpg",
+          "caption": "2025-11-29 11:44",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-29-11-45.jpg",
+          "caption": "2025-11-29 11:45",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-29-11-46.jpg",
+          "caption": "2025-11-29 11:46",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-29-17-37.jpg",
+          "caption": "2025-11-29 17:37",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-29-17-41.jpg",
+          "caption": "2025-11-29 17:41",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-29-18-39.jpg",
+          "caption": "2025-11-29 18:39",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-29-19-24.jpg",
+          "caption": "2025-11-29 19:24",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
-          "name": "Victoria Harbour",
+          "name": "Monster Building",
           "city": "Hong Kong",
-          "rating": 5,
-          "description": "Iconic harbor skyline and waterfront views.",
+          "rating": 4,
+          "description": "Dense residential complex known for its striking appearance.",
           "pictures": []
         },
         {
-          "name": "Victoria Peak",
+          "name": "Des Voeux Road Central",
           "city": "Hong Kong",
-          "rating": 5,
-          "description": "Famous viewpoint over the city.",
+          "rating": 4,
+          "description": "Central Hong Kong thoroughfare and commercial corridor.",
           "pictures": []
         }
       ],
@@ -40,8 +87,70 @@
     {
       "day_number": 2,
       "main_city": "Hong Kong",
-      "title": "Temples and neighborhoods",
-      "notes": "Explore major landmarks and residential areas.",
+      "title": "Ngong Ping and Victoria Peak",
+      "notes": "Ngong Ping 360 to the Tian Tan Buddha, then Victoria Peak for the evening skyline.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-05-52.jpg",
+          "caption": "2025-11-30 05:52",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-06-15.jpg",
+          "caption": "2025-11-30 06:15",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-11-21.jpg",
+          "caption": "2025-11-30 11:21",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-11-41.jpg",
+          "caption": "2025-11-30 11:41",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-11-53.jpg",
+          "caption": "2025-11-30 11:53",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-11-58.jpg",
+          "caption": "2025-11-30 11:58",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-12-19.jpg",
+          "caption": "2025-11-30 12:19",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-12-20.jpg",
+          "caption": "2025-11-30 12:20",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-12-47.jpg",
+          "caption": "2025-11-30 12:47",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-12-57.jpg",
+          "caption": "2025-11-30 12:57",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-12-59.jpg",
+          "caption": "2025-11-30 12:59",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-11-30-19-02.jpg",
+          "caption": "2025-11-30 19:02",
+          "format": "16:9"
+        }
+      ],
       "attractions": [
         {
           "name": "Tian Tan Buddha",
@@ -51,10 +160,17 @@
           "pictures": []
         },
         {
-          "name": "Monster Building",
+          "name": "Victoria Peak",
           "city": "Hong Kong",
-          "rating": 4,
-          "description": "Dense residential complex known for its striking appearance.",
+          "rating": 5,
+          "description": "Famous viewpoint over the city.",
+          "pictures": []
+        },
+        {
+          "name": "Victoria Peak's evening skyline",
+          "city": "Hong Kong",
+          "rating": 5,
+          "description": "Night views over Hong Kong from Victoria Peak.",
           "pictures": []
         }
       ],
@@ -62,15 +178,52 @@
     },
     {
       "day_number": 3,
-      "main_city": "Guangzhou",
-      "title": "Arrival in Guangzhou",
-      "notes": "Urban sightseeing and riverside park areas.",
+      "main_city": "Hong Kong",
+      "title": "Cheung Chau to Guangzhou",
+      "notes": "Morning on Cheung Chau, then evening at Haixinsha Asian Games Park and Canton Tower.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-01-03-20.jpg",
+          "caption": "2025-12-01 03:20",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-01-11-18.jpg",
+          "caption": "2025-12-01 11:18",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-01-11-51.jpg",
+          "caption": "2025-12-01 11:51",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-01-12-01.jpg",
+          "caption": "2025-12-01 12:01",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-01-15-17.jpg",
+          "caption": "2025-12-01 15:17",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-01-18-30.jpg",
+          "caption": "2025-12-01 18:30",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-01-18-39.jpg",
+          "caption": "2025-12-01 18:39",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
-          "name": "Canton Tower",
-          "city": "Guangzhou",
+          "name": "Cheung Chau",
+          "city": "Hong Kong",
           "rating": 5,
-          "description": "Tall observation tower and city landmark.",
+          "description": "Iconic harbor skyline and waterfront views.",
           "pictures": []
         },
         {
@@ -79,6 +232,13 @@
           "rating": 4,
           "description": "Riverside park near the Pearl River.",
           "pictures": []
+        },
+        {
+          "name": "Canton Tower",
+          "city": "Guangzhou",
+          "rating": 5,
+          "description": "Tall observation tower and city landmark.",
+          "pictures": []
         }
       ],
       "train_trips": []
@@ -86,14 +246,46 @@
     {
       "day_number": 4,
       "main_city": "Guangzhou",
-      "title": "Historic island and museum",
-      "notes": "Shamian area and cultural sites.",
+      "title": "Shamian dao, museum, and hot springs",
+      "notes": "Shamian Dao and the Nanyue King Museum, then a night at Royal Hot Springs.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-01-12-21.jpg",
+          "caption": "2025-12-01 12:21",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-02-10-11.jpg",
+          "caption": "2025-12-02 10:11",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-02-12-23.jpg",
+          "caption": "2025-12-02 12:23",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-02-14-57.png",
+          "caption": "2025-12-02 14:57",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-02-17-50.jpg",
+          "caption": "2025-12-02 17:50",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-02-12-22.jpg",
+          "caption": "2025-12-02 12:22",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
-          "name": "Shamian Island",
+          "name": "Shamian Dao",
           "city": "Guangzhou",
           "rating": 4,
-          "description": "Historic district with colonial-era architecture.",
+          "description": "Historic island district with colonial-era architecture.",
           "pictures": []
         },
         {
@@ -102,32 +294,77 @@
           "rating": 4,
           "description": "Museum focused on the Nanyue Kingdom history.",
           "pictures": []
-        }
-      ],
-      "train_trips": []
-    },
-    {
-      "day_number": 5,
-      "main_city": "Zhuhai",
-      "title": "Hot springs day",
-      "notes": "Relaxing stop in Zhuhai.",
-      "attractions": [
+        },
         {
-          "name": "Zhuhai Imperial Hot Spring Resort",
+          "name": "Royal Hot Springs",
           "city": "Zhuhai",
           "rating": 4,
-          "description": "Resort and hot spring complex.",
+          "description": "Hot spring resort and spa complex in Zhuhai.",
           "pictures": []
         }
       ],
       "train_trips": []
     },
     {
-      "day_number": 6,
+      "day_number": 5,
       "main_city": "Macao",
-      "title": "Historic Macao",
-      "notes": "Classic central landmarks.",
+      "title": "Historic and modern Macao",
+      "notes": "Monte Fortress, Ruins of St. Paul's, and Senado Square, then Grand Lisboa, Lotus Garden, and The Parisian.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-03-10-04.jpg",
+          "caption": "2025-12-03 10:04",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-03 -10-05.jpg",
+          "caption": "2025-12-03 10:05",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-03-10-05.jpg",
+          "caption": "2025-12-03 10:05",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-03-10-06.png",
+          "caption": "2025-12-03 10:06",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-03-12-23.jpg",
+          "caption": "2025-12-03 12:23",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-03-16-07.jpg",
+          "caption": "2025-12-03 16:07",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-03-16-13.jpg",
+          "caption": "2025-12-03 16:13",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-03-12-25.jpg",
+          "caption": "2025-12-03 12:25",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-03-22-11.jpg",
+          "caption": "2025-12-03 22:11",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
+        {
+          "name": "Monte Fortress",
+          "city": "Macao",
+          "rating": 4,
+          "description": "Historic fortress with city views.",
+          "pictures": []
+        },
         {
           "name": "Ruins of St. Paul's",
           "city": "Macao",
@@ -141,21 +378,26 @@
           "rating": 5,
           "description": "Historic public square in the center of Macao.",
           "pictures": []
-        }
-      ],
-      "train_trips": []
-    },
-    {
-      "day_number": 7,
-      "main_city": "Macao",
-      "title": "Fortress and gardens",
-      "notes": "More sightseeing across the peninsula.",
-      "attractions": [
+        },
         {
-          "name": "Monte Fortress",
+          "name": "Garden of the Golden Chambers",
           "city": "Macao",
           "rating": 4,
-          "description": "Historic fortress with city views.",
+          "description": "Historic garden and green space in Macao.",
+          "pictures": []
+        },
+        {
+          "name": "Grand Lisboa Hotel",
+          "city": "Macao",
+          "rating": 4,
+          "description": "Major casino and hotel landmark.",
+          "pictures": []
+        },
+        {
+          "name": "Eiffel Tower at The Parisian Macao",
+          "city": "Macao",
+          "rating": 4,
+          "description": "Replica landmark and viewing attraction.",
           "pictures": []
         },
         {
@@ -169,39 +411,134 @@
       "train_trips": []
     },
     {
-      "day_number": 8,
-      "main_city": "Macao",
-      "title": "Modern landmarks",
-      "notes": "Resort and entertainment area exploration.",
+      "day_number": 6,
+      "main_city": "Humen",
+      "title": "Humen stopover",
+      "notes": "Brief stop in Humen between Macao and Shenzhen.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-04-15-43.jpg",
+          "caption": "2025-12-04 15:43",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [],
+      "train_trips": []
+    },
+    {
+      "day_number": 7,
+      "main_city": "Shenzhen",
+      "title": "Shenzhen parks and skyline",
+      "notes": "Lianhuashan and Talent Park with Ping An Finance Center views, plus Splendid China and Huaqiang Road.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-05-11-24.jpg",
+          "caption": "2025-12-05 11:24",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-05-12-24.jpg",
+          "caption": "2025-12-05 12:24",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-05-12-25.jpg",
+          "caption": "2025-12-05 12:25",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-05-14-10.jpg",
+          "caption": "2025-12-05 14:10",
+          "format": "16:9"
+        }
+      ],
       "attractions": [
         {
-          "name": "Grand Lisboa",
-          "city": "Macao",
+          "name": "Lianhuashan Park",
+          "city": "Shenzhen",
           "rating": 4,
-          "description": "Major casino and hotel landmark.",
+          "description": "Hilltop park with city views and Deng Xiaoping statue.",
           "pictures": []
         },
         {
-          "name": "Eiffel Tower at The Parisian Macao",
-          "city": "Macao",
+          "name": "Splendid China Folk Village",
+          "city": "Shenzhen",
           "rating": 4,
-          "description": "Replica landmark and viewing attraction.",
+          "description": "Theme park of miniature landmarks and folk culture.",
+          "pictures": []
+        },
+        {
+          "name": "Ping An Finance Center",
+          "city": "Shenzhen",
+          "rating": 4,
+          "description": "Skyscraper and financial-district landmark.",
+          "pictures": []
+        },
+        {
+          "name": "Talent Park",
+          "city": "Shenzhen",
+          "rating": 4,
+          "description": "Waterfront park in Shenzhen Bay.",
+          "pictures": []
+        },
+        {
+          "name": "Huaqiang Road",
+          "city": "Shenzhen",
+          "rating": 4,
+          "description": "Electronics and commercial street.",
           "pictures": []
         }
       ],
       "train_trips": []
     },
     {
-      "day_number": 9,
+      "day_number": 8,
       "main_city": "Shenzhen",
-      "title": "Border city stop",
-      "notes": "Short city visit between Macao and inland China.",
+      "title": "Train to Yunnan",
+      "notes": "Long westbound train ride from Shenzhen toward Kunming.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-07-11-37.jpeg",
+          "caption": "2025-12-07 11:37",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [],
+      "train_trips": []
+    },
+    {
+      "day_number": 9,
+      "main_city": "Kunming",
+      "title": "Shilin Stone Forest",
+      "notes": "Day among the limestone pillars of the Stone Forest outside Kunming.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-08-06-00.jpg",
+          "caption": "2025-12-08 06:00",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-08-12-25.jpg",
+          "caption": "2025-12-08 12:25",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-08-12-33.jpg",
+          "caption": "2025-12-08 12:33",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-08-13-15.jpg",
+          "caption": "2025-12-08 13:15",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
-          "name": "Shenzhen city center",
-          "city": "Shenzhen",
-          "rating": 4,
-          "description": "Modern urban district and transport hub.",
+          "name": "Shilin Stone Forest",
+          "city": "Kunming",
+          "rating": 5,
+          "description": "Karst landscape of stone pillars and formations.",
           "pictures": []
         }
       ],
@@ -210,8 +547,80 @@
     {
       "day_number": 10,
       "main_city": "Kunming",
-      "title": "Arrival in Kunming",
-      "notes": "Start of the Yunnan leg.",
+      "title": "Kunming lakes, hills, and market",
+      "notes": "Green Lake Park and Kunming Old Street, then Xishan, Longmen Grottoes, Dianchi Lake, and Dounan Flower Market.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-05-16.jpg",
+          "caption": "2025-12-09 05:16",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-07-00.jpg",
+          "caption": "2025-12-09 07:00",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-23.jpg",
+          "caption": "2025-12-09 12:23",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-24.jpg",
+          "caption": "2025-12-09 12:24",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-25.jpg",
+          "caption": "2025-12-09 12:25",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-26.jpg",
+          "caption": "2025-12-09 12:26",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-27.jpg",
+          "caption": "2025-12-09 12:27",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-28.jpg",
+          "caption": "2025-12-09 12:28",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-29.jpg",
+          "caption": "2025-12-09 12:29",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-31.jpg",
+          "caption": "2025-12-09 12:31",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-32.jpg",
+          "caption": "2025-12-09 12:32",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-33.jpg",
+          "caption": "2025-12-09 12:33",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-34.jpg",
+          "caption": "2025-12-09 12:34",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-09-12-36.jpg",
+          "caption": "2025-12-09 12:36",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Green Lake Park",
@@ -221,53 +630,35 @@
           "pictures": []
         },
         {
-          "name": "Kunming old street",
+          "name": "Kunming Old Street",
           "city": "Kunming",
           "rating": 4,
           "description": "Historic pedestrian area and food street.",
           "pictures": []
-        }
-      ],
-      "train_trips": []
-    },
-    {
-      "day_number": 11,
-      "main_city": "Kunming",
-      "title": "Stone Forest day trip",
-      "notes": "Major natural attraction outside the city.",
-      "attractions": [
+        },
         {
-          "name": "Shilin Stone Forest",
+          "name": "Xishan",
           "city": "Kunming",
-          "rating": 5,
-          "description": "Karst landscape of stone pillars and formations.",
+          "rating": 4,
+          "description": "Scenic western hills area overlooking Dianchi.",
+          "pictures": []
+        },
+        {
+          "name": "Longmen Grottoes",
+          "city": "Kunming",
+          "rating": 4,
+          "description": "Cliffside grottoes and temples on Xishan.",
           "pictures": []
         },
         {
           "name": "Dianchi Lake",
           "city": "Kunming",
           "rating": 4,
-          "description": "Large lake near the city.",
-          "pictures": []
-        }
-      ],
-      "train_trips": []
-    },
-    {
-      "day_number": 12,
-      "main_city": "Kunming",
-      "title": "Western hills and markets",
-      "notes": "More sights around the city.",
-      "attractions": [
-        {
-          "name": "Xishan",
-          "city": "Kunming",
-          "rating": 4,
-          "description": "Scenic western hills area.",
+          "description": "Large lake near Kunming.",
           "pictures": []
         },
         {
-          "name": "Dounan flower market",
+          "name": "Dounan Flower Market",
           "city": "Kunming",
           "rating": 4,
           "description": "Large flower market and local trade hub.",
@@ -277,10 +668,177 @@
       "train_trips": []
     },
     {
+      "day_number": 11,
+      "main_city": "Dali",
+      "title": "Arrival in Dali",
+      "notes": "Settle into Dali Old Town under the lantern streets.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-10-08-05.jpg",
+          "caption": "2025-12-10 08:05",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-10-12-29.jpg",
+          "caption": "2025-12-10 12:29",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-10-15-05.jpg",
+          "caption": "2025-12-10 15:05",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-10-15-23.jpg",
+          "caption": "2025-12-10 15:23",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [],
+      "train_trips": []
+    },
+    {
+      "day_number": 12,
+      "main_city": "Dali",
+      "title": "Three Pagodas and Erhai",
+      "notes": "Chongsheng Temple Three Pagodas with views over Erhai Lake.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-11-05-29.jpg",
+          "caption": "2025-12-11 05:29",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-11-13-48.jpg",
+          "caption": "2025-12-11 13:48",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-11-07-48.jpg",
+          "caption": "2025-12-11 07:48",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-11-12-32.jpg",
+          "caption": "2025-12-11 12:32",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-11-12-33.jpg",
+          "caption": "2025-12-11 12:33",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Chongsheng Temple Three Pagodas",
+          "city": "Dali",
+          "rating": 5,
+          "description": "Famous temple complex and pagoda trio.",
+          "pictures": []
+        },
+        {
+          "name": "Erhai Lake",
+          "city": "Dali",
+          "rating": 5,
+          "description": "Large lake and scenic regional landmark.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
       "day_number": 13,
       "main_city": "Dali",
-      "title": "Old town and lake",
-      "notes": "Arrival in Dali with lakeside scenery.",
+      "title": "Around Erhai Lake",
+      "notes": "Xizhou, Shuanglang, Jinshuo Island, Luoquan Peninsula, Lixiangbang, and Caicun Wharf.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-11-08-55.jpg",
+          "caption": "2025-12-11 08:55",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-11-12-30.jpg",
+          "caption": "2025-12-11 12:30",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-11-12-31.jpg",
+          "caption": "2025-12-11 12:31",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-11-15-37.jpg",
+          "caption": "2025-12-11 15:37",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-04-31.jpg",
+          "caption": "2025-12-12 04:31",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-11-19.jpg",
+          "caption": "2025-12-12 11:19",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-12-30.jpg",
+          "caption": "2025-12-12 12:30",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-12-31.jpg",
+          "caption": "2025-12-12 12:31",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-12-32.jpg",
+          "caption": "2025-12-12 12:32",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-12-33.jpg",
+          "caption": "2025-12-12 12:33",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-12-57.jpg",
+          "caption": "2025-12-12 12:57",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-15-00.jpg",
+          "caption": "2025-12-12 15:00",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-15-13.jpg",
+          "caption": "2025-12-12 15:13",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-15-35.jpg",
+          "caption": "2025-12-12 15:35",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-16-41.jpg",
+          "caption": "2025-12-12 16:41",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-17-16.jpg",
+          "caption": "2025-12-12 17:16",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-12-19-45.jpg",
+          "caption": "2025-12-12 19:45",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Erhai Lake",
@@ -293,23 +851,35 @@
           "name": "Xizhou Old Town",
           "city": "Dali",
           "rating": 4,
-          "description": "Historic town with traditional architecture.",
+          "description": "Historic town with traditional Bai architecture.",
           "pictures": []
-        }
-      ],
-      "train_trips": []
-    },
-    {
-      "day_number": 14,
-      "main_city": "Dali",
-      "title": "Temples and wharfs",
-      "notes": "Cultural attractions around the area.",
-      "attractions": [
+        },
         {
-          "name": "Chongsheng Temple Three Pagodas",
+          "name": "Shuanglang Ancient Town",
           "city": "Dali",
-          "rating": 5,
-          "description": "Famous temple complex and pagoda trio.",
+          "rating": 4,
+          "description": "Lakeside ancient town with scenic views.",
+          "pictures": []
+        },
+        {
+          "name": "Jinshuo Island",
+          "city": "Dali",
+          "rating": 4,
+          "description": "Island stop in the Erhai lake area.",
+          "pictures": []
+        },
+        {
+          "name": "Luoquan Peninsula",
+          "city": "Dali",
+          "rating": 4,
+          "description": "Peninsula viewpoint on Erhai Lake.",
+          "pictures": []
+        },
+        {
+          "name": "Lixiangbang",
+          "city": "Dali",
+          "rating": 4,
+          "description": "Lakeside community and scenic stop near Erhai.",
           "pictures": []
         },
         {
@@ -323,33 +893,32 @@
       "train_trips": []
     },
     {
-      "day_number": 15,
-      "main_city": "Dali",
-      "title": "Shuanglang area",
-      "notes": "Lakeside exploration and viewpoints.",
-      "attractions": [
+      "day_number": 14,
+      "main_city": "Lijiang",
+      "title": "Lijiang Old Town",
+      "notes": "Canals, flowers, and wooden lanes of Lijiang Old Town.",
+      "pictures": [
         {
-          "name": "Shuanglang",
-          "city": "Dali",
-          "rating": 4,
-          "description": "Lakeside town with scenic views.",
-          "pictures": []
+          "url": "src/assets/trips/yunnan-winter/2025-12-13-10-29.jpg",
+          "caption": "2025-12-13 10:29",
+          "format": "9:16"
         },
         {
-          "name": "Jinshuo Island",
-          "city": "Dali",
-          "rating": 4,
-          "description": "Island stop in the lake area.",
-          "pictures": []
+          "url": "src/assets/trips/yunnan-winter/2025-12-13-12-57.jpg",
+          "caption": "2025-12-13 12:57",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-13-18-07.jpg",
+          "caption": "2025-12-13 18:07",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-13-18-13.jpg",
+          "caption": "2025-12-13 18:13",
+          "format": "9:16"
         }
       ],
-      "train_trips": []
-    },
-    {
-      "day_number": 16,
-      "main_city": "Lijiang",
-      "title": "Old town arrival",
-      "notes": "Transition to Lijiang and nearby scenic areas.",
       "attractions": [
         {
           "name": "Lijiang Old Town",
@@ -357,22 +926,87 @@
           "rating": 5,
           "description": "Historic UNESCO-listed old town.",
           "pictures": []
-        },
-        {
-          "name": "Black Dragon Pool",
-          "city": "Lijiang",
-          "rating": 4,
-          "description": "Classic park and reflected mountain views.",
-          "pictures": []
         }
       ],
       "train_trips": []
     },
     {
-      "day_number": 17,
+      "day_number": 15,
       "main_city": "Lijiang",
-      "title": "Snow mountain excursion",
-      "notes": "Full-day natural scenery around Lijiang.",
+      "title": "Jade Dragon Snow Mountain",
+      "notes": "Blue Moon Valley beneath the snow peaks of Jade Dragon Snow Mountain.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-02-20.jpg",
+          "caption": "2025-12-14 02:20",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-05-22.jpg",
+          "caption": "2025-12-14 05:22",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-08-00.jpg",
+          "caption": "2025-12-14 08:00",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-08-07.jpg",
+          "caption": "2025-12-14 08:07",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-09-02.jpg",
+          "caption": "2025-12-14 09:02",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-09-09.jpg",
+          "caption": "2025-12-14 09:09",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-09-20.jpg",
+          "caption": "2025-12-14 09:20",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-09-26.jpg",
+          "caption": "2025-12-14 09:26",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-09-42.jpg",
+          "caption": "2025-12-14 09:42",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-10-36.jpg",
+          "caption": "2025-12-14 10:36",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-10-52.jpg",
+          "caption": "2025-12-14 10:52",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-12-21.jpg",
+          "caption": "2025-12-14 12:21",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-12-43.jpg",
+          "caption": "2025-12-14 12:43",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-14-12-44.jpg",
+          "caption": "2025-12-14 12:44",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Jade Dragon Snow Mountain",
@@ -392,56 +1026,126 @@
       "train_trips": []
     },
     {
-      "day_number": 18,
-      "main_city": "Shangri-La",
-      "title": "Arrival in Shangri-La",
-      "notes": "Highland cultural and scenic stop.",
-      "attractions": [
-        {
-          "name": "Dukezong Ancient City",
-          "city": "Shangri-La",
-          "rating": 4,
-          "description": "Historic Tibetan-style old town.",
-          "pictures": []
-        },
-        {
-          "name": "Songzanlin Monastery",
-          "city": "Shangri-La",
-          "rating": 5,
-          "description": "Prominent Tibetan Buddhist monastery.",
-          "pictures": []
-        }
-      ],
-      "train_trips": []
-    },
-    {
-      "day_number": 19,
-      "main_city": "Shangri-La",
-      "title": "National park scenery",
-      "notes": "Nature-focused day in the region.",
-      "attractions": [
-        {
-          "name": "Potatso National Park",
-          "city": "Shangri-La",
-          "rating": 5,
-          "description": "Protected park with lakes, forest, and meadow scenery.",
-          "pictures": []
-        },
-        {
-          "name": "Tiger Leaping Gorge",
-          "city": "Shangri-La",
-          "rating": 5,
-          "description": "Dramatic canyon and hiking area.",
-          "pictures": []
-        }
-      ],
-      "train_trips": []
-    },
-    {
-      "day_number": 20,
+      "day_number": 16,
       "main_city": "Lijiang",
-      "title": "Return and final sights",
-      "notes": "Wrap up the Yunnan leg.",
+      "title": "Prayer flags and nearby towns",
+      "notes": "Lijiang Prayer Flags, Dragon Girl Lake, then Shuhe and Baisha ancient towns.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-15-03-28.jpg",
+          "caption": "2025-12-15 03:28",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-15-07-05.jpg",
+          "caption": "2025-12-15 07:05",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-15-10-36.jpg",
+          "caption": "2025-12-15 10:36",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-15-11-13.jpg",
+          "caption": "2025-12-15 11:13",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-15-12-58.jpg",
+          "caption": "2025-12-15 12:58",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-15-14-22.jpg",
+          "caption": "2025-12-15 14:22",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-15-16-11.jpg",
+          "caption": "2025-12-15 16:11",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Lijiang Prayer Flags",
+          "city": "Lijiang",
+          "rating": 4,
+          "description": "Colorful prayer-flag displays near Lijiang.",
+          "pictures": []
+        },
+        {
+          "name": "Dragon Girl Lake",
+          "city": "Lijiang",
+          "rating": 4,
+          "description": "Alpine lake near Jade Dragon Snow Mountain.",
+          "pictures": []
+        },
+        {
+          "name": "Shuhe Ancient Town",
+          "city": "Lijiang",
+          "rating": 4,
+          "description": "Historic Naxi town near Lijiang.",
+          "pictures": []
+        },
+        {
+          "name": "Baisha Ancient Town",
+          "city": "Lijiang",
+          "rating": 4,
+          "description": "Quiet historic town north of Lijiang.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 17,
+      "main_city": "Lijiang",
+      "title": "Lugu Lake",
+      "notes": "Day around the alpine shores of Lugu Lake.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-16-09-14.jpg",
+          "caption": "2025-12-16 09:14",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-16-10-47.jpg",
+          "caption": "2025-12-16 10:47",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-16-10-49.jpg",
+          "caption": "2025-12-16 10:49",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-16-11-27.jpg",
+          "caption": "2025-12-16 11:27",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-16-11-37.jpg",
+          "caption": "2025-12-16 11:37",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-16-11-44.jpg",
+          "caption": "2025-12-16 11:44",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-16-12-55.jpg",
+          "caption": "2025-12-16 12:55",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-16-16-14.jpg",
+          "caption": "2025-12-16 16:14",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Lugu Lake",
@@ -454,32 +1158,221 @@
       "train_trips": []
     },
     {
-      "day_number": 21,
-      "main_city": "Hong Kong",
-      "title": "Return to Hong Kong",
-      "notes": "Final transit and city wrap-up.",
+      "day_number": 18,
+      "main_city": "Shangri-La",
+      "title": "Tiger Leaping Gorge and Baishuitai",
+      "notes": "Tiger Leaping Gorge toward Haba Snow Mountain, Baishuitai terraces, and evening in Dukezong Ancient City.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-17-10-31.jpg",
+          "caption": "2025-12-17 10:31",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-17-10-46.jpg",
+          "caption": "2025-12-17 10:46",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-17-12-58.jpg",
+          "caption": "2025-12-17 12:58",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-17-12-59.jpg",
+          "caption": "2025-12-17 12:59",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-17-13-00.jpg",
+          "caption": "2025-12-17 13:00",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-17-13-56.jpg",
+          "caption": "2025-12-17 13:56",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-17-14-05.jpg",
+          "caption": "2025-12-17 14:05",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-17-20-02.jpg",
+          "caption": "2025-12-17 20:02",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-17-20-13.jpg",
+          "caption": "2025-12-17 20:13",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
-          "name": "Victoria Harbour",
-          "city": "Hong Kong",
+          "name": "Tiger Leaping Gorge",
+          "city": "Lijiang",
           "rating": 5,
-          "description": "Return stop for final harbor views.",
+          "description": "Dramatic canyon and hiking area.",
+          "pictures": []
+        },
+        {
+          "name": "Haba Snow Mountain",
+          "city": "Lijiang",
+          "rating": 4,
+          "description": "High peak near Tiger Leaping Gorge.",
+          "pictures": []
+        },
+        {
+          "name": "Baishuitai",
+          "city": "Lijiang",
+          "rating": 4,
+          "description": "White water terraces and travertine formations.",
+          "pictures": []
+        },
+        {
+          "name": "Dukezong Ancient City",
+          "city": "Shangri-La",
+          "rating": 4,
+          "description": "Historic Tibetan-style old town.",
           "pictures": []
         }
       ],
       "train_trips": []
     },
     {
-      "day_number": 22,
-      "main_city": "Hong Kong",
-      "title": "Trip end",
-      "notes": "Final day of the winter trip.",
+      "day_number": 19,
+      "main_city": "Shangri-La",
+      "title": "Songzanlin and Napa",
+      "notes": "Songzanlin Monastery and the Tower of Harmony, then Napa Lake and grassland.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-18-03-36.jpg",
+          "caption": "2025-12-18 03:36",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-18-10-53.jpg",
+          "caption": "2025-12-18 10:53",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
-          "name": "Victoria Peak",
-          "city": "Hong Kong",
+          "name": "Napa Lake",
+          "city": "Shangri-La",
+          "rating": 4,
+          "description": "Seasonal wetland lake near Shangri-La.",
+          "pictures": []
+        },
+        {
+          "name": "Napa Grassland",
+          "city": "Shangri-La",
+          "rating": 4,
+          "description": "Highland grassland around Napa Lake.",
+          "pictures": []
+        },
+        {
+          "name": "Songzanlin",
+          "city": "Shangri-La",
           "rating": 5,
-          "description": "Final overlook before departure.",
+          "description": "Prominent Tibetan Buddhist monastery.",
+          "pictures": []
+        },
+        {
+          "name": "Tower of Harmony",
+          "city": "Shangri-La",
+          "rating": 4,
+          "description": "Landmark tower in Shangri-La.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 20,
+      "main_city": "Shangri-La",
+      "title": "Potatso National Park",
+      "notes": "Snowy boardwalks through Potatso National Park around Shuduhu Lake.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-19-03-15.jpg",
+          "caption": "2025-12-19 03:15",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-19-03-16.jpg",
+          "caption": "2025-12-19 03:16",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-19-03-17.jpg",
+          "caption": "2025-12-19 03:17",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-19-03-29.jpg",
+          "caption": "2025-12-19 03:29",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-19-03-57.jpg",
+          "caption": "2025-12-19 03:57",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-19-05-19.jpg",
+          "caption": "2025-12-19 05:19",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-19-10-53.jpg",
+          "caption": "2025-12-19 10:53",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-19-12-41.jpg",
+          "caption": "2025-12-19 12:41",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Potatso National Park",
+          "city": "Shangri-La",
+          "rating": 5,
+          "description": "Protected park with lakes, forest, and meadow scenery.",
+          "pictures": []
+        },
+        {
+          "name": "Shuduhu Lake",
+          "city": "Shangri-La",
+          "rating": 4,
+          "description": "Alpine lake inside Potatso National Park.",
+          "pictures": []
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 21,
+      "main_city": "Kunming",
+      "title": "Return to Kunming",
+      "notes": "Return to Kunming with a stop at the zoo.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/yunnan-winter/2025-12-20-12-34.jpg",
+          "caption": "2025-12-20 12:34",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Kunming Zoo",
+          "city": "Kunming",
+          "rating": 4,
+          "description": "Popular park in central Kunming.",
           "pictures": []
         }
       ],

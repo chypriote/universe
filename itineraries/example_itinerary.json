@@ -8,11 +8,13 @@
       "pictures": [
         {
           "url": "https://example.com/images/itinerary-cover-1.jpg",
-          "caption": "Train crossing a mountain valley"
+          "caption": "Train crossing a mountain valley",
+          "format": "16:9"
         },
         {
           "url": "https://example.com/images/itinerary-cover-2.jpg",
-          "caption": "City skyline at dusk"
+          "caption": "City skyline at dusk",
+          "format": "16:9"
         }
       ]
     },
@@ -31,11 +33,13 @@
             "pictures": [
               {
                 "url": "https://example.com/images/tiananmen-1.jpg",
-                "caption": "Square at sunrise"
+                "caption": "Square at sunrise",
+                "format": "16:9"
               },
               {
                 "url": "https://example.com/images/tiananmen-2.jpg",
-                "caption": "Evening view"
+                "caption": "Evening view",
+                "format": "16:9"
               }
             ]
           },
@@ -47,7 +51,8 @@
             "pictures": [
               {
                 "url": "https://example.com/images/jingshan-1.jpg",
-                "caption": "View from the hill"
+                "caption": "View from the hill",
+                "format": "16:9"
               }
             ]
           }
@@ -68,7 +73,8 @@
             "pictures": [
               {
                 "url": "https://example.com/images/forbidden-city-1.jpg",
-                "caption": "Gate entrance"
+                "caption": "Gate entrance",
+                "format": "16:9"
               }
             ]
           }
@@ -98,7 +104,8 @@
             "pictures": [
               {
                 "url": "https://example.com/images/pingyao-1.jpg",
-                "caption": "Main street"
+                "caption": "Main street",
+                "format": "16:9"
               }
             ]
           }
@@ -129,7 +136,8 @@
             "pictures": [
               {
                 "url": "https://example.com/images/beijing-hotel-1.jpg",
-                "caption": "Hotel exterior"
+                "caption": "Hotel exterior",
+                "format": "16:9"
               }
             ]
           }
@@ -146,7 +154,8 @@
             "pictures": [
               {
                 "url": "https://example.com/images/restaurant-1.jpg",
-                "caption": "Dining room"
+                "caption": "Dining room",
+                "format": "16:9"
               }
             ]
           }

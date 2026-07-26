@@ -19,6 +19,7 @@
       "main_city": "Beijing",
       "title": "Arrival and city center",
       "notes": "Light walking day after arrival.",
+      "pictures": [],
       "attractions": [
         {
           "name": "Forbidden City",
@@ -28,7 +29,8 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-03-26-10-53.jpg",
-              "caption": "2025-03-26 10:53"
+              "caption": "2025-03-26 10:53",
+              "format": "16:9"
             }
           ]
         },
@@ -47,6 +49,43 @@
       "main_city": "Beijing",
       "title": "Museums and hutongs",
       "notes": "Focus on local neighborhoods and a museum visit.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-03-27-09-44.jpg",
+          "caption": "2025-03-27 09:44",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-27-10-01.jpg",
+          "caption": "2025-03-27 10:01",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-27-10-09.jpg",
+          "caption": "2025-03-27 10:09",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-27-10-45.jpg",
+          "caption": "2025-03-27 10:45",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-27-11-04.jpg",
+          "caption": "2025-03-27 11:04",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-27-11-23.jpg",
+          "caption": "2025-03-27 11:23",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-27-16-50.jpg",
+          "caption": "2025-03-27 16:50",
+          "format": "16:9"
+        }
+      ],
       "attractions": [
         {
           "name": "Tiananmen Square",
@@ -56,63 +95,78 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-03-27-09-44.jpg",
-              "caption": "2025-03-27 09:44"
+              "caption": "2025-03-27 09:44",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-10-01.jpg",
-              "caption": "2025-03-27 10:01"
+              "caption": "2025-03-27 10:01",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-10-02.jpg",
-              "caption": "2025-03-27 10:02"
+              "caption": "2025-03-27 10:02",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-10-03.jpg",
-              "caption": "2025-03-27 10:03"
+              "caption": "2025-03-27 10:03",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-10-08.jpg",
-              "caption": "2025-03-27 10:08"
+              "caption": "2025-03-27 10:08",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-10-09.jpg",
-              "caption": "2025-03-27 10:09"
+              "caption": "2025-03-27 10:09",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-10-43.jpg",
-              "caption": "2025-03-27 10:43"
+              "caption": "2025-03-27 10:43",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-10-45.jpg",
-              "caption": "2025-03-27 10:45"
+              "caption": "2025-03-27 10:45",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-10-50.jpg",
-              "caption": "2025-03-27 10:50"
+              "caption": "2025-03-27 10:50",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-11-03.jpg",
-              "caption": "2025-03-27 11:03"
+              "caption": "2025-03-27 11:03",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-11-04.jpg",
-              "caption": "2025-03-27 11:04"
+              "caption": "2025-03-27 11:04",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-11-05.jpg",
-              "caption": "2025-03-27 11:05"
+              "caption": "2025-03-27 11:05",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-11-23.jpg",
-              "caption": "2025-03-27 11:23"
+              "caption": "2025-03-27 11:23",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-11-25.jpg",
-              "caption": "2025-03-27 11:25"
+              "caption": "2025-03-27 11:25",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-27-16-50.jpg",
-              "caption": "2025-03-27 16:50"
+              "caption": "2025-03-27 16:50",
+              "format": "16:9"
             }
           ]
         },
@@ -140,6 +194,28 @@
       "main_city": "Pingyao",
       "title": "Ancient city walls",
       "notes": "Old town exploration and photography.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-03-28-10-45.jpg",
+          "caption": "2025-03-28 10:45",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-28-10-50.jpg",
+          "caption": "2025-03-28 10:50",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-28-11-16.jpg",
+          "caption": "2025-03-28 11:16",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-28-22-44.jpg",
+          "caption": "2025-03-28 22:44",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Pingyao Ancient City",
@@ -149,35 +225,43 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-03-28-10-45.jpg",
-              "caption": "2025-03-28 10:45"
+              "caption": "2025-03-28 10:45",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-28-10-47.jpg",
-              "caption": "2025-03-28 10:47"
+              "caption": "2025-03-28 10:47",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-28-10-50.jpg",
-              "caption": "2025-03-28 10:50"
+              "caption": "2025-03-28 10:50",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-28-10-57.jpg",
-              "caption": "2025-03-28 10:57"
+              "caption": "2025-03-28 10:57",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-28-11-16.jpg",
-              "caption": "2025-03-28 11:16"
+              "caption": "2025-03-28 11:16",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-28-16-48.jpg",
-              "caption": "2025-03-28 16:48"
+              "caption": "2025-03-28 16:48",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-28-22-42.jpg",
-              "caption": "2025-03-28 22:42"
+              "caption": "2025-03-28 22:42",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-28-22-44.jpg",
-              "caption": "2025-03-28 22:44"
+              "caption": "2025-03-28 22:44",
+              "format": "9:16"
             }
           ]
         }
@@ -198,6 +282,33 @@
       "main_city": "Xi'an",
       "title": "Historic landmarks",
       "notes": "City walls and central attractions.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-03-29-09-02.jpg",
+          "caption": "2025-03-29 09:02",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-29-10-50.jpg",
+          "caption": "2025-03-29 10:50",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-29-10-51.jpg",
+          "caption": "2025-03-29 10:51",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-29-10-52.jpg",
+          "caption": "2025-03-29 10:52",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-29-11-24.jpg",
+          "caption": "2025-03-29 11:24",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Bell and Drum Tower",
@@ -207,23 +318,28 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-03-29-10-50.jpg",
-              "caption": "2025-03-29 10:50"
+              "caption": "2025-03-29 10:50",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-29-10-51.jpg",
-              "caption": "2025-03-29 10:51"
+              "caption": "2025-03-29 10:51",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-29-10-52.jpg",
-              "caption": "2025-03-29 10:52"
+              "caption": "2025-03-29 10:52",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-29-10-53.jpg",
-              "caption": "2025-03-29 10:53"
+              "caption": "2025-03-29 10:53",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-29-11-24.jpg",
-              "caption": "2025-03-29 11:24"
+              "caption": "2025-03-29 11:24",
+              "format": "9:16"
             }
           ]
         },
@@ -251,6 +367,23 @@
       "main_city": "Chengdu",
       "title": "Central Chengdu",
       "notes": "Urban exploration and food streets.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-03-30-21-55.jpg",
+          "caption": "2025-03-30 21:55",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-30-22-03.jpg",
+          "caption": "2025-03-30 22:03",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-30-22-04.jpg",
+          "caption": "2025-03-30 22:04",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Chunxi Road Taikooli",
@@ -260,15 +393,18 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-03-30-21-55.jpg",
-              "caption": "2025-03-30 21:55"
+              "caption": "2025-03-30 21:55",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-30-22-03.jpg",
-              "caption": "2025-03-30 22:03"
+              "caption": "2025-03-30 22:03",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-30-22-04.jpg",
-              "caption": "2025-03-30 22:04"
+              "caption": "2025-03-30 22:04",
+              "format": "9:16"
             }
           ]
         },
@@ -287,6 +423,33 @@
       "main_city": "Chengdu",
       "title": "Panda base and temples",
       "notes": "Mix of wildlife and cultural sites.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-03-31-14-24.jpg",
+          "caption": "2025-03-31 14:24",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-31-15-10.jpg",
+          "caption": "2025-03-31 15:10",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-31-21-58.jpg",
+          "caption": "2025-03-31 21:58",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-31-22-02.jpg",
+          "caption": "2025-03-31 22:02",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-03-31-23-08.jpg",
+          "caption": "2025-03-31 23:08",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Research Base of Giant Panda Breeding",
@@ -296,35 +459,43 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-03-31-14-24.jpg",
-              "caption": "2025-03-31 14:24"
+              "caption": "2025-03-31 14:24",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-31-15-10.jpg",
-              "caption": "2025-03-31 15:10"
+              "caption": "2025-03-31 15:10",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-31-16-04.jpg",
-              "caption": "2025-03-31 16:04"
+              "caption": "2025-03-31 16:04",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-31-21-58.jpg",
-              "caption": "2025-03-31 21:58"
+              "caption": "2025-03-31 21:58",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-31-22-02.jpg",
-              "caption": "2025-03-31 22:02"
+              "caption": "2025-03-31 22:02",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-31-22-05.jpg",
-              "caption": "2025-03-31 22:05"
+              "caption": "2025-03-31 22:05",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-31-22-06.jpg",
-              "caption": "2025-03-31 22:06"
+              "caption": "2025-03-31 22:06",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-03-31-23-08.jpg",
-              "caption": "2025-03-31 23:08"
+              "caption": "2025-03-31 23:08",
+              "format": "9:16"
             }
           ]
         },
@@ -352,6 +523,33 @@
       "main_city": "Jiuzhaigou",
       "title": "Jiuzhaigou valley",
       "notes": "Nature-focused day trip area.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-01-00-59.jpg",
+          "caption": "2025-04-01 00:59",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-01-08-11.jpg",
+          "caption": "2025-04-01 08:11",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-01-08-17.jpg",
+          "caption": "2025-04-01 08:17",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-01-17-24.jpg",
+          "caption": "2025-04-01 17:24",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-01-20-02.jpg",
+          "caption": "2025-04-01 20:02",
+          "format": "16:9"
+        }
+      ],
       "attractions": [
         {
           "name": "Jiuzhaigou",
@@ -361,35 +559,43 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-01-00-59.jpg",
-              "caption": "2025-04-01 00:59"
+              "caption": "2025-04-01 00:59",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-01-08-11.jpg",
-              "caption": "2025-04-01 08:11"
+              "caption": "2025-04-01 08:11",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-01-08-16.jpg",
-              "caption": "2025-04-01 08:16"
+              "caption": "2025-04-01 08:16",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-01-08-17.jpg",
-              "caption": "2025-04-01 08:17"
+              "caption": "2025-04-01 08:17",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-01-10-00.jpg",
-              "caption": "2025-04-01 10:00"
+              "caption": "2025-04-01 10:00",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-01-17-24.jpg",
-              "caption": "2025-04-01 17:24"
+              "caption": "2025-04-01 17:24",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-01-20-00.jpg",
-              "caption": "2025-04-01 20:00"
+              "caption": "2025-04-01 20:00",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-01-20-02.jpg",
-              "caption": "2025-04-01 20:02"
+              "caption": "2025-04-01 20:02",
+              "format": "16:9"
             }
           ]
         },
@@ -417,6 +623,23 @@
       "main_city": "Leshan",
       "title": "Grand Buddha visit",
       "notes": "Short stop focused on the main attraction.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-02-01-02.jpg",
+          "caption": "2025-04-02 01:02",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-02-01-15.jpg",
+          "caption": "2025-04-02 01:15",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-02-08-13.jpg",
+          "caption": "2025-04-02 08:13",
+          "format": "16:9"
+        }
+      ],
       "attractions": [
         {
           "name": "Leshan Grand Buddha",
@@ -426,19 +649,23 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-02-01-02.jpg",
-              "caption": "2025-04-02 01:02"
+              "caption": "2025-04-02 01:02",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-02-01-15.jpg",
-              "caption": "2025-04-02 01:15"
+              "caption": "2025-04-02 01:15",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-02-08-12.jpg",
-              "caption": "2025-04-02 08:12"
+              "caption": "2025-04-02 08:12",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-02-08-13.jpg",
-              "caption": "2025-04-02 08:13"
+              "caption": "2025-04-02 08:13",
+              "format": "16:9"
             }
           ]
         }
@@ -467,6 +694,18 @@
       "main_city": "Chongqing",
       "title": "River city highlights",
       "notes": "Downtown sightseeing and viewpoints.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-03-01-03.jpg",
+          "caption": "2025-04-03 01:03",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-03-01-06.jpg",
+          "caption": "2025-04-03 01:06",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Chaotianmen Square",
@@ -476,11 +715,13 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-03-01-03.jpg",
-              "caption": "2025-04-03 01:03"
+              "caption": "2025-04-03 01:03",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-03-01-06.jpg",
-              "caption": "2025-04-03 01:06"
+              "caption": "2025-04-03 01:06",
+              "format": "9:16"
             }
           ]
         },
@@ -499,6 +740,28 @@
       "main_city": "Chongqing",
       "title": "Old streets and urban views",
       "notes": "Continue exploring the city center.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-04-06-32.jpg",
+          "caption": "2025-04-04 06:32",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-04-06-40.jpg",
+          "caption": "2025-04-04 06:40",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-04-08-48.jpg",
+          "caption": "2025-04-04 08:48",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-04-08-56.jpg",
+          "caption": "2025-04-04 08:56",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Ciqikou Ancient Town",
@@ -508,31 +771,38 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-04-06-32.jpg",
-              "caption": "2025-04-04 06:32"
+              "caption": "2025-04-04 06:32",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-04-06-40.jpg",
-              "caption": "2025-04-04 06:40"
+              "caption": "2025-04-04 06:40",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-04-08-47.jpg",
-              "caption": "2025-04-04 08:47"
+              "caption": "2025-04-04 08:47",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-04-08-48.jpg",
-              "caption": "2025-04-04 08:48"
+              "caption": "2025-04-04 08:48",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-04-08-49.jpg",
-              "caption": "2025-04-04 08:49"
+              "caption": "2025-04-04 08:49",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-04-08-52.jpg",
-              "caption": "2025-04-04 08:52"
+              "caption": "2025-04-04 08:52",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-04-08-56.jpg",
-              "caption": "2025-04-04 08:56"
+              "caption": "2025-04-04 08:56",
+              "format": "9:16"
             }
           ]
         },
@@ -560,6 +830,23 @@
       "main_city": "Wulong",
       "title": "Karst landscape",
       "notes": "Day trip focused on natural scenery.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-05-08-22.jpg",
+          "caption": "2025-04-05 08:22",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-05-08-55.jpg",
+          "caption": "2025-04-05 08:55",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-05-09-32.jpg",
+          "caption": "2025-04-05 09:32",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Wulong Karst",
@@ -569,39 +856,48 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-05-08-22.jpg",
-              "caption": "2025-04-05 08:22"
+              "caption": "2025-04-05 08:22",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-05-08-24.jpg",
-              "caption": "2025-04-05 08:24"
+              "caption": "2025-04-05 08:24",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-05-08-55.jpg",
-              "caption": "2025-04-05 08:55"
+              "caption": "2025-04-05 08:55",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-05-08-56.jpg",
-              "caption": "2025-04-05 08:56"
+              "caption": "2025-04-05 08:56",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-05-08-57.jpg",
-              "caption": "2025-04-05 08:57"
+              "caption": "2025-04-05 08:57",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-05-09-32.jpg",
-              "caption": "2025-04-05 09:32"
+              "caption": "2025-04-05 09:32",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-05-11-33.jpg",
-              "caption": "2025-04-05 11:33"
+              "caption": "2025-04-05 11:33",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-05-16-46.jpg",
-              "caption": "2025-04-05 16:46"
+              "caption": "2025-04-05 16:46",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-05-16-53.jpg",
-              "caption": "2025-04-05 16:53"
+              "caption": "2025-04-05 16:53",
+              "format": "16:9"
             }
           ]
         },
@@ -629,6 +925,18 @@
       "main_city": "Chongqing",
       "title": "Departure to Zhangjiajie",
       "notes": "Transfer day with an afternoon train.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-06-09-37.jpg",
+          "caption": "2025-04-06 09:37",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-06-11-32.jpg",
+          "caption": "2025-04-06 11:32",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Eling Park",
@@ -638,11 +946,13 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-06-09-37.jpg",
-              "caption": "2025-04-06 09:37"
+              "caption": "2025-04-06 09:37",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-06-11-32.jpg",
-              "caption": "2025-04-06 11:32"
+              "caption": "2025-04-06 11:32",
+              "format": "9:16"
             }
           ]
         }
@@ -663,6 +973,23 @@
       "main_city": "Zhangjiajie",
       "title": "Mountain scenery",
       "notes": "National park viewpoints and cableways.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-07-12-05.jpg",
+          "caption": "2025-04-07 12:05",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-07-12-07.jpg",
+          "caption": "2025-04-07 12:07",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-07-15-00.jpg",
+          "caption": "2025-04-07 15:00",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "TianMen Mountain",
@@ -672,15 +999,18 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-07-12-05.jpg",
-              "caption": "2025-04-07 12:05"
+              "caption": "2025-04-07 12:05",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-07-12-07.jpg",
-              "caption": "2025-04-07 12:07"
+              "caption": "2025-04-07 12:07",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-07-15-00.jpg",
-              "caption": "2025-04-07 15:00"
+              "caption": "2025-04-07 15:00",
+              "format": "9:16"
             }
           ]
         },
@@ -699,6 +1029,68 @@
       "main_city": "Wulingyuan",
       "title": "Forest park area",
       "notes": "Explore the core scenic region.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-00-39.jpg",
+          "caption": "2025-04-08 00:39",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-01-00.jpg",
+          "caption": "2025-04-08 01:00",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-08-47.jpg",
+          "caption": "2025-04-08 08:47",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-10-57.jpg",
+          "caption": "2025-04-08 10:57",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-12-22.jpg",
+          "caption": "2025-04-08 12:22",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-12-24.jpg",
+          "caption": "2025-04-08 12:24",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-15-06.jpg",
+          "caption": "2025-04-08 15:06",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-15-11.jpg",
+          "caption": "2025-04-08 15:11",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-15-18.jpg",
+          "caption": "2025-04-08 15:18",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-15-19.jpg",
+          "caption": "2025-04-08 15:19",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-15-27.jpg",
+          "caption": "2025-04-08 15:27",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-08-15-29.jpg",
+          "caption": "2025-04-08 15:29",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "ZJJ National Park",
@@ -708,63 +1100,78 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-08-00-39.jpg",
-              "caption": "2025-04-08 00:39"
+              "caption": "2025-04-08 00:39",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-01-00.jpg",
-              "caption": "2025-04-08 01:00"
+              "caption": "2025-04-08 01:00",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-08-47.jpg",
-              "caption": "2025-04-08 08:47"
+              "caption": "2025-04-08 08:47",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-10-57.jpg",
-              "caption": "2025-04-08 10:57"
+              "caption": "2025-04-08 10:57",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-12-22.jpg",
-              "caption": "2025-04-08 12:22"
+              "caption": "2025-04-08 12:22",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-12-24.jpg",
-              "caption": "2025-04-08 12:24"
+              "caption": "2025-04-08 12:24",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-15-03.jpg",
-              "caption": "2025-04-08 15:03"
+              "caption": "2025-04-08 15:03",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-15-06.jpg",
-              "caption": "2025-04-08 15:06"
+              "caption": "2025-04-08 15:06",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-15-11.jpg",
-              "caption": "2025-04-08 15:11"
+              "caption": "2025-04-08 15:11",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-15-18.jpg",
-              "caption": "2025-04-08 15:18"
+              "caption": "2025-04-08 15:18",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-15-19.jpg",
-              "caption": "2025-04-08 15:19"
+              "caption": "2025-04-08 15:19",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-15-21.jpg",
-              "caption": "2025-04-08 15:21"
+              "caption": "2025-04-08 15:21",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-15-27.jpg",
-              "caption": "2025-04-08 15:27"
+              "caption": "2025-04-08 15:27",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-15-29.jpg",
-              "caption": "2025-04-08 15:29"
+              "caption": "2025-04-08 15:29",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-08-23-10.jpeg",
-              "caption": "2025-04-08 23:10"
+              "caption": "2025-04-08 23:10",
+              "format": "16:9"
             }
           ]
         },
@@ -783,6 +1190,13 @@
       "main_city": "Wulingyuan",
       "title": "Grand canyon area",
       "notes": "More scenic highlights around the park.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-09-09-38.jpg",
+          "caption": "2025-04-09 09:38",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Zhangjiajie Grand Canyon",
@@ -792,11 +1206,13 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-09-09-38.jpg",
-              "caption": "2025-04-09 09:38"
+              "caption": "2025-04-09 09:38",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-09-23-10.jpeg",
-              "caption": "2025-04-09 23:10"
+              "caption": "2025-04-09 23:10",
+              "format": "16:9"
             }
           ]
         },
@@ -824,6 +1240,43 @@
       "main_city": "Changsha",
       "title": "River island and city center",
       "notes": "Relaxed urban sightseeing.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-10-00-40.jpg",
+          "caption": "2025-04-10 00:40",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-10-00-41.jpg",
+          "caption": "2025-04-10 00:41",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-10-00-46.jpg",
+          "caption": "2025-04-10 00:46",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-10-00-47.jpg",
+          "caption": "2025-04-10 00:47",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-10-00-48.jpg",
+          "caption": "2025-04-10 00:48",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-10-16-54.jpg",
+          "caption": "2025-04-10 16:54",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-10-17-49.jpg",
+          "caption": "2025-04-10 17:49",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Juzizhou Island",
@@ -833,35 +1286,43 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-10-00-40.jpg",
-              "caption": "2025-04-10 00:40"
+              "caption": "2025-04-10 00:40",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-10-00-42.jpg",
-              "caption": "2025-04-10 00:42"
+              "caption": "2025-04-10 00:42",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-10-00-46.jpg",
-              "caption": "2025-04-10 00:46"
+              "caption": "2025-04-10 00:46",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-10-00-47.jpg",
-              "caption": "2025-04-10 00:47"
+              "caption": "2025-04-10 00:47",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-10-00-48.jpg",
-              "caption": "2025-04-10 00:48"
+              "caption": "2025-04-10 00:48",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-10-13-49.jpg",
-              "caption": "2025-04-10 13:49"
+              "caption": "2025-04-10 13:49",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-10-16-54.jpg",
-              "caption": "2025-04-10 16:54"
+              "caption": "2025-04-10 16:54",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-10-54-00-35.jpg",
-              "caption": "2025-04-10 54:00"
+              "caption": "2025-04-10 54:00",
+              "format": "16:9"
             }
           ]
         },
@@ -880,6 +1341,43 @@
       "main_city": "Changsha",
       "title": "Academy and old street",
       "notes": "Historical and local-food stops.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-11-10-12.jpg",
+          "caption": "2025-04-11 10:12",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-11-11-44.jpg",
+          "caption": "2025-04-11 11:44",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-11-12-00.jpg",
+          "caption": "2025-04-11 12:00",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-11-15-01.jpg",
+          "caption": "2025-04-11 15:01",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-11-17-58.jpg",
+          "caption": "2025-04-11 17:58",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-11-17-59.jpg",
+          "caption": "2025-04-11 17:59",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-11-18-21.jpg",
+          "caption": "2025-04-11 18:21",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Yuelu Academy",
@@ -889,31 +1387,38 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-11-10-12.jpg",
-              "caption": "2025-04-11 10:12"
+              "caption": "2025-04-11 10:12",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-11-11-44.jpg",
-              "caption": "2025-04-11 11:44"
+              "caption": "2025-04-11 11:44",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-11-12-00.jpg",
-              "caption": "2025-04-11 12:00"
+              "caption": "2025-04-11 12:00",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-11-15-01.jpg",
-              "caption": "2025-04-11 15:01"
+              "caption": "2025-04-11 15:01",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-11-17-58.jpg",
-              "caption": "2025-04-11 17:58"
+              "caption": "2025-04-11 17:58",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-11-17-59.jpg",
-              "caption": "2025-04-11 17:59"
+              "caption": "2025-04-11 17:59",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-11-18-21.jpg",
-              "caption": "2025-04-11 18:21"
+              "caption": "2025-04-11 18:21",
+              "format": "9:16"
             }
           ]
         },
@@ -941,6 +1446,13 @@
       "main_city": "Nanchang",
       "title": "Nanchang landmarks",
       "notes": "First stay in Nanchang before heading west again.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-12-15-04.jpg",
+          "caption": "2025-04-12 15:04",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Tengwang Pavilion",
@@ -950,7 +1462,8 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-12-15-04.jpg",
-              "caption": "2025-04-12 15:04"
+              "caption": "2025-04-12 15:04",
+              "format": "9:16"
             }
           ]
         },
@@ -969,6 +1482,48 @@
       "main_city": "Wulong",
       "title": "Return to the karst bridges",
       "notes": "Second visit focused on the Three Natural Bridges trail.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-13-15-10.jpg",
+          "caption": "2025-04-13 15:10",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-13-15-12.jpg",
+          "caption": "2025-04-13 15:12",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-13-15-13.jpg",
+          "caption": "2025-04-13 15:13",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-13-15-14.jpg",
+          "caption": "2025-04-13 15:14",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-13-15-15.jpg",
+          "caption": "2025-04-13 15:15",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-13-15-16.jpg",
+          "caption": "2025-04-13 15:16",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-13-15-17.jpg",
+          "caption": "2025-04-13 15:17",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-13-15-18.jpg",
+          "caption": "2025-04-13 15:18",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Three Natural Bridges",
@@ -978,39 +1533,48 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-13-15-10.jpg",
-              "caption": "2025-04-13 15:10"
+              "caption": "2025-04-13 15:10",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-13-15-12.jpg",
-              "caption": "2025-04-13 15:12"
+              "caption": "2025-04-13 15:12",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-13-15-13.jpg",
-              "caption": "2025-04-13 15:13"
+              "caption": "2025-04-13 15:13",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-13-15-14.jpg",
-              "caption": "2025-04-13 15:14"
+              "caption": "2025-04-13 15:14",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-13-15-15.jpg",
-              "caption": "2025-04-13 15:15"
+              "caption": "2025-04-13 15:15",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-13-15-16.jpg",
-              "caption": "2025-04-13 15:16"
+              "caption": "2025-04-13 15:16",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-13-15-17.jpg",
-              "caption": "2025-04-13 15:17"
+              "caption": "2025-04-13 15:17",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-13-15-18.jpg",
-              "caption": "2025-04-13 15:18"
+              "caption": "2025-04-13 15:18",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-13-16-24.jpg",
-              "caption": "2025-04-13 16:24"
+              "caption": "2025-04-13 16:24",
+              "format": "16:9"
             }
           ]
         },
@@ -1038,6 +1602,7 @@
       "main_city": "Zhangjiajie",
       "title": "Transfer to Zhangjiajie",
       "notes": "Travel day between Wulong and the Zhangjiajie area.",
+      "pictures": [],
       "attractions": [
         {
           "name": "TianMen Mountain",
@@ -1063,6 +1628,38 @@
       "main_city": "Zhangjiajie",
       "title": "Tianmen Mountain",
       "notes": "Cable car and the Heaven's Gate staircase.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-15-00-36.jpg",
+          "caption": "2025-04-15 00:36",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-15-00-39.jpg",
+          "caption": "2025-04-15 00:39",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-15-23-10.jpg",
+          "caption": "2025-04-15 23:10",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-15-23-11.jpg",
+          "caption": "2025-04-15 23:11",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-15-23-13.jpg",
+          "caption": "2025-04-15 23:13",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-15-23-14.jpg",
+          "caption": "2025-04-15 23:14",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "TianMen Mountain",
@@ -1072,27 +1669,33 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-15-00-36.jpg",
-              "caption": "2025-04-15 00:36"
+              "caption": "2025-04-15 00:36",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-15-00-39.jpg",
-              "caption": "2025-04-15 00:39"
+              "caption": "2025-04-15 00:39",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-15-23-10.jpg",
-              "caption": "2025-04-15 23:10"
+              "caption": "2025-04-15 23:10",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-15-23-11.jpg",
-              "caption": "2025-04-15 23:11"
+              "caption": "2025-04-15 23:11",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-15-23-13.jpg",
-              "caption": "2025-04-15 23:13"
+              "caption": "2025-04-15 23:13",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-15-23-14.jpg",
-              "caption": "2025-04-15 23:14"
+              "caption": "2025-04-15 23:14",
+              "format": "9:16"
             }
           ]
         },
@@ -1111,6 +1714,58 @@
       "main_city": "Wulingyuan",
       "title": "Forest park viewpoints",
       "notes": "Core scenic region of the national park.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-00-41.jpg",
+          "caption": "2025-04-16 00:41",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-01-10.jpg",
+          "caption": "2025-04-16 01:10",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-11-55.jpg",
+          "caption": "2025-04-16 11:55",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-11-59.jpg",
+          "caption": "2025-04-16 11:59",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-12-03.jpg",
+          "caption": "2025-04-16 12:03",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-12-08.jpg",
+          "caption": "2025-04-16 12:08",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-12-17.jpg",
+          "caption": "2025-04-16 12:17",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-12-19.jpg",
+          "caption": "2025-04-16 12:19",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-20-50.jpg",
+          "caption": "2025-04-16 20:50",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-16-23-10.jpg",
+          "caption": "2025-04-16 23:10",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "ZJJ National Park",
@@ -1120,43 +1775,53 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-16-00-41.jpg",
-              "caption": "2025-04-16 00:41"
+              "caption": "2025-04-16 00:41",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-16-01-10.jpg",
-              "caption": "2025-04-16 01:10"
+              "caption": "2025-04-16 01:10",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-16-11-55.jpg",
-              "caption": "2025-04-16 11:55"
+              "caption": "2025-04-16 11:55",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-16-11-59.jpg",
-              "caption": "2025-04-16 11:59"
+              "caption": "2025-04-16 11:59",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-16-12-03.jpg",
-              "caption": "2025-04-16 12:03"
+              "caption": "2025-04-16 12:03",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-16-12-08.jpg",
-              "caption": "2025-04-16 12:08"
+              "caption": "2025-04-16 12:08",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-16-12-17.jpg",
-              "caption": "2025-04-16 12:17"
+              "caption": "2025-04-16 12:17",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-16-12-19.jpg",
-              "caption": "2025-04-16 12:19"
+              "caption": "2025-04-16 12:19",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-16-20-50.jpg",
-              "caption": "2025-04-16 20:50"
+              "caption": "2025-04-16 20:50",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-16-23-10.jpg",
-              "caption": "2025-04-16 23:10"
+              "caption": "2025-04-16 23:10",
+              "format": "9:16"
             }
           ]
         },
@@ -1175,6 +1840,48 @@
       "main_city": "Wulingyuan",
       "title": "Avatar mountains",
       "notes": "More time on the park's high viewpoints.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-17-00-44.jpg",
+          "caption": "2025-04-17 00:44",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-17-00-52.jpg",
+          "caption": "2025-04-17 00:52",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-17-00-53.jpg",
+          "caption": "2025-04-17 00:53",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-17-08-44.jpg",
+          "caption": "2025-04-17 08:44",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-17-16-26.jpeg",
+          "caption": "2025-04-17 16:26",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-17-17-19.jpg",
+          "caption": "2025-04-17 17:19",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-17-17-22.jpg",
+          "caption": "2025-04-17 17:22",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-17-17-26.jpg",
+          "caption": "2025-04-17 17:26",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Yuanjiajie",
@@ -1184,35 +1891,43 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-17-00-44.jpg",
-              "caption": "2025-04-17 00:44"
+              "caption": "2025-04-17 00:44",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-17-00-52.jpg",
-              "caption": "2025-04-17 00:52"
+              "caption": "2025-04-17 00:52",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-17-00-53.jpg",
-              "caption": "2025-04-17 00:53"
+              "caption": "2025-04-17 00:53",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-17-08-44.jpg",
-              "caption": "2025-04-17 08:44"
+              "caption": "2025-04-17 08:44",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-17-16-26.jpeg",
-              "caption": "2025-04-17 16:26"
+              "caption": "2025-04-17 16:26",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-17-17-19.jpg",
-              "caption": "2025-04-17 17:19"
+              "caption": "2025-04-17 17:19",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-17-17-22.jpg",
-              "caption": "2025-04-17 17:22"
+              "caption": "2025-04-17 17:22",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-17-17-26.jpg",
-              "caption": "2025-04-17 17:26"
+              "caption": "2025-04-17 17:26",
+              "format": "9:16"
             }
           ]
         },
@@ -1231,6 +1946,33 @@
       "main_city": "Wulingyuan",
       "title": "Park trails and canyon",
       "notes": "Final full day around Wulingyuan.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-18-00-41.jpg",
+          "caption": "2025-04-18 00:41",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-18-00-46.jpg",
+          "caption": "2025-04-18 00:46",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-18-09-55.jpg",
+          "caption": "2025-04-18 09:55",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-18-20-49.jpg",
+          "caption": "2025-04-18 20:49",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-18-23-10.jpg",
+          "caption": "2025-04-18 23:10",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Zhangjiajie Grand Canyon",
@@ -1240,23 +1982,28 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-18-00-41.jpg",
-              "caption": "2025-04-18 00:41"
+              "caption": "2025-04-18 00:41",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-18-00-46.jpg",
-              "caption": "2025-04-18 00:46"
+              "caption": "2025-04-18 00:46",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-18-09-55.jpg",
-              "caption": "2025-04-18 09:55"
+              "caption": "2025-04-18 09:55",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-18-20-49.jpg",
-              "caption": "2025-04-18 20:49"
+              "caption": "2025-04-18 20:49",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-18-23-10.jpg",
-              "caption": "2025-04-18 23:10"
+              "caption": "2025-04-18 23:10",
+              "format": "9:16"
             }
           ]
         },
@@ -1284,6 +2031,23 @@
       "main_city": "Changsha",
       "title": "Xiang River views",
       "notes": "Relaxed day along the riverfront.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-19-00-35.jpg",
+          "caption": "2025-04-19 00:35",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-19-17-37.jpg",
+          "caption": "2025-04-19 17:37",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-19-23-30.jpg",
+          "caption": "2025-04-19 23:30",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Juzizhou Island",
@@ -1293,19 +2057,23 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-19-00-35.jpg",
-              "caption": "2025-04-19 00:35"
+              "caption": "2025-04-19 00:35",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-19-17-37.jpg",
-              "caption": "2025-04-19 17:37"
+              "caption": "2025-04-19 17:37",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-19-23-10.jpg",
-              "caption": "2025-04-19 23:10"
+              "caption": "2025-04-19 23:10",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-19-23-30.jpg",
-              "caption": "2025-04-19 23:30"
+              "caption": "2025-04-19 23:30",
+              "format": "9:16"
             }
           ]
         },
@@ -1333,6 +2101,43 @@
       "main_city": "Nanchang",
       "title": "Memorial and old town",
       "notes": "Evening around Bayi Square and the riverside.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-20-00-38.jpg",
+          "caption": "2025-04-20 00:38",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-20-00-40.jpg",
+          "caption": "2025-04-20 00:40",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-20-00-43.jpg",
+          "caption": "2025-04-20 00:43",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-20-00-47.jpg",
+          "caption": "2025-04-20 00:47",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-20-10-22.jpg",
+          "caption": "2025-04-20 10:22",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-20-17-13.jpg",
+          "caption": "2025-04-20 17:13",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-20-17-15.jpg",
+          "caption": "2025-04-20 17:15",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Bayi Square",
@@ -1342,35 +2147,43 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-20-00-38.jpg",
-              "caption": "2025-04-20 00:38"
+              "caption": "2025-04-20 00:38",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-20-00-40.jpg",
-              "caption": "2025-04-20 00:40"
+              "caption": "2025-04-20 00:40",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-20-00-43.jpg",
-              "caption": "2025-04-20 00:43"
+              "caption": "2025-04-20 00:43",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-20-00-47.jpg",
-              "caption": "2025-04-20 00:47"
+              "caption": "2025-04-20 00:47",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-20-10-22.jpg",
-              "caption": "2025-04-20 10:22"
+              "caption": "2025-04-20 10:22",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-20-17-13.jpg",
-              "caption": "2025-04-20 17:13"
+              "caption": "2025-04-20 17:13",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-20-17-136.jpg",
-              "caption": "2025-04-20 17:136"
+              "caption": "2025-04-20 17:136",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-20-17-15.jpg",
-              "caption": "2025-04-20 17:15"
+              "caption": "2025-04-20 17:15",
+              "format": "9:16"
             }
           ]
         },
@@ -1389,6 +2202,28 @@
       "main_city": "Nanchang",
       "title": "Final day and departure",
       "notes": "Last stops before leaving China.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/china-360/2025-04-21-17-08.jpg",
+          "caption": "2025-04-21 17:08",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-21-17-09.jpg",
+          "caption": "2025-04-21 17:09",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-21-17-13.jpg",
+          "caption": "2025-04-21 17:13",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/china-360/2025-04-21-18-22.jpg",
+          "caption": "2025-04-21 18:22",
+          "format": "9:16"
+        }
+      ],
       "attractions": [
         {
           "name": "Tengwang Pavilion",
@@ -1398,27 +2233,33 @@
           "pictures": [
             {
               "url": "src/assets/trips/china-360/2025-04-21-10-20.jpg",
-              "caption": "2025-04-21 10:20"
+              "caption": "2025-04-21 10:20",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-21-17-07.jpg",
-              "caption": "2025-04-21 17:07"
+              "caption": "2025-04-21 17:07",
+              "format": "16:9"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-21-17-08.jpg",
-              "caption": "2025-04-21 17:08"
+              "caption": "2025-04-21 17:08",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-21-17-09.jpg",
-              "caption": "2025-04-21 17:09"
+              "caption": "2025-04-21 17:09",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-21-17-13.jpg",
-              "caption": "2025-04-21 17:13"
+              "caption": "2025-04-21 17:13",
+              "format": "9:16"
             },
             {
               "url": "src/assets/trips/china-360/2025-04-21-18-22.jpg",
-              "caption": "2025-04-21 18:22"
+              "caption": "2025-04-21 18:22",
+              "format": "9:16"
             }
           ]
         },
