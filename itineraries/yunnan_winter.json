@@ -71,15 +71,13 @@
           "name": "Monster Building",
           "city": "Hong Kong",
           "rating": 4,
-          "description": "Dense residential complex known for its striking appearance.",
-          "pictures": []
+          "description": "Dense residential complex known for its striking appearance."
         },
         {
           "name": "Des Voeux Road Central",
           "city": "Hong Kong",
           "rating": 4,
-          "description": "Central Hong Kong thoroughfare and commercial corridor.",
-          "pictures": []
+          "description": "Central Hong Kong thoroughfare and commercial corridor."
         }
       ],
       "train_trips": []
@@ -156,22 +154,19 @@
           "name": "Tian Tan Buddha",
           "city": "Hong Kong",
           "rating": 5,
-          "description": "Large seated Buddha statue on Lantau Island.",
-          "pictures": []
+          "description": "Large seated Buddha statue on Lantau Island."
         },
         {
           "name": "Victoria Peak",
           "city": "Hong Kong",
           "rating": 5,
-          "description": "Famous viewpoint over the city.",
-          "pictures": []
+          "description": "Famous viewpoint over the city."
         },
         {
           "name": "Victoria Peak's evening skyline",
           "city": "Hong Kong",
           "rating": 5,
-          "description": "Night views over Hong Kong from Victoria Peak.",
-          "pictures": []
+          "description": "Night views over Hong Kong from Victoria Peak."
         }
       ],
       "train_trips": []
@@ -223,22 +218,19 @@
           "name": "Cheung Chau",
           "city": "Hong Kong",
           "rating": 5,
-          "description": "Iconic harbor skyline and waterfront views.",
-          "pictures": []
+          "description": "Iconic harbor skyline and waterfront views."
         },
         {
           "name": "Haixinsha Asian Games Park",
           "city": "Guangzhou",
           "rating": 4,
-          "description": "Riverside park near the Pearl River.",
-          "pictures": []
+          "description": "Riverside park near the Pearl River."
         },
         {
           "name": "Canton Tower",
           "city": "Guangzhou",
           "rating": 5,
-          "description": "Tall observation tower and city landmark.",
-          "pictures": []
+          "description": "Tall observation tower and city landmark."
         }
       ],
       "train_trips": []
@@ -285,22 +277,19 @@
           "name": "Shamian Dao",
           "city": "Guangzhou",
           "rating": 4,
-          "description": "Historic island district with colonial-era architecture.",
-          "pictures": []
+          "description": "Historic island district with colonial-era architecture."
         },
         {
           "name": "Nanyue King Museum",
           "city": "Guangzhou",
           "rating": 4,
-          "description": "Museum focused on the Nanyue Kingdom history.",
-          "pictures": []
+          "description": "Museum focused on the Nanyue Kingdom history."
         },
         {
           "name": "Royal Hot Springs",
           "city": "Zhuhai",
           "rating": 4,
-          "description": "Hot spring resort and spa complex in Zhuhai.",
-          "pictures": []
+          "description": "Hot spring resort and spa complex in Zhuhai."
         }
       ],
       "train_trips": []
@@ -362,50 +351,43 @@
           "name": "Monte Fortress",
           "city": "Macao",
           "rating": 4,
-          "description": "Historic fortress with city views.",
-          "pictures": []
+          "description": "Historic fortress with city views."
         },
         {
           "name": "Ruins of St. Paul's",
           "city": "Macao",
           "rating": 5,
-          "description": "Iconic church façade and heritage site.",
-          "pictures": []
+          "description": "Iconic church façade and heritage site."
         },
         {
           "name": "Senado Square",
           "city": "Macao",
           "rating": 5,
-          "description": "Historic public square in the center of Macao.",
-          "pictures": []
+          "description": "Historic public square in the center of Macao."
         },
         {
           "name": "Garden of the Golden Chambers",
           "city": "Macao",
           "rating": 4,
-          "description": "Historic garden and green space in Macao.",
-          "pictures": []
+          "description": "Historic garden and green space in Macao."
         },
         {
           "name": "Grand Lisboa Hotel",
           "city": "Macao",
           "rating": 4,
-          "description": "Major casino and hotel landmark.",
-          "pictures": []
+          "description": "Major casino and hotel landmark."
         },
         {
           "name": "Eiffel Tower at The Parisian Macao",
           "city": "Macao",
           "rating": 4,
-          "description": "Replica landmark and viewing attraction.",
-          "pictures": []
+          "description": "Replica landmark and viewing attraction."
         },
         {
           "name": "Lotus Garden",
           "city": "Macao",
           "rating": 4,
-          "description": "Public garden and scenic stop.",
-          "pictures": []
+          "description": "Public garden and scenic stop."
         }
       ],
       "train_trips": []
@@ -457,36 +439,31 @@
           "name": "Lianhuashan Park",
           "city": "Shenzhen",
           "rating": 4,
-          "description": "Hilltop park with city views and Deng Xiaoping statue.",
-          "pictures": []
+          "description": "Hilltop park with city views and Deng Xiaoping statue."
         },
         {
           "name": "Splendid China Folk Village",
           "city": "Shenzhen",
           "rating": 4,
-          "description": "Theme park of miniature landmarks and folk culture.",
-          "pictures": []
+          "description": "Theme park of miniature landmarks and folk culture."
         },
         {
           "name": "Ping An Finance Center",
           "city": "Shenzhen",
           "rating": 4,
-          "description": "Skyscraper and financial-district landmark.",
-          "pictures": []
+          "description": "Skyscraper and financial-district landmark."
         },
         {
           "name": "Talent Park",
           "city": "Shenzhen",
           "rating": 4,
-          "description": "Waterfront park in Shenzhen Bay.",
-          "pictures": []
+          "description": "Waterfront park in Shenzhen Bay."
         },
         {
           "name": "Huaqiang Road",
           "city": "Shenzhen",
           "rating": 4,
-          "description": "Electronics and commercial street.",
-          "pictures": []
+          "description": "Electronics and commercial street."
         }
       ],
       "train_trips": []
@@ -538,8 +515,7 @@
           "name": "Shilin Stone Forest",
           "city": "Kunming",
           "rating": 5,
-          "description": "Karst landscape of stone pillars and formations.",
-          "pictures": []
+          "description": "Karst landscape of stone pillars and formations."
         }
       ],
       "train_trips": []
@@ -626,43 +602,37 @@
           "name": "Green Lake Park",
           "city": "Kunming",
           "rating": 4,
-          "description": "Popular park in central Kunming.",
-          "pictures": []
+          "description": "Popular park in central Kunming."
         },
         {
           "name": "Kunming Old Street",
           "city": "Kunming",
           "rating": 4,
-          "description": "Historic pedestrian area and food street.",
-          "pictures": []
+          "description": "Historic pedestrian area and food street."
         },
         {
           "name": "Xishan",
           "city": "Kunming",
           "rating": 4,
-          "description": "Scenic western hills area overlooking Dianchi.",
-          "pictures": []
+          "description": "Scenic western hills area overlooking Dianchi."
         },
         {
           "name": "Longmen Grottoes",
           "city": "Kunming",
           "rating": 4,
-          "description": "Cliffside grottoes and temples on Xishan.",
-          "pictures": []
+          "description": "Cliffside grottoes and temples on Xishan."
         },
         {
           "name": "Dianchi Lake",
           "city": "Kunming",
           "rating": 4,
-          "description": "Large lake near Kunming.",
-          "pictures": []
+          "description": "Large lake near Kunming."
         },
         {
           "name": "Dounan Flower Market",
           "city": "Kunming",
           "rating": 4,
-          "description": "Large flower market and local trade hub.",
-          "pictures": []
+          "description": "Large flower market and local trade hub."
         }
       ],
       "train_trips": []
@@ -734,15 +704,13 @@
           "name": "Chongsheng Temple Three Pagodas",
           "city": "Dali",
           "rating": 5,
-          "description": "Famous temple complex and pagoda trio.",
-          "pictures": []
+          "description": "Famous temple complex and pagoda trio."
         },
         {
           "name": "Erhai Lake",
           "city": "Dali",
           "rating": 5,
-          "description": "Large lake and scenic regional landmark.",
-          "pictures": []
+          "description": "Large lake and scenic regional landmark."
         }
       ],
       "train_trips": []
@@ -844,50 +812,43 @@
           "name": "Erhai Lake",
           "city": "Dali",
           "rating": 5,
-          "description": "Large lake and scenic regional landmark.",
-          "pictures": []
+          "description": "Large lake and scenic regional landmark."
         },
         {
           "name": "Xizhou Old Town",
           "city": "Dali",
           "rating": 4,
-          "description": "Historic town with traditional Bai architecture.",
-          "pictures": []
+          "description": "Historic town with traditional Bai architecture."
         },
         {
           "name": "Shuanglang Ancient Town",
           "city": "Dali",
           "rating": 4,
-          "description": "Lakeside ancient town with scenic views.",
-          "pictures": []
+          "description": "Lakeside ancient town with scenic views."
         },
         {
           "name": "Jinshuo Island",
           "city": "Dali",
           "rating": 4,
-          "description": "Island stop in the Erhai lake area.",
-          "pictures": []
+          "description": "Island stop in the Erhai lake area."
         },
         {
           "name": "Luoquan Peninsula",
           "city": "Dali",
           "rating": 4,
-          "description": "Peninsula viewpoint on Erhai Lake.",
-          "pictures": []
+          "description": "Peninsula viewpoint on Erhai Lake."
         },
         {
           "name": "Lixiangbang",
           "city": "Dali",
           "rating": 4,
-          "description": "Lakeside community and scenic stop near Erhai.",
-          "pictures": []
+          "description": "Lakeside community and scenic stop near Erhai."
         },
         {
           "name": "Caicun Wharf",
           "city": "Dali",
           "rating": 4,
-          "description": "Lakeside departure point and scenic stop.",
-          "pictures": []
+          "description": "Lakeside departure point and scenic stop."
         }
       ],
       "train_trips": []
@@ -924,8 +885,7 @@
           "name": "Lijiang Old Town",
           "city": "Lijiang",
           "rating": 5,
-          "description": "Historic UNESCO-listed old town.",
-          "pictures": []
+          "description": "Historic UNESCO-listed old town."
         }
       ],
       "train_trips": []
@@ -1012,15 +972,13 @@
           "name": "Jade Dragon Snow Mountain",
           "city": "Lijiang",
           "rating": 5,
-          "description": "Major mountain and glacier scenery area.",
-          "pictures": []
+          "description": "Major mountain and glacier scenery area."
         },
         {
           "name": "Blue Moon Valley",
           "city": "Lijiang",
           "rating": 5,
-          "description": "Valley known for striking turquoise water.",
-          "pictures": []
+          "description": "Valley known for striking turquoise water."
         }
       ],
       "train_trips": []
@@ -1072,29 +1030,25 @@
           "name": "Lijiang Prayer Flags",
           "city": "Lijiang",
           "rating": 4,
-          "description": "Colorful prayer-flag displays near Lijiang.",
-          "pictures": []
+          "description": "Colorful prayer-flag displays near Lijiang."
         },
         {
           "name": "Dragon Girl Lake",
           "city": "Lijiang",
           "rating": 4,
-          "description": "Alpine lake near Jade Dragon Snow Mountain.",
-          "pictures": []
+          "description": "Alpine lake near Jade Dragon Snow Mountain."
         },
         {
           "name": "Shuhe Ancient Town",
           "city": "Lijiang",
           "rating": 4,
-          "description": "Historic Naxi town near Lijiang.",
-          "pictures": []
+          "description": "Historic Naxi town near Lijiang."
         },
         {
           "name": "Baisha Ancient Town",
           "city": "Lijiang",
           "rating": 4,
-          "description": "Quiet historic town north of Lijiang.",
-          "pictures": []
+          "description": "Quiet historic town north of Lijiang."
         }
       ],
       "train_trips": []
@@ -1151,8 +1105,7 @@
           "name": "Lugu Lake",
           "city": "Lijiang",
           "rating": 5,
-          "description": "Scenic mountain lake region.",
-          "pictures": []
+          "description": "Scenic mountain lake region."
         }
       ],
       "train_trips": []
@@ -1214,29 +1167,25 @@
           "name": "Tiger Leaping Gorge",
           "city": "Lijiang",
           "rating": 5,
-          "description": "Dramatic canyon and hiking area.",
-          "pictures": []
+          "description": "Dramatic canyon and hiking area."
         },
         {
           "name": "Haba Snow Mountain",
           "city": "Lijiang",
           "rating": 4,
-          "description": "High peak near Tiger Leaping Gorge.",
-          "pictures": []
+          "description": "High peak near Tiger Leaping Gorge."
         },
         {
           "name": "Baishuitai",
           "city": "Lijiang",
           "rating": 4,
-          "description": "White water terraces and travertine formations.",
-          "pictures": []
+          "description": "White water terraces and travertine formations."
         },
         {
           "name": "Dukezong Ancient City",
           "city": "Shangri-La",
           "rating": 4,
-          "description": "Historic Tibetan-style old town.",
-          "pictures": []
+          "description": "Historic Tibetan-style old town."
         }
       ],
       "train_trips": []
@@ -1263,29 +1212,25 @@
           "name": "Napa Lake",
           "city": "Shangri-La",
           "rating": 4,
-          "description": "Seasonal wetland lake near Shangri-La.",
-          "pictures": []
+          "description": "Seasonal wetland lake near Shangri-La."
         },
         {
           "name": "Napa Grassland",
           "city": "Shangri-La",
           "rating": 4,
-          "description": "Highland grassland around Napa Lake.",
-          "pictures": []
+          "description": "Highland grassland around Napa Lake."
         },
         {
           "name": "Songzanlin",
           "city": "Shangri-La",
           "rating": 5,
-          "description": "Prominent Tibetan Buddhist monastery.",
-          "pictures": []
+          "description": "Prominent Tibetan Buddhist monastery."
         },
         {
           "name": "Tower of Harmony",
           "city": "Shangri-La",
           "rating": 4,
-          "description": "Landmark tower in Shangri-La.",
-          "pictures": []
+          "description": "Landmark tower in Shangri-La."
         }
       ],
       "train_trips": []
@@ -1342,15 +1287,13 @@
           "name": "Potatso National Park",
           "city": "Shangri-La",
           "rating": 5,
-          "description": "Protected park with lakes, forest, and meadow scenery.",
-          "pictures": []
+          "description": "Protected park with lakes, forest, and meadow scenery."
         },
         {
           "name": "Shuduhu Lake",
           "city": "Shangri-La",
           "rating": 4,
-          "description": "Alpine lake inside Potatso National Park.",
-          "pictures": []
+          "description": "Alpine lake inside Potatso National Park."
         }
       ],
       "train_trips": []
@@ -1372,8 +1315,7 @@
           "name": "Kunming Zoo",
           "city": "Kunming",
           "rating": 4,
-          "description": "Popular park in central Kunming.",
-          "pictures": []
+          "description": "Popular park in central Kunming."
         }
       ],
       "train_trips": []

@@ -29,32 +29,13 @@
             "name": "Tiananmen Square",
             "city": "Beijing",
             "rating": 5,
-            "description": "Historic public square in the center of the city.",
-            "pictures": [
-              {
-                "url": "https://example.com/images/tiananmen-1.jpg",
-                "caption": "Square at sunrise",
-                "format": "16:9"
-              },
-              {
-                "url": "https://example.com/images/tiananmen-2.jpg",
-                "caption": "Evening view",
-                "format": "16:9"
-              }
-            ]
+            "description": "Historic public square in the center of the city."
           },
           {
             "name": "Jingshan Park",
             "city": "Beijing",
             "rating": 4,
-            "description": "Park with a panoramic view over the Forbidden City.",
-            "pictures": [
-              {
-                "url": "https://example.com/images/jingshan-1.jpg",
-                "caption": "View from the hill",
-                "format": "16:9"
-              }
-            ]
+            "description": "Park with a panoramic view over the Forbidden City."
           }
         ],
         "train_trips": []
@@ -69,14 +50,7 @@
             "name": "Forbidden City",
             "city": "Beijing",
             "rating": 5,
-            "description": "Imperial palace complex with extensive courtyards and halls.",
-            "pictures": [
-              {
-                "url": "https://example.com/images/forbidden-city-1.jpg",
-                "caption": "Gate entrance",
-                "format": "16:9"
-              }
-            ]
+            "description": "Imperial palace complex with extensive courtyards and halls."
           }
         ],
         "train_trips": [
@@ -100,14 +74,7 @@
             "name": "Pingyao Ancient City",
             "city": "Pingyao",
             "rating": 4,
-            "description": "Well-preserved historic city with traditional architecture.",
-            "pictures": [
-              {
-                "url": "https://example.com/images/pingyao-1.jpg",
-                "caption": "Main street",
-                "format": "16:9"
-              }
-            ]
+            "description": "Well-preserved historic city with traditional architecture."
           }
         ],
         "train_trips": [

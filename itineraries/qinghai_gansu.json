@@ -76,8 +76,7 @@
           "name": "Huashan",
           "city": "Xian",
           "rating": 5,
-          "description": "A famous mountain day trip from Xi'an.",
-          "pictures": []
+          "description": "A famous mountain day trip from Xi'an."
         }
       ],
       "train_trips": []
@@ -93,8 +92,7 @@
           "name": "Shaanxi Museum",
           "city": "Xian",
           "rating": 5,
-          "description": "Major museum in Xi'an focused on Shaanxi history.",
-          "pictures": []
+          "description": "Major museum in Xi'an focused on Shaanxi history."
         }
       ],
       "train_trips": [
@@ -160,22 +158,19 @@
           "name": "RiyueShan",
           "city": "Xining",
           "rating": 4,
-          "description": "Sun and Moon Mountain area.",
-          "pictures": []
+          "description": "Sun and Moon Mountain area."
         },
         {
           "name": "Qinghai Lake",
           "city": "Xining",
           "rating": 5,
-          "description": "Large high-altitude lake in Qinghai.",
-          "pictures": []
+          "description": "Large high-altitude lake in Qinghai."
         },
         {
           "name": "Chaka Salt Lake",
           "city": "Chaka town",
           "rating": 5,
-          "description": "Salt lake known for mirror-like reflections.",
-          "pictures": []
+          "description": "Salt lake known for mirror-like reflections."
         }
       ],
       "train_trips": []
@@ -217,15 +212,13 @@
           "name": "Charhan Salt Lake",
           "city": "Charhan Salt Lake",
           "rating": 5,
-          "description": "Salt lake in Qinghai.",
-          "pictures": []
+          "description": "Salt lake in Qinghai."
         },
         {
           "name": "Lonely Star",
           "city": "Charhan Salt Lake",
           "rating": 4,
-          "description": "Lonely star stop on the route.",
-          "pictures": []
+          "description": "Lonely star stop on the route."
         }
       ],
       "train_trips": []
@@ -302,15 +295,13 @@
           "name": "Yardang landform",
           "city": "Dunhuang",
           "rating": 5,
-          "description": "Wind-shaped desert landform.",
-          "pictures": []
+          "description": "Wind-shaped desert landform."
         },
         {
           "name": "Heidu Mountain",
           "city": "Dunhuang",
           "rating": 4,
-          "description": "Black mountain landscape near Dunhuang.",
-          "pictures": []
+          "description": "Black mountain landscape near Dunhuang."
         }
       ],
       "train_trips": []
@@ -367,22 +358,19 @@
           "name": "Mogao caves",
           "city": "Dunhuang",
           "rating": 5,
-          "description": "Famous Buddhist cave temples.",
-          "pictures": []
+          "description": "Famous Buddhist cave temples."
         },
         {
           "name": "Mingsha mountain",
           "city": "Dunhuang",
           "rating": 5,
-          "description": "Singing sand dunes and Crescent Lake area.",
-          "pictures": []
+          "description": "Singing sand dunes and Crescent Lake area."
         },
         {
           "name": "Shazhou night market",
           "city": "Dunhuang",
           "rating": 4,
-          "description": "Popular night market in Dunhuang.",
-          "pictures": []
+          "description": "Popular night market in Dunhuang."
         }
       ],
       "train_trips": []
@@ -474,29 +462,25 @@
           "name": "Silk Road Heritage City",
           "city": "Dunhuang",
           "rating": 4,
-          "description": "Cultural heritage site themed around the Silk Road.",
-          "pictures": []
+          "description": "Cultural heritage site themed around the Silk Road."
         },
         {
           "name": "Yangguan",
           "city": "Dunhuang",
           "rating": 4,
-          "description": "Historic frontier pass.",
-          "pictures": []
+          "description": "Historic frontier pass."
         },
         {
           "name": "Yumenguan",
           "city": "Dunhuang",
           "rating": 4,
-          "description": "Historic Jade Gate pass.",
-          "pictures": []
+          "description": "Historic Jade Gate pass."
         },
         {
           "name": "Dunhuang Yadan",
           "city": "Dunhuang",
           "rating": 5,
-          "description": "Dunhuang Yadan geological park.",
-          "pictures": []
+          "description": "Dunhuang Yadan geological park."
         }
       ],
       "train_trips": []
@@ -538,22 +522,19 @@
           "name": "Son of Earth",
           "city": "Jiayuguan",
           "rating": 4,
-          "description": "Large desert art installation.",
-          "pictures": []
+          "description": "Large desert art installation."
         },
         {
           "name": "Yulin Caves",
           "city": "Jiayuguan",
           "rating": 5,
-          "description": "Ancient cave complex in the region.",
-          "pictures": []
+          "description": "Ancient cave complex in the region."
         },
         {
           "name": "Jiayuguan Fortress",
           "city": "Jiayuguan",
           "rating": 5,
-          "description": "Historic fortress at the western end of the Great Wall.",
-          "pictures": []
+          "description": "Historic fortress at the western end of the Great Wall."
         }
       ],
       "train_trips": []
@@ -635,15 +616,13 @@
           "name": "Overhanging great wall",
           "city": "Jiayuguan",
           "rating": 4,
-          "description": "Section of the Great Wall built on steep terrain.",
-          "pictures": []
+          "description": "Section of the Great Wall built on steep terrain."
         },
         {
           "name": "Zhangye Danxia",
           "city": "Zhangye",
           "rating": 5,
-          "description": "Colorful Danxia landform area.",
-          "pictures": []
+          "description": "Colorful Danxia landform area."
         }
       ],
       "train_trips": []
@@ -690,15 +669,13 @@
           "name": "Mati Temple",
           "city": "Zhangye",
           "rating": 5,
-          "description": "Temple and grotto site in the region.",
-          "pictures": []
+          "description": "Temple and grotto site in the region."
         },
         {
           "name": "Qilian Great Steppe",
           "city": "Qilian",
           "rating": 5,
-          "description": "Wide grasslands and mountain scenery.",
-          "pictures": []
+          "description": "Wide grasslands and mountain scenery."
         }
       ],
       "train_trips": []
@@ -770,22 +747,19 @@
           "name": "Dongguan Great Mosque",
           "city": "Xining",
           "rating": 5,
-          "description": "Major mosque in Xining.",
-          "pictures": []
+          "description": "Major mosque in Xining."
         },
         {
           "name": "Kumbum Monastery",
           "city": "Xining",
           "rating": 5,
-          "description": "Important Tibetan Buddhist monastery near Xining.",
-          "pictures": []
+          "description": "Important Tibetan Buddhist monastery near Xining."
         },
         {
           "name": "Xining wildlife Park",
           "city": "Xining",
           "rating": 4,
-          "description": "Urban wildlife park in Xining.",
-          "pictures": []
+          "description": "Urban wildlife park in Xining."
         }
       ],
       "train_trips": []
@@ -857,29 +831,25 @@
           "name": "Zhongshan bridge",
           "city": "Lanzhou",
           "rating": 4,
-          "description": "Historic bridge over the Yellow River.",
-          "pictures": []
+          "description": "Historic bridge over the Yellow River."
         },
         {
           "name": "Baitashan Park",
           "city": "Lanzhou",
           "rating": 4,
-          "description": "Park with views over Lanzhou.",
-          "pictures": []
+          "description": "Park with views over Lanzhou."
         },
         {
           "name": "Yellow River Tower",
           "city": "Lanzhou",
           "rating": 5,
-          "description": "Tower and scenic viewpoint in Lanzhou.",
-          "pictures": []
+          "description": "Tower and scenic viewpoint in Lanzhou."
         },
         {
           "name": "Lanzhou old street",
           "city": "Lanzhou",
           "rating": 4,
-          "description": "Old street area for walking and food.",
-          "pictures": []
+          "description": "Old street area for walking and food."
         }
       ],
       "train_trips": []
