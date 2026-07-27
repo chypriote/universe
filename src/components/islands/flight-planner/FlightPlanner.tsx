@@ -39,6 +39,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
   const calendarSummary = useMemo(() => getCalendarSummary(calendarDays), [calendarDays]);
 
   const selectFlight = (flightId: string, scrollTo: ScrollTarget) => {
+    console.log(flightId)
     pendingScrollTarget.current = scrollTo;
     setSelectedFlightId(flightId);
   };
@@ -50,6 +51,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
   };
 
   const updateFilters = (nextFilters: ListFilters) => {
+    console.log(nextFilters)
     setFilters(nextFilters);
     ensureSelectedInList(filterFlights(flights, nextFilters));
   };

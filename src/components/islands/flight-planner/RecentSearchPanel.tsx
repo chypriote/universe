@@ -83,6 +83,7 @@ export function RecentSearchPanel({
                 type="checkbox"
                 checked={filters.bestValueOnly}
                 onChange={(event) => {
+                  console.log(event)
                   onFilterChange({ ...filters, bestValueOnly: event.target.checked });
                 }}
                 className={checkboxClassName}
@@ -94,6 +95,7 @@ export function RecentSearchPanel({
                 type="checkbox"
                 checked={filters.directOnly}
                 onChange={(event) => {
+                  console.log(event)
                   onFilterChange({ ...filters, directOnly: event.target.checked });
                 }}
                 className={checkboxClassName}
