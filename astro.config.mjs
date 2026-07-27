@@ -1,8 +1,9 @@
 // @ts-check
-import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
+import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
+import netlify from '@astrojs/netlify';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { fontProviders, sessionDrivers } from 'astro/config';
@@ -13,8 +14,6 @@ import { fileURLToPath } from 'node:url';
 import remarkGfm from 'remark-gfm';
 
 import remarkToc from './src/plugins/remark-toc.mjs';
-
-import netlify from '@astrojs/netlify';
 
 const siteUrl = process.env.SITE_URL || 'https://chypriote.github.io';
 const projectRoot = dirname(fileURLToPath(import.meta.url));
@@ -44,18 +43,20 @@ const noIndexPaths = collectNoIndexPaths();
 // @astrojs/cloudflare can discover deps mid-request, reload the optimizer, and
 // invalidate React's hook dispatcher (resolveDispatcher() is null).
 // https://github.com/withastro/astro/issues/17166
-const reactOptimizerDeps = [
+// Client prebundle must not include react-dom/server — that entry uses
+// node:module.createRequire and breaks island hydration in the browser.
+const reactClientOptimizerDeps = [
   '@astrojs/react/client.js',
   'react',
   'react-dom',
   'react-dom/client',
-  'react-dom/server',
   'react/jsx-runtime',
   'react/jsx-dev-runtime',
 ];
 
 const ssrOptimizerDeps = [
-  ...reactOptimizerDeps,
+  ...reactClientOptimizerDeps,
+  'react-dom/server',
   'astro/assets/services/noop',
   'astro/env/runtime',
   'astro/virtual-modules/transitions.js',
@@ -118,7 +119,9 @@ export default defineConfig({
     shikiConfig: {
       theme: 'github-dark',
     },
-    remarkPlugins: [remarkGfm, remarkToc],
+    processor: unified({
+      remarkPlugins: [remarkGfm, remarkToc],
+    }),
   },
   build: {
     inlineStylesheets: 'always',
@@ -127,12 +130,9 @@ export default defineConfig({
     plugins: [tailwindcss(), prebundleCloudflareDevDeps()],
     resolve: {
       dedupe: ['react', 'react-dom'],
-      ...(import.meta.env.PROD
-        ? { alias: { 'react-dom/server': 'react-dom/server.edge' } }
-        : {}),
     },
     optimizeDeps: {
-      include: reactOptimizerDeps,
+      include: reactClientOptimizerDeps,
     },
   },
   fonts: [{
