@@ -1,19 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-
-interface Photo {
-  url: string;
-  srcset: string;
-  alt: string;
-  photographer: string;
-}
+import type { GalleryPhoto } from '@/lib/itineraries.server';
 
 interface GalleryGridProps {
-  title: string;
-  tags: string[];
-  photos: Photo[];
+  photos: GalleryPhoto[];
 }
 
-export function GalleryGrid({ title, tags, photos }: GalleryGridProps) {
+export function GalleryGrid({ photos }: GalleryGridProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const openLightbox = (index: number) => {
@@ -49,29 +41,30 @@ export function GalleryGrid({ title, tags, photos }: GalleryGridProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedIndex, closeLightbox, nextPhoto, prevPhoto]);
 
-  return (
-    <section className="mb-24 lg:mb-32">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b border-border pb-8">
-        <div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {tags.map((tag) => (
-              <span key={tag} className="px-3 py-1 bg-surface text-muted-foreground font-sans font-bold text-[10px] uppercase tracking-widest rounded-full">
-                {tag}
-              </span>
-            ))}
-          </div>
-          <h2 className="text-4xl md:text-5xl font-serif text-foreground tracking-tight">{title}</h2>
-        </div>
-        <p className="text-muted-foreground font-sans text-sm tracking-wide max-w-xs">
-          An editorial exploration of {title.toLowerCase()}, captured during our seasonal residence.
-        </p>
-      </div>
+  useEffect(() => {
+    if (selectedIndex !== null && selectedIndex >= photos.length) {
+      closeLightbox();
+    }
+  }, [photos.length, selectedIndex, closeLightbox]);
 
+  const selected = selectedIndex !== null ? photos[selectedIndex] : null;
+
+  if (photos.length === 0) {
+    return (
+      <p className="text-muted-foreground font-serif italic">
+        No photographs for this place yet.
+      </p>
+    );
+  }
+
+  return (
+    <>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-3 items-start">
         {photos.map((photo, index) => (
-          <div
-            key={index}
-            className="group cursor-pointer overflow-hidden bg-surface relative aspect-[3/4]"
+          <button
+            type="button"
+            key={`${photo.url}-${index}`}
+            className="group cursor-pointer overflow-hidden bg-surface relative aspect-[3/4] text-left"
             onClick={() => openLightbox(index)}
           >
             <div className="h-full w-full">
@@ -85,17 +78,18 @@ export function GalleryGrid({ title, tags, photos }: GalleryGridProps) {
               />
             </div>
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-               <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
               </svg>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
-      {selectedIndex !== null && (
+      {selected && (
         <div className="fixed inset-0 z-[100] bg-dark-background/95 backdrop-blur-sm flex items-center justify-center p-4 md:p-12 animate-fade-in">
           <button
+            type="button"
             onClick={closeLightbox}
             className="absolute top-6 right-6 text-dark-foreground hover:text-primary transition-colors z-[110]"
             aria-label="Close"
@@ -106,6 +100,7 @@ export function GalleryGrid({ title, tags, photos }: GalleryGridProps) {
           </button>
 
           <button
+            type="button"
             onClick={prevPhoto}
             className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-dark-foreground hover:text-primary transition-colors p-2"
             aria-label="Previous"
@@ -116,6 +111,7 @@ export function GalleryGrid({ title, tags, photos }: GalleryGridProps) {
           </button>
 
           <button
+            type="button"
             onClick={nextPhoto}
             className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-dark-foreground hover:text-primary transition-colors p-2"
             aria-label="Next"
@@ -128,16 +124,27 @@ export function GalleryGrid({ title, tags, photos }: GalleryGridProps) {
           <div className="w-full h-full flex flex-col items-center justify-center gap-6">
             <div className="relative max-w-6xl max-h-[80vh] w-full flex items-center justify-center">
               <img
-                src={photos[selectedIndex].url}
-                alt={photos[selectedIndex].alt}
+                src={selected.url}
+                alt={selected.alt}
                 className="max-w-full max-h-full object-contain"
               />
             </div>
             <div className="text-center text-dark-foreground max-w-2xl">
-              <p className="font-serif text-2xl mb-2">{title}</p>
-              <p className="text-dark-muted-foreground text-xs uppercase tracking-widest font-sans">
-                Photograph by {photos[selectedIndex].photographer}
+              <p className="font-serif text-2xl mb-2">
+                {selected.city ?? selected.tripTitle}
               </p>
+              <p className="text-dark-muted-foreground text-xs uppercase tracking-widest font-sans">
+                Photograph by {selected.photographer}
+                {selected.day !== null && ` · Day ${selected.day}`}
+              </p>
+              {selected.href && (
+                <a
+                  href={selected.href}
+                  className="mt-4 inline-flex items-center gap-2 text-[11px] font-sans font-bold uppercase tracking-[0.3em] text-primary hover:text-dark-foreground transition-colors"
+                >
+                  Open {selected.day !== null ? `day ${selected.day}` : 'this journey'} in {selected.tripTitle}
+                </a>
+              )}
               <div className="mt-4 flex justify-center gap-1">
                 {photos.map((_, i) => (
                   <div
@@ -150,6 +157,6 @@ export function GalleryGrid({ title, tags, photos }: GalleryGridProps) {
           </div>
         </div>
       )}
-    </section>
+    </>
   );
 }

@@ -54,6 +54,35 @@ export type TripArchiveEntry = {
   link: string;
 };
 
+export type GalleryPhoto = {
+  url: string;
+  srcset: string;
+  alt: string;
+  photographer: string;
+  tripSlug: string;
+  tripTitle: string;
+  city: string | null;
+  cityKey: string | null;
+  region: string | null;
+  day: number | null;
+  href: string | null;
+};
+
+export type GalleryCity = {
+  name: string;
+  key: string;
+  region: string;
+  tripTitle: string;
+  day: number;
+  href: string;
+};
+
+export type GalleryArchive = {
+  photos: GalleryPhoto[];
+  regions: string[];
+  cities: GalleryCity[];
+};
+
 const tripImages = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/trips/**/*.{jpg,jpeg,png,webp}',
   { eager: true },
@@ -223,23 +252,118 @@ function parsePhotoTakenAt(filename: string): number | null {
   return null;
 }
 
-export function getAllTripPhotoMetadata(slug: string): ImageMetadata[] {
+function compareTripPhotoPaths(pathA: string, pathB: string): number {
+  const takenA = parsePhotoTakenAt(pathA);
+  const takenB = parsePhotoTakenAt(pathB);
+
+  if (takenA !== null && takenB !== null && takenA !== takenB) {
+    return takenA - takenB;
+  }
+  if (takenA !== null && takenB === null) return -1;
+  if (takenA === null && takenB !== null) return 1;
+  return pathA.localeCompare(pathB);
+}
+
+function listTripPhotos(slug: string): { path: string; image: ImageMetadata }[] {
   const prefix = getTripPhotoPrefix(slug);
 
   return Object.entries(tripImages)
     .filter(([path]) => path.startsWith(prefix))
-    .sort(([pathA], [pathB]) => {
-      const takenA = parsePhotoTakenAt(pathA);
-      const takenB = parsePhotoTakenAt(pathB);
+    .sort(([pathA], [pathB]) => compareTripPhotoPaths(pathA, pathB))
+    .map(([path, module]) => ({ path, image: module.default }));
+}
 
-      if (takenA !== null && takenB !== null && takenA !== takenB) {
-        return takenA - takenB;
-      }
-      if (takenA !== null && takenB === null) return -1;
-      if (takenA === null && takenB !== null) return 1;
-      return pathA.localeCompare(pathB);
-    })
-    .map(([, module]) => module.default);
+export function getAllTripPhotoMetadata(slug: string): ImageMetadata[] {
+  return listTripPhotos(slug).map((entry) => entry.image);
+}
+
+function photoDateKey(path: string): string | null {
+  const name = path.replace(/^.*[/\\]/, '');
+  const dashed = name.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (dashed) {
+    return `${dashed[1]}-${dashed[2]}-${dashed[3]}`;
+  }
+
+  const img = name.match(/IMG_?(\d{4})(\d{2})(\d{2})/);
+  if (img) {
+    return `${img[1]}-${img[2]}-${img[3]}`;
+  }
+
+  return null;
+}
+
+function regionForCity(
+  cities: ItineraryEntry['data']['cities'],
+  cityName: string,
+): string | null {
+  const key = normalizeCityName(cityName);
+  return cities.find((city) => normalizeCityName(city.name) === key)?.region ?? null;
+}
+
+export function buildGalleryArchive(entries: ItineraryEntry[]): GalleryArchive {
+  const photos: GalleryPhoto[] = [];
+  const citiesByKey = new Map<string, GalleryCity>();
+
+  const ordered = [...entries].sort((a, b) =>
+    b.data.released_itinerary.start_date.localeCompare(
+      a.data.released_itinerary.start_date,
+    ),
+  );
+
+  for (const entry of ordered) {
+    const { data } = entry;
+    const slug = data.slug;
+    const days = data.days.map((day) => ({
+      day: day.day_number,
+      city: day.main_city,
+      region: regionForCity(data.cities, day.main_city),
+      date: getDayDate(data.released_itinerary.start_date, day.day_number),
+    }));
+
+    for (const { path, image } of listTripPhotos(slug)) {
+      const dateKey = photoDateKey(path);
+      const match = dateKey ? days.find((day) => day.date === dateKey) : undefined;
+      const href = match ? `/trips/${slug}#day-${match.day}` : `/trips/${slug}`;
+      const place = match?.city ?? data.title;
+      const index = photos.length + 1;
+      const cityKey = match?.city ? normalizeCityName(match.city) : null;
+
+      photos.push({
+        url: image.src,
+        srcset: `${image.src} ${image.width}w`,
+        alt: `${place} — ${data.title}, photo ${index}`,
+        photographer: 'Nico',
+        tripSlug: slug,
+        tripTitle: data.title,
+        city: match?.city ?? null,
+        cityKey,
+        region: match?.region ?? null,
+        day: match?.day ?? null,
+        href,
+      });
+
+      if (!match?.city || !match.region || !cityKey) continue;
+      if (citiesByKey.has(cityKey)) continue;
+
+      const firstInCity = days.find((day) => normalizeCityName(day.city) === cityKey);
+      const pinDay = firstInCity?.day ?? match.day;
+      citiesByKey.set(cityKey, {
+        name: match.city,
+        key: cityKey,
+        region: match.region,
+        tripTitle: data.title,
+        day: pinDay,
+        href: `/trips/${slug}#day-${pinDay}`,
+      });
+    }
+  }
+
+  const cities = [...citiesByKey.values()].sort((a, b) => a.name.localeCompare(b.name));
+  const regions = [...new Set(cities.map((city) => city.region))].sort((a, b) =>
+    a.localeCompare(b),
+  );
+
+  return { photos, regions, cities };
 }
 
 function getDayGallery(slug: string, dayDate: string): TripGalleryPhoto[] {

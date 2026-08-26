@@ -81,7 +81,7 @@ const jsonLd = {
       <Container>
         <div class="max-w-5xl mx-auto space-y-32 lg:space-y-48" data-ps="src/pages/trips/[slug].astro:ams92l">
           {trip.days.map((day, __psIdx) => (
-            <section class="group" id={`day-${day.day}`} data-ps="src/pages/trips/[slug].astro:day-section">
+            <section class="group scroll-mt-32" id={`day-${day.day}`} data-ps="src/pages/trips/[slug].astro:day-section">
               <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20" data-ps="src/pages/trips/[slug].astro:day-grid">
                 {/* Day Marker & Meta (Sticky-ish) */}
                 <div class="lg:col-span-3 lg:sticky lg:top-32 h-fit space-y-6" data-ps="src/pages/trips/[slug].astro:day-meta">

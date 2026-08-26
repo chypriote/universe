@@ -1,44 +1,16 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
-import { GalleryGrid } from '@/components/islands/GalleryGrid';
+import { GalleryArchive } from '@/components/islands/GalleryArchive';
 import { SITE } from '@/config/site';
 import { getCollection } from 'astro:content';
 import {
-  getAllTripPhotoMetadata,
+  buildGalleryArchive,
   isPublishedItinerary,
 } from '@/lib/itineraries.server';
 
 const itineraries = await getCollection('itineraries');
-const gallerySections = itineraries
-  .filter(isPublishedItinerary)
-  .sort(
-    (a, b) =>
-      b.data.released_itinerary.start_date.localeCompare(
-        a.data.released_itinerary.start_date,
-      ),
-  )
-  .map((entry) => {
-    const { data } = entry;
-    const cities = [...new Set(data.days.map((day) => day.main_city))];
-    const regions = [...new Set(data.cities.map((city) => city.region))];
-    const tags = [...new Set([...regions, ...cities])].slice(0, 4);
-
-    const photos = getAllTripPhotoMetadata(data.slug).map((image, index) => ({
-      url: image.src,
-      srcset: `${image.src} ${image.width}w`,
-      alt: `${data.title} — photo ${index + 1}`,
-      photographer: 'Nico',
-    }));
-
-    return {
-      id: data.slug,
-      title: data.title,
-      tags,
-      photos,
-    };
-  })
-  .filter((section) => section.photos.length > 0);
+const archive = buildGalleryArchive(itineraries.filter(isPublishedItinerary));
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -55,20 +27,11 @@ const jsonLd = {
       <div class="max-w-3xl mb-20 lg:mb-32" data-ps="src/pages/gallery.astro:5r9mu2">
         <h1 class="text-h1 font-serif mb-8" data-ps="src/pages/gallery.astro:rpwpws">Photography</h1>
         <p class="text-xl text-muted-foreground font-sans leading-relaxed" data-ps="src/pages/gallery.astro:befxb1">
-          Our photographic archive is more than a collection of images—it is a visual monograph of the places that shaped our perspective. Organized by journey, these chapters represent the intersection of time, light, and geography.
+          Our photographic archive is more than a collection of images—it is a visual monograph of the places that shaped our perspective. Filter by region or city; open a city to continue into that day’s journal.
         </p>
       </div>
 
-      <div class="space-y-32" data-ps="src/pages/gallery.astro:5r9mu1">
-        {gallerySections.map((section) => (
-          <GalleryGrid
-            client:load
-            title={section.title}
-            tags={section.tags}
-            photos={section.photos}
-          />
-        ))}
-      </div>
+      <GalleryArchive client:load photos={archive.photos} regions={archive.regions} cities={archive.cities} />
 
       <div class="mt-32 pt-20 border-t border-border text-center" data-ps="src/pages/gallery.astro:5r9mu0">
         <h3 class="text-2xl font-serif mb-6" data-ps="src/pages/gallery.astro:qrtfmz">Want to see more?</h3>

@@ -3,7 +3,6 @@ import L from 'leaflet';
 import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import type { TripRoute, TripRouteStop } from '@/lib/itineraries.server';
 import 'leaflet/dist/leaflet.css';
-import './trip-route-map.css';
 
 const ROUTE_COLOR = 'hsl(17 60% 49%)';
 const TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';

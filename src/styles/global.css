@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
+@import './trip-route-map.css';
 
 :root {
   --nav-height: 64px;
