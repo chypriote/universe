@@ -1,5 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
 import { getCityLngLat, normalizeCityName } from '@/lib/city-coordinates';
 import { formatDateRange, getDayDate, type PlanDay } from '@/lib/plan-calendar';
 import { getPlaceName } from '@/lib/place-names';
@@ -70,6 +71,8 @@ export type TripArchiveEntry = {
   type: 'report' | 'plan';
   photos: string[];
   link: string;
+  durationDays: number;
+  destination: string;
 };
 
 export type GalleryPhoto = {
@@ -201,23 +204,56 @@ export function buildTripRoute(entry: ItineraryEntry): TripRoute {
   };
 }
 
-function getTripPhotoPrefix(slug: string): string {
-  return `/src/assets/trips/${slug}/`;
+function globPath(path: string): string {
+  return path.replace(/\\/g, '/').split('?')[0];
+}
+
+function tripPhotoFolder(slug: string): string {
+  return `/trips/${slug}/`;
+}
+
+function alternateFilenames(filename: string): string[] {
+  const alts = new Set<string>();
+  alts.add(filename.replace(/ \(\d+\)(\.[^.]+)$/, '$1'));
+  alts.add(filename.replace(/_1(\.[^.]+)$/, '$1'));
+  alts.delete(filename);
+  return [...alts];
 }
 
 function resolveTripPhoto(slug: string, filename: string): ImageMetadata | undefined {
-  const path = `${getTripPhotoPrefix(slug)}${filename}`;
-  return tripImages[path]?.default;
+  const folder = tripPhotoFolder(slug);
+  const wantNames = [filename, ...alternateFilenames(filename)];
+
+  for (const [path, mod] of Object.entries(tripImages)) {
+    const posix = globPath(path);
+    if (!posix.includes(folder)) continue;
+    const name = posix.slice(posix.lastIndexOf('/') + 1);
+    if (wantNames.includes(name)) return mod.default;
+  }
+}
+
+async function srcFromImage(image: ImageMetadata): Promise<string> {
+  const width = image.width >= image.height ? 1280 : 720;
+  const result = await getImage({ src: image, width });
+  return result.src;
 }
 
 function formatFromMetadata(image: ImageMetadata): PictureFormat {
   return image.width >= image.height ? '16:9' : '9:16';
 }
 
-function getTripPhotos(slug: string, filenames: string[]): string[] {
-  return filenames
-    .map((filename) => resolveTripPhoto(slug, filename)?.src)
-    .filter((src): src is string => Boolean(src));
+async function getTripPhotos(slug: string, filenames: string[]): Promise<string[]> {
+  const selected = filenames
+    .map((filename) => resolveTripPhoto(slug, filename))
+    .filter((image): image is ImageMetadata => Boolean(image));
+  const images =
+    selected.length > 0
+      ? selected
+      : listTripPhotos(slug)
+          .map((entry) => entry.image)
+          .slice(0, 5);
+
+  return Promise.all(images.map(srcFromImage));
 }
 
 /** Parse capture time from common camera/export filename patterns. */
@@ -273,10 +309,10 @@ function compareTripPhotoPaths(pathA: string, pathB: string): number {
 }
 
 function listTripPhotos(slug: string): { path: string; image: ImageMetadata }[] {
-  const prefix = getTripPhotoPrefix(slug);
+  const folder = tripPhotoFolder(slug);
 
   return Object.entries(tripImages)
-    .filter(([path]) => path.startsWith(prefix))
+    .filter(([path]) => globPath(path).includes(folder))
     .sort(([pathA], [pathB]) => compareTripPhotoPaths(pathA, pathB))
     .map(([path, module]) => ({ path, image: module.default }));
 }
@@ -375,10 +411,13 @@ export function buildGalleryArchive(entries: ItineraryEntry[]): GalleryArchive {
 }
 
 function getDayGallery(slug: string, dayDate: string): TripGalleryPhoto[] {
-  const prefix = getTripPhotoPrefix(slug);
+  const folder = tripPhotoFolder(slug);
 
   return Object.entries(tripImages)
-    .filter(([path]) => path.startsWith(prefix) && path.includes(dayDate))
+    .filter(([path]) => {
+      const posix = globPath(path);
+      return posix.includes(folder) && posix.includes(dayDate);
+    })
     .map(([, module]) => ({
       src: module.default.src,
       format: formatFromMetadata(module.default),
@@ -512,7 +551,9 @@ function getTripType(entry: ItineraryEntry): 'report' | 'plan' {
   return endDate < today ? 'report' : 'plan';
 }
 
-export function buildTripArchiveEntry(entry: ItineraryEntry): TripArchiveEntry {
+export async function buildTripArchiveEntry(
+  entry: ItineraryEntry,
+): Promise<TripArchiveEntry> {
   const { data } = entry;
   const orderedCities = getOrderedCities(entry);
 
@@ -526,7 +567,9 @@ export function buildTripArchiveEntry(entry: ItineraryEntry): TripArchiveEntry {
     ),
     description: buildTripDescription(entry, orderedCities),
     type: getTripType(entry),
-    photos: getTripPhotos(data.slug, data.released_itinerary.pictures),
+    photos: await getTripPhotos(data.slug, data.released_itinerary.pictures),
     link: `/trips/${data.slug}`,
+    durationDays: data.suggested_duration_days,
+    destination: data.cities[0]?.country ?? 'China',
   };
 }

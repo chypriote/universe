@@ -1,0 +1,179 @@
+---
+import type { TripArchiveEntry } from '@/lib/itineraries.server';
+
+interface Props {
+  trips: TripArchiveEntry[];
+}
+
+const { trips } = Astro.props;
+---
+
+<div class="space-y-12 lg:space-y-20" data-trip-archive data-view="report">
+  <div class="flex justify-center">
+    <div class="inline-flex p-1 bg-surface border border-border rounded-full">
+      <button
+        type="button"
+        data-view-button="report"
+        class="px-8 py-2.5 rounded-full text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 bg-primary text-primary-foreground shadow-sm"
+      >
+        Trip Reports
+      </button>
+      <button
+        type="button"
+        data-view-button="plan"
+        class="px-8 py-2.5 rounded-full text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 text-muted-foreground hover:text-foreground"
+      >
+        Trip Plans
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-12 lg:gap-24">
+    {['report', 'plan'].map((view) => {
+      if (trips.some((trip) => trip.type === view)) return null;
+      return (
+        <p
+          class:list={[
+            'text-center text-muted-foreground font-serif italic',
+            view === 'plan' && 'hidden',
+          ]}
+          data-empty={view}
+        >
+          No {view === 'report' ? 'trip reports' : 'trip plans'} in the archive yet.
+        </p>
+      );
+    })}
+    {trips.map((trip) => {
+      const [landscape, ...portraits] = trip.photos;
+      const firstRowPortrait = portraits[0];
+      const secondRowPortraits = portraits.slice(1, 4);
+
+      return (
+        <article
+          class:list={[
+            'group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start',
+            trip.type === 'report' ? '' : 'hidden',
+          ]}
+          data-trip-type={trip.type}
+        >
+          <div class="lg:col-span-5 space-y-6 pt-2">
+            <div class="space-y-2">
+              <span class="text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground">
+                {trip.dates}
+              </span>
+              <h2 class="text-h2 font-serif">
+                <a href={trip.link} class="hover:text-primary transition-colors">
+                  {trip.title}
+                </a>
+              </h2>
+            </div>
+
+            <p class="text-muted-foreground leading-relaxed text-balance">
+              {trip.description}
+            </p>
+
+            {trip.regions.length > 0 && (
+              <div class="flex flex-wrap gap-3">
+                {trip.regions.map((region) => (
+                  <span class="text-[10px] font-sans font-bold uppercase tracking-widest text-primary border border-primary/20 px-2 py-0.5 rounded">
+                    {region}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <a
+              href={trip.link}
+              class="inline-flex items-center gap-4 text-[11px] font-sans font-bold uppercase tracking-[0.3em] text-foreground hover:text-primary transition-colors group/link"
+            >
+              Explore Journey
+              <svg class="w-4 h-4 transition-transform group-hover/link:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
+
+          {trip.photos.length > 0 && (
+            <div class="lg:col-span-7 space-y-4">
+              {(landscape || firstRowPortrait) && (
+                <div
+                  class="grid gap-4 items-start"
+                  style={landscape && firstRowPortrait ? 'grid-template-columns: 256fr 81fr' : 'grid-template-columns: 1fr'}
+                >
+                  {landscape && (
+                    <div class="relative aspect-video overflow-hidden bg-surface">
+                      <img
+                        src={landscape}
+                        alt={`${trip.title} visual fragment`}
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                  {firstRowPortrait && (
+                    <div class="relative aspect-[9/16] overflow-hidden bg-surface">
+                      <img
+                        src={firstRowPortrait}
+                        alt={`${trip.title} visual fragment`}
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {secondRowPortraits.length > 0 && (
+                <div class="grid grid-cols-3 gap-4">
+                  {secondRowPortraits.map((photo) => (
+                    <div class="relative aspect-[9/16] overflow-hidden bg-surface">
+                      <img
+                        src={photo}
+                        alt={`${trip.title} visual fragment`}
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </article>
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector('[data-trip-archive]');
+  if (root instanceof HTMLElement) {
+    const buttons = [...root.querySelectorAll('[data-view-button]')];
+    const articles = [...root.querySelectorAll('[data-trip-type]')];
+    const empties = [...root.querySelectorAll('[data-empty]')];
+
+    const active = 'bg-primary text-primary-foreground shadow-sm';
+    const idle = 'text-muted-foreground hover:text-foreground';
+
+    function setView(view: string) {
+      root.dataset.view = view;
+      for (const button of buttons) {
+        const on = button.getAttribute('data-view-button') === view;
+        button.className = `px-8 py-2.5 rounded-full text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 ${on ? active : idle}`;
+      }
+      for (const article of articles) {
+        article.classList.toggle('hidden', article.getAttribute('data-trip-type') !== view);
+      }
+      for (const empty of empties) {
+        empty.classList.toggle('hidden', empty.getAttribute('data-empty') !== view);
+      }
+    }
+
+    root.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest('[data-view-button]');
+      if (!(button instanceof HTMLElement)) return;
+      const view = button.getAttribute('data-view-button');
+      if (view) setView(view);
+    });
+  }
+</script>

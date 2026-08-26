@@ -1,21 +1,23 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
-import { TripArchive } from '@/components/islands/TripArchive';
+import TripArchive from '@/components/TripArchive.astro';
 import { SITE } from '@/config/site';
 import { getCollection } from 'astro:content';
 import { buildTripArchiveEntry, isPublishedItinerary } from '@/lib/itineraries.server';
 
 const itineraries = await getCollection('itineraries');
-const trips = itineraries
-  .filter(isPublishedItinerary)
-  .sort(
-    (a, b) =>
-      b.data.released_itinerary.start_date.localeCompare(
-        a.data.released_itinerary.start_date,
-      ),
-  )
-  .map(buildTripArchiveEntry);
+const trips = await Promise.all(
+  itineraries
+    .filter(isPublishedItinerary)
+    .sort(
+      (a, b) =>
+        b.data.released_itinerary.start_date.localeCompare(
+          a.data.released_itinerary.start_date,
+        ),
+    )
+    .map(buildTripArchiveEntry),
+);
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -38,7 +40,7 @@ const jsonLd = {
       </header>
 
       {/* Interactive Trip Archive */}
-      <TripArchive client:load trips={trips} />
+      <TripArchive trips={trips} />
     </Container>
 
     {/* Footer CTA */}

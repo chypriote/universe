@@ -31,6 +31,13 @@ const CITY_COORDINATES: Record<string, LngLat> = {
   jiayuguan: [98.2892, 39.7732],
   zhangye: [100.4498, 38.9256],
   lanzhou: [103.8236, 36.0581],
+  shanghai: [121.4737, 31.2304],
+  nantong: [120.8943, 32.0162],
+  nanjing: [118.7969, 32.0603],
+  suzhou: [120.5853, 31.2989],
+  hangzhou: [120.1551, 30.2741],
+  huangshan: [118.168, 30.132],
+  hongcun: [117.9865, 30.0042],
 };
 
 const ALIASES: Record<string, string> = {

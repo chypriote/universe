@@ -25,10 +25,14 @@ export async function getStaticPaths() {
 const { trip } = Astro.props;
 const { slug } = Astro.params;
 
-const otherTrips = (await getCollection('itineraries'))
-  .filter(isPublishedItinerary)
-  .filter((entry) => entry.data.slug !== slug)
-  .map(buildTripArchiveEntry)
+const otherTrips = (
+  await Promise.all(
+    (await getCollection('itineraries'))
+      .filter(isPublishedItinerary)
+      .filter((entry) => entry.data.slug !== slug)
+      .map(buildTripArchiveEntry),
+  )
+)
   .sort(() => Math.random() - 0.5)
   .slice(0, 3);
 
