@@ -91,6 +91,13 @@
   color: hsl(210 10% 11%);
 }
 
+.trip-route-pin__zh {
+  font-family: "Plus Jakarta Sans", ui-sans-serif, sans-serif;
+  font-size: 10px;
+  line-height: 1.2;
+  color: hsl(210 5% 40%);
+}
+
 .trip-route-pin__days {
   font-family: "Plus Jakarta Sans", ui-sans-serif, sans-serif;
   font-size: 8px;

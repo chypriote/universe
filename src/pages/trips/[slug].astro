@@ -67,7 +67,17 @@ const jsonLd = {
             </p>
             <div class="space-y-2" data-ps="src/pages/trips/[slug].astro:lmx82j">
               <span class="text-[9px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground" data-ps="src/pages/trips/[slug].astro:125n5g">Cities Visited</span>
-              <p class="text-sm font-sans font-medium uppercase tracking-wider" data-ps="src/pages/trips/[slug].astro:xq7d4">{trip.cities}</p>
+              <ul class="flex flex-wrap gap-x-6 gap-y-3">
+                {trip.cities.map((city) => (
+                  <li class="space-y-0.5">
+                    <p class="text-sm font-sans font-medium uppercase tracking-wider">{city.name}</p>
+                    <p class="text-[11px] font-sans text-muted-foreground">
+                      <span lang="zh">{city.nameZh}</span>
+                      <span class="ml-1.5 italic">{city.pinyin}</span>
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
@@ -98,7 +108,13 @@ const jsonLd = {
                           {day.activities.map(activity => (
                             <li class="text-xs font-sans text-muted-foreground flex items-start gap-2" data-ps={`src/pages/trips/[slug].astro:19uj75-${__psIdx}`}>
                               <span class="mt-1.5 w-1 h-1 rounded-full bg-primary/40 shrink-0" data-ps={`src/pages/trips/[slug].astro:125n5d-${__psIdx}`}></span>
-                              {activity}
+                              <span class="space-y-0.5">
+                                <span class="block text-foreground/85">{activity.name}</span>
+                                <span class="block text-[11px] leading-snug">
+                                  <span lang="zh">{activity.nameZh}</span>
+                                  <span class="ml-1.5 italic">{activity.pinyin}</span>
+                                </span>
+                              </span>
                             </li>
                           ))}
                         </ul>

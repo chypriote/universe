@@ -88,6 +88,9 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
                   onClick={() => selectCity(city)}
                 >
                   {city.name}
+                  <span className="ml-1.5 font-medium normal-case tracking-normal opacity-80" lang="zh">
+                    {city.nameZh}
+                  </span>
                 </button>
               ))}
             </div>

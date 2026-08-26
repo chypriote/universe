@@ -24,6 +24,7 @@ function createCityIcon(city: TripRouteStop): L.DivIcon {
       <span class="trip-route-pin__dot"></span>
       <span class="trip-route-pin__label">
         <span class="trip-route-pin__name">${escapeHtml(city.name)}</span>
+        <span class="trip-route-pin__zh" lang="zh">${escapeHtml(city.nameZh)}</span>
         <span class="trip-route-pin__days">Days ${escapeHtml(city.dayLabel)}</span>
       </span>
     </div>`,
@@ -112,7 +113,7 @@ export function TripRouteMapInner({ route }: TripRouteMapInnerProps) {
           }}
         >
           <Tooltip direction="top" offset={[0, -12]}>
-            {city.name} · Days {city.dayLabel}
+            {city.name} {city.nameZh} · Days {city.dayLabel}
           </Tooltip>
         </Marker>
       ))}

@@ -1,6 +1,7 @@
 import type { CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
 import { getCityLngLat, normalizeCityName } from '@/lib/city-coordinates';
+import { getPlaceName } from '@/lib/place-names';
 
 type ItineraryEntry = CollectionEntry<'itineraries'>;
 
@@ -11,17 +12,31 @@ export type TripGalleryPhoto = {
   format: PictureFormat;
 };
 
+export type TripActivity = {
+  name: string;
+  nameZh: string;
+  pinyin: string;
+};
+
+export type TripCity = {
+  name: string;
+  nameZh: string;
+  pinyin: string;
+};
+
 export type TripDay = {
   day: number;
   title: string;
   description: string;
-  activities: string[];
+  activities: TripActivity[];
   gallery: TripGalleryPhoto[];
   food: string[];
 };
 
 export type TripRouteStop = {
   name: string;
+  nameZh: string;
+  pinyin: string;
   lat: number;
   lng: number;
   days: number[];
@@ -37,7 +52,7 @@ export type TripPageData = {
   title: string;
   dates: string;
   destination: string;
-  cities: string;
+  cities: TripCity[];
   description: string;
   days: TripDay[];
   route: TripRoute;
@@ -70,6 +85,8 @@ export type GalleryPhoto = {
 
 export type GalleryCity = {
   name: string;
+  nameZh: string;
+  pinyin: string;
   key: string;
   region: string;
   tripTitle: string;
@@ -146,10 +163,19 @@ function formatDayLabel(days: number[]): string {
   return parts.join(', ');
 }
 
+function toNamedPlace(name: string) {
+  const place = getPlaceName(name);
+  return {
+    name,
+    nameZh: place.zh,
+    pinyin: place.pinyin,
+  };
+}
+
 function toRouteStop(name: string, days: number[]): TripRouteStop {
   const [lng, lat] = getCityLngLat(name);
   return {
-    name,
+    ...toNamedPlace(name),
     lat,
     lng,
     days,
@@ -348,7 +374,7 @@ export function buildGalleryArchive(entries: ItineraryEntry[]): GalleryArchive {
       const firstInCity = days.find((day) => normalizeCityName(day.city) === cityKey);
       const pinDay = firstInCity?.day ?? match.day;
       citiesByKey.set(cityKey, {
-        name: match.city,
+        ...toNamedPlace(match.city),
         key: cityKey,
         region: match.region,
         tripTitle: data.title,
@@ -411,8 +437,24 @@ function getDayFood(
 
 function formatTrainTrip(
   trip: ItineraryEntry['data']['days'][number]['train_trips'][number],
-): string {
-  return `${trip.outgoing_city} → ${trip.destination_city} (${trip.departure_time} – ${trip.arrival_time})`;
+): TripActivity {
+  const from = getPlaceName(trip.outgoing_city);
+  const to = getPlaceName(trip.destination_city);
+
+  return {
+    name: `${trip.outgoing_city} → ${trip.destination_city} (${trip.departure_time} – ${trip.arrival_time})`,
+    nameZh: `${from.zh} → ${to.zh}`,
+    pinyin: `${from.pinyin} → ${to.pinyin}`,
+  };
+}
+
+function formatAttraction(name: string): TripActivity {
+  const place = getPlaceName(name);
+  return {
+    name,
+    nameZh: place.zh,
+    pinyin: place.pinyin,
+  };
 }
 
 function buildTripDescription(entry: ItineraryEntry, cities: string[]): string {
@@ -433,7 +475,7 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
       data.released_itinerary.end_date,
     ),
     destination,
-    cities: orderedCities.join(', '),
+    cities: orderedCities.map(toNamedPlace),
     description: buildTripDescription(entry, orderedCities),
     route: buildTripRoute(entry),
     days: data.days.map((day) => {
@@ -457,7 +499,7 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
         title: day.title,
         description: day.notes,
         activities: [
-          ...day.attractions.map((attraction) => attraction.name),
+          ...day.attractions.map((attraction) => formatAttraction(attraction.name)),
           ...day.train_trips.map(formatTrainTrip),
         ],
         gallery:
