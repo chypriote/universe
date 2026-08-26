@@ -1,6 +1,7 @@
 import type { CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
 import { getCityLngLat, normalizeCityName } from '@/lib/city-coordinates';
+import { formatDateRange, getDayDate, type PlanDay } from '@/lib/plan-calendar';
 import { getPlaceName } from '@/lib/place-names';
 
 type ItineraryEntry = CollectionEntry<'itineraries'>;
@@ -51,10 +52,12 @@ export type TripRoute = {
 export type TripPageData = {
   title: string;
   dates: string;
+  startDate: string;
   destination: string;
   cities: TripCity[];
   description: string;
   days: TripDay[];
+  planDays: PlanDay[];
   route: TripRoute;
 };
 
@@ -104,27 +107,6 @@ const tripImages = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/trips/**/*.{jpg,jpeg,png,webp}',
   { eager: true },
 );
-
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-});
-
-function formatDateRange(startDate: string, endDate: string): string {
-  const start = new Date(`${startDate}T00:00:00`);
-  const end = new Date(`${endDate}T00:00:00`);
-  return `${dateFormatter.format(start)} — ${dateFormatter.format(end)}`;
-}
-
-function getDayDate(startDate: string, dayNumber: number): string {
-  const [year, month, day] = startDate.split('-').map(Number);
-  const date = new Date(year, month - 1, day + dayNumber - 1);
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
 
 function getOrderedCities(entry: ItineraryEntry): string[] {
   const seen = new Set<string>();
@@ -474,10 +456,15 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
       data.released_itinerary.start_date,
       data.released_itinerary.end_date,
     ),
+    startDate: data.released_itinerary.start_date,
     destination,
     cities: orderedCities.map(toNamedPlace),
     description: buildTripDescription(entry, orderedCities),
     route: buildTripRoute(entry),
+    planDays: data.days.map((day) => ({
+      day: day.day_number,
+      city: day.main_city,
+    })),
     days: data.days.map((day) => {
       const dayDate = getDayDate(data.released_itinerary.start_date, day.day_number);
       const dayPictures = day.pictures
