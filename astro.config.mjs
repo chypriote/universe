@@ -39,12 +39,13 @@ function collectNoIndexPaths() {
 
 const noIndexPaths = collectNoIndexPaths();
 
-// Pre-bundle React and Astro runtime deps during dev startup. Without this,
-// @astrojs/cloudflare can discover deps mid-request, reload the optimizer, and
-// invalidate React's hook dispatcher (resolveDispatcher() is null).
+// Pre-bundle React during dev so Vite does not discover it mid-request and
+// reload the optimizer (that clears React's hook dispatcher).
 // https://github.com/withastro/astro/issues/17166
-// Client prebundle must not include react-dom/server — that entry uses
-// node:module.createRequire and breaks island hydration in the browser.
+//
+// Keep the island hydrator and React off the `astro` optimizer. That env
+// resolves renderer-url for the browser; prebundling React there produces a
+// second copy (invalid hook call) and a Node rolldown-runtime (createRequire).
 const reactClientOptimizerDeps = [
   '@astrojs/react/client.js',
   'react',
@@ -52,15 +53,31 @@ const reactClientOptimizerDeps = [
   'react-dom/client',
   'react/jsx-runtime',
   'react/jsx-dev-runtime',
+  'leaflet',
+  'react-leaflet',
 ];
 
-const ssrOptimizerDeps = [
-  ...reactClientOptimizerDeps,
-  'react-dom/server',
+const astroRuntimeOptimizerDeps = [
   'astro/assets/services/noop',
   'astro/env/runtime',
   'astro/virtual-modules/transitions.js',
   'astro/zod',
+];
+
+const reactSsrOptimizerDeps = [
+  'react',
+  'react-dom',
+  'react/jsx-runtime',
+  'react/jsx-dev-runtime',
+  'react-dom/server',
+  ...astroRuntimeOptimizerDeps,
+];
+
+const browserOnlyOptimizerDeps = [
+  '@astrojs/react/client.js',
+  'react-dom/client',
+  'leaflet',
+  'react-leaflet',
 ];
 
 /** @returns {import('vite').Plugin} */
@@ -68,9 +85,45 @@ function prebundleCloudflareDevDeps() {
   return {
     name: 'prebundle-cloudflare-dev-deps',
     configEnvironment(environmentName) {
-      if (environmentName === 'client') return;
+      if (environmentName === 'client') {
+        return {
+          optimizeDeps: {
+            noDiscovery: true,
+            include: reactClientOptimizerDeps,
+            exclude: ['react-dom/server', '@astrojs/react/server.js'],
+          },
+          resolve: {
+            dedupe: ['react', 'react-dom'],
+            alias: {
+              'react-dom/server': 'react-dom/server.browser.js',
+            },
+          },
+        };
+      }
+
+      if (environmentName === 'astro') {
+        return {
+          optimizeDeps: {
+            include: astroRuntimeOptimizerDeps,
+            exclude: [
+              ...browserOnlyOptimizerDeps,
+              'react',
+              'react-dom',
+              'react/jsx-runtime',
+              'react/jsx-dev-runtime',
+              'react-dom/server',
+              '@astrojs/react/server.js',
+            ],
+          },
+          resolve: { dedupe: ['react', 'react-dom'] },
+        };
+      }
+
       return {
-        optimizeDeps: { include: ssrOptimizerDeps },
+        optimizeDeps: {
+          include: reactSsrOptimizerDeps,
+          exclude: browserOnlyOptimizerDeps,
+        },
         resolve: { dedupe: ['react', 'react-dom'] },
       };
     },
@@ -100,7 +153,7 @@ export default defineConfig({
   },
   integrations: [
     react({
-      include: ['**/islands/**'],
+      include: ['**/islands/**/*.{tsx,ts,jsx,js}'],
       experimentalDisableStreaming: true,
     }),
     // MDX support for blog posts, docs, and content
@@ -132,7 +185,9 @@ export default defineConfig({
       dedupe: ['react', 'react-dom'],
     },
     optimizeDeps: {
+      noDiscovery: true,
       include: reactClientOptimizerDeps,
+      exclude: ['react-dom/server', '@astrojs/react/server.js'],
     },
   },
   fonts: [{

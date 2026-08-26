@@ -1,5 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
+import { getCityLngLat, normalizeCityName } from '@/lib/city-coordinates';
 
 type ItineraryEntry = CollectionEntry<'itineraries'>;
 
@@ -19,6 +20,19 @@ export type TripDay = {
   food: string[];
 };
 
+export type TripRouteStop = {
+  name: string;
+  lat: number;
+  lng: number;
+  days: number[];
+  dayLabel: string;
+};
+
+export type TripRoute = {
+  stops: TripRouteStop[];
+  cities: TripRouteStop[];
+};
+
 export type TripPageData = {
   title: string;
   dates: string;
@@ -26,6 +40,7 @@ export type TripPageData = {
   cities: string;
   description: string;
   days: TripDay[];
+  route: TripRoute;
 };
 
 export type TripArchiveEntry = {
@@ -77,6 +92,76 @@ function getOrderedCities(entry: ItineraryEntry): string[] {
   }
 
   return cities;
+}
+
+function formatDayLabel(days: number[]): string {
+  const sorted = [...days].sort((a, b) => a - b);
+  const parts: string[] = [];
+  let start = sorted[0];
+  let prev = sorted[0];
+
+  for (let i = 1; i <= sorted.length; i++) {
+    const current = sorted[i];
+    if (current === prev + 1) {
+      prev = current;
+      continue;
+    }
+
+    parts.push(start === prev ? `${start}` : `${start}–${prev}`);
+    if (current !== undefined) {
+      start = current;
+      prev = current;
+    }
+  }
+
+  return parts.join(', ');
+}
+
+function toRouteStop(name: string, days: number[]): TripRouteStop {
+  const [lng, lat] = getCityLngLat(name);
+  return {
+    name,
+    lat,
+    lng,
+    days,
+    dayLabel: formatDayLabel(days),
+  };
+}
+
+export function buildTripRoute(entry: ItineraryEntry): TripRoute {
+  const stops: TripRouteStop[] = [];
+
+  for (const day of entry.data.days) {
+    const last = stops.at(-1);
+    if (last && last.name === day.main_city) {
+      last.days.push(day.day_number);
+      last.dayLabel = formatDayLabel(last.days);
+      continue;
+    }
+
+    stops.push(toRouteStop(day.main_city, [day.day_number]));
+  }
+
+  const uniqueByKey = new Map<string, TripRouteStop>();
+  for (const stop of stops) {
+    const key = normalizeCityName(stop.name);
+    const existing = uniqueByKey.get(key);
+    if (!existing) {
+      uniqueByKey.set(key, {
+        ...stop,
+        days: [...stop.days],
+      });
+      continue;
+    }
+
+    existing.days.push(...stop.days);
+    existing.dayLabel = formatDayLabel(existing.days);
+  }
+
+  return {
+    stops,
+    cities: [...uniqueByKey.values()],
+  };
 }
 
 function getTripPhotoPrefix(slug: string): string {
@@ -226,6 +311,7 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
     destination,
     cities: orderedCities.join(', '),
     description: buildTripDescription(entry, orderedCities),
+    route: buildTripRoute(entry),
     days: data.days.map((day) => {
       const dayDate = getDayDate(data.released_itinerary.start_date, day.day_number);
       const dayPictures = day.pictures

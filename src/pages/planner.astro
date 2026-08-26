@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
-import { FlightPlanner } from '@/components/islands/flight-planner/FlightPlanner';
+import { FlightPlanner } from '@/components/islands/FlightPlanner';
 import { getRecentFlightSearches } from '@/lib/flights.server';
 
 const flights = await getRecentFlightSearches();
@@ -34,8 +34,9 @@ const jsonLd = {
         </p>
       </header>
 
-      {/* The Island */}
-      <FlightPlanner flights={flights} />
+      <FlightPlanner client:only="react" flights={flights}>
+        <p class="text-muted-foreground text-sm">Loading flight planner…</p>
+      </FlightPlanner>
 
       <section class="mt-32 pt-20 border-t border-border grid grid-cols-1 md:grid-cols-3 gap-12" data-ps="src/pages/planner.astro:mdyi9o">
         <div data-ps="src/pages/planner.astro:fkodk6">
