@@ -1,6 +1,6 @@
 import { getJson } from "serpapi";
 import { format, getDay, addDays } from "date-fns";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {getFreshFlightSearch, insertFlightSearch, uuidv7FromDate} from "./scripts/db.js";
@@ -16,8 +16,52 @@ function formatSqliteDatetime(date = new Date()) {
   return date.toISOString().replace("T", " ").slice(0, 19);
 }
 
+let flightsCache = null
+
+function loadFlights() {
+  if (!flightsCache) {
+    flightsCache = JSON.parse(readFileSync(flightsJsonPath, "utf8"));
+  }
+  return flightsCache;
+}
+
+function sleepSync(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function persistFlights(flights) {
+  const payload = Buffer.from(JSON.stringify(flights, null, 2) + "\n");
+  const tmpPath = `${flightsJsonPath}.${process.pid}.tmp`;
+  const retryable = new Set(["UNKNOWN", "EBUSY", "EPERM", "EACCES", "EAGAIN"]);
+  const maxAttempts = 10;
+  let lastError;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      writeFileSync(tmpPath, payload);
+      try {
+        renameSync(tmpPath, flightsJsonPath);
+      } catch {
+        writeFileSync(flightsJsonPath, payload);
+        try {
+          unlinkSync(tmpPath);
+        } catch {}
+      }
+      return;
+    } catch (err) {
+      lastError = err;
+      if (!retryable.has(err?.code) || attempt === maxAttempts) {
+        throw err;
+      }
+      sleepSync(Math.min(1000, 40 * 2 ** (attempt - 1)));
+    }
+  }
+
+  throw lastError;
+}
+
 function upsertFlightJson({ airport, stops, price, outboundDate, returnDate, responseText, searchedOn, createdAt }) {
-  const flights = JSON.parse(readFileSync(flightsJsonPath, "utf8"));
+  const flights = loadFlights();
   const idx = flights.findIndex(
     (f) =>
       f.airport === airport &&
@@ -44,7 +88,7 @@ function upsertFlightJson({ airport, stops, price, outboundDate, returnDate, res
     flights.push(entry);
   }
 
-  writeFileSync(flightsJsonPath, JSON.stringify(flights, null, 2) + "\n", "utf8");
+  persistFlights(flights);
 }
 
 const requestObject = {
@@ -59,6 +103,30 @@ const requestObject = {
 }
 const CACHE_MAX_AGE_DAYS = 3
 const MAX_SEARCH_DAYS = 305
+const MAX_REQUESTS_PER_HOUR = 200
+const HOUR_MS = 60 * 60 * 1000
+const requestTimes = []
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function rateLimitedGetJson(params) {
+  const now = Date.now()
+  while (requestTimes.length > 0 && now - requestTimes[0] >= HOUR_MS) {
+    requestTimes.shift()
+  }
+
+  if (requestTimes.length >= MAX_REQUESTS_PER_HOUR) {
+    const waitMs = HOUR_MS - (now - requestTimes[0]) + 50
+    console.log(`rate limit: waiting ${Math.ceil(waitMs / 1000)}s (${requestTimes.length} req in last hour)`)
+    await sleep(waitMs)
+    return rateLimitedGetJson(params)
+  }
+
+  requestTimes.push(Date.now())
+  return getJson(params)
+}
 
 /**
  * Airports - code - direct flights day:
@@ -79,6 +147,9 @@ const MAX_SEARCH_DAYS = 305
  * Changsha - CSX - none
  * Guilin - KWL - none
  * Lhasa - LXA - none
+ * Da Nang - DAD - none
+ * Ho Chi Minh - SGN - all
+ * Hanoi - HAN - all
  *
  * Trips:
  * Southwest - Mars-Mai/Sept-Nov - Chengdu, Chongqing, Guilin, Kunming
@@ -87,6 +158,7 @@ const MAX_SEARCH_DAYS = 305
  * Xinjiang - Mai-Oct - Urumqi
  * Xizang - Avril-Juin/Sept-Oct - Lhasa
  * East coast - Mars-Avril/Nov-Dec - Guangzhou, Xiamen
+ * Vietnam - Mars-Avril/Oct-Nov - Da Nang, Ho Chi Minh, Hanoi
  *
  * Dates to avoid:
  * First week of May
@@ -94,20 +166,15 @@ const MAX_SEARCH_DAYS = 305
  * Month of July
  */
 const dateRanges = [
-  ["2026-10-30", "2026-11-13", ["PVG", "HGH", "NKG"]],
-  ["2026-11-06", "2026-11-20", ["PVG", "HGH", "NKG"]],
-  ["2026-11-11", "2026-11-27", ["PVG", "HGH", "NKG"]],
-  ["2026-11-13", "2026-11-27", ["PVG", "HGH", "NKG"]],
-  ["2026-11-20", "2026-12-04", ["PVG", "HGH", "NKG"]],
   ["2027-02-06", "2027-02-20", ["CSX", "WUH", "KHN"]],
   ["2027-02-13", "2027-02-27", ["CSX", "WUH", "KHN"]],
   ["2027-02-20", "2027-03-05", ["CSX", "WUH", "KHN"]],
-  ["2027-03-12", "2027-03-26", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "CAN", "XMN"]],
-  ["2027-03-19", "2027-04-03", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "CAN", "XMN"]],
-  ["2027-03-26", "2027-04-10", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "CAN", "XMN"]],
-  ["2027-04-02", "2027-04-17", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN"]],
-  ["2027-04-09", "2027-04-24", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX"]],
-  ["2027-04-16", "2027-05-01", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX"]],
+  ["2027-03-12", "2027-03-26", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "CAN", "XMN", "DAD", "SGN", "HAN"]],
+  ["2027-03-19", "2027-04-03", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "CAN", "XMN", "DAD", "SGN", "HAN"]],
+  ["2027-03-26", "2027-04-10", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "CAN", "XMN", "DAD", "SGN", "HAN"]],
+  ["2027-04-02", "2027-04-17", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "DAD", "SGN", "HAN"]],
+  ["2027-04-09", "2027-04-24", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX", "DAD", "SGN", "HAN"]],
+  ["2027-04-16", "2027-05-01", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX", "DAD", "SGN", "HAN"]],
   //Skipping first may week
   ["2027-05-07", "2027-05-21", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX"]],
   ["2027-05-07", "2027-05-28", ["LXA"]], //3 weeks
@@ -142,10 +209,16 @@ const dateRanges = [
   ["2027-09-03", "2027-09-25", ["URC", "LXA"]], //3 weeks
   ["2027-09-10", "2027-09-25", ["CSX", "WUH", "KHN","XIY", "TFU", "KMG", "CKG", "KWL", "PEK", "PKX"]],
   ["2027-09-10", "2027-10-01", ["URC", "LXA"]], //3 weeks
-  ["2027-10-29", "2027-11-13", ["CSX", "WUH", "KHN","XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX"]],
+  ["2027-10-09", "2027-10-24", ["DAD", "SGN", "HAN"]],
+  ["2027-10-16", "2027-10-31", ["DAD", "SGN", "HAN"]],
+  ["2027-10-23", "2027-11-07", ["DAD", "SGN", "HAN"]],
+  ["2027-10-29", "2027-11-13", ["CSX", "WUH", "KHN","XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX", "DAD", "SGN", "HAN"]],
+  ["2027-11-06", "2027-11-20", ["DAD", "SGN", "HAN"]],
+  ["2027-11-13", "2027-11-27", ["DAD", "SGN", "HAN"]],
+  ["2027-11-20", "2027-12-04", ["DAD", "SGN", "HAN"]],
 ]
 
-const DIRECT_AIRPORTS = new Set(["XIY", "TFU", "CAN", "NKG", "XMN", "XIY", "CKG", "PVG", "PEK"])
+const DIRECT_AIRPORTS = new Set(["XIY", "TFU", "CAN", "NKG", "XMN", "XIY", "CKG", "PVG", "PEK", "HAN", "SGN"])
 
 async function getFlights(airport, start, end, stops) {
   const stopsValue = stops === "2" ? "stop" : "nostop"
@@ -158,7 +231,7 @@ async function getFlights(airport, start, end, stops) {
     return cached
   }
 
-  const json = await getJson({
+  const json = await rateLimitedGetJson({
     arrival_id: airport,
     outbound_date: outboundDate,
     return_date: returnDate,
@@ -228,6 +301,8 @@ function isAirportAvailable(airport, date) {
       return day === 6 // Saturday
     case "PVG":
     case "PEK":
+    case "HAN":
+    case "SGN":
       return true // all days
     default:
       return false
@@ -245,7 +320,7 @@ async function findWeeklyDirectFlights(date) {
   for (let d = new Date(weekStart); d <= weekEnd; d = addDays(d, 1)) {
     for (const airport of DIRECT_AIRPORTS) {
       if (d > maxSearchDate) break
-      if (airport === "PVG" || airport === "PEK") continue
+      if (airport === "PVG" || airport === "PEK" || airport === "HAN" || airport === "SGN") continue
       if (!isAirportAvailable(airport, d)) continue
 
       const json = await getFlights(airport, d, addDays(d, 14), "1")
