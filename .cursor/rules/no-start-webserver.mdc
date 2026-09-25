@@ -1,0 +1,10 @@
+---
+description: Do not start the webserver; leave that to the user
+alwaysApply: true
+---
+
+# Do not start the webserver
+
+Never start, restart, or run the project's webserver (e.g. `pnpm dev`, `npm run dev`, `astro dev`, or similar).
+
+Assume the server is already running or that the user will start it. Focus on code changes and verification that does not require starting the server.

@@ -17,9 +17,9 @@ export const AIRPORT_LABELS: Record<string, string> = {
   CAN: '广州 Guangzhou',
   CKG: '重庆 Chongqing',
   CSX: '长沙 Changsha',
-  DAD: '岘港 Da Nang',
+  DAD: 'Da Nang',
   HGH: '杭州 Hangzhou',
-  HAN: '河内 Hanoi',
+  HAN: 'Hanoi',
   KHN: '南昌 Nanchang',
   KMG: '昆明 Kunming',
   KWL: '贵林 Guilin',
@@ -28,15 +28,21 @@ export const AIRPORT_LABELS: Record<string, string> = {
   PEK: '北京 Beijing',
   PKX: '北京 Beijing DX',
   PVG: '上海 Shanghai',
-  SGN: '胡志明 Ho Chi Minh',
+  SGN: 'Ho Chi Minh',
   TFU: '成都 Chengdu',
   WUH: '武汉 Wuhan',
   XIY: '西安 Xian',
   XMN: '厦门 Xiamen',
 };
 
+const VIETNAM_AIRPORTS = new Set(['DAD', 'HAN', 'SGN']);
+
 export function getAirportLabel(airport: string): string {
   return AIRPORT_LABELS[airport] ?? airport;
+}
+
+export function isVietnamAirport(airport: string): boolean {
+  return VIETNAM_AIRPORTS.has(airport);
 }
 
 export function priceToColor(price: number, minPrice: number, maxPrice: number): string {

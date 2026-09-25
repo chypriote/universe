@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { isVietnamAirport } from '@/lib/flight-utils';
 
 interface FlightSearchRow {
   id: string;
@@ -35,6 +36,10 @@ type ScrollTarget = 'list' | 'calendar';
 const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
 const CHECKBOX_CLASS =
   'h-3.5 w-3.5 rounded-sm border-border bg-background text-primary focus:ring-primary/30 focus:ring-offset-0';
+const VIETNAM_ROW_CLASS =
+  'bg-[color-mix(in_oklab,hsl(205_70%_82%)_55%,var(--color-surface))]';
+const VIETNAM_PILL_CLASS =
+  'border-[hsl(205_45%_72%)] bg-[hsl(205_70%_90%)] hover:bg-[hsl(205_70%_86%)]';
 
 function formatShortDate(dateStr: string): string {
   return new Date(`${dateStr}T12:00:00`).toLocaleDateString('en-GB', {
@@ -372,12 +377,14 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                     }}
                     onClick={() => selectFlight(flight.id, 'calendar')}
                     className={`group cursor-pointer transition-colors relative ${
-                      selectedFlightId === flight.id
-                        ? 'bg-primary/5 ring-1 ring-inset ring-primary/20'
-                        : flight.isCityLowest
-                          ? 'bg-[color-mix(in_oklab,gold_12%,var(--color-surface))]'
-                          : 'hover:bg-background'
-                    }`}
+                      isVietnamAirport(flight.airport)
+                        ? VIETNAM_ROW_CLASS
+                        : selectedFlightId === flight.id
+                          ? 'bg-primary/5'
+                          : flight.isCityLowest
+                            ? 'bg-[color-mix(in_oklab,gold_12%,var(--color-surface))]'
+                            : 'hover:bg-background'
+                    } ${selectedFlightId === flight.id ? 'ring-1 ring-inset ring-primary/20' : ''}`}
                   >
                     <td className="px-4 py-4 pb-6">
                       <div className="font-bold text-foreground flex items-center gap-2 min-w-0">
@@ -441,6 +448,9 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
               </div>
               <div className="flex items-center gap-1.5 text-error">
                 <span className="w-2 h-2 rounded-full bg-error"></span> Highest
+              </div>
+              <div className="flex items-center gap-1.5 text-[hsl(205_45%_42%)]">
+                <span className="w-2 h-2 rounded-full bg-[hsl(205_70%_78%)]"></span> Vietnam
               </div>
             </div>
           </div>
@@ -511,10 +521,12 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                               type="button"
                               onClick={() => selectFlightFromCalendar(flight)}
                               className={`flex items-center justify-between gap-2 min-w-0 min-h-8 px-2.5 py-1 rounded-md border text-left transition-colors ${
-                                isSelectedFlight
-                                  ? 'border-primary bg-primary/10 ring-1 ring-primary/30'
-                                  : 'border-border/80 bg-background/80 hover:bg-background'
-                              }`}
+                                isVietnamAirport(flight.airport)
+                                  ? VIETNAM_PILL_CLASS
+                                  : isSelectedFlight
+                                    ? 'border-primary bg-primary/10'
+                                    : 'border-border/80 bg-background/80 hover:bg-background'
+                              } ${isSelectedFlight ? 'ring-1 ring-primary/30 border-primary' : ''}`}
                             >
                               <span
                                 className="min-w-0 truncate text-[11px] text-muted-foreground"

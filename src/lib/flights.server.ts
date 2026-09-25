@@ -5,7 +5,7 @@ import {
   type FlightSearchRow,
 } from './flight-utils';
 
-const MIN_OUTBOUND_DATE = '2026-09-25';
+const MIN_OUTBOUND_DATE = '2026-12-31';
 
 type FlightCollectionEntry = Awaited<ReturnType<typeof getCollection<'flights'>>>[number];
 

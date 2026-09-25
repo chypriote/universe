@@ -103,6 +103,7 @@ const requestObject = {
 }
 const CACHE_MAX_AGE_DAYS = 3
 const MAX_SEARCH_DAYS = 305
+const MIN_OUTBOUND_DATE = "2026-12-31"
 const MAX_REQUESTS_PER_HOUR = 200
 const HOUR_MS = 60 * 60 * 1000
 const requestTimes = []
@@ -317,8 +318,10 @@ async function findWeeklyDirectFlights(date) {
   const weekEnd = addDays(weekStart, 6)
 
   const maxSearchDate = addDays(new Date(), MAX_SEARCH_DAYS)
+  const minOutboundDate = new Date(MIN_OUTBOUND_DATE)
   for (let d = new Date(weekStart); d <= weekEnd; d = addDays(d, 1)) {
     for (const airport of DIRECT_AIRPORTS) {
+      if (d <= minOutboundDate) continue
       if (d > maxSearchDate) break
       if (airport === "PVG" || airport === "PEK" || airport === "HAN" || airport === "SGN") continue
       if (!isAirportAvailable(airport, d)) continue
@@ -337,15 +340,20 @@ async function findWeeklyDirectFlights(date) {
 async function run() {
   let searches = 0
   const maxSearchDate = addDays(new Date(), MAX_SEARCH_DAYS)
+  const minOutboundDate = new Date(MIN_OUTBOUND_DATE)
   for (const [startDate, endDate, airports] of dateRanges) {
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+
+    if (start <= minOutboundDate) {
+      continue
+    }
+
+    if (start > maxSearchDate) {
+      break
+    }
+
     for (const airport of airports) {
-      const start = new Date(startDate)
-      const end = new Date(endDate)
-
-      if (start > maxSearchDate) {
-        break
-      }
-
       const stopsOptions = airport === "URC" || airport === "LXA" ? ["3"] : ["2"]
       if (DIRECT_AIRPORTS.has(airport) && isAirportAvailable(airport, start)) {
         stopsOptions.push("1")
