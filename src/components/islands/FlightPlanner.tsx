@@ -29,6 +29,7 @@ interface ListFilters {
   airport: string;
   bestValueOnly: boolean;
   directOnly: boolean;
+  vietnamOnly: boolean;
 }
 
 type ScrollTarget = 'list' | 'calendar';
@@ -107,6 +108,9 @@ function filterFlights(flights: FlightSearchRow[], filters: ListFilters): Flight
     if (filters.directOnly && !flight.isDirect) {
       return false;
     }
+    if (filters.vietnamOnly && !isVietnamAirport(flight.airport)) {
+      return false;
+    }
     return true;
   });
 }
@@ -132,6 +136,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
     airport: '',
     bestValueOnly: false,
     directOnly: false,
+    vietnamOnly: false,
   });
   const [recentPanelHeight, setRecentPanelHeight] = useState<number | null>(null);
 
@@ -197,11 +202,15 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
     if (nextFilters.directOnly && !flight.isDirect) {
       nextFilters.directOnly = false;
     }
+    if (nextFilters.vietnamOnly && !isVietnamAirport(flight.airport)) {
+      nextFilters.vietnamOnly = false;
+    }
 
     if (
       nextFilters.airport !== filters.airport ||
       nextFilters.bestValueOnly !== filters.bestValueOnly ||
-      nextFilters.directOnly !== filters.directOnly
+      nextFilters.directOnly !== filters.directOnly ||
+      nextFilters.vietnamOnly !== filters.vietnamOnly
     ) {
       setFilters(nextFilters);
     }
@@ -269,7 +278,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
   }, [selectedFlightId, filters, filteredFlights, flights]);
 
   const hasActiveFilters = Boolean(
-    filters.airport || filters.bestValueOnly || filters.directOnly
+    filters.airport || filters.bestValueOnly || filters.directOnly || filters.vietnamOnly
   );
 
   return (
@@ -342,6 +351,17 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                   className={CHECKBOX_CLASS}
                 />
                 <span className="text-sm text-foreground">Direct flights only</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={filters.vietnamOnly}
+                  onChange={(event) => {
+                    updateFilters({ ...filters, vietnamOnly: event.target.checked });
+                  }}
+                  className={CHECKBOX_CLASS}
+                />
+                <span className="text-sm text-foreground">Vietnam only</span>
               </label>
             </div>
           )}

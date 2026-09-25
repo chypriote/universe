@@ -6,11 +6,11 @@
     "start_date": "2026-05-15",
     "end_date": "2026-05-29",
     "pictures": [
-      "IMG_20260527.jpg",
-      "IMG_20260526_130131_1.jpg",
-      "IMG_20260524_210450.jpg",
-      "IMG_20260516_175722 (1).jpg",
-      "IMG_20260518_193357_1.jpg"
+      "2026-05-21-19-20.jpg",
+      "2026-05-16-20-35.png",
+      "2026-05-18-13-14.jpg",
+      "2026-05-21-15-43.jpg",
+      "2026-05-24-11-11.jpg"
     ]
   },
   "days": [
@@ -22,11 +22,6 @@
       "pictures": [
         {
           "url": "src/assets/trips/qinghai-gansu/IMG_20260515_181109.jpg",
-          "caption": "2026-05-15 18:11",
-          "format": "9:16"
-        },
-        {
-          "url": "src/assets/trips/qinghai-gansu/IMG_20260515_181135.jpg",
           "caption": "2026-05-15 18:11",
           "format": "9:16"
         },
@@ -346,11 +341,6 @@
           "url": "src/assets/trips/qinghai-gansu/IMG20260521201356.jpg",
           "caption": "2026-05-21 20:13",
           "format": "9:16"
-        },
-        {
-          "url": "src/assets/trips/qinghai-gansu/mmexport1779406449435_1.jpg",
-          "caption": "mmexport1779406449435_1",
-          "format": "9:16"
         }
       ],
       "attractions": [
@@ -502,11 +492,6 @@
           "format": "9:16"
         },
         {
-          "url": "src/assets/trips/qinghai-gansu/IMG_20260523_143308.jpg",
-          "caption": "2026-05-23 14:33",
-          "format": "9:16"
-        },
-        {
           "url": "src/assets/trips/qinghai-gansu/IMG_20260523_143308_1.jpg",
           "caption": "2026-05-23 14:33",
           "format": "9:16"
@@ -587,11 +572,6 @@
         },
         {
           "url": "src/assets/trips/qinghai-gansu/IMG_20260524_140624 (1).jpg",
-          "caption": "2026-05-24 14:06",
-          "format": "9:16"
-        },
-        {
-          "url": "src/assets/trips/qinghai-gansu/IMG_20260524_140624.jpg",
           "caption": "2026-05-24 14:06",
           "format": "9:16"
         },

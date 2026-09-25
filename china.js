@@ -159,7 +159,7 @@ async function rateLimitedGetJson(params) {
  * Xinjiang - Mai-Oct - Urumqi
  * Xizang - Avril-Juin/Sept-Oct - Lhasa
  * East coast - Mars-Avril/Nov-Dec - Guangzhou, Xiamen
- * Vietnam - Mars-Avril/Oct-Nov - Da Nang, Ho Chi Minh, Hanoi
+ * Vietnam - Da Nang Mars-Juin/Oct-Nov; Ho Chi Minh Mars(/Avril/Oct-Nov); Hanoi Mars-Avril/Oct-Nov
  *
  * Dates to avoid:
  * First week of May
@@ -177,19 +177,19 @@ const dateRanges = [
   ["2027-04-09", "2027-04-24", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX", "DAD", "SGN", "HAN"]],
   ["2027-04-16", "2027-05-01", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX", "DAD", "SGN", "HAN"]],
   //Skipping first may week
-  ["2027-05-07", "2027-05-21", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX"]],
+  ["2027-05-07", "2027-05-21", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX", "DAD"]],
   ["2027-05-07", "2027-05-28", ["LXA"]], //3 weeks
-  ["2027-05-14", "2027-05-28", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX"]],
+  ["2027-05-14", "2027-05-28", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX", "DAD"]],
   ["2027-05-14", "2027-06-05", ["LXA"]], //3 weeks
-  ["2027-05-21", "2027-06-05", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG"]],
+  ["2027-05-21", "2027-06-05", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "DAD"]],
   ["2027-05-21", "2027-06-12", ["LXA"]], //3 weeks
-  ["2027-05-28", "2027-06-12", ["PVG", "HGH", "NKG"]],
-  ["2027-06-04", "2027-06-19", ["PVG", "HGH", "NKG"]],
+  ["2027-05-28", "2027-06-12", ["PVG", "HGH", "NKG", "DAD"]],
+  ["2027-06-04", "2027-06-19", ["PVG", "HGH", "NKG", "DAD"]],
   ["2027-06-04", "2027-06-26", ["LXA"]], //3 weeks
-  ["2027-06-11", "2027-06-26", ["PVG", "HGH", "NKG"]],
+  ["2027-06-11", "2027-06-26", ["PVG", "HGH", "NKG", "DAD"]],
   ["2027-06-11", "2027-07-03", ["LXA"]], //3 weeks
-  ["2027-06-18", "2027-07-03", []],
-  ["2027-06-25", "2027-07-10", []],
+  ["2027-06-18", "2027-07-03", ["DAD"]],
+  ["2027-06-25", "2027-07-10", ["DAD"]],
   ["2027-07-02", "2027-07-17", []],
   ["2027-07-02", "2027-07-24", ["URC"]], //3 weeks
   ["2027-07-09", "2027-07-24", []],
