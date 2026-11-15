@@ -151,6 +151,8 @@ async function rateLimitedGetJson(params) {
  * Da Nang - DAD - none
  * Ho Chi Minh - SGN - all
  * Hanoi - HAN - all
+ * Tokyo - TYO - metro (Narita/Haneda)
+ * Osaka - OSA - metro (Kansai/Itami)
  *
  * Trips:
  * Southwest - Mars-Mai/Sept-Nov - Chengdu, Chongqing, Guilin, Kunming
@@ -173,23 +175,26 @@ const dateRanges = [
   ["2027-03-12", "2027-03-26", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "CAN", "XMN", "DAD", "SGN", "HAN"]],
   ["2027-03-19", "2027-04-03", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "CAN", "XMN", "DAD", "SGN", "HAN"]],
   ["2027-03-26", "2027-04-10", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "CAN", "XMN", "DAD", "SGN", "HAN"]],
-  ["2027-04-02", "2027-04-17", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "DAD", "SGN", "HAN"]],
-  ["2027-04-09", "2027-04-24", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX", "DAD", "SGN", "HAN"]],
-  ["2027-04-16", "2027-05-01", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX", "DAD", "SGN", "HAN"]],
+  ["2027-04-02", "2027-04-17", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "DAD", "SGN", "HAN", "TYO", "OSA"]],
+  ["2027-04-09", "2027-04-24", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX", "DAD", "SGN", "HAN", "TYO", "OSA"]],
+  ["2027-04-16", "2027-05-01", ["CSX", "WUH", "KHN", "XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "CAN", "XMN", "PEK", "PKX", "DAD", "SGN", "HAN", "TYO", "OSA"]],
   //Skipping first may week
   ["2027-05-07", "2027-05-21", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX", "DAD"]],
-  ["2027-05-07", "2027-05-28", ["LXA"]], //3 weeks
+  ["2027-05-07", "2027-05-28", ["LXA", "TYO", "OSA"]], //3 weeks
   ["2027-05-14", "2027-05-28", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX", "DAD"]],
-  ["2027-05-14", "2027-06-05", ["LXA"]], //3 weeks
+  ["2027-05-14", "2027-06-05", ["LXA", "TYO", "OSA"]], //3 weeks
   ["2027-05-21", "2027-06-05", ["XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "DAD"]],
-  ["2027-05-21", "2027-06-12", ["LXA"]], //3 weeks
+  ["2027-05-21", "2027-06-12", ["LXA", "TYO", "OSA"]], //3 weeks
   ["2027-05-28", "2027-06-12", ["PVG", "HGH", "NKG", "DAD"]],
+  ["2027-05-28", "2027-06-18", ["TYO", "OSA"]], //3 weeks
   ["2027-06-04", "2027-06-19", ["PVG", "HGH", "NKG", "DAD"]],
-  ["2027-06-04", "2027-06-26", ["LXA"]], //3 weeks
+  ["2027-06-04", "2027-06-26", ["LXA", "TYO", "OSA"]], //3 weeks
   ["2027-06-11", "2027-06-26", ["PVG", "HGH", "NKG", "DAD"]],
-  ["2027-06-11", "2027-07-03", ["LXA"]], //3 weeks
+  ["2027-06-11", "2027-07-03", ["LXA", "TYO", "OSA"]], //3 weeks
   ["2027-06-18", "2027-07-03", ["DAD"]],
+  ["2027-06-18", "2027-07-09", ["TYO", "OSA"]], //3 weeks
   ["2027-06-25", "2027-07-10", ["DAD"]],
+  ["2027-06-25", "2027-07-16", ["TYO", "OSA"]], //3 weeks
   ["2027-07-02", "2027-07-17", []],
   ["2027-07-02", "2027-07-24", ["URC"]], //3 weeks
   ["2027-07-09", "2027-07-24", []],
@@ -206,20 +211,27 @@ const dateRanges = [
   ["2027-08-20", "2027-09-11", ["URC"]], //3 weeks
   ["2027-08-27", "2027-09-11", ["PEK", "PKX"]],
   ["2027-08-27", "2027-09-18", ["URC", "LXA"]], //3 weeks
-  ["2027-09-03", "2027-09-18", ["CSX", "WUH", "KHN","XIY", "TFU", "KMG", "CKG", "KWL", "PEK", "PKX"]],
+  ["2027-09-03", "2027-09-18", ["CSX", "WUH", "KHN","XIY", "TFU", "KMG", "CKG", "KWL", "PEK", "PKX", "TYO", "OSA"]],
   ["2027-09-03", "2027-09-25", ["URC", "LXA"]], //3 weeks
-  ["2027-09-10", "2027-09-25", ["CSX", "WUH", "KHN","XIY", "TFU", "KMG", "CKG", "KWL", "PEK", "PKX"]],
+  ["2027-09-10", "2027-09-25", ["CSX", "WUH", "KHN","XIY", "TFU", "KMG", "CKG", "KWL", "PEK", "PKX", "TYO", "OSA"]],
   ["2027-09-10", "2027-10-01", ["URC", "LXA"]], //3 weeks
-  ["2027-10-09", "2027-10-24", ["DAD", "SGN", "HAN"]],
-  ["2027-10-16", "2027-10-31", ["DAD", "SGN", "HAN"]],
-  ["2027-10-23", "2027-11-07", ["DAD", "SGN", "HAN"]],
-  ["2027-10-29", "2027-11-13", ["CSX", "WUH", "KHN","XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX", "DAD", "SGN", "HAN"]],
+  ["2027-10-09", "2027-10-24", ["DAD", "SGN", "HAN", "TYO", "OSA"]],
+  ["2027-10-16", "2027-10-31", ["DAD", "SGN", "HAN", "TYO", "OSA"]],
+  ["2027-10-23", "2027-11-07", ["DAD", "SGN", "HAN", "TYO", "OSA"]],
+  ["2027-10-29", "2027-11-13", ["CSX", "WUH", "KHN","XIY", "TFU", "KMG", "CKG", "KWL", "PVG", "HGH", "NKG", "PEK", "PKX", "DAD", "SGN", "HAN", "TYO", "OSA"]],
   ["2027-11-06", "2027-11-20", ["DAD", "SGN", "HAN"]],
   ["2027-11-13", "2027-11-27", ["DAD", "SGN", "HAN"]],
   ["2027-11-20", "2027-12-04", ["DAD", "SGN", "HAN"]],
 ]
 
 const DIRECT_AIRPORTS = new Set(["XIY", "TFU", "CAN", "NKG", "XMN", "XIY", "CKG", "PVG", "PEK", "HAN", "SGN"])
+
+// TEMPORARY: only search these Chinese airports. Remove this block to restore all China airports.
+const CHINA_AIRPORTS = new Set(["CAN", "CKG", "CSX", "HGH", "KHN", "KMG", "KWL", "LXA", "NKG", "PEK", "PKX", "PVG", "TFU", "URC", "WUH", "XIY", "XMN"])
+const TEMP_ALLOWED_CHINA_AIRPORTS = new Set(["PVG", "HGH", "NKG"])
+function isSkippedChinaAirport(airport) {
+  return CHINA_AIRPORTS.has(airport) && !TEMP_ALLOWED_CHINA_AIRPORTS.has(airport)
+}
 
 async function getFlights(airport, start, end, stops) {
   const stopsValue = stops === "2" ? "stop" : "nostop"
@@ -324,6 +336,7 @@ async function findWeeklyDirectFlights(date) {
       if (d <= minOutboundDate) continue
       if (d > maxSearchDate) break
       if (airport === "PVG" || airport === "PEK" || airport === "HAN" || airport === "SGN") continue
+      if (isSkippedChinaAirport(airport)) continue
       if (!isAirportAvailable(airport, d)) continue
 
       const json = await getFlights(airport, d, addDays(d, 14), "1")
@@ -354,6 +367,7 @@ async function run() {
     }
 
     for (const airport of airports) {
+      if (isSkippedChinaAirport(airport)) continue
       const stopsOptions = airport === "URC" || airport === "LXA" ? ["3"] : ["2"]
       if (DIRECT_AIRPORTS.has(airport) && isAirportAvailable(airport, start)) {
         stopsOptions.push("1")
