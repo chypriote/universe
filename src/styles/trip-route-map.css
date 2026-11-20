@@ -1,12 +1,12 @@
 .trip-route-map {
   height: 100%;
   width: 100%;
-  background: hsl(36 20% 94%);
+  background: var(--color-surface);
   font-family: inherit;
 }
 
 .trip-route-map .leaflet-container {
-  background: hsl(36 20% 94%);
+  background: var(--color-surface);
   font-family: inherit;
 }
 
@@ -15,20 +15,20 @@
 }
 
 .trip-route-map .leaflet-control-attribution {
-  background: hsl(36 25% 97% / 0.92);
-  color: hsl(210 5% 40%);
+  background: color-mix(in oklab, var(--color-background) 92%, transparent);
+  color: var(--color-muted-foreground);
   font-size: 9px;
   letter-spacing: 0.04em;
   border-radius: 0;
 }
 
 .trip-route-map .leaflet-control-attribution a {
-  color: hsl(17 60% 49%);
+  color: var(--color-primary);
 }
 
 .trip-route-map .leaflet-bar {
   border-radius: 0;
-  border: 1px solid hsl(36 12% 88%);
+  border: 1px solid var(--color-border);
   box-shadow: none;
 }
 
@@ -38,9 +38,9 @@
   width: 32px;
   height: 32px;
   line-height: 32px;
-  color: hsl(210 10% 11%);
-  background: hsl(36 25% 97%);
-  border-bottom-color: hsl(36 12% 88%);
+  color: var(--color-foreground);
+  background: var(--color-background);
+  border-bottom-color: var(--color-border);
 }
 
 .trip-route-map .leaflet-bar a:last-child {
@@ -50,6 +50,10 @@
 .trip-route-map .leaflet-control-zoom-in,
 .trip-route-map .leaflet-control-zoom-out {
   font-size: 16px;
+}
+
+.trip-route-line {
+  stroke: var(--color-primary);
 }
 
 .trip-route-marker {
@@ -68,8 +72,8 @@
 .trip-route-pin__dot {
   width: 12px;
   height: 12px;
-  background: hsl(17 60% 49%);
-  border: 2px solid hsl(36 25% 97%);
+  background: var(--color-primary);
+  border: 2px solid var(--color-background);
   flex-shrink: 0;
 }
 
@@ -88,23 +92,23 @@
   font-style: italic;
   font-size: 13px;
   line-height: 1.2;
-  color: hsl(210 10% 11%);
+  color: var(--color-foreground);
 }
 
 .trip-route-pin__zh {
-  font-family: "Plus Jakarta Sans", ui-sans-serif, sans-serif;
+  font-family: var(--font-sans);
   font-size: 10px;
   line-height: 1.2;
-  color: hsl(210 5% 40%);
+  color: var(--color-muted-foreground);
 }
 
 .trip-route-pin__days {
-  font-family: "Plus Jakarta Sans", ui-sans-serif, sans-serif;
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: hsl(17 60% 49%);
+  color: var(--color-primary);
 }
 
 @media (max-width: 767px) {
@@ -115,14 +119,14 @@
 
 .trip-route-map .leaflet-tooltip {
   border-radius: 0;
-  border: 1px solid hsl(36 12% 88%);
-  background: hsl(36 25% 97%);
-  color: hsl(210 10% 11%);
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-foreground);
   box-shadow: none;
   font-family: inherit;
   padding: 6px 10px;
 }
 
 .trip-route-map .leaflet-tooltip-top::before {
-  border-top-color: hsl(36 12% 88%);
+  border-top-color: var(--color-border);
 }

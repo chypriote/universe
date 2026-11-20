@@ -187,16 +187,9 @@ All motion stops under `prefers-reduced-motion: reduce`.
 
 ## 12. Known gaps (code vs. this file)
 
-To fix:
-- `trip-route-map.css` repeats color values instead of using the tokens.
-- Pages still use `font-mono` and several letter spacings for labels; move them to `eyebrow`.
-
 Template content to replace:
 - Marketing copy in the guide pages (see Voice & Tone).
 - `SITE.socials` and `twitterHandle` placeholders.
-
-To remove:
-- Unused: `BlogLayout.astro`, `DocsLayout.astro`, `TableOfContents.astro`, `islands/TripArchive.tsx`.
 
 To rebuild:
 - Footer links to flight price pages ("Price Index", "Flight Matrix"), once those pages exist.

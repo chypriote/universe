@@ -303,7 +303,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
             One entry per airport-date combo, ordered from cheapest to priciest.
           </p>
           {flights.length > 0 && (
-            <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+            <p className="mt-1 eyebrow text-muted-foreground">
               {hasActiveFilters
                 ? `${filteredFlights.length} of ${flights.length} results`
                 : `${flights.length} results`}
@@ -379,7 +379,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
           <div className="flex-1 min-h-0 overflow-y-auto overflow-x-auto">
             <table className="w-full text-left font-sans text-sm">
               <thead className="sticky top-0 z-10">
-                <tr className="border-b border-border bg-background/95 text-[10px] uppercase tracking-wider text-muted-foreground backdrop-blur">
+                <tr className="border-b border-border bg-background/95 eyebrow text-muted-foreground backdrop-blur">
                   <th className="px-4 py-3 font-semibold">Route</th>
                   <th className="px-4 py-3 font-semibold text-right">Price</th>
                 </tr>
@@ -435,7 +435,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                         {formatPrice(flight.price)}
                       </div>
                       {flight.isCityLowest && (
-                        <span className="text-[9px] uppercase tracking-tighter bg-success/10 text-success px-1.5 py-0.5 font-bold">
+                        <span className="eyebrow bg-success/10 text-success px-1.5 py-0.5">
                           Best Value
                         </span>
                       )}
@@ -459,7 +459,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                   : 'Select a route from recent search results to inspect departure prices by date'}
               </p>
             </div>
-            <div className="flex flex-wrap gap-4 text-[10px] uppercase tracking-widest font-bold">
+            <div className="flex flex-wrap gap-4 eyebrow">
               <div className="flex items-center gap-1.5 text-success">
                 <span className="w-2 h-2 rounded-full bg-success"></span> Lowest
               </div>
@@ -482,7 +482,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
               {WEEKDAY_LABELS.map((day) => (
                 <div
                   key={day}
-                  className="px-3 py-3 text-center text-[10px] uppercase tracking-widest font-bold text-muted-foreground border-r border-border/70 last:border-r-0"
+                  className="px-3 py-3 text-center eyebrow text-muted-foreground border-r border-border/70 last:border-r-0"
                 >
                   {day}
                 </div>
@@ -512,7 +512,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                     <div className="flex items-baseline justify-between gap-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-sm font-bold tabular-nums">{day.day}</span>
-                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                        <span className="eyebrow text-muted-foreground">
                           {day.month}
                         </span>
                       </div>

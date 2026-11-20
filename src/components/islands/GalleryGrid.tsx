@@ -133,7 +133,7 @@ export function GalleryGrid({ photos }: GalleryGridProps) {
               <p className="font-serif text-2xl mb-2">
                 {selected.city ?? selected.tripTitle}
               </p>
-              <p className="text-dark-muted-foreground text-xs uppercase tracking-widest font-sans">
+              <p className="eyebrow text-dark-muted-foreground">
                 Photograph by {selected.photographer}
                 {selected.day !== null && ` · Day ${selected.day}`}
               </p>

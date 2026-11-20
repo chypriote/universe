@@ -4,7 +4,6 @@ import { MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'reac
 import type { TripRoute, TripRouteStop } from '@/lib/itineraries.server';
 import 'leaflet/dist/leaflet.css';
 
-const ROUTE_COLOR = 'hsl(17 60% 49%)';
 const TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 const TILE_ATTR =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
@@ -100,7 +99,7 @@ export function TripRouteMapInner({ route }: TripRouteMapInnerProps) {
       {positions.length > 1 && (
         <Polyline
           positions={positions}
-          pathOptions={{ color: ROUTE_COLOR, weight: 2.5, opacity: 0.9 }}
+          pathOptions={{ className: 'trip-route-line', weight: 2.5, opacity: 0.9 }}
         />
       )}
       {route.cities.map((city) => (
