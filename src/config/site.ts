@@ -1,7 +1,7 @@
 export const SITE = {
   name: '中国',
   title: 'Nico to 中国',
-  description: 'A premium travel monograph and route planner for the modern explorer. Atmospheric journals meet precise flight calendars.',
+  description: 'Trip reports, trip plans, photography and flight prices from my travels in China.',
   lang: 'en',
   url:
     (typeof process !== 'undefined' && process.env.SITE_URL) ||

@@ -194,17 +194,17 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.fontsource(),
-      name: "Cormorant Garamond",
-      cssVariable: "--font-cormorant",
-      styles: ["normal", "italic"],
-      weights: ["300 700"],
+      name: 'Inter',
+      cssVariable: '--font-inter',
+      styles: ['normal'],
+      weights: ['300 700'],
     },
     {
       provider: fontProviders.fontsource(),
-      name: "Plus Jakarta Sans",
-      cssVariable: "--font-jakarta",
-      styles: ["normal"],
-      weights: ["200 800"],
+      name: 'Fraunces',
+      cssVariable: '--font-fraunces',
+      styles: ['normal', 'italic'],
+      weights: ['300 700'],
     },
-  ]
+  ],
 });

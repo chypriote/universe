@@ -7,46 +7,103 @@
 }
 
 @theme {
-  --color-background: hsl(36 25% 97%);
-  --color-foreground: hsl(210 10% 11%);
-  --color-muted-foreground: hsl(210 5% 40%);
-  --color-border: hsl(36 12% 88%);
-  --color-surface: hsl(36 20% 94%);
+  /* Ink and cinnabar: rice paper, ink, seal red, jade. See DESIGN.md. */
+  --color-background: hsl(40 33% 94%);
+  --color-foreground: hsl(45 8% 10%);
+  --color-muted-foreground: hsl(40 5% 37%);
+  --color-border: hsl(40 22% 84%);
+  --color-surface: hsl(40 30% 90%);
 
-  --color-primary: hsl(17 60% 49%);
-  --color-primary-foreground: hsl(36 25% 97%);
-  --color-primary-hover: hsl(17 65% 42%);
+  --color-primary: hsl(7 62% 43%);
+  --color-primary-foreground: hsl(40 50% 97%);
+  --color-primary-hover: hsl(7 65% 36%);
 
-  --color-secondary: hsl(120 8% 46%);
-  --color-secondary-foreground: hsl(36 25% 97%);
-  --color-secondary-hover: hsl(120 10% 40%);
+  --color-secondary: hsl(164 27% 33%);
+  --color-secondary-foreground: hsl(40 50% 97%);
+  --color-secondary-hover: hsl(164 30% 26%);
 
-  --color-dark-background: hsl(210 10% 11%);
-  --color-dark-foreground: hsl(36 25% 97%);
-  --color-dark-muted-foreground: hsl(210 5% 70%);
-  --color-dark-border: hsl(210 10% 18%);
+  --color-dark-background: hsl(40 7% 8%);
+  --color-dark-foreground: hsl(40 33% 93%);
+  --color-dark-muted-foreground: hsl(40 5% 62%);
+  --color-dark-border: hsl(40 6% 17%);
 
   --color-success: hsl(142 76% 36%);
   --color-error: hsl(0 72% 51%);
   --color-warning: hsl(38 92% 50%);
 
   /* Heading utilities: text-h1 / text-h2 / text-h3 (fluid + capped, with paired line-heights). */
-  --text-h1: clamp(2.25rem, 0.9rem + 4.6vw, 5rem);
-  --text-h1--line-height: 1.08;
-  --text-h2: clamp(1.75rem, 1.1rem + 2.2vw, 3rem);
-  --text-h2--line-height: 1.15;
+  --text-h1: clamp(2.5rem, 1rem + 5vw, 5.5rem);
+  --text-h1--line-height: 1.02;
+  --text-h2: clamp(1.875rem, 1.1rem + 2.4vw, 3.25rem);
+  --text-h2--line-height: 1.1;
   --text-h3: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
-  --text-h3--line-height: 1.3;
+  --text-h3--line-height: 1.25;
 }
 
 /* Cross-var theme tokens must use `inline` so utilities don't self-reference. */
 @theme inline {
-  /* Astro Fonts injects --font-cormorant and --font-jakarta (astro.config.mjs) */
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
+  /* Astro Fonts injects --font-inter and --font-fraunces */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  /* No webfont for Chinese: a full CJK font is several MB. */
+  --font-cjk: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', STSong, SimSun, serif;
   /* Legacy aliases — bg-dark / text-dark-muted keep working */
   --color-dark: var(--color-dark-background);
   --color-dark-muted: var(--color-dark-muted-foreground);
+}
+
+/* Small uppercase label above a heading. */
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+/* Square seal (印章) mark. */
+@utility seal {
+  display: inline-grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-family: var(--font-cjk);
+  font-weight: 700;
+  line-height: 1;
+}
+
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+@utility btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+  &:hover {
+    background-color: var(--color-primary-hover);
+  }
+}
+
+@utility btn-outline {
+  border: 1px solid currentColor;
+  &:hover {
+    background-color: var(--color-foreground);
+    border-color: var(--color-foreground);
+    color: var(--color-background);
+  }
 }
 
 /* Prevent horizontal scrolling on all devices */
@@ -64,6 +121,22 @@ html {
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:lang(zh) {
+  font-family: var(--font-cjk);
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }
 
 /* Typography plugin - use theme variables */
@@ -94,6 +167,7 @@ h4,
 h5,
 h6 {
   overflow-wrap: break-word;
+  font-optical-sizing: auto;
   /* text-wrap: balance prevents orphans and awkward breaks in headlines */
   text-wrap: balance;
 
