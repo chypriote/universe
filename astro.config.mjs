@@ -80,10 +80,11 @@ const browserOnlyOptimizerDeps = [
   'react-leaflet',
 ];
 
-/** @returns {import('vite').Plugin} */
+/** @returns {NonNullable<import('astro').ViteUserConfig['plugins']>[number]} */
 function prebundleCloudflareDevDeps() {
   return {
     name: 'prebundle-cloudflare-dev-deps',
+    /** @param {string} environmentName */
     configEnvironment(environmentName) {
       if (environmentName === 'client') {
         return {

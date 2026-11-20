@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "ci": "astro check && astro build",
     "astro": "astro",
     "china": "node china.js"
   },

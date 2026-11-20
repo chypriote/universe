@@ -146,8 +146,9 @@ const { trips } = Astro.props;
 </div>
 
 <script>
-  const root = document.querySelector('[data-trip-archive]');
-  if (root instanceof HTMLElement) {
+  const archive = document.querySelector('[data-trip-archive]');
+  if (archive instanceof HTMLElement) {
+    const root = archive;
     const buttons = [...root.querySelectorAll('[data-view-button]')];
     const articles = [...root.querySelectorAll('[data-trip-type]')];
     const empties = [...root.querySelectorAll('[data-empty]')];
