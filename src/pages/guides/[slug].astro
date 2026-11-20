@@ -53,6 +53,15 @@ const jsonLd = {
                 </li>
               ))}
             </ol>
+            <div class="mt-8 flex flex-col gap-6">
+              {next && (
+                <div class="flex flex-col">
+                  <span class="eyebrow text-muted-foreground mb-2">Next guide</span>
+                  <a href={`/guides/${next.id}`} class="font-serif text-lg hover:text-primary transition-colors">{next.data.title} →</a>
+                </div>
+              )}
+              <a href="/guides" class="eyebrow text-muted-foreground hover:text-primary transition-colors">← All guides</a>
+            </div>
           </nav>
         </aside>
 
