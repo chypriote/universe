@@ -96,7 +96,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Navigation | Component | Sticky top bar: seal + name, 4 links with a cinnabar underline on the current page, mobile menu | — |
 | Footer | Component | Dark, seal + name + description, one link list | — |
 | Hero | Pattern | Full-height trip photo, title bottom-left, vertical 中国游记 on the right (desktop), two buttons | — |
-| Region index | Pattern | Dark section, sticky list of regions from the trips + staggered trip covers | — |
+| China map | Pattern | Clickable SVG map of China (`ChinaMap.tsx`). Hover or focus shows the name in English and Chinese, a photo if there is one, and a detail line. Used on Photos (click filters photos, dots are cities) and on the home Regions section (click opens a trip). Shapes: Natural Earth, public domain, built by `scripts/build-china-map.mjs` into `src/data/china-map.json`. | Light, dark |
 | Trip day section | Pattern | Large cinnabar day number, title, sticky activities and food (Chinese + pinyin), text, photos | — |
 | Route map | Pattern | Leaflet map of the trip route | — |
 | Flight planner | Pattern | Flight table (1/3) + price calendar (2/3) | — |

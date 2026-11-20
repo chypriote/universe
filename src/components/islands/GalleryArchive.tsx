@@ -1,6 +1,10 @@
 import { useMemo, useState } from 'react';
 import type { GalleryArchive as GalleryArchiveData, GalleryCity } from '@/lib/itineraries.server';
 import { GalleryGrid } from '@/components/islands/GalleryGrid';
+import { ChinaMap, type ChinaMapCity, type ChinaMapRegion } from '@/components/islands/ChinaMap';
+import { getRegionZh, projectLngLat } from '@/lib/china-map';
+
+const count = (n: number) => `${n} ${n === 1 ? 'photo' : 'photos'}`;
 
 type Filter = {
   region: string | null;
@@ -31,10 +35,36 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
     });
   }, [photos, filter]);
 
+  const mapRegions = useMemo<ChinaMapRegion[]>(
+    () =>
+      regions.map((name) => {
+        const inRegion = photos.filter((photo) => photo.region === name);
+        return { name, zh: getRegionZh(name), photo: inRegion[0]?.thumb, detail: count(inRegion.length) };
+      }),
+    [photos, regions],
+  );
+
+  const mapCities = useMemo<ChinaMapCity[]>(
+    () =>
+      cities.map((city) => {
+        const inCity = photos.filter((photo) => photo.cityKey === city.key);
+        const [x, y] = projectLngLat(city.lng, city.lat);
+        return { key: city.key, name: city.name, zh: city.nameZh, x, y, photo: inCity[0]?.thumb, detail: count(inCity.length) };
+      }),
+    [photos, cities],
+  );
+
   const selectedCity: GalleryCity | undefined = cities.find((city) => city.key === filter.city);
 
   const selectRegion = (region: string | null) => {
     setFilter({ region, city: null });
+  };
+
+  const selectMapRegion = (region: string) => selectRegion(filter.region === region ? null : region);
+
+  const selectMapCity = (key: string) => {
+    const city = cities.find((item) => item.key === key);
+    if (city) selectCity(city);
   };
 
   const selectCity = (city: GalleryCity) => {
@@ -47,6 +77,16 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
 
   return (
     <div className="space-y-12 lg:space-y-16">
+      <ChinaMap
+        regions={mapRegions}
+        cities={mapCities}
+        selectedRegion={filter.region}
+        selectedCity={filter.city}
+        onSelectRegion={selectMapRegion}
+        onSelectCity={selectMapCity}
+        idleText="Hover a region or a dot, click to filter"
+      />
+
       <div className="space-y-6">
         <div>
           <p className="mb-3 eyebrow">

@@ -96,6 +96,8 @@ export type GalleryCity = {
   pinyin: string;
   key: string;
   region: string;
+  lng: number;
+  lat: number;
   tripTitle: string;
   day: number;
   href: string;
@@ -415,10 +417,13 @@ export async function buildGalleryArchive(
 
       const firstInCity = days.find((day) => normalizeCityName(day.city) === cityKey);
       const pinDay = firstInCity?.day ?? match.day;
+      const [lng, lat] = getCityLngLat(match.city);
       citiesByKey.set(cityKey, {
         ...toNamedPlace(match.city),
         key: cityKey,
         region: match.region,
+        lng,
+        lat,
         tripTitle: data.title,
         day: pinDay,
         href: `/trips/${slug}#day-${pinDay}`,

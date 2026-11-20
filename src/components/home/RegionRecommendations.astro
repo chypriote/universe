@@ -1,7 +1,8 @@
 ---
 import Container from '@/components/Container.astro';
+import { ChinaMap, type ChinaMapRegion } from '@/components/islands/ChinaMap';
+import { getRegionZh } from '@/lib/china-map';
 import type { TripArchiveEntry } from '@/lib/itineraries.server';
-import { getPlaceName } from '@/lib/place-names';
 
 interface Props {
   trips: TripArchiveEntry[];
@@ -9,69 +10,30 @@ interface Props {
 
 const { trips } = Astro.props;
 
-const regions = new Map<string, { link: string; count: number }>();
+const byRegion = new Map<string, ChinaMapRegion>();
+const tripCount = new Map<string, number>();
 for (const trip of trips) {
-  for (const region of trip.regions) {
-    const entry = regions.get(region);
-    if (entry) entry.count += 1;
-    else regions.set(region, { link: trip.link, count: 1 });
+  for (const name of trip.regions) {
+    const count = (tripCount.get(name) ?? 0) + 1;
+    tripCount.set(name, count);
+    const entry = byRegion.get(name) ?? { name, zh: getRegionZh(name), href: trip.link };
+    entry.photo ??= trip.photos[0];
+    entry.detail = `${count} ${count === 1 ? 'trip' : 'trips'}`;
+    byRegion.set(name, entry);
   }
 }
-const regionList = [...regions].sort(([a], [b]) => a.localeCompare(b));
-
-const covers = trips
-  .filter((trip) => trip.photos[0])
-  .slice(0, 4)
-  .map((trip) => ({ src: trip.photos[0], title: trip.title, link: trip.link }));
+const regions = [...byRegion.values()];
 ---
 
-{regionList.length > 0 && (
+{regions.length > 0 && (
   <section id="region-recommendations" class="py-24 lg:py-32 bg-dark-background text-dark-foreground">
     <Container>
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-        <div class="lg:col-span-5">
-          <div class="lg:sticky lg:top-[calc(var(--nav-height)+3rem)]">
-            <span class="eyebrow">By region</span>
-            <h2 class="mt-4 text-h2 font-serif font-light">Regions</h2>
-            <p class="mt-4 mb-12 text-dark-muted-foreground text-lg">Every province in the journeys and plans. Each links to a trip.</p>
-
-            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 border-t border-dark-border">
-              {regionList.map(([region, { link, count }]) => {
-                const zh = getPlaceName(region).zh;
-                return (
-                  <li class="border-b border-dark-border">
-                    <a href={link} class="group flex items-baseline justify-between gap-4 py-3 hover:text-primary transition-colors">
-                      <span class="font-serif text-xl">
-                        {region}
-                        {zh && <span lang="zh" class="ml-2 text-sm text-dark-muted-foreground">{zh}</span>}
-                      </span>
-                      <span class="eyebrow text-dark-muted-foreground group-hover:text-primary">
-                        {count} {count === 1 ? 'trip' : 'trips'}
-                      </span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-
-        {covers.length > 0 && (
-          <div class="lg:col-span-7 grid grid-cols-2 gap-4 lg:gap-6 content-start">
-            {covers.map((cover, index) => (
-              <a href={cover.link} class:list={['group block overflow-hidden reveal', index % 2 === 1 && 'mt-12']}>
-                <img
-                  src={cover.src}
-                  alt={cover.title}
-                  class="w-full aspect-[3/4] object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                  loading="lazy"
-                />
-                <span class="mt-3 block eyebrow text-dark-muted-foreground">{cover.title}</span>
-              </a>
-            ))}
-          </div>
-        )}
+      <div class="max-w-3xl mb-16">
+        <span class="eyebrow">By region</span>
+        <h2 class="mt-4 text-h2 font-serif font-light">Regions</h2>
+        <p class="mt-4 text-dark-muted-foreground text-lg">Every province in the journeys and plans. Each links to a trip.</p>
       </div>
+      <ChinaMap client:visible tone="dark" regions={regions} idleText="Hover a region" />
     </Container>
   </section>
 )}
