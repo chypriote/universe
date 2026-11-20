@@ -9,23 +9,9 @@ const { trips } = Astro.props;
 ---
 
 <div class="space-y-12 lg:space-y-20" data-trip-archive data-view="report">
-  <div class="flex justify-center">
-    <div class="inline-flex p-1 bg-surface border border-border">
-      <button
-        type="button"
-        data-view-button="report"
-        class="px-8 py-2.5 text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 bg-primary text-primary-foreground"
-      >
-        Trip Reports
-      </button>
-      <button
-        type="button"
-        data-view-button="plan"
-        class="px-8 py-2.5 text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 text-muted-foreground hover:text-foreground"
-      >
-        Trip Plans
-      </button>
-    </div>
+  <div class="flex gap-10 border-b border-border" role="group" aria-label="Archive view">
+    <button type="button" data-view-button="report" aria-pressed="true" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-primary">Trip reports</button>
+    <button type="button" data-view-button="plan" aria-pressed="false" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-primary">Trip plans</button>
   </div>
 
   <div class="grid grid-cols-1 gap-12 lg:gap-24">
@@ -34,7 +20,7 @@ const { trips } = Astro.props;
       return (
         <p
           class:list={[
-            'text-center text-muted-foreground font-serif italic',
+            'text-muted-foreground font-serif italic',
             view === 'plan' && 'hidden',
           ]}
           data-empty={view}
@@ -58,10 +44,10 @@ const { trips } = Astro.props;
         >
           <div class="lg:col-span-5 space-y-6 pt-2">
             <div class="space-y-2">
-              <span class="text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground">
-                {trip.dates}
+              <span class="eyebrow text-muted-foreground">
+                {trip.durationDays} days · {trip.dates}
               </span>
-              <h2 class="text-h2 font-serif">
+              <h2 class="text-h2 font-serif font-light">
                 <a href={trip.link} class="hover:text-primary transition-colors">
                   {trip.title}
                 </a>
@@ -75,21 +61,16 @@ const { trips } = Astro.props;
             {trip.regions.length > 0 && (
               <div class="flex flex-wrap gap-3">
                 {trip.regions.map((region) => (
-                  <span class="text-[10px] font-sans font-bold uppercase tracking-widest text-primary border border-primary/20 px-2 py-0.5">
+                  <span class="eyebrow text-[0.625rem] text-foreground border border-border px-2 py-1">
                     {region}
                   </span>
                 ))}
               </div>
             )}
 
-            <a
-              href={trip.link}
-              class="inline-flex items-center gap-4 text-[11px] font-sans font-bold uppercase tracking-[0.3em] text-foreground hover:text-primary transition-colors group/link"
-            >
-              Explore Journey
-              <svg class="w-4 h-4 transition-transform group-hover/link:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
+            <a href={trip.link} class="group/link inline-flex items-center gap-3 eyebrow">
+              Read the journal
+              <span class="transition-transform group-hover/link:translate-x-1" aria-hidden="true">→</span>
             </a>
           </div>
 
@@ -105,7 +86,7 @@ const { trips } = Astro.props;
                       <img
                         src={landscape}
                         alt={`${trip.title} visual fragment`}
-                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                         loading="lazy"
                       />
                     </div>
@@ -115,7 +96,7 @@ const { trips } = Astro.props;
                       <img
                         src={firstRowPortrait}
                         alt={`${trip.title} visual fragment`}
-                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                         loading="lazy"
                       />
                     </div>
@@ -130,7 +111,7 @@ const { trips } = Astro.props;
                       <img
                         src={photo}
                         alt={`${trip.title} visual fragment`}
-                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                         loading="lazy"
                       />
                     </div>
@@ -153,14 +134,11 @@ const { trips } = Astro.props;
     const articles = [...root.querySelectorAll('[data-trip-type]')];
     const empties = [...root.querySelectorAll('[data-empty]')];
 
-    const active = 'bg-primary text-primary-foreground';
-    const idle = 'text-muted-foreground hover:text-foreground';
 
     function setView(view: string) {
       root.dataset.view = view;
       for (const button of buttons) {
-        const on = button.getAttribute('data-view-button') === view;
-        button.className = `px-8 py-2.5 text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 ${on ? active : idle}`;
+        button.setAttribute('aria-pressed', String(button.getAttribute('data-view-button') === view));
       }
       for (const article of articles) {
         article.classList.toggle('hidden', article.getAttribute('data-trip-type') !== view);
