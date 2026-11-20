@@ -2,27 +2,18 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { SITE } from '@/config/site';
+import { getCollection } from 'astro:content';
 
 const title = "Guides";
-const description = "What to set up before a trip to China: apps, visa and entry, payments.";
+const description = "What to know before a trip to China: visa, internet, apps, payment, transport, food, etiquette and emergencies.";
 
-const guides = [
-  {
-    title: "Essential Apps",
-    description: "The digital tools and local messaging standards you need before arrival.",
-    href: "/guides/essential-apps"
-  },
-  {
-    title: "Visa & Entry",
-    description: "Navigating international borders, ETAs, and passport requirements.",
-    href: "/guides/visa-entry"
-  },
-  {
-    title: "Payment Setup",
-    description: "Digital wallets, physical cards, and pre-arrival financial readiness.",
-    href: "/guides/payment-setup"
-  }
-];
+const guides = (await getCollection('guides'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((guide) => ({
+    title: guide.data.title,
+    description: guide.data.description,
+    href: `/guides/${guide.id}`,
+  }));
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -40,7 +31,7 @@ const jsonLd = {
         <span class="eyebrow">Before you go</span>
         <h1 class="mt-4 text-h1 font-serif font-light">Guides</h1>
         <p class="mt-6 text-lg text-muted-foreground leading-relaxed">
-          What to set up before the trip: apps, visa and entry, payments.
+          What to know before the trip, in eight steps: visa, internet, apps, payment, transport, food, etiquette and emergencies. From the <a href="https://baotravel.com/" class="text-primary hover:underline">Xiao Bao</a> China travel guide, with the author's permission.
         </p>
       </header>
 

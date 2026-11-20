@@ -152,6 +152,9 @@ export default defineConfig({
   security: {
     checkOrigin: true,
   },
+  redirects: {
+    '/guides/visa-entry': '/guides/visa-policy',
+  },
   integrations: [
     react({
       include: ['**/islands/**/*.{tsx,ts,jsx,js}'],

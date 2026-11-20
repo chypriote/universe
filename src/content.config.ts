@@ -164,4 +164,14 @@ const itineraries = defineCollection({
   }),
 });
 
-export const collections = { blog, docs, flights, itineraries };
+const guides = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/guides' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    order: z.number(),
+    updated: z.string(),
+  }),
+});
+
+export const collections = { blog, docs, flights, itineraries, guides };
