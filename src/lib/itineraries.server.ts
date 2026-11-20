@@ -71,7 +71,7 @@ export type TripArchiveEntry = {
   type: 'report' | 'plan';
   photos: string[];
   link: string;
-  durationDays: number;
+  durationDays: number | null;
   destination: string;
 };
 
@@ -110,6 +110,11 @@ const tripImages = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/trips/**/*.{jpg,jpeg,png,webp}',
   { eager: true },
 );
+
+function formatTripDates(release: ItineraryEntry['data']['released_itinerary']): string {
+  if (!release.start_date || !release.end_date) return 'Dates to be decided';
+  return formatDateRange(release.start_date, release.end_date);
+}
 
 function getOrderedCities(entry: ItineraryEntry): string[] {
   const seen = new Set<string>();
@@ -349,19 +354,20 @@ export function buildGalleryArchive(entries: ItineraryEntry[]): GalleryArchive {
   const citiesByKey = new Map<string, GalleryCity>();
 
   const ordered = [...entries].sort((a, b) =>
-    b.data.released_itinerary.start_date.localeCompare(
-      a.data.released_itinerary.start_date,
+    (b.data.released_itinerary.start_date ?? '').localeCompare(
+      a.data.released_itinerary.start_date ?? '',
     ),
   );
 
   for (const entry of ordered) {
     const { data } = entry;
     const slug = data.slug;
+    const startDate = data.released_itinerary.start_date ?? '';
     const days = data.days.map((day) => ({
       day: day.day_number,
       city: day.main_city,
       region: regionForCity(data.cities, day.main_city),
-      date: getDayDate(data.released_itinerary.start_date, day.day_number),
+      date: getDayDate(startDate, day.day_number),
     }));
 
     for (const { path, image } of listTripPhotos(slug)) {
@@ -479,6 +485,9 @@ function formatAttraction(name: string): TripActivity {
 }
 
 function buildTripDescription(entry: ItineraryEntry, cities: string[]): string {
+  if (cities.length === 0 || !entry.data.suggested_duration_days) {
+    return 'Planned trip. Route and dates are not set yet.';
+  }
   const cityList = cities.join(', ');
   return `A ${entry.data.suggested_duration_days}-day journey across ${cityList}.`;
 }
@@ -491,11 +500,8 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
 
   return {
     title: data.title,
-    dates: formatDateRange(
-      data.released_itinerary.start_date,
-      data.released_itinerary.end_date,
-    ),
-    startDate: data.released_itinerary.start_date,
+    dates: formatTripDates(data.released_itinerary),
+    startDate: data.released_itinerary.start_date ?? '',
     destination,
     cities: orderedCities.map(toNamedPlace),
     description: buildTripDescription(entry, orderedCities),
@@ -505,7 +511,7 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
       city: day.main_city,
     })),
     days: data.days.map((day) => {
-      const dayDate = getDayDate(data.released_itinerary.start_date, day.day_number);
+      const dayDate = getDayDate(data.released_itinerary.start_date ?? '', day.day_number);
       const dayPictures = day.pictures
         .map((picture) => {
           const filename = picture.url.split('/').pop() ?? '';
@@ -545,7 +551,9 @@ export function isPublishedItinerary(entry: ItineraryEntry): boolean {
 }
 
 function getTripType(entry: ItineraryEntry): 'report' | 'plan' {
-  const endDate = new Date(`${entry.data.released_itinerary.end_date}T00:00:00`);
+  const end = entry.data.released_itinerary.end_date;
+  if (!end) return 'plan';
+  const endDate = new Date(`${end}T00:00:00`);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   return endDate < today ? 'report' : 'plan';
@@ -561,15 +569,12 @@ export async function buildTripArchiveEntry(
     id: data.slug,
     title: data.title,
     regions: [...new Set(data.cities.map(city => city.region))],
-    dates: formatDateRange(
-      data.released_itinerary.start_date,
-      data.released_itinerary.end_date,
-    ),
+    dates: formatTripDates(data.released_itinerary),
     description: buildTripDescription(entry, orderedCities),
     type: getTripType(entry),
     photos: await getTripPhotos(data.slug, data.released_itinerary.pictures),
     link: `/trips/${data.slug}`,
-    durationDays: data.suggested_duration_days,
+    durationDays: data.suggested_duration_days ?? null,
     destination: data.cities[0]?.country ?? 'China',
   };
 }

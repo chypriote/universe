@@ -12,8 +12,8 @@ const trips = await Promise.all(
     .filter(isPublishedItinerary)
     .sort(
       (a, b) =>
-        b.data.released_itinerary.start_date.localeCompare(
-          a.data.released_itinerary.start_date,
+        (b.data.released_itinerary.start_date ?? '').localeCompare(
+          a.data.released_itinerary.start_date ?? '',
         ),
     )
     .map(buildTripArchiveEntry),

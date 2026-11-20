@@ -40,7 +40,7 @@ const { trips } = Astro.props;
                   </div>
                 )}
               </a>
-              <span class="eyebrow text-muted-foreground">{trip.durationDays} days · {trip.dates}</span>
+              <span class="eyebrow text-muted-foreground">{trip.durationDays ? `${trip.durationDays} days · ` : ''}{trip.dates}</span>
               <h3 class="mt-3 text-2xl font-serif">
                 <a href={trip.link} class="hover:text-primary transition-colors">{trip.title}</a>
               </h3>
