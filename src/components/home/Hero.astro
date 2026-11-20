@@ -1,47 +1,36 @@
 ---
+import { Image } from 'astro:assets';
 import Container from '@/components/Container.astro';
-
-interface Props {
-  image?: string;
-  imageAlt?: string;
-}
-
-const { image, imageAlt = '' } = Astro.props;
+import heroImage from '@/assets/trips/qinghai-gansu/2026-05-18-06-41.jpg';
 ---
 
 <section class="relative h-[88svh] min-h-[560px] overflow-hidden bg-dark-background text-white">
-  {image && (
-    <img
-      src={image}
-      alt={imageAlt}
-      class="absolute inset-0 w-full h-full object-cover"
-      loading="eager"
-      fetchpriority="high"
-    />
-  )}
-  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/10"></div>
+  <Image
+    src={heroImage}
+    alt="A pyramid of prayer flags beside Qinghai Lake, with snow mountains behind"
+    widths={[900, 1400, 2000, 2800]}
+    sizes="100vw"
+    class="absolute inset-0 w-full h-full object-cover"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="absolute inset-0 bg-black/45"></div>
 
   <p
     lang="zh"
-    class="hidden lg:flex flex-col gap-4 absolute right-10 top-16 text-5xl leading-none text-white/85 hero-animate hero-animate-delay-3"
+    class="absolute right-4 top-6 lg:right-10 lg:top-10 flex flex-col items-center gap-2 lg:gap-3 bg-primary text-gold outline outline-1 -outline-offset-4 outline-gold/60 px-3.5 py-5 lg:px-5 lg:py-7 text-3xl lg:text-5xl font-bold leading-none hero-animate hero-animate-delay-3"
     aria-hidden="true"
   >
     {[...'中国游记'].map((char) => <span>{char}</span>)}
   </p>
 
-  <Container class="relative z-10 h-full flex flex-col justify-end pb-16 lg:pb-24">
-    <div class="max-w-3xl">
-      <span class="eyebrow text-white/80 hero-animate">Travel notes · China</span>
-      <h1 class="mt-6 text-h1 font-serif font-light tracking-tight hero-animate hero-animate-delay-1">
-        Slow trips through China, <em class="font-normal">written down day by day.</em>
-      </h1>
-      <p class="mt-6 text-lg md:text-xl text-white/80 max-w-xl hero-animate hero-animate-delay-2">
-        Trip reports, photos, plans for the next trip and the flight prices I watch.
-      </p>
-      <div class="mt-10 flex flex-wrap gap-4 hero-animate hero-animate-delay-3">
-        <a href="/trips" class="btn btn-primary">Read the journeys</a>
-        <a href="/planner" class="btn btn-outline text-white hover:!bg-white hover:!border-white hover:!text-dark-background">Flight planner</a>
-      </div>
+  <Container class="relative z-10 h-full flex flex-col items-center justify-center text-center">
+    <h1 class="max-w-4xl text-h1 font-display tracking-tight hero-animate hero-animate-delay-1">
+      Slow trips through China, written down day by day.
+    </h1>
+    <div class="mt-10 flex flex-wrap justify-center gap-4 hero-animate hero-animate-delay-2">
+      <a href="/trips" class="btn bg-white text-dark-background hover:bg-white/85">Read the journeys</a>
+      <a href="/planner" class="btn btn-outline text-white hover:!bg-white hover:!border-white hover:!text-dark-background">Flight planner</a>
     </div>
   </Container>
 </section>

@@ -22,7 +22,6 @@ const publishedTrips = await Promise.all(
 );
 const completedTrips = publishedTrips.filter((trip) => trip.type === 'report');
 const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
-const heroTrip = completedTrips.find((trip) => trip.photos[0]);
 ---
 
 <BaseLayout
@@ -37,7 +36,7 @@ const heroTrip = completedTrips.find((trip) => trip.photos[0]);
     sameAs: Object.values(SITE.socials),
   }}
 >
-  <Hero image={heroTrip?.photos[0]} imageAlt={heroTrip?.title} />
+  <Hero />
   <CompletedTrips trips={completedTrips} />
   <SuggestedTrips trips={suggestedTrips} />
   <RegionRecommendations trips={publishedTrips} />

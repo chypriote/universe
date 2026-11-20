@@ -18,6 +18,8 @@
   --color-primary-foreground: hsl(40 50% 97%);
   --color-primary-hover: hsl(7 65% 36%);
 
+  --color-gold: hsl(44 75% 66%);
+
   --color-secondary: hsl(164 27% 33%);
   --color-secondary-foreground: hsl(40 50% 97%);
   --color-secondary-hover: hsl(164 30% 26%);
@@ -45,6 +47,7 @@
   /* Astro Fonts injects --font-inter and --font-fraunces */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-display: var(--font-dm-serif-display), Georgia, serif;
   /* No webfont for Chinese: a full CJK font is several MB. */
   --font-cjk: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', STSong, SimSun, serif;
   /* Legacy aliases — bg-dark / text-dark-muted keep working */

@@ -42,6 +42,7 @@ Used for the footer and dark feature sections, not for a dark mode.
 | `primary` | Cinnabar (朱砂) | Seal, primary button, eyebrow labels, links, map route. AA on `background`. |
 | `primary-hover` | Darker cinnabar | Primary hover |
 | `primary-foreground` | Paper | Text on primary |
+| `gold` | Gold leaf | Gold letters on cinnabar (hero 中国游记 banner only) |
 | `secondary` | Jade | Rare data highlight (for example the cheapest fare) |
 | `secondary-hover` | Darker jade | Secondary hover |
 | `secondary-foreground` | Paper | Text on secondary |
@@ -63,6 +64,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 
 **Font families** (loaded in `astro.config.mjs` → `fonts`):
 - Headings (`font-serif`): Fraunces, variable with optical sizes. Light to medium weights; italic only for quotes and emphasis.
+- Hero title (`font-display`): DM Serif Display, one weight, no italic. Home hero only.
 - Body and UI (`font-sans`): Inter.
 - Chinese (`font-cjk`): system serif (Noto Serif SC, Songti SC, SimSun). No webfont: a CJK font costs several MB. Mark Chinese text with `lang="zh"`; the base styles apply the font.
 
@@ -160,7 +162,7 @@ All motion stops under `prefers-reduced-motion: reduce`.
 - Keep corners sharp and borders 1px.
 - Give photographs space: large images, wide margins.
 - Use own trip photos.
-- Keep red rare: one solid cinnabar element (seal or primary button) per view.
+- Keep red rare: one solid cinnabar element (seal or primary button) per view. On the home hero it is the 中国游记 banner (cinnabar with gold letters, like a prayer banner); the hero buttons are white.
 - Show Chinese names next to English ones, with `lang="zh"`.
 
 ### Don't
