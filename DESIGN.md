@@ -93,8 +93,8 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Trip card | Component | Trip preview: photo, meta line, title, text, link | Portrait 3/4 (plans), wide 16/9 alternating split (reports) |
 | Navigation | Component | Sticky top bar: seal + name, 4 links with a cinnabar underline on the current page, mobile menu | — |
 | Footer | Component | Dark, seal + name + description, one link list | — |
-| Hero | Pattern | Full-height photo with title, subtitle and two buttons | Parallax |
-| Region index | Pattern | Dark section, sticky list of regions + image spread | — |
+| Hero | Pattern | Full-height trip photo, title bottom-left, vertical 中国游记 on the right (desktop), two buttons | — |
+| Region index | Pattern | Dark section, sticky list of regions from the trips + staggered trip covers | — |
 | Trip day section | Pattern | Day title, text, activities, photos, food | — |
 | Route map | Pattern | Leaflet map of the trip route | — |
 | Flight planner | Pattern | Flight table (1/3) + price calendar (2/3) | — |
@@ -192,12 +192,12 @@ To fix:
 - Pages still use `font-mono` and several letter spacings for labels; move them to `eyebrow`.
 
 Template content to replace:
-- Region index (Mediterranean, Nordic, Andean) and stock Pexels photos in the hero, region and guide sections.
+- Stock Pexels photos in the guide sections.
 - Marketing copy (see Voice & Tone).
 - `SITE.socials` and `twitterHandle` placeholders.
 
 To remove:
-- Unused: `HeroSplit.astro`, `BlogLayout.astro`, `DocsLayout.astro`, `TableOfContents.astro`, `islands/TripArchive.tsx`.
+- Unused: `BlogLayout.astro`, `DocsLayout.astro`, `TableOfContents.astro`, `islands/TripArchive.tsx`.
 
 To rebuild:
 - Footer links to flight price pages ("Price Index", "Flight Matrix"), once those pages exist.

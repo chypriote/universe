@@ -1,7 +1,7 @@
 ---
 import { SITE } from '@/config/site';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import HeroParallax from '@/components/home/HeroParallax.astro';
+import Hero from '@/components/home/Hero.astro';
 import CompletedTrips from '@/components/home/CompletedTrips.astro';
 import SuggestedTrips from '@/components/home/SuggestedTrips.astro';
 import RegionRecommendations from '@/components/home/RegionRecommendations.astro';
@@ -22,6 +22,7 @@ const publishedTrips = await Promise.all(
 );
 const completedTrips = publishedTrips.filter((trip) => trip.type === 'report');
 const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
+const heroTrip = completedTrips.find((trip) => trip.photos[0]);
 ---
 
 <BaseLayout
@@ -36,8 +37,8 @@ const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
     sameAs: Object.values(SITE.socials),
   }}
 >
-  <HeroParallax />
+  <Hero image={heroTrip?.photos[0]} imageAlt={heroTrip?.title} />
   <CompletedTrips trips={completedTrips} />
   <SuggestedTrips trips={suggestedTrips} />
-  <RegionRecommendations />
+  <RegionRecommendations trips={publishedTrips} />
 </BaseLayout>
