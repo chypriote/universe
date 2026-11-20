@@ -36,7 +36,7 @@ type ScrollTarget = 'list' | 'calendar';
 
 const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
 const CHECKBOX_CLASS =
-  'h-3.5 w-3.5 rounded-sm border-border bg-background text-primary focus:ring-primary/30 focus:ring-offset-0';
+  'h-3.5 w-3.5 rounded-none border-border bg-background text-primary focus:ring-primary/30 focus:ring-offset-0';
 const VIETNAM_ROW_CLASS =
   'bg-[color-mix(in_oklab,hsl(205_70%_82%)_55%,var(--color-surface))]';
 const VIETNAM_PILL_CLASS =
@@ -317,7 +317,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                 onChange={(event) => {
                   updateFilters({ ...filters, airport: event.target.value });
                 }}
-                className="w-full mt-1 bg-background border border-border rounded-sm px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors font-sans appearance-none"
+                className="w-full mt-1 bg-background border border-border px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-colors font-sans appearance-none"
               >
                 <option value="">All airports</option>
                 {airportOptions.map(({ airport, cityLabel }) => (
@@ -413,7 +413,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                         </span>
                         {flight.isDirect && (
                           <span
-                            className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full border border-border bg-background text-muted-foreground"
+                            className="shrink-0 text-[10px] px-1.5 py-0.5 border border-border bg-background text-muted-foreground"
                             title="Direct"
                           >
                             ✈️
@@ -540,7 +540,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                               }}
                               type="button"
                               onClick={() => selectFlightFromCalendar(flight)}
-                              className={`flex items-center justify-between gap-2 min-w-0 min-h-8 px-2.5 py-1 rounded-md border text-left transition-colors ${
+                              className={`flex items-center justify-between gap-2 min-w-0 min-h-8 px-2.5 py-1 border text-left transition-colors ${
                                 isVietnamAirport(flight.airport)
                                   ? VIETNAM_PILL_CLASS
                                   : isSelectedFlight

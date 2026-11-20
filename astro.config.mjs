@@ -191,11 +191,20 @@ export default defineConfig({
       exclude: ['react-dom/server', '@astrojs/react/server.js'],
     },
   },
-  fonts: [{
-    provider: fontProviders.fontsource(),
-    name: "Inter",
-    cssVariable: "--font-inter",
-    styles: ["normal"],
-    weights: ["300 700"],
-  }]
+  fonts: [
+    {
+      provider: fontProviders.fontsource(),
+      name: "Cormorant Garamond",
+      cssVariable: "--font-cormorant",
+      styles: ["normal", "italic"],
+      weights: ["300 700"],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: "Plus Jakarta Sans",
+      cssVariable: "--font-jakarta",
+      styles: ["normal"],
+      weights: ["200 800"],
+    },
+  ]
 });

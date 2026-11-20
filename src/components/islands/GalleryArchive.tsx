@@ -8,7 +8,7 @@ type Filter = {
 };
 
 function pillClass(active: boolean): string {
-  return `px-3 py-1 rounded-full font-sans font-bold text-[10px] uppercase tracking-widest transition-colors ${
+  return `px-3 py-1 font-sans font-bold text-[10px] uppercase tracking-widest transition-colors ${
     active
       ? 'bg-primary text-primary-foreground'
       : 'bg-surface text-muted-foreground hover:text-foreground'

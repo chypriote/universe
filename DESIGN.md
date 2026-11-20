@@ -186,8 +186,6 @@ All motion stops under `prefers-reduced-motion: reduce`.
 ## 12. Known gaps (code vs. this file)
 
 To fix:
-- Fonts: only Inter loads (`astro.config.mjs`), and `--font-serif` points to Inter. Load Cormorant Garamond and Plus Jakarta Sans; point `--font-serif` / `--font-sans` to them.
-- Rounded pills and `shadow-sm` in the trip switcher (`TripArchive.astro`), `rounded-*` in `FlightPlanner.tsx` and the remark TOC, `.hover-lift` shadow in `BaseLayout.astro`.
 - `trip-route-map.css` repeats color values instead of using the tokens.
 - Letter spacing for labels has four values (`widest`, `0.2em`, `0.3em`, `0.4em`); pick one or two.
 - Nav links to `/guide` (page is `/guides`); footer links to `/planning`.

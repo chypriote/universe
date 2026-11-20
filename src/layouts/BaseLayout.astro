@@ -26,7 +26,8 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
   <head>
     <link rel="preconnect" href="https://pagesmith-cdn.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
-    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-cormorant" preload />
+    <Font cssVariable="--font-jakarta" preload />
     <SEOHead
       title={title}
       description={description}
@@ -86,15 +87,6 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
         .reveal-delay-5 { transition-delay: 0.5s; }
 
         /* Hover Effects */
-        .hover-lift {
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .hover-lift:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
         .hover-scale {
           transition: transform 0.3s ease;
         }
@@ -103,23 +95,13 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
           transform: scale(1.05);
         }
 
-        .hover-glow {
-          transition: box-shadow 0.3s ease;
-        }
-
-        .hover-glow:hover {
-          box-shadow: 0 0 20px color-mix(in srgb, var(--color-primary) 40%, transparent);
-        }
-
         /* Reduced Motion Support */
         @media (prefers-reduced-motion: reduce) {
           .reveal,
           .reveal-left,
           .reveal-right,
           .reveal-scale,
-          .hover-lift,
-          .hover-scale,
-          .hover-glow {
+          .hover-scale {
             transition: none !important;
             opacity: 1 !important;
             transform: none !important;

@@ -7,8 +7,6 @@
 }
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
-
   --color-background: hsl(36 25% 97%);
   --color-foreground: hsl(210 10% 11%);
   --color-muted-foreground: hsl(210 5% 40%);
@@ -43,8 +41,9 @@
 
 /* Cross-var theme tokens must use `inline` so utilities don't self-reference. */
 @theme inline {
-  /* Astro Fonts injects --font-inter */
-  --font-serif: var(--font-inter), var(--font-sans);
+  /* Astro Fonts injects --font-cormorant and --font-jakarta (astro.config.mjs) */
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
   /* Legacy aliases — bg-dark / text-dark-muted keep working */
   --color-dark: var(--color-dark-background);
   --color-dark-muted: var(--color-dark-muted-foreground);
@@ -164,7 +163,7 @@ li {
 
 /* Remark TOC Plugin Styles */
 .remark-toc {
-  @apply mb-8 rounded-xl border p-6;
+  @apply mb-8 border p-6;
   background: var(--color-surface);
   border-color: var(--color-border);
 }

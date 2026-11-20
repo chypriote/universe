@@ -10,18 +10,18 @@ const { trips } = Astro.props;
 
 <div class="space-y-12 lg:space-y-20" data-trip-archive data-view="report">
   <div class="flex justify-center">
-    <div class="inline-flex p-1 bg-surface border border-border rounded-full">
+    <div class="inline-flex p-1 bg-surface border border-border">
       <button
         type="button"
         data-view-button="report"
-        class="px-8 py-2.5 rounded-full text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 bg-primary text-primary-foreground shadow-sm"
+        class="px-8 py-2.5 text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 bg-primary text-primary-foreground"
       >
         Trip Reports
       </button>
       <button
         type="button"
         data-view-button="plan"
-        class="px-8 py-2.5 rounded-full text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 text-muted-foreground hover:text-foreground"
+        class="px-8 py-2.5 text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 text-muted-foreground hover:text-foreground"
       >
         Trip Plans
       </button>
@@ -75,7 +75,7 @@ const { trips } = Astro.props;
             {trip.regions.length > 0 && (
               <div class="flex flex-wrap gap-3">
                 {trip.regions.map((region) => (
-                  <span class="text-[10px] font-sans font-bold uppercase tracking-widest text-primary border border-primary/20 px-2 py-0.5 rounded">
+                  <span class="text-[10px] font-sans font-bold uppercase tracking-widest text-primary border border-primary/20 px-2 py-0.5">
                     {region}
                   </span>
                 ))}
@@ -153,14 +153,14 @@ const { trips } = Astro.props;
     const articles = [...root.querySelectorAll('[data-trip-type]')];
     const empties = [...root.querySelectorAll('[data-empty]')];
 
-    const active = 'bg-primary text-primary-foreground shadow-sm';
+    const active = 'bg-primary text-primary-foreground';
     const idle = 'text-muted-foreground hover:text-foreground';
 
     function setView(view: string) {
       root.dataset.view = view;
       for (const button of buttons) {
         const on = button.getAttribute('data-view-button') === view;
-        button.className = `px-8 py-2.5 rounded-full text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 ${on ? active : idle}`;
+        button.className = `px-8 py-2.5 text-[10px] font-sans font-bold uppercase tracking-[0.2em] transition-all duration-300 ${on ? active : idle}`;
       }
       for (const article of articles) {
         article.classList.toggle('hidden', article.getAttribute('data-trip-type') !== view);
