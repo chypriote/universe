@@ -8,10 +8,10 @@ type Filter = {
 };
 
 function pillClass(active: boolean): string {
-  return `px-3 py-1 font-sans font-bold text-[10px] uppercase tracking-widest transition-colors ${
+  return `px-3 py-1.5 border text-xs transition-colors ${
     active
-      ? 'bg-primary text-primary-foreground'
-      : 'bg-surface text-muted-foreground hover:text-foreground'
+      ? 'border-foreground bg-foreground text-background'
+      : 'border-border text-muted-foreground hover:border-foreground hover:text-foreground'
   }`;
 }
 
@@ -49,7 +49,7 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
     <div className="space-y-12 lg:space-y-16">
       <div className="space-y-6">
         <div>
-          <p className="mb-3 text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-primary">
+          <p className="mb-3 eyebrow">
             Region
           </p>
           <div className="flex flex-wrap gap-2">
@@ -71,7 +71,7 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
 
         {visibleCities.length > 0 && (
           <div>
-            <p className="mb-3 text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-primary">
+            <p className="mb-3 eyebrow">
               City
             </p>
             <div className="flex flex-wrap gap-2">
@@ -88,7 +88,7 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
                   onClick={() => selectCity(city)}
                 >
                   {city.name}
-                  <span className="ml-1.5 font-medium normal-case tracking-normal opacity-80" lang="zh">
+                  <span className="ml-1.5 opacity-80" lang="zh">
                     {city.nameZh}
                   </span>
                 </button>
@@ -97,7 +97,7 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
             {selectedCity && (
               <a
                 href={selectedCity.href}
-                className="mt-4 inline-flex items-center gap-3 text-[11px] font-sans font-bold uppercase tracking-[0.3em] text-foreground hover:text-primary transition-colors"
+                className="mt-4 inline-flex items-center gap-3 eyebrow text-foreground hover:text-primary transition-colors"
               >
                 Open day {selectedCity.day} in {selectedCity.tripTitle}
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

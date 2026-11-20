@@ -16,32 +16,28 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ImageGallery",
   "name": `Photography Archive — ${SITE.name}`,
-  "description": "A curated collection of travel photography across China expeditions.",
+  "description": "Photos from my trips in China, by region and city.",
   "url": `${SITE.url}/gallery`
 };
 ---
 
-<BaseLayout title="Photography" description="Explore our curated collection of travel photography across China expeditions." jsonLd={jsonLd}>
-  <main class="py-24 lg:py-32" data-ps="src/pages/gallery.astro:3b6zx">
+<BaseLayout title="Photography" description="Photos from my trips in China, by region and city." jsonLd={jsonLd}>
+  <div class="py-20 lg:py-28">
     <Container>
-      <div class="max-w-3xl mb-20 lg:mb-32" data-ps="src/pages/gallery.astro:5r9mu2">
-        <h1 class="text-h1 font-serif mb-8" data-ps="src/pages/gallery.astro:rpwpws">Photography</h1>
-        <p class="text-xl text-muted-foreground font-sans leading-relaxed" data-ps="src/pages/gallery.astro:befxb1">
-          Our photographic archive is more than a collection of images—it is a visual monograph of the places that shaped our perspective. Filter by region or city; open a city to continue into that day’s journal.
+      <header class="max-w-3xl mb-16 lg:mb-20">
+        <span class="eyebrow">Photography</span>
+        <h1 class="mt-4 text-h1 font-serif font-light">Photos</h1>
+        <p class="mt-6 text-lg text-muted-foreground leading-relaxed">
+          Photos from every trip. Filter by region or city, then open a city to read that day of the journal.
         </p>
-      </div>
+      </header>
 
       <GalleryArchive client:load photos={archive.photos} regions={archive.regions} cities={archive.cities} />
 
-      <div class="mt-32 pt-20 border-t border-border text-center" data-ps="src/pages/gallery.astro:5r9mu0">
-        <h3 class="text-2xl font-serif mb-6" data-ps="src/pages/gallery.astro:qrtfmz">Want to see more?</h3>
-        <p class="text-muted-foreground mb-10 max-w-lg mx-auto" data-ps="src/pages/gallery.astro:befxb0">
-          Each journey has its own day-by-day monograph with notes, routes, and galleries.
-        </p>
-        <a href="/trips" class="inline-block px-10 py-4 bg-primary text-primary-foreground font-sans font-bold text-xs uppercase tracking-[0.2em] hover:bg-primary-hover transition-colors" data-ps="src/pages/gallery.astro:b66pa8">
-          View Destination Journals
-        </a>
+      <div class="mt-24 pt-16 border-t border-border flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <p class="font-serif text-2xl font-light">Each trip has a day-by-day journal with the route and notes.</p>
+        <a href="/trips" class="btn btn-outline shrink-0">All journeys</a>
       </div>
     </Container>
-  </main>
+  </div>
 </BaseLayout>

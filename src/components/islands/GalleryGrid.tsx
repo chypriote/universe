@@ -140,7 +140,7 @@ export function GalleryGrid({ photos }: GalleryGridProps) {
               {selected.href && (
                 <a
                   href={selected.href}
-                  className="mt-4 inline-flex items-center gap-2 text-[11px] font-sans font-bold uppercase tracking-[0.3em] text-primary hover:text-dark-foreground transition-colors"
+                  className="mt-4 inline-flex items-center gap-2 eyebrow text-primary hover:text-dark-foreground transition-colors"
                 >
                   Open {selected.day !== null ? `day ${selected.day}` : 'this journey'} in {selected.tripTitle}
                 </a>

@@ -42,7 +42,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
     <div className="mx-auto max-w-5xl space-y-10">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl space-y-3">
-          <span className="text-[10px] font-sans font-bold uppercase tracking-[0.3em] text-primary">
+          <span className="eyebrow">
             Your dates
           </span>
           <h2 className="text-h3 font-serif italic">Clone this loop onto a calendar</h2>
@@ -53,7 +53,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
         </div>
 
         <label className="block shrink-0 space-y-2">
-          <span className="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-muted-foreground">
+          <span className="eyebrow text-muted-foreground">
             Start date
           </span>
           <input
@@ -83,7 +83,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
               {WEEKDAY_LABELS.map((label) => (
                 <div
                   key={label}
-                  className="px-2 py-3 text-center text-[10px] font-sans font-bold uppercase tracking-widest text-muted-foreground border-r border-border/70 last:border-r-0"
+                  className="px-2 py-3 text-center eyebrow text-muted-foreground border-r border-border/70 last:border-r-0"
                 >
                   {label}
                 </div>
@@ -117,7 +117,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
                     </span>
                     {cell && (
                       <div className="mt-2 space-y-0.5">
-                        <p className="text-[10px] font-sans font-bold uppercase tracking-widest text-primary">
+                        <p className="eyebrow">
                           Day {cell.day}
                         </p>
                         <p className="text-sm font-serif italic leading-snug text-foreground">

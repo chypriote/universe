@@ -288,7 +288,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
         style={recentPanelHeight ? { height: recentPanelHeight } : undefined}
       >
         <div className="shrink-0 p-4 border-b border-border bg-background">
-          <h2 className="font-sans font-bold text-xs uppercase tracking-widest flex items-center gap-2">
+          <h2 className="eyebrow text-foreground flex items-center gap-2">
             <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"

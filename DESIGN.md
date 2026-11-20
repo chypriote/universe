@@ -192,8 +192,7 @@ To fix:
 - Pages still use `font-mono` and several letter spacings for labels; move them to `eyebrow`.
 
 Template content to replace:
-- Stock Pexels photos in the guide sections.
-- Marketing copy (see Voice & Tone).
+- Marketing copy in the guide pages (see Voice & Tone).
 - `SITE.socials` and `twitterHandle` placeholders.
 
 To remove:
