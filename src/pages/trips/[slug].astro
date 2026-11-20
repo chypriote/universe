@@ -14,12 +14,12 @@ import {
 export async function getStaticPaths() {
   const itineraries = await getCollection('itineraries');
 
-  return itineraries
-    .filter(isPublishedItinerary)
-    .map((entry) => ({
+  return Promise.all(
+    itineraries.filter(isPublishedItinerary).map(async (entry) => ({
       params: { slug: entry.data.slug },
-      props: { trip: buildTripPage(entry) },
-    }));
+      props: { trip: await buildTripPage(entry) },
+    })),
+  );
 }
 
 const { trip } = Astro.props;
@@ -143,20 +143,22 @@ const jsonLd = {
                   {day.gallery.length > 0 && (
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
                       {day.gallery.map((photo, idx) => (
-                        <div
+                        <a
+                          href={photo.src}
+                          target="_blank"
+                          rel="noopener"
                           class={`group relative overflow-hidden bg-surface ${
                             photo.format === '16:9'
                               ? 'col-span-2 aspect-[16/9]'
                               : 'aspect-[9/16]'
                           }`}
-                         
                         >
-                          <img 
-                            src={photo.src} 
+                          <img
+                            src={photo.thumb}
                             alt={`Fragment of Day ${day.day}`}
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                             loading="lazy" />
-                        </div>
+                        </a>
                       ))}
                     </div>
                   )}

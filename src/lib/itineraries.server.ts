@@ -11,6 +11,7 @@ export type PictureFormat = '16:9' | '9:16';
 
 export type TripGalleryPhoto = {
   src: string;
+  thumb: string;
   format: PictureFormat;
 };
 
@@ -77,7 +78,7 @@ export type TripArchiveEntry = {
 
 export type GalleryPhoto = {
   url: string;
-  srcset: string;
+  thumb: string;
   alt: string;
   photographer: string;
   tripSlug: string;
@@ -105,6 +106,8 @@ export type GalleryArchive = {
   regions: string[];
   cities: GalleryCity[];
 };
+
+const GALLERY_THUMB_WIDTH = 480;
 
 const tripImages = import.meta.glob<{ default: ImageMetadata }>(
   '/src/assets/trips/**/*.{jpg,jpeg,png,webp}',
@@ -243,6 +246,19 @@ async function srcFromImage(image: ImageMetadata): Promise<string> {
   return result.src;
 }
 
+async function thumbFromImage(image: ImageMetadata, width: number): Promise<string> {
+  const result = await getImage({ src: image, width, format: 'webp' });
+  return result.src;
+}
+
+async function toTripPhoto(
+  image: ImageMetadata,
+  format: PictureFormat,
+): Promise<TripGalleryPhoto> {
+  const width = format === '16:9' ? 960 : 480;
+  return { src: image.src, thumb: await thumbFromImage(image, width), format };
+}
+
 function formatFromMetadata(image: ImageMetadata): PictureFormat {
   return image.width >= image.height ? '16:9' : '9:16';
 }
@@ -349,7 +365,9 @@ function regionForCity(
   return cities.find((city) => normalizeCityName(city.name) === key)?.region ?? null;
 }
 
-export function buildGalleryArchive(entries: ItineraryEntry[]): GalleryArchive {
+export async function buildGalleryArchive(
+  entries: ItineraryEntry[],
+): Promise<GalleryArchive> {
   const photos: GalleryPhoto[] = [];
   const citiesByKey = new Map<string, GalleryCity>();
 
@@ -380,7 +398,7 @@ export function buildGalleryArchive(entries: ItineraryEntry[]): GalleryArchive {
 
       photos.push({
         url: image.src,
-        srcset: `${image.src} ${image.width}w`,
+        thumb: await thumbFromImage(image, GALLERY_THUMB_WIDTH),
         alt: `${place} — ${data.title}, photo ${index}`,
         photographer: 'Nico',
         tripSlug: slug,
@@ -416,38 +434,41 @@ export function buildGalleryArchive(entries: ItineraryEntry[]): GalleryArchive {
   return { photos, regions, cities };
 }
 
-function getDayGallery(slug: string, dayDate: string): TripGalleryPhoto[] {
+async function getDayGallery(slug: string, dayDate: string): Promise<TripGalleryPhoto[]> {
   const folder = tripPhotoFolder(slug);
 
-  return Object.entries(tripImages)
-    .filter(([path]) => {
-      const posix = globPath(path);
-      return posix.includes(folder) && posix.includes(dayDate);
-    })
-    .map(([, module]) => ({
-      src: module.default.src,
-      format: formatFromMetadata(module.default),
-    }))
-    .sort((a, b) => a.src.localeCompare(b.src));
+  const photos = await Promise.all(
+    Object.entries(tripImages)
+      .filter(([path]) => {
+        const posix = globPath(path);
+        return posix.includes(folder) && posix.includes(dayDate);
+      })
+      .map(([, module]) =>
+        toTripPhoto(module.default, formatFromMetadata(module.default)),
+      ),
+  );
+  return photos.sort((a, b) => a.src.localeCompare(b.src));
+}
+
+async function getPictures(
+  slug: string,
+  pictures: { url: string; format: PictureFormat }[],
+): Promise<TripGalleryPhoto[]> {
+  const photos = await Promise.all(
+    pictures.map((picture) => {
+      const filename = picture.url.split('/').pop() ?? '';
+      const image = resolveTripPhoto(slug, filename);
+      return image ? toTripPhoto(image, picture.format) : undefined;
+    }),
+  );
+  return photos.filter((photo): photo is TripGalleryPhoto => Boolean(photo));
 }
 
 function getAttractionPictures(
   slug: string,
   attractions: ItineraryEntry['data']['days'][number]['attractions'],
-): TripGalleryPhoto[] {
-  return attractions.flatMap((attraction) =>
-    attraction.pictures
-      .map((picture) => {
-        const filename = picture.url.split('/').pop() ?? '';
-        const image = resolveTripPhoto(slug, filename);
-        if (!image) return undefined;
-        return {
-          src: image.src,
-          format: picture.format,
-        } satisfies TripGalleryPhoto;
-      })
-      .filter((photo): photo is TripGalleryPhoto => Boolean(photo)),
-  );
+): Promise<TripGalleryPhoto[]> {
+  return getPictures(slug, attractions.flatMap((attraction) => attraction.pictures));
 }
 
 function getDayFood(
@@ -492,7 +513,7 @@ function buildTripDescription(entry: ItineraryEntry, cities: string[]): string {
   return `A ${entry.data.suggested_duration_days}-day journey across ${cityList}.`;
 }
 
-export function buildTripPage(entry: ItineraryEntry): TripPageData {
+export async function buildTripPage(entry: ItineraryEntry): Promise<TripPageData> {
   const { data } = entry;
   const slug = data.slug;
   const orderedCities = getOrderedCities(entry);
@@ -510,21 +531,15 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
       day: day.day_number,
       city: day.main_city,
     })),
-    days: data.days.map((day) => {
+    days: await Promise.all(data.days.map(async (day) => {
       const dayDate = getDayDate(data.released_itinerary.start_date ?? '', day.day_number);
-      const dayPictures = day.pictures
-        .map((picture) => {
-          const filename = picture.url.split('/').pop() ?? '';
-          const image = resolveTripPhoto(slug, filename);
-          if (!image) return undefined;
-          return {
-            src: image.src,
-            format: picture.format,
-          } satisfies TripGalleryPhoto;
-        })
-        .filter((photo): photo is TripGalleryPhoto => Boolean(photo));
-      const assetGallery = getDayGallery(slug, dayDate);
-      const attractionGallery = getAttractionPictures(slug, day.attractions);
+      const dayPictures = await getPictures(slug, day.pictures);
+      const assetGallery =
+        dayPictures.length > 0 ? [] : await getDayGallery(slug, dayDate);
+      const attractionGallery =
+        dayPictures.length + assetGallery.length > 0
+          ? []
+          : await getAttractionPictures(slug, day.attractions);
 
       return {
         day: day.day_number,
@@ -542,7 +557,7 @@ export function buildTripPage(entry: ItineraryEntry): TripPageData {
               : attractionGallery,
         food: getDayFood(data.cities, day.main_city),
       };
-    }),
+    })),
   };
 }
 

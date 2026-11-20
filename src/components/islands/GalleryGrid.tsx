@@ -69,9 +69,7 @@ export function GalleryGrid({ photos }: GalleryGridProps) {
           >
             <div className="h-full w-full">
               <img
-                src={photo.url}
-                srcSet={photo.srcset}
-                sizes="(max-width: 640px) 33vw, (max-width: 768px) 25vw, (max-width: 1024px) 16vw, 12vw"
+                src={photo.thumb}
                 alt={photo.alt}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 loading="lazy"

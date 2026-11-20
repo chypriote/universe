@@ -10,7 +10,7 @@ import {
 } from '@/lib/itineraries.server';
 
 const itineraries = await getCollection('itineraries');
-const archive = buildGalleryArchive(itineraries.filter(isPublishedItinerary));
+const archive = await buildGalleryArchive(itineraries.filter(isPublishedItinerary));
 
 const jsonLd = {
   "@context": "https://schema.org",
