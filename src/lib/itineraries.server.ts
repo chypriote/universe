@@ -1,6 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
-import type { ImageMetadata } from 'astro';
-import { getImage } from 'astro:assets';
+import photoManifest from '@/data/photos.json';
 import { getCityLngLat, normalizeCityName } from '@/lib/city-coordinates';
 import { formatDateRange, getDayDate, type PlanDay } from '@/lib/plan-calendar';
 import { getPlaceName } from '@/lib/place-names';
@@ -109,12 +108,26 @@ export type GalleryArchive = {
   cities: GalleryCity[];
 };
 
-const GALLERY_THUMB_WIDTH = 480;
+type TripPhoto = { slug: string; name: string; width: number; height: number };
 
-const tripImages = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/trips/**/*.{jpg,jpeg,png,webp}',
-  { eager: true },
+const photosBaseUrl = (process.env.PHOTOS_URL ?? '').replace(/\/$/, '');
+if (!photosBaseUrl) {
+  throw new Error('PHOTOS_URL is not set. It is the public base URL of the photo bucket.');
+}
+
+const tripPhotos: Record<string, TripPhoto> = Object.fromEntries(
+  Object.entries(photoManifest).flatMap(([slug, photos]) =>
+    photos.map((photo) => [`/trips/${slug}/${photo.name}`, { slug, ...photo }]),
+  ),
 );
+
+function photoUrl(photo: TripPhoto): string {
+  return `${photosBaseUrl}/trips/${photo.slug}/${encodeURIComponent(photo.name)}`;
+}
+
+function thumbUrl(photo: TripPhoto): string {
+  return `${photosBaseUrl}/thumbs/${photo.slug}/${encodeURIComponent(photo.name)}.webp`;
+}
 
 function formatTripDates(release: ItineraryEntry['data']['released_itinerary']): string {
   if (!release.start_date || !release.end_date) return 'Dates to be decided';
@@ -214,10 +227,6 @@ export function buildTripRoute(entry: ItineraryEntry): TripRoute {
   };
 }
 
-function globPath(path: string): string {
-  return path.replace(/\\/g, '/').split('?')[0];
-}
-
 function tripPhotoFolder(slug: string): string {
   return `/trips/${slug}/`;
 }
@@ -230,45 +239,28 @@ function alternateFilenames(filename: string): string[] {
   return [...alts];
 }
 
-function resolveTripPhoto(slug: string, filename: string): ImageMetadata | undefined {
+function resolveTripPhoto(slug: string, filename: string): TripPhoto | undefined {
   const folder = tripPhotoFolder(slug);
   const wantNames = [filename, ...alternateFilenames(filename)];
 
-  for (const [path, mod] of Object.entries(tripImages)) {
-    const posix = globPath(path);
-    if (!posix.includes(folder)) continue;
-    const name = posix.slice(posix.lastIndexOf('/') + 1);
-    if (wantNames.includes(name)) return mod.default;
+  for (const [path, photo] of Object.entries(tripPhotos)) {
+    if (!path.includes(folder)) continue;
+    if (wantNames.includes(photo.name)) return photo;
   }
 }
 
-async function srcFromImage(image: ImageMetadata): Promise<string> {
-  const width = image.width >= image.height ? 1280 : 720;
-  const result = await getImage({ src: image, width });
-  return result.src;
+function toTripPhoto(photo: TripPhoto, format: PictureFormat): TripGalleryPhoto {
+  return { src: photoUrl(photo), thumb: thumbUrl(photo), format };
 }
 
-async function thumbFromImage(image: ImageMetadata, width: number): Promise<string> {
-  const result = await getImage({ src: image, width, format: 'webp' });
-  return result.src;
+function formatFromMetadata(photo: TripPhoto): PictureFormat {
+  return photo.width >= photo.height ? '16:9' : '9:16';
 }
 
-async function toTripPhoto(
-  image: ImageMetadata,
-  format: PictureFormat,
-): Promise<TripGalleryPhoto> {
-  const width = format === '16:9' ? 960 : 480;
-  return { src: image.src, thumb: await thumbFromImage(image, width), format };
-}
-
-function formatFromMetadata(image: ImageMetadata): PictureFormat {
-  return image.width >= image.height ? '16:9' : '9:16';
-}
-
-async function getTripPhotos(slug: string, filenames: string[]): Promise<string[]> {
+function getTripPhotos(slug: string, filenames: string[]): string[] {
   const selected = filenames
     .map((filename) => resolveTripPhoto(slug, filename))
-    .filter((image): image is ImageMetadata => Boolean(image));
+    .filter((image): image is TripPhoto => Boolean(image));
   const images =
     selected.length > 0
       ? selected
@@ -276,7 +268,7 @@ async function getTripPhotos(slug: string, filenames: string[]): Promise<string[
           .map((entry) => entry.image)
           .slice(0, 5);
 
-  return Promise.all(images.map(srcFromImage));
+  return images.map(thumbUrl);
 }
 
 /** Parse capture time from common camera/export filename patterns. */
@@ -331,17 +323,13 @@ function compareTripPhotoPaths(pathA: string, pathB: string): number {
   return pathA.localeCompare(pathB);
 }
 
-function listTripPhotos(slug: string): { path: string; image: ImageMetadata }[] {
+function listTripPhotos(slug: string): { path: string; image: TripPhoto }[] {
   const folder = tripPhotoFolder(slug);
 
-  return Object.entries(tripImages)
-    .filter(([path]) => globPath(path).includes(folder))
+  return Object.entries(tripPhotos)
+    .filter(([path]) => path.includes(folder))
     .sort(([pathA], [pathB]) => compareTripPhotoPaths(pathA, pathB))
-    .map(([path, module]) => ({ path, image: module.default }));
-}
-
-export function getAllTripPhotoMetadata(slug: string): ImageMetadata[] {
-  return listTripPhotos(slug).map((entry) => entry.image);
+    .map(([path, image]) => ({ path, image }));
 }
 
 function photoDateKey(path: string): string | null {
@@ -399,8 +387,8 @@ export async function buildGalleryArchive(
       const cityKey = match?.city ? normalizeCityName(match.city) : null;
 
       photos.push({
-        url: image.src,
-        thumb: await thumbFromImage(image, GALLERY_THUMB_WIDTH),
+        url: photoUrl(image),
+        thumb: thumbUrl(image),
         alt: `${place} — ${data.title}, photo ${index}`,
         photographer: 'Nico',
         tripSlug: slug,
@@ -439,40 +427,30 @@ export async function buildGalleryArchive(
   return { photos, regions, cities };
 }
 
-async function getDayGallery(slug: string, dayDate: string): Promise<TripGalleryPhoto[]> {
+function getDayGallery(slug: string, dayDate: string): TripGalleryPhoto[] {
   const folder = tripPhotoFolder(slug);
 
-  const photos = await Promise.all(
-    Object.entries(tripImages)
-      .filter(([path]) => {
-        const posix = globPath(path);
-        return posix.includes(folder) && posix.includes(dayDate);
-      })
-      .map(([, module]) =>
-        toTripPhoto(module.default, formatFromMetadata(module.default)),
-      ),
-  );
-  return photos.sort((a, b) => a.src.localeCompare(b.src));
+  return Object.entries(tripPhotos)
+    .filter(([path]) => path.includes(folder) && path.includes(dayDate))
+    .map(([, photo]) => toTripPhoto(photo, formatFromMetadata(photo)))
+    .sort((a, b) => a.src.localeCompare(b.src));
 }
 
-async function getPictures(
+function getPictures(
   slug: string,
   pictures: { url: string; format: PictureFormat }[],
-): Promise<TripGalleryPhoto[]> {
-  const photos = await Promise.all(
-    pictures.map((picture) => {
-      const filename = picture.url.split('/').pop() ?? '';
-      const image = resolveTripPhoto(slug, filename);
-      return image ? toTripPhoto(image, picture.format) : undefined;
-    }),
-  );
-  return photos.filter((photo): photo is TripGalleryPhoto => Boolean(photo));
+): TripGalleryPhoto[] {
+  return pictures.flatMap((picture) => {
+    const filename = picture.url.split('/').pop() ?? '';
+    const image = resolveTripPhoto(slug, filename);
+    return image ? [toTripPhoto(image, picture.format)] : [];
+  });
 }
 
 function getAttractionPictures(
   slug: string,
   attractions: ItineraryEntry['data']['days'][number]['attractions'],
-): Promise<TripGalleryPhoto[]> {
+): TripGalleryPhoto[] {
   return getPictures(slug, attractions.flatMap((attraction) => attraction.pictures));
 }
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Attach day-level pictures from assets/trips into itinerary JSON files."""
+"""Attach day-level pictures from PHOTOS_DIR into itinerary JSON files."""
 
 from __future__ import annotations
 
 import json
+import os
 import re
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
@@ -13,7 +14,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 ITINERARIES_DIR = ROOT / "itineraries"
-TRIPS_DIR = ROOT / "src" / "assets" / "trips"
+TRIPS_DIR = Path(os.environ["PHOTOS_DIR"])
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 
 

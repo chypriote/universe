@@ -12,7 +12,7 @@
 - Signature move: the square cinnabar seal (印章) with 中. It is the logo, the favicon and the main solid red block on a page.
 - Second move: a sticky side panel (planner, day meta, guide navigation) that stays in view while the content scrolls.
 - Layout rhythm: wide white space, 12-column splits (7/5, 5/7), thin 1px rules between sections.
-- Imagery: own photographs from the trips (`src/assets/trips`). No stock photos.
+- Imagery: own photographs from the trips (`src/assets/hero.jpg`; trip photos are in R2, see `docs/photos.md`). No stock photos.
 
 ## 2. Color Palette
 
