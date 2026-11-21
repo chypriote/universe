@@ -1,6 +1,6 @@
 ---
 import Container from '@/components/Container.astro';
-import { TripRouteMap } from '@/components/islands/TripRouteMap';
+import TripMap from '@/components/TripMap.astro';
 import type { TripRoute } from '@/lib/itineraries.server';
 
 interface Props {
@@ -19,8 +19,8 @@ const { route } = Astro.props;
           <h2 class="text-h2 font-serif font-light">Cities in order</h2>
         </div>
 
-        <div class="relative isolate z-0 aspect-[16/10] min-h-[320px] w-full overflow-hidden border border-border bg-background">
-          <TripRouteMap client:visible route={route} />
+        <div class="w-full overflow-hidden border border-border bg-background">
+          <TripMap route={route} />
         </div>
 
         <ol class="flex flex-wrap items-baseline gap-x-2 gap-y-2 text-sm">

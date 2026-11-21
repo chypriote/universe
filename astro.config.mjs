@@ -52,8 +52,6 @@ const reactClientOptimizerDeps = [
   'react-dom/client',
   'react/jsx-runtime',
   'react/jsx-dev-runtime',
-  'leaflet',
-  'react-leaflet',
 ];
 
 const astroRuntimeOptimizerDeps = [
@@ -75,8 +73,6 @@ const reactSsrOptimizerDeps = [
 const browserOnlyOptimizerDeps = [
   '@astrojs/react/client.js',
   'react-dom/client',
-  'leaflet',
-  'react-leaflet',
 ];
 
 /** @returns {NonNullable<import('astro').ViteUserConfig['plugins']>[number]} */
