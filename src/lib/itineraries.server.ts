@@ -108,7 +108,7 @@ export type GalleryArchive = {
   cities: GalleryCity[];
 };
 
-type TripPhoto = { slug: string; name: string; width: number; height: number };
+type TripPhoto = { slug: string; name: string; width: number; height: number; city?: string };
 
 const photosBaseUrl = (process.env.PHOTOS_URL ?? '').replace(/\/$/, '');
 if (!photosBaseUrl) {
@@ -380,7 +380,12 @@ export async function buildGalleryArchive(
 
     for (const { path, image } of listTripPhotos(slug)) {
       const dateKey = photoDateKey(path);
-      const match = dateKey ? days.find((day) => day.date === dateKey) : undefined;
+      const dateMatch = dateKey ? days.find((day) => day.date === dateKey) : undefined;
+      // A city set on the photo in photos.json wins over the city of its date.
+      const cityMatch = image.city
+        ? days.find((day) => normalizeCityName(day.city) === normalizeCityName(image.city!))
+        : undefined;
+      const match = cityMatch ?? dateMatch;
       const href = match ? `/trips/${slug}#day-${match.day}` : `/trips/${slug}`;
       const place = match?.city ?? data.title;
       const index = photos.length + 1;

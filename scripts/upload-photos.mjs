@@ -2,7 +2,7 @@
 // src/data/photos.json. Usage: node scripts/upload-photos.mjs <photos-dir>
 // <photos-dir> holds one folder per trip slug. Needs `wrangler login`.
 import { execFile } from 'node:child_process';
-import { mkdtemp, readdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { extname, join } from 'node:path';
 import { promisify } from 'node:util';
@@ -49,6 +49,7 @@ async function pool(items, worker) {
 const tmp = await mkdtemp(join(tmpdir(), 'photos-'));
 const jobs = [];
 const manifest = {};
+const previous = JSON.parse(await readFile('src/data/photos.json', 'utf8').catch(() => '{}'));
 
 for (const slug of (await readdir(photosDir, { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
@@ -63,10 +64,12 @@ for (const slug of (await readdir(photosDir, { withFileTypes: true }))
     const file = join(photosDir, slug, name);
     const { width, height, orientation = 1 } = await sharp(file).metadata();
     const swapped = orientation >= 5;
+    const city = previous[slug]?.find((photo) => photo.name === name)?.city;
     manifest[slug].push({
       name,
       width: swapped ? height : width,
       height: swapped ? width : height,
+      ...(city && { city }),
     });
     jobs.push({ slug, name, file });
   }
