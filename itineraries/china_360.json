@@ -243,8 +243,7 @@
           "format": "9:16"
         }
       ],
-      "attractions": [
-      ],
+      "attractions": [],
       "train_trips": [
         {
           "outgoing_city": "Pingyao",
@@ -372,8 +371,7 @@
           "pictures": []
         }
       ],
-      "train_trips": [
-      ]
+      "train_trips": []
     },
     {
       "day_number": 8,
@@ -593,8 +591,7 @@
           "pictures": []
         }
       ],
-      "train_trips": [
-      ]
+      "train_trips": []
     },
     {
       "day_number": 12,
@@ -714,8 +711,7 @@
           "pictures": []
         }
       ],
-      "train_trips": [
-      ]
+      "train_trips": []
     },
     {
       "day_number": 14,
@@ -729,8 +725,7 @@
           "format": "9:16"
         }
       ],
-      "attractions": [
-      ],
+      "attractions": [],
       "train_trips": [
         {
           "outgoing_city": "Jiuzhaigou",
@@ -1116,7 +1111,7 @@
     },
     {
       "day_number": 21,
-      "main_city": "Wulingyuan",
+      "main_city": "Zhangjiajie",
       "title": "Zhangjiajie National Forest Park",
       "notes": "Core park viewpoints and plateaus.",
       "pictures": [
@@ -1174,35 +1169,35 @@
       "attractions": [
         {
           "name": "Zhangjiajie National Forest Park",
-          "city": "Wulingyuan",
+          "city": "Zhangjiajie",
           "rating": 5,
           "description": "Scenic national park area with pillar-like peaks.",
           "pictures": []
         },
         {
           "name": "Bailong Elevator",
-          "city": "Wulingyuan",
+          "city": "Zhangjiajie",
           "rating": 4,
           "description": "Glass elevator known for its height and views.",
           "pictures": []
         },
         {
           "name": "Yuanjiajie",
-          "city": "Wulingyuan",
+          "city": "Zhangjiajie",
           "rating": 5,
           "description": "Famous viewpoint area in the park.",
           "pictures": []
         },
         {
           "name": "Tianzi Shan",
-          "city": "Wulingyuan",
+          "city": "Zhangjiajie",
           "rating": 5,
           "description": "Mountain plateau with sweeping peak views.",
           "pictures": []
         },
         {
           "name": "Shili Gallery",
-          "city": "Wulingyuan",
+          "city": "Zhangjiajie",
           "rating": 4,
           "description": "Scenic valley corridor with shuttle and walking paths.",
           "pictures": []
@@ -1212,7 +1207,7 @@
     },
     {
       "day_number": 22,
-      "main_city": "Wulingyuan",
+      "main_city": "Zhangjiajie",
       "title": "Glass Bridge and Baofeng Lake",
       "notes": "Grand Canyon glass bridge and lake scenery.",
       "pictures": [
@@ -1255,14 +1250,14 @@
       "attractions": [
         {
           "name": "Zhangjiajie Glass Bridge Canyon",
-          "city": "Wulingyuan",
+          "city": "Zhangjiajie",
           "rating": 5,
           "description": "Glass bridge spanning the Zhangjiajie Grand Canyon.",
           "pictures": []
         },
         {
           "name": "Baofeng Lake",
-          "city": "Wulingyuan",
+          "city": "Zhangjiajie",
           "rating": 4,
           "description": "Scenic lake with boat rides among karst hills.",
           "pictures": []
@@ -1272,7 +1267,7 @@
     },
     {
       "day_number": 23,
-      "main_city": "Wulingyuan",
+      "main_city": "Zhangjiajie",
       "title": "Huangshizhai and Golden Whip Stream",
       "notes": "Park trails before departing for Changsha.",
       "pictures": [
@@ -1305,14 +1300,14 @@
       "attractions": [
         {
           "name": "Huangshizhai",
-          "city": "Wulingyuan",
+          "city": "Zhangjiajie",
           "rating": 5,
           "description": "High plateau with classic Zhangjiajie panoramas.",
           "pictures": []
         },
         {
           "name": "Golden Whip Stream",
-          "city": "Wulingyuan",
+          "city": "Zhangjiajie",
           "rating": 4,
           "description": "Popular walking trail through the park.",
           "pictures": []
@@ -1660,25 +1655,17 @@
           "rating": 4,
           "price": null,
           "pictures": []
-        }
-      ],
-      "restaurants": []
-    },
-    {
-      "name": "Wulingyuan",
-      "country": "China",
-      "region": "Hunan",
-      "hotels": [
+        },
         {
           "name": "Maosao Inn",
-          "address": "Wulingyuan, Zhangjiajie",
+          "address": "Zhangjiajie",
           "rating": 4,
           "price": null,
           "pictures": []
         },
         {
           "name": "Jiezhi Hotel",
-          "address": "Wulingyuan",
+          "address": "Zhangjiajie",
           "rating": 4,
           "price": null,
           "pictures": []

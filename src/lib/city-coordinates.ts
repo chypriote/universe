@@ -12,7 +12,6 @@ const CITY_COORDINATES: Record<string, LngLat> = {
   chongqing: [106.5516, 29.563],
   wulong: [107.76, 29.325],
   zhangjiajie: [110.4792, 29.117],
-  wulingyuan: [110.5436, 29.3481],
   changsha: [112.9388, 28.2282],
   nanchang: [115.8582, 28.682],
   'hong kong': [114.1694, 22.3193],

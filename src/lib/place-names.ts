@@ -24,7 +24,6 @@ const PLACES: Record<string, PlaceName> = {
   chongqing: { zh: '重庆', pinyin: 'Chóngqìng' },
   wulong: { zh: '武隆', pinyin: 'Wǔlóng' },
   zhangjiajie: { zh: '张家界', pinyin: 'Zhāngjiājiè' },
-  wulingyuan: { zh: '武陵源', pinyin: 'Wǔlíngyuán' },
   changsha: { zh: '长沙', pinyin: 'Chángshā' },
   nanchang: { zh: '南昌', pinyin: 'Nánchāng' },
   'hong kong': { zh: '香港', pinyin: 'Xiānggǎng' },
