@@ -16,7 +16,6 @@ export async function getStaticPaths() {
 const { guide, previous, next } = Astro.props;
 const { Content, headings } = await render(guide);
 const sections = headings.filter((heading) => heading.depth === 2);
-const sourceUrl = `https://baotravel.com/guide/${guide.id}`;
 
 const jsonLd = {
   "@context": "https://schema.org",
