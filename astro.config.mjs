@@ -3,7 +3,6 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
-import netlify from '@astrojs/netlify';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { fontProviders, sessionDrivers } from 'astro/config';
@@ -135,7 +134,6 @@ function prebundleCloudflareDevDeps() {
 export default defineConfig({
   output: 'static',
   trailingSlash: 'never',
-  adapter: netlify(),
   // Astro 6 + @astrojs/cloudflare 13 auto-provision a SESSION KV namespace
   // per deploy. Pinning a non-KV driver tells the adapter "sessions are
   // handled" so it skips emitting the SESSION binding. Our pages are static
