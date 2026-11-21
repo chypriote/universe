@@ -106,10 +106,15 @@ export function ChinaMap({
     return regionByName.has(name) ? t.visited : t.land;
   };
 
-  // On touch screens the first tap shows the preview, the second follows the link.
+  // Touch browsers fire emulated mouse and focus events before click, so hover state cannot tell a first tap from a second.
+  // A separate "armed" region does: the first touch tap arms it and shows the preview, the second follows the link.
+  const touch = useRef(false);
+  const [armedRegion, setArmedRegion] = useState<string | null>(null);
+
   const handleRegionClick = (event: React.MouseEvent, region: ChinaMapRegion) => {
-    if (region.href && (event.nativeEvent as PointerEvent).pointerType === 'touch' && hoverRegion !== region.name) {
+    if (region.href && touch.current && armedRegion !== region.name) {
       event.preventDefault();
+      setArmedRegion(region.name);
       setHoverRegion(region.name);
     } else {
       onSelectRegion?.(region.name);
@@ -117,10 +122,21 @@ export function ChinaMap({
   };
 
   const regionHandlers = (region: ChinaMapRegion) => ({
-    onMouseEnter: () => setHoverRegion(region.name),
-    onMouseLeave: () => setHoverRegion(null),
-    onFocus: () => setHoverRegion(region.name),
-    onBlur: () => setHoverRegion(null),
+    onPointerDown: (event: React.PointerEvent) => {
+      touch.current = event.pointerType === 'touch';
+    },
+    onPointerEnter: (event: React.PointerEvent) => {
+      if (event.pointerType !== 'touch') setHoverRegion(region.name);
+    },
+    onPointerLeave: (event: React.PointerEvent) => {
+      if (event.pointerType !== 'touch') setHoverRegion(null);
+    },
+    onFocus: () => {
+      if (!touch.current) setHoverRegion(region.name);
+    },
+    onBlur: () => {
+      if (!touch.current) setHoverRegion(null);
+    },
     onClick: (event: React.MouseEvent) => handleRegionClick(event, region),
   });
 
