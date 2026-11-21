@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { CHINA_MAP } from '@/lib/china-map';
 
 export type ChinaMapRegion = {
@@ -31,12 +31,16 @@ interface ChinaMapProps {
   idleText?: string;
 }
 
+/** Label font size in map units; keep in step with the text-[…px] class on the label. */
+const LABEL_SIZE = 22;
+
 const TONES = {
   light: {
     land: 'fill-surface stroke-background',
     visited: 'fill-foreground/25 stroke-background',
     selected: 'fill-foreground stroke-background',
     dot: 'fill-foreground stroke-background',
+    label: 'fill-foreground stroke-background stroke-[4]',
     muted: 'text-muted-foreground',
     border: 'border-border',
   },
@@ -45,6 +49,7 @@ const TONES = {
     visited: 'fill-dark-muted-foreground/40 stroke-dark-background',
     selected: 'fill-dark-foreground stroke-dark-background',
     dot: 'fill-dark-foreground stroke-dark-background',
+    label: 'fill-dark-foreground stroke-dark-background stroke-[4]',
     muted: 'text-dark-muted-foreground',
     border: 'border-dark-border',
   },
@@ -63,6 +68,28 @@ export function ChinaMap({
   const [hoverRegion, setHoverRegion] = useState<string | null>(null);
   const [hoverCity, setHoverCity] = useState<string | null>(null);
   const t = TONES[tone];
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [labelPos, setLabelPos] = useState<Record<string, [number, number]>>({});
+
+  // Touch screens have no hover, so each clickable region carries its name, centred on its shape.
+  useLayoutEffect(() => {
+    const centres: [string, number, number][] = [];
+    svgRef.current?.querySelectorAll<SVGPathElement>('path[data-region]').forEach((path) => {
+      const box = path.getBBox();
+      centres.push([path.dataset.region as string, box.x + box.width / 2, box.y + box.height / 2]);
+    });
+    // Small neighbouring regions would print on top of each other, so push a label down until it is clear.
+    const placed: { x: number; y: number; w: number }[] = [];
+    const next: Record<string, [number, number]> = {};
+    for (const [name, x, y0] of centres.sort((a, b) => a[2] - b[2])) {
+      const w = name.length * LABEL_SIZE * 0.6;
+      let y = y0;
+      while (placed.some((p) => Math.abs(p.x - x) < (p.w + w) / 2 && Math.abs(p.y - y) < LABEL_SIZE)) y += LABEL_SIZE;
+      placed.push({ x, y, w });
+      next[name] = [x, y];
+    }
+    setLabelPos(next);
+  }, [regions]);
 
   const regionByName = new Map(regions.map((region) => [region.name, region]));
   const cityByKey = new Map(cities.map((city) => [city.key, city]));
@@ -101,6 +128,7 @@ export function ChinaMap({
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
       <svg
         viewBox={`0 0 ${CHINA_MAP.width} ${CHINA_MAP.height}`}
+        ref={svgRef}
         className="w-full h-auto lg:col-span-6"
         role="group"
         aria-label="Map of China"
@@ -111,7 +139,7 @@ export function ChinaMap({
             return <path key={shape.name} d={shape.d} className={`${t.land} stroke-[1.5]`} />;
           }
           const path = (
-            <path d={shape.d} className={`${regionClass(shape.name)} stroke-[1.5] transition-colors`} />
+            <path d={shape.d} data-region={shape.name} className={`${regionClass(shape.name)} stroke-[1.5] transition-colors`} />
           );
           return region.href ? (
             <a key={shape.name} href={region.href} aria-label={`${region.name} ${region.zh}`} {...regionHandlers(region)}>
@@ -136,6 +164,24 @@ export function ChinaMap({
               {path}
             </g>
           );
+        })}
+
+        {regions.map((region) => {
+          const pos = labelPos[region.name];
+          return pos ? (
+            <text
+              key={region.name}
+              x={pos[0]}
+              y={pos[1]}
+              textAnchor="middle"
+              dominantBaseline="central"
+              aria-hidden="true"
+              className={`pointer-events-none select-none text-[22px] font-medium ${t.label}`}
+              style={{ paintOrder: 'stroke' }}
+            >
+              {region.name}
+            </text>
+          ) : null;
         })}
 
         {cities.map((city) => {
