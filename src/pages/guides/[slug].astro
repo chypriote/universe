@@ -57,7 +57,7 @@ const jsonLd = {
               {next && (
                 <div class="flex flex-col">
                   <span class="eyebrow text-muted-foreground mb-2">Next guide</span>
-                  <a href={`/guides/${next.id}`} class="font-serif text-lg hover:text-primary transition-colors">{next.data.title} →</a>
+                  <a href={`/guides/${next.id}`} class="font-serif text-lg whitespace-nowrap hover:text-primary transition-colors">{next.data.title} →</a>
                 </div>
               )}
               <a href="/guides" class="eyebrow text-muted-foreground hover:text-primary transition-colors">← All guides</a>
@@ -70,17 +70,17 @@ const jsonLd = {
             <Content />
           </div>
 
-          <footer class="mt-16 pt-16 border-t border-border flex justify-between items-start gap-8">
+          <footer class="mt-16 pt-16 border-t border-border flex flex-col sm:flex-row sm:justify-between items-start gap-8">
             {previous ? (
               <div class="flex flex-col">
                 <span class="eyebrow text-muted-foreground mb-2">Previous</span>
-                <a href={`/guides/${previous.id}`} class="text-lg font-serif hover:text-primary transition-colors">← {previous.data.title}</a>
+                <a href={`/guides/${previous.id}`} class="text-lg font-serif whitespace-nowrap hover:text-primary transition-colors">← {previous.data.title}</a>
               </div>
             ) : <div />}
             {next && (
-              <div class="flex flex-col text-right">
+              <div class="flex flex-col sm:text-right sm:items-end">
                 <span class="eyebrow text-muted-foreground mb-2">Next</span>
-                <a href={`/guides/${next.id}`} class="text-lg font-serif hover:text-primary transition-colors">{next.data.title} →</a>
+                <a href={`/guides/${next.id}`} class="text-lg font-serif whitespace-nowrap hover:text-primary transition-colors">{next.data.title} →</a>
               </div>
             )}
           </footer>
