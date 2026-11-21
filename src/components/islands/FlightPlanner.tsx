@@ -284,7 +284,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
       <div
-        className="lg:col-span-1 border border-border bg-surface flex flex-col min-h-0 overflow-hidden"
+        className="lg:col-span-1 border border-border bg-surface flex flex-col min-h-0 overflow-hidden max-h-[34rem] lg:max-h-none"
         style={recentPanelHeight ? { height: recentPanelHeight } : undefined}
       >
         <div className="shrink-0 p-4 border-b border-border bg-background">
