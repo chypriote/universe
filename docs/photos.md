@@ -10,7 +10,7 @@ A photo can have an optional `city`, for example `"city": "Zhangjiajie"`. The ga
 
 ## Set cities
 
-Put `PHOTOS_URL=<bucket url>` in `.env`. Run `node --env-file=.env scripts/photo-admin.mjs` and open http://localhost:4322. Pick a city per photo, or click photos and set one city on all of them. Save, then commit `src/data/photos.json`.
+Put `PHOTOS_URL=<bucket url>` in `.env`. Run `node scripts/photo-admin.mjs` and open http://localhost:4322. Pick a city per photo, or click photos and set one city on all of them. Save, then commit `src/data/photos.json`.
 The build needs `PHOTOS_URL`, the public base URL of the bucket, with no trailing slash. Locally, set it in `.env`; Astro reads it from there.
 The hero image is `src/assets/hero.jpg`. Astro optimizes it at build.
 

@@ -1,7 +1,10 @@
-// Local page to set the city of each photo. Usage: node --env-file=.env scripts/photo-admin.mjs
+// Local page to set the city of each photo. Usage: node scripts/photo-admin.mjs (reads PHOTOS_URL from .env)
 // Opens http://localhost:4322 and saves to src/data/photos.json. Commit the file when done.
+import { existsSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { readFile, readdir, writeFile } from 'node:fs/promises';
+
+if (existsSync('.env')) process.loadEnvFile('.env');
 
 const photosUrl = (process.env.PHOTOS_URL ?? '').replace(/\/$/, '');
 if (!photosUrl) throw new Error('PHOTOS_URL is not set.');
