@@ -1,6 +1,7 @@
-import { file, glob } from 'astro/loaders';
+import { glob } from 'astro/loaders';
 import { defineCollection } from 'astro:content';
 import { z } from "astro/zod"
+import { d1Query } from '../scripts/d1.js';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
@@ -73,7 +74,16 @@ const docs = defineCollection({
 });
 
 const flights = defineCollection({
-  loader: file('flights/flights.json'),
+  // From D1 at build time. Not the raw SerpApi response: only china.js's cache reads it.
+  loader: async () => {
+    const rows = await d1Query(
+      'SELECT airport, stops, price, outbound_date, return_date, searched_on, created_at FROM flight_searches'
+    );
+    return rows.map((row: Record<string, string | number | null>) => ({
+      id: `${row.airport}-${row.stops}-${row.outbound_date}-${row.return_date}`,
+      ...row,
+    }));
+  },
   schema: z.object({
     id: z.string(),
     airport: z.string(),
@@ -81,7 +91,6 @@ const flights = defineCollection({
     price: z.number().nullable(),
     outbound_date: z.string(),
     return_date: z.string(),
-    response: z.string(),
     searched_on: z.string(),
     created_at: z.string(),
   }),
