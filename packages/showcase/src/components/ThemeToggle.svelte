@@ -4,8 +4,6 @@
 	import SunIcon from '@lucide/svelte/icons/sun';
 	import { Button } from './ui/button/index.js';
 
-	let { size = 'icon' }: { size?: 'icon' | 'icon-sm' } = $props();
-
 	let dark = $state(false);
 
 	// app.html sets data-theme before first paint when a choice is saved.
@@ -26,11 +24,11 @@
 	}
 </script>
 
-<Button variant="neutral" {size} onclick={toggle}>
+<Button variant="neutral" size="icon-sm" onclick={toggle}>
 	{#if dark}
-		<SunIcon aria-hidden="true" class={size === 'icon' ? 'size-5' : 'size-4'} />
+		<SunIcon aria-hidden="true" class="size-4" />
 	{:else}
-		<MoonIcon aria-hidden="true" class={size === 'icon' ? 'size-5' : 'size-4'} />
+		<MoonIcon aria-hidden="true" class="size-4" />
 	{/if}
 	<span class="sr-only">{dark ? 'Switch to light theme' : 'Switch to dark theme'}</span>
 </Button>

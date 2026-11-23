@@ -6,25 +6,22 @@
 
 	let {
 		isOwner,
-		adminHref,
-		size = 'icon'
+		adminHref
 	}: {
 		isOwner: boolean;
 		/** The app's admin page, already resolved (`resolve('/admin')`). */
 		adminHref: string;
-		size?: 'icon' | 'icon-sm';
 	} = $props();
 
 	let loginOpen = $state(false);
-	const iconClass = $derived(size === 'icon' ? 'size-5' : 'size-4');
 </script>
 
 {#if isOwner}
-	<UiButton variant="neutral" {size} href={adminHref}>
+	<UiButton variant="neutral" size="icon-sm" href={adminHref}>
 		<svg
 			aria-hidden="true"
 			viewBox="0 0 24 24"
-			class={iconClass}
+			class="size-4"
 			fill="none"
 			stroke="currentColor"
 			stroke-width="2"
@@ -39,11 +36,11 @@
 		<span class="sr-only">Admin</span>
 	</UiButton>
 {:else}
-	<Button intent="neutral" {size} onclick={() => (loginOpen = true)}>
+	<Button intent="neutral" size="icon-sm" onclick={() => (loginOpen = true)}>
 		<svg
 			aria-hidden="true"
 			viewBox="0 0 24 24"
-			class={iconClass}
+			class="size-4"
 			fill="none"
 			stroke="currentColor"
 			stroke-width="2"

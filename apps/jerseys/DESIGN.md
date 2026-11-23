@@ -60,7 +60,7 @@ The scale is ad-hoc: a size not in this table does not appear in the app.
 - **Tile:** square, surface colour, 14px radius, offset shadow. It shows the Kit's Main Picture, contained. If the Kit has no Main Picture: a shirt outline in the muted colour. A Jersey with a Print number shows it bottom right, in ink with a tile-colour halo (`text.tile.number`). The Print name (without its number) sits bottom center in the same way and size (`text.tile.print`).
 - **Popup:** a Tile Popup opens over the tapped Tile, clamped to the screen. Forms open in the centre. Max width 560px, Main Picture 180px wide and portrait (3:4; at most 40% of the Popup on a phone), X button at top right. Tap outside or Esc closes it. Forms use a wide Popup (672px), with the fields in two columns from 640px.
 - **CoverageMap:** a surface card with a static world map, Collection page only. Two states per Country: covered (icon accent colour) and empty (line colour).
-- **StickyBar:** title, chips, tab pills, search, filters, sort.
+- **StickyBar:** title, chips, tabs, search, filters, sort.
 - **Controls:** Chip, Button, Tabs, SearchField, Select, ToggleGroup are pills.
 
 Full catalog (all levels, props, states, Owner UI, empty states, import screen): [COMPONENTS.md](COMPONENTS.md).
@@ -72,7 +72,7 @@ Full catalog (all levels, props, states, Owner UI, empty states, import screen):
 - **Space values:** 8, 12, 16px. No other spacing tokens yet.
 - **Density:** packed.
 - **Page order:** StickyBar, then (Collection only) CoverageMap, then the tile grid.
-- **Sticky bar:** title, chips (Collection: jersey count and total spent; Wishlist: item count), tab pills (Collection, Wishlist), search, filters, sort.
+- **Sticky bar:** title, chips (Collection: jersey count and total spent; Wishlist: item count), tabs (Collection, Wishlist), search, filters, sort.
 - **Caption under each tile:** Team (display face), then "{Season} · {Kit Type}" (muted).
 
 ## 6. Depth

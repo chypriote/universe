@@ -144,7 +144,7 @@
 	{#snippet title()}Jerseys{/snippet}
 	{#snippet chips()}
 		<Chip tone="highlight" label="jerseys" value={String(data.jerseys.length)} />
-		<Chip tone="success" label="spent" value={formatCents(totalSpentCents)} />
+		<Chip tone="success" label="spent" value={formatCents(totalSpentCents)} compact />
 	{/snippet}
 	{#snippet login()}
 		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} />

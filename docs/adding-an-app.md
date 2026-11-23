@@ -41,7 +41,7 @@ Copy the closer existing app (`apps/vinyles` for a list with one picture per thi
 4. `src/lib/lists.ts`: the Collection and Wishlist links for the StickyBar Tabs.
 5. Keep the Owner plumbing as is: `routes/login`, `+layout.server.ts` (`isOwner`), `lib/server/owner-actions.ts`, LoginAction and the shared session from `@universe/owner`.
 6. Replace the domain: `lib/server/db/schema.ts` and a first Drizzle migration, `lib/server/catalog`, the routes, the tile, the forms, `static/` (the app's own mark: favicon and home-screen icon).
-7. Pages: StickyBar (`title`, `links`, `packed` if the bar is crowded), AddAction, the tile grid, Popup with the app's `media` snippet, EmptyState.
+7. Pages: StickyBar (`title`, `links`), AddAction, the tile grid, Popup with the app's `media` snippet, EmptyState.
 8. Tests: a catalog test file in the same style, with a fake clock for any rate-limited lookup (see Jerseys `fakeClock`).
 9. `README.md`: commands, Cloudflare setup, secrets, in the shape of the other two.
 

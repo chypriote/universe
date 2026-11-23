@@ -208,7 +208,6 @@
 <StickyBar
 	current="wishlist"
 	links={lists}
-	packed
 	searchActive={search.trim() !== ''}
 	filtersActive={selectedArtists.length > 0 || desires.length > 0}
 >
@@ -217,7 +216,7 @@
 		<Chip tone="info" label="items" value={String(data.count)} />
 	{/snippet}
 	{#snippet login()}
-		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} size="icon-sm" />
+		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} />
 	{/snippet}
 	{#snippet action()}
 		{#if data.isOwner}
