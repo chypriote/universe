@@ -31,8 +31,8 @@ export function formatNumber(value: number): string {
 export function formatDate(stored: string): string {
 	const [year, month, day] = stored.slice(0, 10).split('-');
 	if (!month) return year;
-	const monthName = MONTHS[Number(month) - 1];
-	return day ? `${Number(day)} ${monthName} ${year}` : `${monthName} ${year}`;
+	const name = MONTHS[Number(month) - 1];
+	return day ? `${Number(day)} ${name} ${year}` : `${name} ${year}`;
 }
 
 /** "2024-05-12" or "2024-05" -> "May 2024" */
@@ -45,4 +45,9 @@ export function formatMonth(stored: string): string {
 export function formatDayMonth(stored: string): string {
 	const [, month, day] = stored.split('-');
 	return `${Number(day)} ${MONTHS[Number(month) - 1]}`;
+}
+
+/** "2024-05-12" -> "May" */
+export function monthName(stored: string): string {
+	return MONTHS[Number(stored.split('-')[1]) - 1];
 }

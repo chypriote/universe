@@ -1,8 +1,10 @@
-# Nico to 中国 Design Language
+# Ink: the Zhongguo design family
 
 > A personal travel site about China (and nearby Asia: Japan, Vietnam): trip reports, trip plans, photography and a flight price planner.
 
-## 1. Visual Theme
+Ink is a working name (#22). It builds on the Universe layer ([packages/universe/DESIGN.md](../../packages/universe/DESIGN.md)): press and hover timings, reduced motion, Lucide icons, money and date formats and the koala come from there and are not repeated here.
+
+## 1. Theme
 
 **Theme statement:** ink and cinnabar — a quiet photo journal of China.
 
@@ -14,7 +16,7 @@
 - Layout rhythm: wide white space, 12-column splits (7/5, 5/7), thin 1px rules between sections.
 - Imagery: own photographs from the trips (`src/assets/hero.jpg`; trip photos are in R2, see `docs/photos.md`). No stock photos.
 
-## 2. Color Palette
+## 2. Colour
 
 All colors are tokens in `src/styles/global.css` (`@theme`). Use the utilities (`bg-surface`, `text-muted-foreground`, …), not raw values. Values are in that file; the table gives the role.
 
@@ -94,7 +96,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Section header | Component | Eyebrow + `h2` + lead | Left aligned, centered |
 | Trip card | Component | Trip preview: photo, meta line, title, text, link | Portrait 3/4 (plans), wide 16/9 alternating split (reports) |
 | Navigation | Component | Sticky top bar: seal + name, 4 links with a cinnabar underline on the current page, mobile menu | — |
-| Footer | Component | Dark, seal + name + description, one link list | — |
+| Footer | Component | Dark, seal + name + description, one link list, the koala before the copyright line | — |
 | Hero | Pattern | Full-height trip photo, title bottom-left, 中国游记 banner (vertical top right on desktop, horizontal bottom left on mobile), two buttons | — |
 | China map | Pattern | Clickable SVG map of China (`ChinaMap.tsx`). Hover or focus shows the name in English and Chinese, a photo if there is one, and a detail line. Used on Photos (click filters photos, dots are cities) and on the home Regions section (click opens a trip). Shapes: Natural Earth, public domain, built by `scripts/build-china-map.mjs` into `src/data/china-map.json`. | Light, dark |
 | Trip day section | Pattern | Large cinnabar day number, title, sticky activities and food (Chinese + pinyin), text, photos | — |
@@ -123,7 +125,14 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 
 **Density:** comfortable.
 
-## 6. Depth
+**Responsive:**
+
+- Mobile first. One column under `lg`; 12-column splits from `lg`.
+- Nav links collapse into a full-width menu under `md`.
+- Planner: table and calendar stack on mobile; side by side (1/3 + 2/3) from `lg`.
+- Sticky panels are sticky only from `lg`.
+
+## 6. Depth and motion
 
 Flat. No elevation scale.
 | Level | Treatment | Usage |
@@ -134,19 +143,15 @@ Flat. No elevation scale.
 
 Hover feedback is a color change, a border change or a slow image zoom (at most `scale-[1.03]`), never a shadow.
 
-## 7. Motion
-
 | Token | Value | Usage |
 |-------|-------|-------|
 | Reveal | 0.8s ease-out, 30px offset | `.reveal`, `.reveal-left/right/scale` on scroll |
 | Stagger | 0.1s steps | `.reveal-delay-1…5` |
 | Hero fade-up | 0.6s cubic-bezier(0.22, 1, 0.36, 1) | `.hero-animate` |
 | Image zoom | 700ms | Card photo, at most `scale-[1.03]` |
-| Color | default transition | Links, buttons |
+| Colour | Universe hover timing (the Tailwind default transition) | Links, buttons |
 
-All motion stops under `prefers-reduced-motion: reduce`.
-
-## 8. Voice & Tone
+## 7. Voice
 
 **Target:** personal, first person. Nico tells what they saw, ate and paid. Concrete places, dates and prices.
 
@@ -154,7 +159,7 @@ All motion stops under `prefers-reduced-motion: reduce`.
 
 **Microcopy:** short uppercase labels; dates and durations in the `eyebrow` style ("12 days · Yunnan").
 
-## 9. Do's and Don'ts
+## 8. Do's and don'ts
 
 ### Do
 - Use the color tokens; never raw hex in components (map CSS included).
@@ -172,25 +177,19 @@ All motion stops under `prefers-reduced-motion: reduce`.
 - Don't put display headlines in columns narrower than 60% of the container.
 - Don't add a dark mode.
 
-## 10. Responsive
-
-- Mobile first. One column under `lg`; 12-column splits from `lg`.
-- Nav links collapse into a full-width menu under `md`.
-- Planner: table and calendar stack on mobile; side by side (1/3 + 2/3) from `lg`.
-- Sticky panels are sticky only from `lg`.
-
-## 11. Agent Prompt Guide
+## 9. Agent prompt guide
 
 - Read colors, fonts and heading sizes only from `src/styles/global.css` tokens.
 - Sharp corners and no shadows, always.
 - Titles use `font-serif` + `text-h1/h2/h3`; labels use `eyebrow`; buttons use `btn`.
 - Wrap page content in `Container.astro`; sections use `py-24 lg:py-32`.
 - Write copy in Nico's first-person voice, not marketing voice.
+- Icons are Lucide (`@lucide/astro`, `lucide-react` in islands); maps and the 中 seal are hand-drawn SVG.
 
-## 12. Known gaps (code vs. this file)
+### Known gaps (code vs. this file)
 
 Template content to replace:
-- Marketing copy in the guide pages (see Voice & Tone).
+- Marketing copy in the guide pages (see Voice).
 - `SITE.socials` and `twitterHandle` placeholders.
 
 To rebuild:

@@ -1,4 +1,5 @@
 ---
+import { Menu, X } from '@lucide/astro';
 import Container from '@/components/Container.astro';
 
 const links = [
@@ -42,12 +43,8 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
         aria-expanded="false"
         aria-controls="mobile-menu"
       >
-        <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="square" stroke-width="1.5" d="M4 8h16M4 16h16" />
-        </svg>
-        <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="square" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <Menu id="menu-icon-open" size={24} aria-hidden="true" />
+        <X id="menu-icon-close" class="hidden" size={24} aria-hidden="true" />
       </button>
     </Container>
   </nav>

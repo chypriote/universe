@@ -1,3 +1,4 @@
+import { formatDate, formatMonth } from '@universe/universe/format';
 import { getPlaceName } from '@/lib/place-names';
 
 export type PlanDay = {
@@ -21,17 +22,6 @@ export type CalendarMonth = {
   cells: Map<number, CityCalendarCell>;
 };
 
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-});
-
-const monthFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'long',
-  year: 'numeric',
-});
-
 function parseIsoDate(isoDate: string): { year: number; month: number; day: number } {
   const [year, month, day] = isoDate.split('-').map(Number);
   return { year, month, day };
@@ -47,9 +37,7 @@ export function getDayDate(startDate: string, dayNumber: number): string {
 }
 
 export function formatDateRange(startDate: string, endDate: string): string {
-  const start = parseIsoDate(startDate);
-  const end = parseIsoDate(endDate);
-  return `${dateFormatter.format(new Date(start.year, start.month - 1, start.day))} — ${dateFormatter.format(new Date(end.year, end.month - 1, end.day))}`;
+  return `${formatDate(startDate)} — ${formatDate(endDate)}`;
 }
 
 export function buildCityCalendarDays(days: PlanDay[], startDate: string): CityCalendarCell[] {
@@ -83,7 +71,7 @@ export function buildCalendarMonths(cells: CityCalendarCell[]): CalendarMonth[] 
       const firstOfMonth = new Date(year, month - 1, 1);
       calendarMonth = {
         key,
-        label: monthFormatter.format(firstOfMonth),
+        label: formatMonth(key),
         weekdayOffset: firstOfMonth.getDay(),
         daysInMonth: new Date(year, month, 0).getDate(),
         cells: new Map(),

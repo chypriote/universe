@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import type { GalleryArchive as GalleryArchiveData, GalleryCity } from '@/lib/itineraries.server';
 import { GalleryGrid } from '@/components/islands/GalleryGrid';
 import { ChinaMap, type ChinaMapCity, type ChinaMapRegion } from '@/components/islands/ChinaMap';
@@ -140,9 +141,7 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
                 className="mt-4 inline-flex items-center gap-3 eyebrow text-foreground hover:text-primary transition-colors"
               >
                 Open day {selectedCity.day} in {selectedCity.tripTitle}
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+                <ArrowRight size={16} aria-hidden="true" />
               </a>
             )}
           </div>
