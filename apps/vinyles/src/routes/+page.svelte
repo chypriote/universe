@@ -6,19 +6,19 @@
 	import type { RecordView } from '#lib/server/catalog/types';
 	import { formatCents, formatDate } from '#lib/format';
 	import ArtistFilter from '#lib/components/ArtistFilter.svelte';
-	import Button from '#lib/components/Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import CoverPicker from '#lib/components/CoverPicker.svelte';
-	import Chip from '#lib/components/Chip.svelte';
+	import Chip from '@universe/showcase/components/Chip.svelte';
 	import Cover from '#lib/components/Cover.svelte';
 	import CoverGrid from '#lib/components/CoverGrid.svelte';
-	import EmptyState from '#lib/components/EmptyState.svelte';
+	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
 	import AddAction from '#lib/components/AddAction.svelte';
 	import LoginAction from '#lib/components/LoginAction.svelte';
 	import Popup from '#lib/components/Popup.svelte';
 	import RecordForm from '#lib/components/RecordForm.svelte';
-	import SearchField from '#lib/components/SearchField.svelte';
-	import SortDirection from '#lib/components/SortDirection.svelte';
-	import Select from '#lib/components/Select.svelte';
+	import SearchField from '@universe/showcase/components/SearchField.svelte';
+	import SortDirection from '@universe/showcase/components/SortDirection.svelte';
+	import Select from '@universe/showcase/components/Select.svelte';
 	import StickyBar from '#lib/components/StickyBar.svelte';
 
 	type Row = WithCoverUrl<RecordView>;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import AdminNav from '#lib/components/AdminNav.svelte';
-	import { Button as UiButton } from '#lib/components/ui/button/index.js';
+	import { Button as UiButton } from '@universe/showcase/ui/button';
 	import type { LayoutProps } from './$types';
 
 	let { children }: LayoutProps = $props();

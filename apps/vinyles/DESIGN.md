@@ -1,6 +1,6 @@
 # Vinyles design language: "Wall"
 
-Theme: happy, round, packed. A full wall of record covers. Dials: Creativity=Balanced, Density=Packed, Variance=Uniform, Motion=Static (hover tilt only).
+Theme: happy, round, packed. A full wall of record covers. A theme of [Showcase](../../packages/showcase/DESIGN.md), the shared design system: Showcase sets the structure, shapes and controls; Vinyles sets its palette and domain components. Dials: Creativity=Balanced, Density=Packed, Variance=Uniform, Motion=Static (hover tilt only).
 
 Never use purple, hard borders, mono type or the muted cream look. Nico rejected them.
 
@@ -11,7 +11,7 @@ Never use purple, hard borders, mono type or the muted cream look. Nico rejected
 | bg | #fff3df | #101a3a |
 | surface | #ffffff | #19254d |
 | ink | #1a2f6b | #fff3e2 |
-| muted | #637090 | #a3b1d9 |
+| muted | #5a6a8e | #a3b1d9 |
 | line | #f0dfc2 | #2a3a6e |
 | accent (coral) | #ff5a4e | #ff6f63 |
 | on-accent | #101a3a | #101a3a |

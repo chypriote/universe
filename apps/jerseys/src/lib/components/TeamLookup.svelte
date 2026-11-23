@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import type { TeamChoice, TeamKind, TeamView } from '#lib/server/catalog/types';
-	import ToggleGroup from './ToggleGroup.svelte';
-	import { Input } from './ui/input/index.js';
-	import { Label } from './ui/label/index.js';
-	import { NativeSelect } from './ui/native-select/index.js';
+	import ToggleGroup from '@universe/showcase/components/ToggleGroup.svelte';
+	import { Input } from '@universe/showcase/ui/input';
+	import { Label } from '@universe/showcase/ui/label';
+	import { NativeSelect } from '@universe/showcase/ui/native-select';
 
 	let {
 		value = $bindable(null),

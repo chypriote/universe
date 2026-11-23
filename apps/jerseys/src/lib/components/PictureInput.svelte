@@ -2,9 +2,9 @@
 	import { tick } from 'svelte';
 	import LinkIcon from '@lucide/svelte/icons/link';
 	import UploadIcon from '@lucide/svelte/icons/upload';
-	import { Button as IconButton } from './ui/button/index.js';
+	import { Button as IconButton } from '@universe/showcase/ui/button';
 	import FindPicturesLink from './FindPicturesLink.svelte';
-	import { Input } from './ui/input/index.js';
+	import { Input } from '@universe/showcase/ui/input';
 
 	/** A picture for a form: an uploaded file or an image address, never both. */
 	let {

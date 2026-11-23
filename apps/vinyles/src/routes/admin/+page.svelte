@@ -7,12 +7,12 @@
 		SuggestionProgress,
 		SuggestionView
 	} from '#lib/server/catalog/types';
-	import Button from '#lib/components/Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import CheckIcon from '@lucide/svelte/icons/check';
 	import Undo2Icon from '@lucide/svelte/icons/undo-2';
 	import XIcon from '@lucide/svelte/icons/x';
 	import DesireSelect from '#lib/components/DesireSelect.svelte';
-	import { Button as UiButton } from '#lib/components/ui/button/index.js';
+	import { Button as UiButton } from '@universe/showcase/ui/button';
 	import CoverPicker from '#lib/components/CoverPicker.svelte';
 	import Popup from '#lib/components/Popup.svelte';
 	import { initials, tileClass } from '#lib/tile';

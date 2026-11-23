@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import Popup from './Popup.svelte';
 	import RecordForm from './RecordForm.svelte';
 	import WishlistItemForm from './WishlistItemForm.svelte';

@@ -10,9 +10,9 @@
 		TeamView,
 		Version
 	} from '#lib/server/catalog/types';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import KitFields from './KitFields.svelte';
-	import ToggleGroup from './ToggleGroup.svelte';
+	import ToggleGroup from '@universe/showcase/components/ToggleGroup.svelte';
 
 	let {
 		teams,

@@ -4,11 +4,11 @@
 	import { shrinkImage } from '#lib/pictures';
 	import LinkIcon from '@lucide/svelte/icons/link';
 	import UploadIcon from '@lucide/svelte/icons/upload';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import FindPicturesLink from './FindPicturesLink.svelte';
-	import { Button as IconButton } from './ui/button/index.js';
-	import { Input } from './ui/input/index.js';
-	import { Label } from './ui/label/index.js';
+	import { Button as IconButton } from '@universe/showcase/ui/button';
+	import { Input } from '@universe/showcase/ui/input';
+	import { Label } from '@universe/showcase/ui/label';
 
 	let {
 		kitId,

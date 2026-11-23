@@ -4,22 +4,22 @@ Nico's vinyl Collection and Wishlist as a wall of Covers. SvelteKit (Svelte 5) o
 
 ## Commands
 
-| Command | What it does |
-|---|---|
-| `npm install` | Install dependencies (`.npmrc` sets `legacy-peer-deps`) |
-| `npm run dev` | Dev server |
-| `npm run build` | Build for Cloudflare |
-| `npm run check` | `svelte-kit sync` + `svelte-check` |
-| `npm run lint` | ESLint (typescript-eslint, eslint-plugin-svelte) |
-| `npm run format` / `format:check` | Prettier write / check |
-| `npm run verify` | `format:check`, `lint` and `check` in one run |
-| `npm run ci` | `verify`, `test` and `build`; the same command GitHub Actions runs |
-| `npm test` | Vitest in the Workers runtime (real D1 with migrations, real R2) |
-| `npm run types` | Regenerate `worker-configuration.d.ts` after editing `wrangler.jsonc` |
-| `npm run db:generate` | New Drizzle migration from `src/lib/server/db/schema.ts` into `drizzle/` |
-| `npm run db:migrate:local` | Apply migrations to the local D1 |
-| `npm run db:migrate:remote` | Apply migrations to the production D1 |
-| `npm run deploy` | Build and `wrangler deploy` |
+| Command                           | What it does                                                                |
+| --------------------------------- | --------------------------------------------------------------------------- |
+| `npm install`                     | Install dependencies, from the repo root (`.npmrc` sets `legacy-peer-deps`) |
+| `npm run dev`                     | Dev server                                                                  |
+| `npm run build`                   | Build for Cloudflare                                                        |
+| `npm run check`                   | `svelte-kit sync` + `svelte-check`                                          |
+| `npm run lint`                    | ESLint (typescript-eslint, eslint-plugin-svelte)                            |
+| `npm run format` / `format:check` | Prettier write / check                                                      |
+| `npm run verify`                  | `format:check`, `lint` and `check` in one run                               |
+| `npm run ci`                      | `verify`, `test` and `build`; the same command GitHub Actions runs          |
+| `npm test`                        | Vitest in the Workers runtime (real D1 with migrations, real R2)            |
+| `npm run types`                   | Regenerate `worker-configuration.d.ts` after editing `wrangler.jsonc`       |
+| `npm run db:generate`             | New Drizzle migration from `src/lib/server/db/schema.ts` into `drizzle/`    |
+| `npm run db:migrate:local`        | Apply migrations to the local D1                                            |
+| `npm run db:migrate:remote`       | Apply migrations to the production D1                                       |
+| `npm run deploy`                  | Build and `wrangler deploy`                                                 |
 
 ## Cloudflare setup
 

@@ -9,9 +9,9 @@
 	import { centsToEuros } from '#lib/money';
 	import type { RecordView } from '#lib/server/catalog/types';
 	import AcquisitionFields from './AcquisitionFields.svelte';
-	import Button from './Button.svelte';
-	import ConfirmDialog from './ConfirmDialog.svelte';
-	import Field from './Field.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
+	import ConfirmDialog from '@universe/showcase/components/ConfirmDialog.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 
 	type EditableRecord = Pick<RecordView, 'id' | 'variant' | 'acquisition'> & {
 		album: { artist: string; title: string };

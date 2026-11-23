@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button } from './ui/button/index.js';
+	import { Button } from '@universe/showcase/ui/button';
 
 	let {
 		value = $bindable([]),

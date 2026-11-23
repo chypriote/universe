@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mapCountries } from '#lib/map';
-	import { Input } from './ui/input/index.js';
-	import { Label } from './ui/label/index.js';
+	import { Input } from '@universe/showcase/ui/input';
+	import { Label } from '@universe/showcase/ui/label';
 
 	let { value = $bindable(''), error = null }: { value?: string; error?: string | null } = $props();
 

@@ -4,83 +4,17 @@ Sources: [DESIGN.md](DESIGN.md) for the look, [TOKENS.md](TOKENS.md) for values,
 
 Accepted by Nico on 2026-11-20.
 
-Stack: SvelteKit (Svelte 5). "Snippet" is a Svelte 5 slot. Props are camelCase; callbacks start with `on`.
+Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Vinyles.
 
 ## Hierarchy
 
 | Level | Components |
 |---|---|
-| Primitive | Chip, Button, DesireDots, SearchField, Select, Field |
-| Component | Cover, DesireFilter, Tabs, Popup, StoreSelect, EmptyState |
-| Pattern | StickyBar, CoverGrid, LoginForm, RecordForm, WishlistItemForm, GotItForm, ConfirmDialog, ImportReview |
+| Primitive | DesireDots |
+| Component | Cover, DesireFilter, Popup, StoreSelect |
+| Pattern | StickyBar, CoverGrid, LoginForm, RecordForm, WishlistItemForm, GotItForm, ImportReview |
 
 Nico accepted the Owner UI, EmptyState and ImportReview sections on 2026-11-20. They add no token: they reuse the tokens above.
-
-## Shared rules
-
-- Touch target: every control is at least 44 × 44px. New component token: `control.size.min` = 44px.
-- Focus: `outline.focus.width` in `color.outline.focus`, on `:focus-visible` only.
-- Motion: hover tilt and lift only under `prefers-reduced-motion: no-preference`.
-- Controls (pills) use `radius.control` and `shadow.raised`. No borders.
-- Numbers use `font.numeric`.
-- Components set no outer margin and no width. The pattern sets the layout.
-
----
-
-## Chip
-
-**Hierarchy:** Primitive
-**Purpose:** Shows one count or total in the sticky bar.
-
-### Variant Matrix
-| Dimension | Type | Values |
-|---|---|---|
-| tone | enum | `highlight` (sun), `success` (mint), `info` (sky) |
-
-### Props API
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| tone | `'highlight' \| 'success' \| 'info'` | — | Background: `color.bg.highlight`, `.success` or `.info` |
-| label | string | — | Visible text, for example "records" |
-| value | string | — | Number, already formatted ("96", "1 604,20 €") |
-
-Text: `color.text.on-chip`, `text.body`, value in extrabold.
-
-### States
-Default only. A chip is not interactive.
-
-### Slots
-None.
-
----
-
-## Button
-
-**Hierarchy:** Primitive
-**Purpose:** A pill action button.
-
-### Variant Matrix
-| Dimension | Type | Values |
-|---|---|---|
-| intent | enum | `success` (Got it), `neutral` (Drop) |
-
-### Props API
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| intent | `'success' \| 'neutral'` | `'neutral'` | `success`: `color.bg.success` + `color.text.on-chip`. `neutral`: `color.bg.surface` + `color.text.primary` |
-| disabled | boolean | false | Native `disabled` |
-| onclick | `() => void` | — | Action |
-
-### States
-Default, hover, focus, pressed, disabled.
-- Hover: a state layer of the text color at 8%.
-- Pressed: shadow goes to 0 and the button moves down 3px (it "sinks" into its offset shadow).
-- Disabled: 50% opacity, no shadow.
-
-### Slots
-`children`: the label text.
-
----
 
 ## DesireDots
 
@@ -96,44 +30,6 @@ Dots: `color.icon.accent`. Visually hidden text: "Desire {value} of 3". The dots
 
 ### States
 Default only.
-
----
-
-## SearchField
-
-**Hierarchy:** Primitive
-**Purpose:** One search box over artist and album.
-
-### Props API
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| value | string | `''` | Bindable (`bind:value`) |
-| label | string | — | Visually hidden label, for example "Search artist or album" |
-| placeholder | string | `''` | |
-
-Native `<input type="search">`. Surface: `color.bg.surface`, text `text.body`.
-
-### States
-Default, focus, filled (native clear button shows).
-
----
-
-## Select
-
-**Hierarchy:** Primitive
-**Purpose:** Artist filter and sort choice.
-
-Native `<select>`, styled as a pill. Native gives keyboard, typeahead and the phone picker.
-
-### Props API
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| value | string | — | Bindable |
-| label | string | — | Visually hidden label ("Artist", "Sort by") |
-| options | `{ value: string; label: string }[]` | — | |
-
-### States
-Default, focus.
 
 ---
 
@@ -187,25 +83,6 @@ Each button has `aria-pressed`. Pressed: `color.bg.highlight` and `color.text.on
 
 ### States
 Default, hover, focus, pressed.
-
----
-
-## Tabs
-
-**Hierarchy:** Component
-**Purpose:** Switches between Collection and Wishlist.
-
-Two links to two routes (`/` and `/wishlist`), not an ARIA tab widget. Each list has its own URL, so a family member can share a link to the Wishlist.
-
-### Props API
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| current | `'collection' \| 'wishlist'` | — | The link for it gets `aria-current="page"` |
-
-Current: `color.bg.accent` + `color.text.on-accent`. Other: `color.bg.surface` + `color.text.primary`.
-
-### States
-Default, hover, focus, current.
 
 ---
 
@@ -264,21 +141,6 @@ CSS grid, `grid.columns` per breakpoint, gaps `space.grid.gap-x` and `space.grid
 
 Viewers see only the lock Button. After login, the Owner sees an "Add" Button in its place. Every form opens in Popup with `anchor` null: centered, same box, same X button and Esc. Forms use native inputs and a native `<form>`; the submit Button is `success`, with "Cancel" as `neutral`.
 
-### Field
-
-**Hierarchy:** Primitive
-**Purpose:** A labeled native input for forms.
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| value | string | `''` | Bindable |
-| label | string | — | Visible label above the input (not hidden, unlike SearchField) |
-| type | `'text' \| 'password' \| 'number' \| 'date'` | `'text'` | Native input type |
-| required | boolean | false | Native `required` |
-| error | string \| null | null | Text under the input, linked with `aria-describedby`, `color.text.primary` with an "!" prefix |
-
-Look is the same as SearchField. States: default, focus, filled, error. Price uses `type="number"` with `step="0.01"` and a visible "€" in the label.
-
 ### StoreSelect
 
 **Hierarchy:** Component
@@ -308,21 +170,9 @@ Fields: Artist, Album, Variant (optional), Desire (three radio pills, 3, 2, 1 do
 
 Opens from the "Got it" Button. Same Acquisition fields as RecordForm. Save removes the Wishlist Item and creates the Record.
 
-### ConfirmDialog
-
-Popup with a title, one line of text, a `neutral` Button "Cancel" and a `success` Button as the action. Used only for Delete record ("Delete {album}?"), with the action Button "Delete". Drop acts at once, with no confirmation.
-
 ### EmptyState
 
-**Hierarchy:** Component
-**Purpose:** Fills the grid area when a list has no Cover.
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| message | string | — | `text.body`, centered, for example "No record matches your search" |
-| action | snippet | — | Optional. Owner only: an "Add" Button on an empty list |
-
-Three cases: empty Collection ("No records yet"), empty Wishlist ("Nothing on the wishlist"), no match for the search or filters ("No match", with a "Clear filters" Button). No illustration.
+Showcase EmptyState. Three cases: empty Collection ("No records yet"), empty Wishlist ("Nothing on the wishlist"), no match for the search or filters ("No match", with a "Clear filters" Button). Owner only: an "Add" Button on an empty list.
 
 ### ImportReview
 

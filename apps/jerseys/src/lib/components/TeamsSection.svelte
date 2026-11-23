@@ -5,14 +5,14 @@
 	import { jerseyCount } from '#lib/format-count';
 	import { matchesSearch } from '#lib/search';
 	import type { Country, KitView, TeamKind, TeamView } from '#lib/server/catalog/types';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from './DeleteAction.svelte';
-	import Field from './Field.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 	import FormActions from './FormActions.svelte';
 	import Popup from './Popup.svelte';
-	import SearchField from './SearchField.svelte';
-	import Select from './Select.svelte';
-	import ToggleGroup from './ToggleGroup.svelte';
+	import SearchField from '@universe/showcase/components/SearchField.svelte';
+	import Select from '@universe/showcase/components/Select.svelte';
+	import ToggleGroup from '@universe/showcase/components/ToggleGroup.svelte';
 
 	let {
 		teams,

@@ -4,8 +4,8 @@
 	import { postAction } from '#lib/forms';
 	import { initials, tileClass } from '#lib/tile';
 	import type { ImportProgress, UnmatchedAlbum } from '#lib/server/catalog/types';
-	import Button from './Button.svelte';
-	import Field from './Field.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 
 	let { progress, unmatched }: { progress: ImportProgress; unmatched: UnmatchedAlbum[] } = $props();
 

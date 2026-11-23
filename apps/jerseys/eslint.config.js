@@ -10,7 +10,7 @@ const gitignore = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
 export default ts.config(
 	includeIgnoreFile(gitignore),
-	{ ignores: ['drizzle/', 'worker-configuration.d.ts', 'src/lib/components/ui/'] },
+	{ ignores: ['drizzle/', 'worker-configuration.d.ts'] },
 	js.configs.recommended,
 	...ts.configs.recommended,
 	...svelte.configs.recommended,

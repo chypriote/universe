@@ -4,11 +4,11 @@
 	import { deleteRow } from '#lib/forms';
 	import { jerseyCount } from '#lib/format-count';
 	import { matchesSearch } from '#lib/search';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from './DeleteAction.svelte';
 	import CountryForm from './CountryForm.svelte';
 	import Popup from './Popup.svelte';
-	import SearchField from './SearchField.svelte';
+	import SearchField from '@universe/showcase/components/SearchField.svelte';
 
 	let { countries, counts }: { countries: Country[]; counts: Record<number, number> } = $props();
 

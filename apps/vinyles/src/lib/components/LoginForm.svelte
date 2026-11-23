@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import Button from './Button.svelte';
-	import Field from './Field.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 
 	let { onSuccess }: { onSuccess: () => void } = $props();
 
