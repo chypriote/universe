@@ -24,6 +24,7 @@
 	--heading-page-size: 28px;
 	--heading-popup-size: 24px;
 	--popup-width-max: 560px;
+	--popup-picture-size: 180px;
 
 	--map-country-covered: var(--icon-accent);
 	--map-country-empty: light-dark(var(--sky-200), var(--navy-500));

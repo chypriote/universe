@@ -1,9 +1,13 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { deleteRow, postAction } from '#lib/forms';
 	import { kitLabel, kitTypeLabels } from '#lib/labels';
 	import { jerseyCount } from '#lib/format-count';
 	import { matchesSearch } from '#lib/search';
+	import { syncSearchParam } from '#lib/search-param.svelte';
+	import { unknownTeamMessage } from '#lib/team-name';
 	import type { Country, KitView, TeamKind, TeamView } from '#lib/server/catalog/types';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from './DeleteAction.svelte';
@@ -31,7 +35,9 @@
 		{ value: 'national', label: 'National Team' }
 	];
 
-	let search = $state('');
+	// A link from the Edit kit dialog arrives with the Team in `?search=`.
+	let search = $state(page.url.searchParams.get('search') ?? '');
+	syncSearchParam(() => search);
 
 	// Grouped by Country so that a long list stays readable.
 	const groups = $derived(
@@ -52,41 +58,57 @@
 	let countryId = $state('');
 	let error = $state<string | null>(null);
 	let busy = $state(false);
+	/** The new Team name already checked on TheSportsDB: a second Save adds it anyway. */
+	let warned = '';
 
-	function show(team: TeamView) {
+	/** `team` set: edits it. Null: adds a Team. */
+	function show(team: TeamView | null) {
 		editing = team;
-		name = team.name;
-		kind = team.kind;
-		countryId = String(team.country.id);
+		name = team?.name ?? '';
+		kind = team?.kind ?? 'club';
+		countryId = String(team?.country.id ?? countries[0]?.id ?? '');
 		error = null;
 		open = true;
 	}
 
 	async function save(event: SubmitEvent) {
 		event.preventDefault();
-		if (!editing) return;
+		const typed = name.trim();
+		if (!editing && typed && typed !== warned) {
+			warned = typed;
+			const message = await unknownTeamMessage(typed);
+			if (message) {
+				error = message;
+				return;
+			}
+		}
 		busy = true;
-		const outcome = await postAction('?/editTeam', {
-			teamId: editing.id,
-			name,
-			kind,
-			countryId: Number(countryId)
-		});
+		const input = { name, kind, countryId: Number(countryId) };
+		const outcome = editing
+			? await postAction('?/editTeam', { ...input, teamId: editing.id })
+			: await postAction('?/addTeam', input);
 		busy = false;
-		if (outcome.ok) open = false;
-		else error = outcome.error;
+		if (!outcome.ok) error = outcome.error;
+		else if (outcome.teamId) {
+			// The rule does not see that the path comes from resolve(); the query is added to it.
+			// eslint-disable-next-line svelte/no-navigation-without-resolve
+			await goto(`${resolve('/admin/kits')}?addKit=${outcome.teamId}`);
+		} else open = false;
 	}
 </script>
 
 <section aria-labelledby="teams-heading" class="flex min-w-0 flex-col gap-3">
-	<h2 id="teams-heading" class="font-display text-xl font-extrabold uppercase italic">Teams</h2>
+	<div class="flex items-center justify-between gap-3">
+		<h2 id="teams-heading" class="font-display text-xl font-extrabold uppercase italic">Teams</h2>
+		<Button intent="success" size="sm" onclick={() => show(null)}>Add a team</Button>
+	</div>
 	<!-- SearchField sizes itself for a row (basis-48), so a row wrapper keeps it one line tall. -->
 	<div class="flex">
 		<SearchField bind:value={search} label="Search teams" placeholder="Search teams" />
 	</div>
 	{#if groups.length === 0}
 		<p class="text-sm text-muted-foreground">
-			{search.trim() ? 'No team matches.' : 'No teams yet: the jersey forms add them.'}
+			{search.trim() ? 'No team matches.' : 'No teams yet.'}
 		</p>
 	{/if}
 	{#each groups as group (group.country.id)}
@@ -113,7 +135,7 @@
 	{/each}
 </section>
 
-<Popup bind:open title="Edit team">
+<Popup bind:open title={editing ? 'Edit team' : 'Add a team'}>
 	{#snippet details()}
 		<form class="flex flex-col gap-4" onsubmit={save}>
 			<Field label="Name" required bind:value={name} {error} />
@@ -141,6 +163,9 @@
 		</form>
 		{#if editing}
 			{@const teamKits = kits.filter((k) => k.team.id === editing!.id)}
+			<a class="self-start font-bold underline" href="{resolve('/admin/kits')}?addKit={editing.id}">
+				Add a kit to {editing.name}
+			</a>
 			{#if teamKits.length > 0}
 				<div class="flex flex-col gap-1.5">
 					<span class="text-sm font-bold">Kits</span>

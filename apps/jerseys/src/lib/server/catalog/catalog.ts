@@ -758,6 +758,18 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 
 		listKits: () => readKits(),
 
+		async addKit(token, input) {
+			await requireOwner(token);
+			const checked = await checkKit(input);
+			if (checked.existingId !== null) {
+				const season = formatSeason(checked.season.start, checked.season.end);
+				throw new Error(
+					`The Kit ${kitLabel(checked.team.name, season, checked.kitType)} already exists`
+				);
+			}
+			return (await readKits(await writeKit(checked)))[0];
+		},
+
 		async editKit(token, input) {
 			await requireOwner(token);
 			const [found] = await readKits(Number(input.kitId));
@@ -784,6 +796,16 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 				.where(eq(kits.id, found.id));
 			if (picture) await storeMainPicture(found.id, picture.body, picture.contentType);
 			return (await readKits(found.id))[0];
+		},
+
+		async addTeam(token, input) {
+			await requireOwner(token);
+			const { name, kind, country } = await teamFields(input, await readTeams());
+			const [{ id }] = await db
+				.insert(teams)
+				.values({ name, kind, countryId: country.id })
+				.returning({ id: teams.id });
+			return (await readTeams()).find((t) => t.id === id)!;
 		},
 
 		async editTeam(token, input) {

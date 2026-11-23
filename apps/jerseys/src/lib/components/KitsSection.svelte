@@ -1,27 +1,50 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { deleteRow, mainPictureUpload, postAction } from '#lib/forms';
 	import { mainPictureUrl as pictureUrlOf } from '#lib/pictures';
 	import { kitArchiveUrl } from '#lib/kit-archive';
 	import { matchesSearch } from '#lib/search';
+	import { syncSearchParam } from '#lib/search-param.svelte';
+	import { seasonChoices } from '#lib/seasons';
 	import { kitLabel, kitTypeLabels, kitTypeText, labelOptions } from '#lib/labels';
-	import type { KitType, KitView, TeamView } from '#lib/server/catalog/types';
+	import type { Country, KitKey, KitType, KitView, TeamView } from '#lib/server/catalog/types';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from './DeleteAction.svelte';
 	import Field from '@universe/showcase/components/Field.svelte';
 	import FormActions from './FormActions.svelte';
 	import MainPicture from './MainPicture.svelte';
 	import PictureInput from './PictureInput.svelte';
+	import KitAddForm from './KitAddForm.svelte';
 	import Popup from './Popup.svelte';
 	import SearchField from '@universe/showcase/components/SearchField.svelte';
+	import { Toggle } from '@universe/showcase/ui/toggle';
 	import Select from '@universe/showcase/components/Select.svelte';
 
-	let { kits, teams }: { kits: KitView[]; teams: TeamView[] } = $props();
+	let {
+		kits,
+		teams,
+		countries,
+		pictured
+	}: { kits: KitView[]; teams: TeamView[]; countries: Country[]; pictured: KitKey[] } = $props();
+
+	// A link from the Teams page arrives with the Team of the new Kit in `?addKit=`.
+	const linkedTeam = Number(page.url.searchParams.get('addKit')) || null;
+	const start = untrack(() => (teams.some((t) => t.id === linkedTeam) ? linkedTeam : null));
+	let addingFor = $state<number | null>(start);
+	let adding = $state(start !== null);
 
 	// A link from the Edit team dialog arrives with the Kit in `?search=`.
 	let search = $state(page.url.searchParams.get('search') ?? '');
+	syncSearchParam(() => search);
+	let unpicturedOnly = $state(false);
 	const shown = $derived(
-		kits.filter((k) => matchesSearch(search, k.team.name, k.season, kitTypeLabels[k.kitType]))
+		kits.filter(
+			(k) =>
+				(!unpicturedOnly || !k.mainPictureKey) &&
+				matchesSearch(search, k.team.name, k.season, kitTypeLabels[k.kitType])
+		)
 	);
 
 	// Grouped by Team (the Catalog lists Kits by Team, then Season, then Kit Type).
@@ -46,10 +69,16 @@
 
 	const label = (kit: KitView) => kitLabel(kit.team.name, kit.season, kit.kitType);
 
-	// The Season follows the Team's Season Format.
-	const seasonPlaceholder = $derived(
-		teams.find((t) => t.id === editing?.team.id)?.seasonFormat === 'calendar' ? '2024' : '2024-25'
-	);
+	// The Season is chosen from the Team's Season Format.
+	const seasonOptions = $derived.by(() => {
+		const format = teams.find((t) => t.id === editing?.team.id)?.seasonFormat ?? 'split';
+		return seasonChoices(
+			format,
+			new Date(),
+			kits.map((k) => k.season),
+			editing?.season
+		).map((s) => ({ value: s, label: s }));
+	});
 
 	function show(kit: KitView) {
 		editing = kit;
@@ -90,14 +119,27 @@
 </script>
 
 <section aria-labelledby="kits-heading" class="flex min-w-0 flex-col gap-3">
-	<h2 id="kits-heading" class="font-display text-xl font-extrabold uppercase italic">Kits</h2>
+	<div class="flex items-center justify-between gap-3">
+		<h2 id="kits-heading" class="font-display text-xl font-extrabold uppercase italic">Kits</h2>
+		<Button
+			intent="success"
+			size="sm"
+			onclick={() => {
+				addingFor = null;
+				adding = true;
+			}}
+		>
+			Add a kit
+		</Button>
+	</div>
 	<!-- SearchField sizes itself for a row (basis-48), so a row wrapper keeps it one line tall. -->
-	<div class="flex">
+	<div class="flex flex-wrap gap-2">
 		<SearchField bind:value={search} label="Search kits" placeholder="Search kits" />
+		<Toggle bind:pressed={unpicturedOnly}>No main picture</Toggle>
 	</div>
 	{#if groups.length === 0}
 		<p class="text-sm text-muted-foreground">
-			{search.trim() ? 'No kit matches.' : 'No kits yet: the jersey forms add them.'}
+			{search.trim() || unpicturedOnly ? 'No kit matches.' : 'No kits yet.'}
 		</p>
 	{/if}
 	{#each groups as group (group.team.id)}
@@ -127,7 +169,15 @@
 <Popup bind:open title={editing ? `Edit ${label(editing)}` : 'Edit kit'}>
 	{#snippet details()}
 		<form class="flex flex-col gap-4" onsubmit={save}>
-			<Field label="Season" required placeholder={seasonPlaceholder} bind:value={season} {error} />
+			<div class="flex flex-col gap-1.5">
+				<span class="text-sm font-bold">Season</span>
+				<div class="flex">
+					<Select label="Season" bind:value={season} options={seasonOptions} />
+				</div>
+				{#if error}
+					<p class="text-sm font-bold text-destructive" role="alert">! {error}</p>
+				{/if}
+			</div>
 			<div class="flex flex-col gap-1.5">
 				<span class="text-sm font-bold">Kit Type</span>
 				<Select label="Kit Type" bind:value={kitType} options={labelOptions(kitTypeLabels)} />
@@ -156,5 +206,28 @@
 				{/snippet}
 			</FormActions>
 		</form>
+		{#if editing}
+			<a
+				class="self-start font-bold underline"
+				href="{resolve('/admin/teams')}?search={encodeURIComponent(editing.team.name)}"
+			>
+				Edit {editing.team.name}
+			</a>
+		{/if}
+	{/snippet}
+</Popup>
+
+<Popup bind:open={adding} wide title="Add a kit">
+	{#snippet details()}
+		{#if adding}
+			<KitAddForm
+				{teams}
+				{countries}
+				{pictured}
+				{kits}
+				teamId={addingFor}
+				onSuccess={() => (adding = false)}
+			/>
+		{/if}
 	{/snippet}
 </Popup>

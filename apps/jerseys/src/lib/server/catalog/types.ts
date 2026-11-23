@@ -288,11 +288,14 @@ export interface ImportKitRow {
 
 // --- Teams and Kits admin -----------------------------------------------------
 
-export interface TeamEditInput {
-	teamId: number;
+export interface TeamInput {
 	name: string;
 	kind: TeamKind;
 	countryId: number;
+}
+
+export interface TeamEditInput extends TeamInput {
+	teamId: number;
 }
 
 export interface KitEditInput {
@@ -402,8 +405,12 @@ export interface Catalog {
 	// Teams and Kits admin (Owner). The forms and the import create them; these fix them.
 	/** Every Kit with its Team and Country, by Team, then Season, then Kit Type. */
 	listKits(): Promise<KitView[]>;
+	/** Adds a Team with no Kit. Same checks as `editTeam`. */
+	addTeam(token: string, input: TeamInput): Promise<TeamView>;
 	/** Renames a Team or changes its kind or Country. Its Kits keep their Seasons. */
 	editTeam(token: string, input: TeamEditInput): Promise<TeamView>;
+	/** Adds a Kit (its Team too when `input.team` is new), with the Main Picture lookup unless a picture is sent. Refuses a Kit that exists. */
+	addKit(token: string, input: KitInput): Promise<KitView>;
 	/** Changes a Kit's Season (in its Team's Season Format) or Kit Type. Its Jerseys and Wishlist Item follow. */
 	editKit(token: string, input: KitEditInput): Promise<KitView>;
 

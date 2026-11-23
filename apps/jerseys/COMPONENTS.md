@@ -25,11 +25,15 @@ Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, 
 | season         | string                      | —       | Already formatted ("2023-24", "2024")                                        |
 | kitType        | string                      | —       | "Home", "Away"… Caption line 2 is "{season} · {kitType}", `text.caption.kit` |
 | mainPictureUrl | string \| null              | null    | The Kit's Main Picture. Null shows the shirt outline                         |
+| name | string \| null | null | The Print without its number ("NICOLAS 4" gives "NICOLAS"). Null when nothing is left, for a Jersey without a Print and for a Wishlist Item |
+| number | string \| null | null | Shirt number of the Jersey's Print: its trailing digits ("NICOLAS 4" gives "4"). Null for a Print without a number, a Jersey without a Print and a Wishlist Item |
 | onSelect       | `(el: HTMLElement) => void` | —       | Gives the Popup the Tile to focus on close                                   |
 
 - The whole Tile is one `<button>`. The image has `alt=""`, because the caption names the Kit.
 - Square box: `tile.bg`, `tile.radius`, `tile.shadow`. The Main Picture is `object-fit: contain` with padding, so a shirt photo on any background reads on the neutral tile. `loading="lazy"`.
 - No Main Picture, or the image fails to load: a shirt outline SVG in `tile.placeholder`, `aria-hidden`.
+- The Print name sits bottom center of the square box on one line, truncated with an ellipsis, 28px in from each side so it never reaches the number, 8px from the bottom, `text.tile.print`, `color.text.primary`, 3px halo in `tile.bg`. `aria-hidden`.
+- The number sits at the bottom right of the square box, 8px from the right and the bottom, `text.tile.number` (same size as the name), `color.text.primary`, with a 4px halo in `tile.bg` so it reads on every shirt. It is `aria-hidden`: the Popup lists the full Print.
 - Never fill the tile with a kit colour (DESIGN.md).
 
 States: default, hover and focus (`tile.hover.lift`, `tile.hover.tilt`, motion allowed only; focus also shows the ring), no Main Picture.
@@ -82,6 +86,7 @@ Same as Vinyles: native Select over the Stores and a last option "Add a store…
 - When the text matches no Team exactly, the last option is "Add “{name}” as a new team", in `color.icon.accent`.
 - Keys: Up and Down move, Enter picks, Esc closes the list (not the Popup). A click picks.
 - Picking the new option opens a block under the Field: kind (ToggleGroup Club / National Team, default Club) and Country (Select, grouped by Continent, required). Text under it: "The League follows the Country." Save creates the Team with the Jersey or Wishlist Item.
+- A new Team name is searched on TheSportsDB (`/api/teams/search`) on the first Save of the form, and in the Teams page "Add a team" Popup. When no Team matches (case, accents and punctuation ignored; one name inside the other counts), the form shows "“{name}” is not on TheSportsDB. Save again to add it anyway." and a second Save adds it. A failed search never blocks. Football Kit Archive cannot be the check: it refuses server requests.
 - Typing again after a pick closes the block until a new pick.
 - The list is a `color.bg.surface` card, `tile.radius`, `shadow.raised`. Options are 44px pills; the active one has `color.bg.page`.
 
@@ -122,7 +127,8 @@ Same as the Vinyles CoverGrid: `grid.columns` per breakpoint, gaps `space.grid.g
 - Two states per Country (jerseys-model): covered fills `map.country.covered`; empty (a Country of the app with no Jersey) fills `map.country.empty`, a bit darker than land that is not a Country of the app (`map.country.absent`). Country borders: `map.country.border`, 0.5px.
 - The UK is four Countries: England, Scotland, Wales, Northern Ireland.
 - Heading above the map: "{covered} of {total} countries", `text.body`, value in extrabold. It is the button of an accordion with a chevron: it opens and closes the map (`aria-expanded`). The map starts open; the choice is kept in `localStorage` (`coverage-map-open`) and applied after mount. `total` is the number of Countries in the app, not in the world.
-- The SVG is `role="img"` with `aria-label` "Countries covered: {names}". No tap and no zoom in v1: sideways scroll only.
+- The SVG is `role="img"` with `aria-label` "Countries covered: {names}". No zoom in v1: sideways scroll only.
+- Click or tap on a covered Country: the page's Country filter becomes that Country alone, the search is cleared, and the page scrolls smoothly to the first Tile shown, which stops just under the StickyBar. The Tile area is at least as tall as the screen under the StickyBar, so the scroll works even for a Country with one Tile. Covered Countries show a pointer cursor; others do nothing.
 - Hover (mouse and pen only): over a Country of the app, a tooltip follows the pointer with the Country name in extrabold and one line per Jersey of that Country, "{Team} {Season} {Kit Type}", or "No jersey yet". Surface card, `tile.shadow`, `text.body.detail`; it flips to the other side of the pointer in the far half of the screen. Countries not in the app show nothing.
 - The map reads all Jerseys, not the filtered list.
 
@@ -161,7 +167,7 @@ Delete fixes a mistake (Nico, 2026-11-23). It refuses, never cascades: a Store w
 
 ### Admin sections
 
-Owner only. `/admin` redirects to `/admin/countries`. One page per section: `/admin/countries`, `/admin/stores`, `/admin/teams`, `/admin/kits`, `/admin/main-pictures` (Kits without a Main Picture). A nav under the title (AdminNav, styled like Tabs) links the pages and marks the current one with `aria-current="page"`. Each page has a SearchField above its list that filters the loaded rows by every word typed (page state, not in the URL). The Countries, Stores and Teams rows end their subtitle with the Jersey count ("3 jerseys"; Jerseys only, a Gift counts for no Store). The Edit team Popup lists the Team's Kits under the form, each a link to `/admin/kits?search=<Team Season Kit Type>`; the Kits page starts with that text in its SearchField. The Kits rows show the Main Picture in a small square tile on the left (the shirt outline when there is none), with no subtitle. The Stores are small cards in a grid, two per row on a phone and three from `breakpoint.sm`: name and Jersey count on the left, then a round pencil icon Button (`size="icon"`, label "Edit {store name}") on the right, vertically centred. The Name of a new Country is a typeahead (CountryNameLookup, the TeamLookup pattern) over the Countries of the map, 8 options at most, and the server refuses a name that is not one of them; editing a Country keeps a plain Name field. Each row has a Button that opens its form in a Popup ("Edit"). The Popup of an existing Country, Store, Team or Kit ends with one footer row (FormActions): DeleteAction on the left, `success` Button "Save" on the right, each at its natural width. The Add Popups have the Save Button alone, on the right. The Edit Kit Popup also has the "Find pictures on Football Kit Archive" link. A delete closes the Popup.
+Owner only. `/admin` redirects to `/admin/countries`. One page per section: `/admin/countries`, `/admin/stores`, `/admin/teams`, `/admin/kits`, `/admin/main-pictures` (Kits without a Main Picture). A nav under the title (AdminNav, styled like Tabs) links the pages and marks the current one with `aria-current="page"`. Each page has a SearchField above its list that filters the loaded rows by every word typed (page state, not in the URL). The Countries, Stores and Teams rows end their subtitle with the Jersey count ("3 jerseys"; Jerseys only, a Gift counts for no Store). The Edit team Popup lists the Team's Kits under the form, each a link to `/admin/kits?search=<Team Season Kit Type>`; the Kits page starts with that text in its SearchField. On the Kits and Teams pages the address follows the SearchField: a text sets `?search=`, an empty field removes it (no new history entry), so a refresh keeps only what is typed. The Edit kit Popup ends with a link "Edit {Team name}" to `/admin/teams?search=<Team name>`; the Teams page starts with that text in its SearchField. The Teams page has a `success` Button "Add a team" next to its heading: the same Popup as Edit team, with no DeleteAction and no Kits list; Save creates the Team (no Kit) and goes to `/admin/kits?addKit=<Team id>`, which opens the Add kit Popup with that Team pre-filled. The Edit team Popup has the same link, "Add a kit to {Team name}", above its Kits list. The Kits page has a `success` Button "Add a kit" next to its heading: a wide Popup with the Kit fields of JerseyForm (Team, Season, Kit Type, Comment for a Special Kit, Main Picture) and FormActions; Save creates the Kit, with the Main Picture lookup unless a picture is sent. A Kit that exists is refused. Next to the Kits SearchField, a Toggle "No main picture" (`aria-pressed`, off at first) keeps only the Kits with no Main Picture; it combines with the search. The Kits rows show the Main Picture in a small square tile on the left (the shirt outline when there is none), with no subtitle. The Stores are small cards in a grid, two per row on a phone and three from `breakpoint.sm`: name and Jersey count on the left, then a round pencil icon Button (`size="icon"`, label "Edit {store name}") on the right, vertically centred. The Name of a new Country is a typeahead (CountryNameLookup, the TeamLookup pattern) over the Countries of the map, 8 options at most, and the server refuses a name that is not one of them; editing a Country keeps a plain Name field. Each row has a Button that opens its form in a Popup ("Edit"). The Popup of an existing Country, Store, Team or Kit ends with one footer row (FormActions): DeleteAction on the left, `success` Button "Save" on the right, each at its natural width. The Add Popups have the Save Button alone, on the right. The Edit Kit Popup also has the "Find pictures on Football Kit Archive" link. A delete closes the Popup.
 
 ### FormActions
 
@@ -180,14 +186,15 @@ Like Vinyles, plus dates:
 Add and edit a Jersey. Fields, in order:
 
 1. Team: TeamLookup.
-2. Season: Field. Placeholder from the Team's Season Format: "2024-25" (Season) or "2024" (Calendar).
-3. Kit Type: Select (Home, Away, Third, Fourth, Cup, Special).
-4. Main Picture: file input "Main picture", shown when the Kit has no Main Picture yet. One Main Picture per Kit.
-5. Version: ToggleGroup Fan / Player / Tracksuit.
-6. Size: ToggleGroup S / M / L.
-7. Fit: ToggleGroup Too small / Good / Too big.
-8. Print: Field, optional, any script.
-9. AcquisitionFields.
+2. Existing kits: shown when an existing Team is chosen and has Kits (ExistingKits). One pill Button per Kit, with its Main Picture in a small round thumbnail and "Season · Kit Type" (`aria-pressed` for the one that matches the fields). A tap fills Season, Kit Type and Comment. The Owner can still type a new Season and Kit Type. The same block shows in WishlistItemForm (both use KitFields).
+3. Season: Select of the Seasons that Kits already have in the Team's Season Format (any Team's), plus the current and the next Season ("2026-27" and "2027-28" for Season, "2026" and "2027" for Calendar; a Season starts in July), newest first. The Season of the Kit being edited stays in the list. An older Season that no Kit has cannot be entered. First option "Choose a season"; with no Team chosen, or a new Team with no Country yet, the Select is disabled and says "Choose a team first". Changing the Team to one of the other format clears the Season. The Add and Edit Kit Popups and WishlistItemForm use the same Select.
+4. Kit Type: Select (Home, Away, Third, Fourth, Cup, Special).
+5. Main Picture: file input "Main picture", shown when the Kit has no Main Picture yet. One Main Picture per Kit.
+6. Version: ToggleGroup Fan / Player / Tracksuit.
+7. Size: ToggleGroup S / M / L.
+8. Fit: ToggleGroup Too small / Good / Too big.
+9. Print: Field, optional, any script.
+10. AcquisitionFields.
 
 Buttons: `success` "Save", `neutral` "Cancel". Delete is in the Jersey Popup (see "Popup content"), not in the form.
 

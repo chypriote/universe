@@ -57,8 +57,8 @@ The scale is ad-hoc: a size not in this table does not appear in the app.
 
 ## 4. Components
 
-- **Tile:** square, surface colour, 14px radius, offset shadow. It shows the Kit's Main Picture, contained. If the Kit has no Main Picture: a shirt outline in the muted colour.
-- **Popup:** a Tile Popup opens over the tapped Tile, clamped to the screen. Forms open in the centre. Max width 560px, Main Picture 150px, X button at top right. Tap outside or Esc closes it. Forms use a wide Popup (672px), with the fields in two columns from 640px.
+- **Tile:** square, surface colour, 14px radius, offset shadow. It shows the Kit's Main Picture, contained. If the Kit has no Main Picture: a shirt outline in the muted colour. A Jersey with a Print number shows it bottom right, in ink with a tile-colour halo (`text.tile.number`). The Print name (without its number) sits bottom center in the same way and size (`text.tile.print`).
+- **Popup:** a Tile Popup opens over the tapped Tile, clamped to the screen. Forms open in the centre. Max width 560px, Main Picture 180px wide and portrait (3:4; at most 40% of the Popup on a phone), X button at top right. Tap outside or Esc closes it. Forms use a wide Popup (672px), with the fields in two columns from 640px.
 - **CoverageMap:** a surface card with a static world map, Collection page only. Two states per Country: covered (icon accent colour) and empty (line colour).
 - **StickyBar:** title, chips, tab pills, search, filters, sort.
 - **Controls:** Chip, Button, Tabs, SearchField, Select, ToggleGroup are pills.
@@ -108,7 +108,7 @@ Layering, bottom to top:
 - Never fill a tile with the kit's colour.
 - Never use purple, hard borders, mono type or the muted cream look.
 - Never use a blur shadow.
-- Never add a number or a sticker on a tile.
+- Never add a sticker on a tile. The only mark on the picture is the Print number.
 - Never let the page scroll sideways. Only the map card scrolls sideways.
 - Never animate when `prefers-reduced-motion: reduce` is set.
 

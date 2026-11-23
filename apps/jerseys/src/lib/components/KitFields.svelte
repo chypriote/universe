@@ -3,14 +3,17 @@
 	import { kitTypeLabels, labelOptions } from '#lib/labels';
 	import { kitArchiveUrl } from '#lib/kit-archive';
 	import { kitHasMainPicture } from '#lib/pictures';
+	import { fitsSeasonFormat, seasonChoices } from '#lib/seasons';
 	import type {
 		Country,
 		KitKey,
 		KitType,
+		KitView,
 		SeasonFormat,
 		TeamChoice,
 		TeamView
 	} from '#lib/server/catalog/types';
+	import ExistingKits from './ExistingKits.svelte';
 	import Field from '@universe/showcase/components/Field.svelte';
 	import PictureInput from './PictureInput.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
@@ -26,6 +29,7 @@
 		teams,
 		countries,
 		pictured,
+		kits = [],
 		teamError = null
 	}: {
 		team: TeamChoice | null;
@@ -40,6 +44,8 @@
 		countries: Country[];
 		/** Kits that have a Main Picture: no "Main picture" input for them. */
 		pictured: KitKey[];
+		/** Every Kit: the ones of the chosen Team can be picked. */
+		kits?: KitView[];
 		teamError?: string | null;
 	} = $props();
 
@@ -81,16 +87,43 @@
 		const countryId = team.countryId;
 		return countries.find((c) => c.id === countryId)?.league.seasonFormat ?? null;
 	});
-	const seasonPlaceholder = $derived(
-		seasonFormat === 'split' ? '2024-25' : seasonFormat === 'calendar' ? '2024' : '2024-25 or 2024'
+	const teamKits = $derived(
+		team && 'teamId' in team
+			? kits.filter((k) => k.team.id === (team as { teamId: number }).teamId)
+			: []
 	);
+	// The Season is chosen from the Team's Season Format; a Season of the other format is cleared.
+	const seasonOptions = $derived([
+		{ value: '', label: seasonFormat ? 'Choose a season' : 'Choose a team first' },
+		...(seasonFormat
+			? seasonChoices(
+					seasonFormat,
+					new Date(),
+					kits.map((k) => k.season),
+					season
+				).map((s) => ({ value: s, label: s }))
+			: [])
+	]);
+	$effect(() => {
+		if (seasonFormat && season && !fitsSeasonFormat(season.trim(), seasonFormat)) season = '';
+	});
 </script>
 
 <!-- No wrapper: the fields are grid items of the form (two columns from `sm`). -->
 <div class="flex flex-col gap-4 sm:col-span-2">
 	<TeamLookup bind:value={team} {teams} countries={countryGroups} error={teamError} />
 </div>
-<Field label="Season" required placeholder={seasonPlaceholder} bind:value={season} />
+{#if teamKits.length > 0}
+	<div class="flex flex-col gap-4 sm:col-span-2">
+		<ExistingKits kits={teamKits} bind:season bind:kitType bind:comment />
+	</div>
+{/if}
+<div class="flex flex-col gap-1.5">
+	<span class="text-sm font-bold">Season</span>
+	<div class="flex">
+		<Select label="Season" bind:value={season} options={seasonOptions} disabled={!seasonFormat} />
+	</div>
+</div>
 <div class="flex flex-col gap-1.5">
 	<span class="text-sm font-bold">Kit Type</span>
 	<div class="flex">
