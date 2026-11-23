@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import { catalogFromPlatform } from '#lib/server/catalog';
-import { ownerToken } from '#lib/server/owner';
+import { ownerToken } from '@universe/owner/cookie';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {

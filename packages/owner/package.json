@@ -1,0 +1,21 @@
+{
+	"name": "@universe/owner",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./auth": "./src/auth.ts",
+		"./cookie": "./src/cookie.ts"
+	},
+	"scripts": {
+		"check": "tsc -p tsconfig.json",
+		"lint": "eslint .",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"verify": "npm run format:check && npm run lint && npm run check",
+		"ci": "npm run verify"
+	},
+	"peerDependencies": {
+		"@sveltejs/kit": "^3.2.0"
+	}
+}
