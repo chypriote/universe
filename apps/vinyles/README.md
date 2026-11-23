@@ -1,6 +1,6 @@
 # Vinyles
 
-Nico's vinyl Collection and Wishlist as a wall of Covers. SvelteKit (Svelte 5) on Cloudflare Workers, Drizzle ORM on D1, Covers in R2, shadcn-svelte + Tailwind CSS v4. Spec: GitHub issue #2. Design: DESIGN.md, TOKENS.md, COMPONENTS.md.
+Nico's vinyl Collection and Wishlist as a wall of Covers. SvelteKit (Svelte 5) on Cloudflare Workers, Drizzle ORM on D1, Covers in R2, shadcn-svelte + Tailwind CSS v4. Spec: chypriote/vinyles#2. Design: DESIGN.md, TOKENS.md, COMPONENTS.md.
 
 ## Commands
 

@@ -1,0 +1,23 @@
+{
+	"name": "universe",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
+	"scripts": {
+		"ci": "npm run ci --workspaces --if-present",
+		"verify": "npm run verify --workspaces --if-present",
+		"test": "npm test --workspaces --if-present",
+		"format": "npm run format --workspaces --if-present"
+	},
+	"overrides": {
+		"undici": "^7.30.1",
+		"sharp": "^0.35.5",
+		"zod": "^4.6.6",
+		"@esbuild-kit/core-utils": {
+			"esbuild": "^0.28.2"
+		}
+	}
+}
