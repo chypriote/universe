@@ -38,8 +38,8 @@ Light and dark swap the semantic → primitive bindings with `light-dark()`. The
 | space            | 8, 12, 16px                                       |
 | radius           | md 14px, xl 28px, full 999px                      |
 | shadow.offset.sm | 0 3px 0 {color.shadow}; dark: {color.shadow.dark} |
-| duration         | fast 80ms, base 150ms                             |
-| easing.out       | cubic-bezier(.2, .8, .2, 1)                       |
+| duration         | fast, base: from the Universe layer               |
+| easing.out       | from the Universe layer                           |
 | layer            | sticky 10, safe-area 20, popup 30                 |
 | breakpoint       | sm 640px, md 900px, lg 1200px                     |
 

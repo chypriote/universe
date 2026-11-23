@@ -5,7 +5,7 @@
 	import type { PageProps } from './$types';
 	import type { WithCoverUrl } from '#lib/covers';
 	import type { RecordView } from '#lib/server/catalog/types';
-	import { formatCents, formatDate } from '#lib/format';
+	import { formatCents, formatDate } from '@universe/universe/format';
 	import ArtistFilter from '#lib/components/ArtistFilter.svelte';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import CoverPicker from '#lib/components/CoverPicker.svelte';

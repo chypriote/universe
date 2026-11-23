@@ -1,0 +1,25 @@
+{
+	"name": "@universe/universe",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./universe.css": "./src/universe.css",
+		"./format": "./src/format.ts",
+		"./koala.svg": "./src/koala.svg",
+		"./svelte/*": "./src/svelte/*",
+		"./astro/*": "./src/astro/*"
+	},
+	"scripts": {
+		"check": "tsc -p tsconfig.json",
+		"test": "vitest run",
+		"lint": "eslint .",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"verify": "npm run format:check && npm run lint && npm run check",
+		"ci": "npm run verify && npm test"
+	},
+	"devDependencies": {
+		"vitest": "^4.1.0"
+	}
+}

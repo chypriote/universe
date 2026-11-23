@@ -1,6 +1,8 @@
 # Adding an app to Universe
 
-The steps to add a collection app (films, TV shows, books…) next to Jerseys and Vinyles. Do them in order: each one feeds the next. `<app>` is the new app's folder and Worker name, lower case (`films`).
+The steps to add a collection app (films, TV shows, books…) next to Jerseys and Vinyles. Do them in order: each one feeds the next.
+
+An app that is not a collection picks or brings its own design family instead of Showcase (`docs/adr/0001-design-families.md`): follow steps 1, 4 and 5, write its DESIGN.md on the structure in `packages/universe/DESIGN.md`, and use the Universe layer (`universe.css`, `@universe/universe/format`, the koala in its footer). Zhongguo is the example. `<app>` is the new app's folder and Worker name, lower case (`films`).
 
 ## 1. Domain first: grill the idea into a glossary
 
@@ -35,9 +37,9 @@ Done when: Nico has accepted the theme and the three files.
 
 Copy the closer existing app (`apps/vinyles` for a list with one picture per thing) and strip its domain:
 
-1. `package.json`: `name` = `<app>`; keep `@universe/showcase` and `@universe/owner` (`*`) in `dependencies`. Run `npm install` at the repo root.
+1. `package.json`: `name` = `<app>`; keep `@universe/universe`, `@universe/showcase` and `@universe/owner` (`*`) in `dependencies`. Run `npm install` at the repo root.
 2. `wrangler.jsonc`: `name` = `<app>` (the Worker serves `<app>.nicolastemeni.workers.dev`); new D1 and R2 names; `"vars": { "OWNER_COOKIE_DOMAIN": "nicolastemeni.workers.dev" }`. Then `npm run types -w apps/<app>`.
-3. `src/app.css`: `@import 'tailwindcss'`, `@import '@universe/showcase/showcase.css'`, `@source '../../../packages/showcase/src'`, then the theme slots from step 2 on `:root`.
+3. `src/app.css`: `@import 'tailwindcss'`, `@import '@universe/universe/universe.css'`, `@import '@universe/showcase/showcase.css'`, `@source` for `packages/showcase/src` and `packages/universe/src`, then the theme slots from step 2 on `:root`.
 4. `src/lib/lists.ts`: the Collection and Wishlist links for the StickyBar Tabs.
 5. Keep the Owner plumbing as is: `routes/login`, `+layout.server.ts` (`isOwner`), `lib/server/owner-actions.ts`, LoginAction and the shared session from `@universe/owner`.
 6. Replace the domain: `lib/server/db/schema.ts` and a first Drizzle migration, `lib/server/catalog`, the routes, the tile, the forms, `static/` (the app's own mark: favicon and home-screen icon).

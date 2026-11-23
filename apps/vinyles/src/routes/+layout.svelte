@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '#lib/assets/favicon.svg';
+	import Signature from '@universe/showcase/components/Signature.svelte';
 	import type { LayoutProps } from './$types';
 
 	let { children }: LayoutProps = $props();
@@ -18,4 +19,5 @@
 
 <div class="min-h-dvh bg-background text-foreground">
 	{@render children()}
+	<Signature label="Nico's records" />
 </div>

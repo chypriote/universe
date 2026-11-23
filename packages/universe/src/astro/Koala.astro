@@ -1,0 +1,12 @@
+---
+import koala from '../koala.svg?url';
+
+interface Props {
+	size?: number;
+	label?: string;
+}
+
+const { size = 20, label = '' } = Astro.props;
+---
+
+<img src={koala} width={size} height={size} alt={label} class="inline-block shrink-0" />

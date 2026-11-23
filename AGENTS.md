@@ -23,6 +23,7 @@ These rules override the same topics in the user's global rules.
 - Merge your own PR after you review it. Do not wait for the user.
 - Keep the branch name your session assigns. No `<type>/<issue>-<slug>` rename.
 - The Owner login token and cookie live in `packages/owner`: one session covers every app (see an app README for `OWNER_COOKIE_DOMAIN`).
+- What every app shares, whatever its family (motion timings, formats, the koala), goes in `packages/universe`. See `packages/universe/DESIGN.md`.
 - UI used by more than one collection app goes in `packages/showcase`. A collection app keeps only its theme values and its domain components. See `packages/showcase/DESIGN.md`.
 - To add an app, follow `docs/adding-an-app.md` in order: domain (`/grill-with-docs`), theme, scaffold, repo wiring, deploy, design-system page.
 - Run a workspace script with `-w`, for example `npm run ci -w apps/jerseys`. Install from the root only.

@@ -1,6 +1,6 @@
 /*
  * Showcase core tokens (packages/showcase/TOKENS.md) mapped onto the shadcn-svelte CSS variables.
- * Import after `tailwindcss`. The app then sets its theme slots (`--theme-*`, display type) on :root.
+ * Import after `tailwindcss` and `@universe/universe/universe.css`. The app then sets its theme slots (`--theme-*`, display type) on :root.
  * Light and dark are one set of semantic variables built with light-dark().
  * The system theme picks the mode; <html data-theme="light|dark"> overrides it.
  */
@@ -42,9 +42,9 @@
 	--radius-md-px: 14px;
 	--radius-xl-px: 28px;
 	--radius-full-px: 999px;
-	--duration-fast: 80ms;
-	--duration-base: 150ms;
-	--easing-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+	--duration-fast: var(--universe-duration-press);
+	--duration-base: var(--universe-duration-hover);
+	--easing-out: var(--universe-easing);
 	--layer-sticky: 10;
 	--layer-safe-area: 20;
 	/* Above the StickyBar and the safe-area strip: the bits-ui Dialog portals to <body>, not the top layer. */
@@ -211,13 +211,4 @@
 /* Neutral Buttons are card-colored; inside a Popup (also card-colored) they would vanish. */
 [data-slot='dialog-content'] [data-slot='button'].bg-card {
 	background-color: var(--background);
-}
-
-@media (prefers-reduced-motion: reduce) {
-	*,
-	::before,
-	::after {
-		transition: none !important;
-		animation: none !important;
-	}
 }
