@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import type { PageProps } from './$types';
 	import type { WishlistItem } from '#lib/server/catalog/types';
 	import { continents } from '#lib/countries';
@@ -16,7 +17,7 @@
 	import CountryFilter from '#lib/components/CountryFilter.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
 	import GotItForm from '#lib/components/GotItForm.svelte';
-	import LoginAction from '#lib/components/LoginAction.svelte';
+	import LoginAction from '@universe/showcase/components/LoginAction.svelte';
 	import Popup from '#lib/components/Popup.svelte';
 	import SearchField from '@universe/showcase/components/SearchField.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
@@ -129,7 +130,7 @@
 		<Chip tone="info" label="wanted" value={String(data.items.length)} />
 	{/snippet}
 	{#snippet login()}
-		<LoginAction isOwner={data.isOwner} />
+		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} />
 	{/snippet}
 	{#snippet action()}
 		{#if data.form}

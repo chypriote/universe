@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { PageProps } from './$types';
@@ -18,7 +19,7 @@
 	import DesireSelect from '#lib/components/DesireSelect.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
 	import AddAction from '#lib/components/AddAction.svelte';
-	import LoginAction from '#lib/components/LoginAction.svelte';
+	import LoginAction from '@universe/showcase/components/LoginAction.svelte';
 	import ProductLinks from '#lib/components/ProductLinks.svelte';
 	import WishlistEditForm from '#lib/components/WishlistEditForm.svelte';
 	import GotItForm from '#lib/components/GotItForm.svelte';
@@ -211,7 +212,7 @@
 		<Chip tone="info" label="items" value={String(data.count)} />
 	{/snippet}
 	{#snippet login()}
-		<LoginAction isOwner={data.isOwner} />
+		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} size="icon-sm" />
 	{/snippet}
 	{#snippet action()}
 		{#if data.isOwner}

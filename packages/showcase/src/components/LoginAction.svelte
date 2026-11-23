@@ -1,19 +1,30 @@
 <script lang="ts">
-	import Button from '@universe/showcase/components/Button.svelte';
-	import { Button as UiButton } from '@universe/showcase/ui/button';
+	import Button from './Button.svelte';
 	import LoginForm from './LoginForm.svelte';
-	import Popup from './Popup.svelte';
+	import { Button as UiButton } from './ui/button/index.js';
+	import * as Dialog from './ui/dialog/index.js';
 
-	let { isOwner }: { isOwner: boolean } = $props();
+	let {
+		isOwner,
+		adminHref,
+		size = 'icon'
+	}: {
+		isOwner: boolean;
+		/** The app's admin page, already resolved (`resolve('/admin')`). */
+		adminHref: string;
+		size?: 'icon' | 'icon-sm';
+	} = $props();
+
 	let loginOpen = $state(false);
+	const iconClass = $derived(size === 'icon' ? 'size-5' : 'size-4');
 </script>
 
 {#if isOwner}
-	<UiButton variant="neutral" size="icon" href="/admin">
+	<UiButton variant="neutral" {size} href={adminHref}>
 		<svg
 			aria-hidden="true"
 			viewBox="0 0 24 24"
-			class="size-5"
+			class={iconClass}
 			fill="none"
 			stroke="currentColor"
 			stroke-width="2"
@@ -28,11 +39,11 @@
 		<span class="sr-only">Admin</span>
 	</UiButton>
 {:else}
-	<Button intent="neutral" size="icon" onclick={() => (loginOpen = true)}>
+	<Button intent="neutral" {size} onclick={() => (loginOpen = true)}>
 		<svg
 			aria-hidden="true"
 			viewBox="0 0 24 24"
-			class="size-5"
+			class={iconClass}
 			fill="none"
 			stroke="currentColor"
 			stroke-width="2"
@@ -45,9 +56,10 @@
 		<span class="sr-only">Owner login</span>
 	</Button>
 
-	<Popup bind:open={loginOpen} title="Owner login">
-		{#snippet details()}
+	<Dialog.Root bind:open={loginOpen}>
+		<Dialog.Content>
+			<Dialog.Title>Owner login</Dialog.Title>
 			<LoginForm onSuccess={() => (loginOpen = false)} />
-		{/snippet}
-	</Popup>
+		</Dialog.Content>
+	</Dialog.Root>
 {/if}

@@ -4,14 +4,14 @@ Sources: [DESIGN.md](DESIGN.md) for the look, [TOKENS.md](TOKENS.md) for values,
 
 Accepted by Nico on 2026-11-23.
 
-Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Jerseys.
+Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState, LoginAction) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Jerseys.
 
 ## Hierarchy
 
-| Level | Components |
-|---|---|
-| Component | Tile, Popup, CountryFilter, StoreSelect, TeamLookup |
-| Pattern | StickyBar, TileGrid, CoverageMap, LoginAction, AddAction, DeleteAction, FormActions, AcquisitionFields, JerseyForm, WishlistItemForm, GotItForm |
+| Level     | Components                                                                                                                         |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Component | Tile, Popup, CountryFilter, StoreSelect, TeamLookup                                                                                |
+| Pattern   | StickyBar, TileGrid, CoverageMap, AddAction, DeleteAction, FormActions, AcquisitionFields, JerseyForm, WishlistItemForm, GotItForm |
 
 ## Components
 
@@ -19,13 +19,13 @@ Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, 
 
 **Purpose:** One Jersey (Collection) or one Wishlist Item (Wishlist) in the grid. It opens the Popup.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| team | string | — | Caption line 1, `text.caption.team` |
-| season | string | — | Already formatted ("2023-24", "2024") |
-| kitType | string | — | "Home", "Away"… Caption line 2 is "{season} · {kitType}", `text.caption.kit` |
-| mainPictureUrl | string \| null | null | The Kit's Main Picture. Null shows the shirt outline |
-| onSelect | `(el: HTMLElement) => void` | — | Gives the Popup the Tile to focus on close |
+| Prop           | Type                        | Default | Description                                                                  |
+| -------------- | --------------------------- | ------- | ---------------------------------------------------------------------------- |
+| team           | string                      | —       | Caption line 1, `text.caption.team`                                          |
+| season         | string                      | —       | Already formatted ("2023-24", "2024")                                        |
+| kitType        | string                      | —       | "Home", "Away"… Caption line 2 is "{season} · {kitType}", `text.caption.kit` |
+| mainPictureUrl | string \| null              | null    | The Kit's Main Picture. Null shows the shirt outline                         |
+| onSelect       | `(el: HTMLElement) => void` | —       | Gives the Popup the Tile to focus on close                                   |
 
 - The whole Tile is one `<button>`. The image has `alt=""`, because the caption names the Kit.
 - Square box: `tile.bg`, `tile.radius`, `tile.shadow`. The Main Picture is `object-fit: contain` with padding, so a shirt photo on any background reads on the neutral tile. `loading="lazy"`.
@@ -38,21 +38,22 @@ States: default, hover and focus (`tile.hover.lift`, `tile.hover.tilt`, motion a
 
 Same as Vinyles: native `<dialog>` with `showModal()`, centred on the screen. Focus goes back to `anchor` on close. Title: `text.heading.popup`.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| open | boolean | false | Bindable |
-| anchor | HTMLElement \| null | null | The Tile. Gets the focus back on close |
-| title | string | — | The Team name |
-| subtitle | string | — | "{season} · {kitType}", `text.body.detail`, muted |
-| mainPictureUrl | string \| null | null | `popup.picture.size`, contained, or the shirt outline |
-| pictureUrls | string[] | `[]` | The Kit's extra Pictures, in the order they were added (see "Popup content") |
-| wide | boolean | false | Form Popup: width `popup.width.wide`, no Main Picture. From `breakpoint.sm` the fields sit in two columns |
-| onDismiss | `() => void` | — | X button, Esc, tap on the backdrop |
-| pictureAction | Snippet (index) | — | Owner only: under the thumbnails while a Picture (not the Main Picture) is shown. Gets the Picture's index in `pictureUrls` |
+| Prop           | Type                | Default | Description                                                                                                                 |
+| -------------- | ------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| open           | boolean             | false   | Bindable                                                                                                                    |
+| anchor         | HTMLElement \| null | null    | The Tile. Gets the focus back on close                                                                                      |
+| title          | string              | —       | The Team name                                                                                                               |
+| subtitle       | string              | —       | "{season} · {kitType}", `text.body.detail`, muted                                                                           |
+| mainPictureUrl | string \| null      | null    | `popup.picture.size`, contained, or the shirt outline                                                                       |
+| pictureUrls    | string[]            | `[]`    | The Kit's extra Pictures, in the order they were added (see "Popup content")                                                |
+| wide           | boolean             | false   | Form Popup: width `popup.width.wide`, no Main Picture. From `breakpoint.sm` the fields sit in two columns                   |
+| onDismiss      | `() => void`        | —       | X button, Esc, tap on the backdrop                                                                                          |
+| pictureAction  | Snippet (index)     | —       | Owner only: under the thumbnails while a Picture (not the Main Picture) is shown. Gets the Picture's index in `pictureUrls` |
 
 Vinyles names the title prop `album`. Here it is `title`, because a Popup also holds forms.
 
 Slots:
+
 - `details`: a `<dl>` of rows. The page fills it (see "Popup content").
 - `actions`: optional, Owner only.
 - `findPicturesUrl`: optional, Owner only: the "Find pictures on Football Kit Archive" link under the Buttons. The Edit Kit and Set main picture Popups pass it.
@@ -63,10 +64,10 @@ Slots:
 
 Same shape as the Vinyles ArtistFilter: a `<details>` pill with checkboxes. Summary: "All countries ({n})" or "Countries ({n})". Countries are grouped under their Continent heading. Each heading has a checkbox that selects or clears all the Countries of that Continent (checked when all are selected, indeterminate when some are). A "Clear filter" Button stays at the top of the open list while it scrolls; it is disabled when nothing is selected. Only Countries that have at least one Tile on this page are listed. A Jersey matches its Country by Coverage rules: the National Team's Country, or the Club's League's Country.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| value | string[] | `[]` | Bindable Country ids. Empty = all |
-| groups | `{ continent: string; countries: { id: string; name: string }[] }[]` | — | |
+| Prop   | Type                                                                 | Default | Description                       |
+| ------ | -------------------------------------------------------------------- | ------- | --------------------------------- |
+| value  | string[]                                                             | `[]`    | Bindable Country ids. Empty = all |
+| groups | `{ continent: string; countries: { id: string; name: string }[] }[]` | —       |                                   |
 
 ### StoreSelect
 
@@ -84,11 +85,11 @@ Same as Vinyles: native Select over the Stores and a last option "Add a store…
 - Typing again after a pick closes the block until a new pick.
 - The list is a `color.bg.surface` card, `tile.radius`, `shadow.raised`. Options are 44px pills; the active one has `color.bg.page`.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| value | `{ teamId: string } \| { name: string; kind: 'club' \| 'national'; countryId: string }` | — | Bindable. A known Team or a new one |
-| teams | `{ id: string; name: string; country: string }[]` | — | Known Teams |
-| countries | same as CountryFilter `groups` | — | For the new Team's Country |
+| Prop      | Type                                                                                    | Default | Description                         |
+| --------- | --------------------------------------------------------------------------------------- | ------- | ----------------------------------- |
+| value     | `{ teamId: string } \| { name: string; kind: 'club' \| 'national'; countryId: string }` | —       | Bindable. A known Team or a new one |
+| teams     | `{ id: string; name: string; country: string }[]`                                       | —       | Known Teams                         |
+| countries | same as CountryFilter `groups`                                                          | —       | For the new Team's Country          |
 
 ### EmptyState
 
@@ -127,13 +128,13 @@ Same as the Vinyles CoverGrid: `grid.columns` per breakpoint, gaps `space.grid.g
 
 New component tokens (add to TOKENS.md):
 
-| Token | → Semantic | Scope |
-|---|---|---|
-| map.country.covered | color.icon.accent | CoverageMap |
-| map.country.empty | sky.200 / navy.500 | CoverageMap |
-| map.country.absent | color.border.subtle | CoverageMap |
-| map.country.border | color.bg.surface | CoverageMap |
-| map.width.min | 900px | CoverageMap drawing |
+| Token               | → Semantic          | Scope               |
+| ------------------- | ------------------- | ------------------- |
+| map.country.covered | color.icon.accent   | CoverageMap         |
+| map.country.empty   | sky.200 / navy.500  | CoverageMap         |
+| map.country.absent  | color.border.subtle | CoverageMap         |
+| map.country.border  | color.bg.surface    | CoverageMap         |
+| map.width.min       | 900px               | CoverageMap drawing |
 
 Contrast, covered against empty: 3.41 light, 5.81 dark (needs 3, non-text). Empty against the card is low (1.29 light, 1.36 dark), but it shows only the land shape; the covered state and the text label carry the information.
 
@@ -148,9 +149,9 @@ Rows are `<dt>` label, `<dd>` value, `text.body.detail`. A row with no value is 
 - Owner, while a Picture is shown: a `neutral` Button "Delete" under the thumbnails (DeleteAction, "Delete this picture?"). It removes the Picture and its image for every Jersey and the Wishlist Item of the Kit.
 - Owner on a Jersey or a Wishlist Item: a file input "Add pictures" (multiple, JPEG, PNG or WebP) after the Buttons in `actions`. Each file is shrunk like the Main Picture and added at once, in the order picked; a refused file shows its error under the input.
 
-### LoginAction, AddAction
+### AddAction
 
-Same as Vinyles. LoginAction: lock icon Button (Viewer) or nothing extra (Owner). AddAction: `success` Button "Add" next to the Tabs, Owner only. It opens JerseyForm (Collection) or WishlistItemForm (Wishlist) in the Popup.
+AddAction: `success` Button "Add" next to the Tabs, Owner only. It opens JerseyForm (Collection) or WishlistItemForm (Wishlist) in the Popup.
 
 ### DeleteAction
 
