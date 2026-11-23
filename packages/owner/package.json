@@ -5,7 +5,8 @@
 	"type": "module",
 	"exports": {
 		"./auth": "./src/auth.ts",
-		"./cookie": "./src/cookie.ts"
+		"./session": "./src/session.ts",
+		"./cookie": "./src/sveltekit/cookie.ts"
 	},
 	"scripts": {
 		"check": "tsc -p tsconfig.json",
@@ -17,5 +18,10 @@
 	},
 	"peerDependencies": {
 		"@sveltejs/kit": "^3.2.0"
+	},
+	"peerDependenciesMeta": {
+		"@sveltejs/kit": {
+			"optional": true
+		}
 	}
 }
