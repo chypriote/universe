@@ -2,7 +2,6 @@
 	import FilterIcon from '@lucide/svelte/icons/sliders-horizontal';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import type { Snippet } from 'svelte';
-	import { cn } from '../utils.js';
 	import { Button } from './ui/button/index.js';
 	import Tabs from './Tabs.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
@@ -11,7 +10,6 @@
 		title,
 		current,
 		links,
-		packed = false,
 		chips,
 		login,
 		action,
@@ -25,8 +23,6 @@
 		current: string;
 		/** The app's lists for Tabs, `href` already resolved. */
 		links: { key: string; href: string; label: string }[];
-		/** Packed bar (Vinyles): segmented Tabs, `icon-sm` theme toggle, the title row never wraps on a phone. */
-		packed?: boolean;
 		chips?: Snippet;
 		/** LoginAction, in the title row. */
 		login?: Snippet;
@@ -47,8 +43,6 @@
 	function toggle(next: 'search' | 'filters') {
 		panel = panel === next ? null : next;
 	}
-
-	const iconClass = $derived(packed ? 'size-4' : 'size-5');
 </script>
 
 {#snippet toggleButton(key: 'search' | 'filters', label: string, active: boolean)}
@@ -60,9 +54,9 @@
 		onclick={() => toggle(key)}
 	>
 		{#if key === 'search'}
-			<SearchIcon aria-hidden="true" class={iconClass} />
+			<SearchIcon aria-hidden="true" class="size-4" />
 		{:else}
-			<FilterIcon aria-hidden="true" class={iconClass} />
+			<FilterIcon aria-hidden="true" class="size-4" />
 		{/if}
 		<span class="sr-only">{label}</span>
 		{#if active && panel !== key}
@@ -75,28 +69,20 @@
 <header
 	class="sticky top-0 z-(--layer-sticky) flex flex-col gap-3 bg-background pt-[max(0.75rem,env(safe-area-inset-top))] pe-[max(1rem,env(safe-area-inset-right))] pb-3 ps-[max(1rem,env(safe-area-inset-left))]"
 >
-	<div
-		class={packed
-			? 'flex items-center justify-between gap-x-2 gap-y-2 sm:flex-wrap sm:gap-x-3'
-			: 'flex flex-wrap items-center justify-between gap-2'}
-	>
+	<div class="flex items-center justify-between gap-2 sm:flex-wrap sm:gap-x-3">
 		<h1>{@render title()}</h1>
-		<div
-			class={packed
-				? 'flex items-center gap-1.5 sm:flex-wrap sm:gap-2'
-				: 'flex flex-wrap items-center justify-end gap-2'}
-		>
-			<div class={cn('flex gap-2', packed ? 'gap-1.5 sm:gap-2' : 'flex-wrap')} aria-live="polite">
+		<div class="flex items-center gap-1.5 sm:flex-wrap sm:gap-2">
+			<div class="flex gap-1.5 sm:gap-2" aria-live="polite">
 				{@render chips?.()}
 			</div>
 			{@render login?.()}
-			<ThemeToggle size={packed ? 'icon-sm' : 'icon'} />
+			<ThemeToggle />
 		</div>
 	</div>
 	<div class="flex flex-wrap items-center gap-2">
-		<Tabs {current} {links} variant={packed ? 'segmented' : 'pills'} />
+		<Tabs {current} {links} />
 		{@render action?.()}
-		<div class={cn('flex gap-2 sm:hidden', !packed && 'ms-auto')}>
+		<div class="flex gap-2 sm:hidden">
 			{@render toggleButton('search', 'Search', searchActive)}
 			{@render toggleButton('filters', 'Filters and sort', filtersActive)}
 		</div>

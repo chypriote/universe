@@ -132,7 +132,7 @@ The page fills the snippets. Popup does not know Records from Wishlist Items.
 
 ## StickyBar
 
-The Showcase StickyBar, `packed`. Title "Vinyles." with the period in `color.icon.accent`.
+The Showcase StickyBar. Title "Vinyles." with the period in `color.icon.accent`.
 
 - Collection: Chip `highlight` record count (a disc icon below `sm`), Chip `success` total spent (`compact`). Filters: artist. Sorts: artist, album, release year, acquired.
 - Wishlist: Chip `info` item count. Filters: artist, DesireSelect. Sorts: artist, album, release year.

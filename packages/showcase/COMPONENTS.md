@@ -62,13 +62,12 @@ Radio pills, `type="single"`: one option is always picked. Pressed: `--theme-sel
 
 ### Tabs
 
-Links between an app's lists, not an ARIA tab widget. Current tab: `color.bg.accent`, `aria-current="page"`. Label in the display face at `text-sm`, `--tracking-label`.
+Links between an app's lists, not an ARIA tab widget, on one raised track. Current tab: `color.bg.accent`, `aria-current="page"`. Label in the display face at `text-sm`, `--tracking-label`.
 
-| Prop    | Type                     | Default   | Description                                |
-| ------- | ------------------------ | --------- | ------------------------------------------ |
-| current | string                   | —         | Key of the current list                    |
-| links   | `{ key, href, label }[]` | —         | `href` resolved by the app                 |
-| variant | `'pills' \| 'segmented'` | `'pills'` | Separate raised pills, or one raised track |
+| Prop    | Type                     | Default | Description                |
+| ------- | ------------------------ | ------- | -------------------------- |
+| current | string                   | —       | Key of the current list    |
+| links   | `{ key, href, label }[]` | —       | `href` resolved by the app |
 
 ### ConfirmDialog
 
@@ -107,14 +106,13 @@ Placement: a detail Popup (`media` set, not `wide`) opens over `anchor`, clamped
 
 ### StickyBar
 
-The top of every list page, sticky at `layer.sticky` on `color.bg.page`. Title row: the `title` snippet in the `<h1>`, then Chips, LoginAction and ThemeToggle. Tabs row: Tabs and the Owner's `action`, then below `sm` the search and filter icon toggles (an `icon-accent` dot marks a set search or filter). Third row: `searchBox` and `controls`, each behind its toggle below `sm`.
+The top of every list page, sticky at `layer.sticky` on `color.bg.page`. Title row: the `title` snippet in the `<h1>`, then Chips, LoginAction and ThemeToggle. Tabs row: Tabs and the Owner's `action`, then below `sm` the search and filter icon toggles (an `icon-accent` dot marks a set search or filter). Third row: `searchBox` and `controls`, each behind its toggle below `sm`. Icon Buttons are `icon-sm`; the title row never wraps on a phone.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | title | Snippet | — | The page title |
 | current | string | — | Key of the current list |
 | links | `{ key, href, label }[]` | — | The app's lists, `href` already resolved |
-| packed | boolean | false | Vinyles: segmented Tabs, `icon-sm` ThemeToggle, toggles right after the Tabs, the title row never wraps on a phone |
 | searchActive, filtersActive | boolean | false | Show the dot on a closed toggle |
 
 Snippets: `title`, `chips`, `login`, `action`, `searchBox`, `controls`.
@@ -140,7 +138,7 @@ An `icon` Button that flips `value` between `asc` and `desc`.
 
 ### ThemeToggle
 
-An icon Button that switches light and dark and saves the choice. `size`: `icon` or `icon-sm`.
+An `icon-sm` Button that switches light and dark and saves the choice.
 
 ### EmptyState
 
@@ -148,12 +146,11 @@ A short message, and an optional action ("Clear filters"). No illustration.
 
 ### LoginAction
 
-The Owner login in the StickyBar title row. Viewer: a lock icon Button (hidden label "Owner login") that opens a Popup with LoginForm. Owner: a gear icon link to the admin page (hidden label "Admin"). No "owner only" text.
+The Owner login in the StickyBar title row. Viewer: a lock `icon-sm` Button (hidden label "Owner login") that opens a Popup with LoginForm. Owner: a gear icon link to the admin page (hidden label "Admin"). No "owner only" text.
 
-| Prop      | Type                  | Default  | Description         |
-| --------- | --------------------- | -------- | ------------------- |
-| isOwner   | boolean               | —        | From the page data  |
-| adminHref | string                | —        | `resolve('/admin')` |
-| size      | `'icon' \| 'icon-sm'` | `'icon'` | Icon Button size    |
+| Prop      | Type    | Default | Description         |
+| --------- | ------- | ------- | ------------------- |
+| isOwner   | boolean | —       | From the page data  |
+| adminHref | string  | —       | `resolve('/admin')` |
 
 LoginForm: one password Field and a `success` Button "Log in". It posts to the app's `/login` action. Wrong password: Field error "Wrong password". On success the page data reloads, so `isOwner` flips.
