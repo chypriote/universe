@@ -22,7 +22,7 @@
 			href={link.href}
 			aria-current={current === link.key ? 'page' : undefined}
 			class={cn(
-				'display-type inline-flex min-h-11 items-center rounded-control px-5 text-sm leading-tight font-bold tracking-label outline-ring focus-visible:outline-3 focus-visible:outline-solid',
+				'inline-flex min-h-11 font-display [text-transform:var(--display-transform)] items-center rounded-control px-5 text-sm leading-tight font-bold tracking-label outline-ring focus-visible:outline-3 focus-visible:outline-solid',
 				current === link.key
 					? 'bg-primary text-primary-foreground'
 					: 'bg-transparent text-foreground'

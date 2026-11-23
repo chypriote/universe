@@ -103,7 +103,7 @@ Showcase EmptyState. Messages: "No jerseys yet", "Nothing on the wishlist", "No 
 The Showcase StickyBar.
 
 - Title: "Jerseys". The chips, the LoginAction and the ThemeToggle sit on the right of it; they wrap under the title when the row is too narrow.
-- Collection chips: `highlight` jersey count, `success` total spent (`compact`). Filters: Country filter. Sorts: Team, Season, Acquired (Bought date or Gift date). Default: Acquired, newest first.
+- Collection chips: `highlight` jersey count (a shirt icon below `sm`), `success` total spent (`compact`). Filters: Country filter. Sorts: Team, Season, Acquired (Bought date or Gift date). Default: Acquired, newest first.
 - Wishlist chips: `info` item count. Filters: Country filter. Sorts: Team, Season. Default: Season, newest first.
 - Search covers Team name and Print.
 

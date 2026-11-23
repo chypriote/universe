@@ -214,7 +214,7 @@
 >
 	{#snippet title()}Vinyles<span class="text-icon-accent">.</span>{/snippet}
 	{#snippet chips()}
-		<Chip tone="info" label="items" value={String(data.count)} />
+		<Chip tone="info" label="wanted" value={String(data.count)} />
 	{/snippet}
 	{#snippet login()}
 		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} />
