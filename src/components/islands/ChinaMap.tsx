@@ -141,7 +141,7 @@ export function ChinaMap({
   });
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
       <svg
         viewBox={`0 0 ${CHINA_MAP.width} ${CHINA_MAP.height}`}
         ref={svgRef}
@@ -235,27 +235,25 @@ export function ChinaMap({
       </svg>
 
       <div className="lg:col-span-6" aria-live="polite">
-        {shown ? (
-          <div>
-            {shown.photo && (
-              <img
-                src={shown.photo}
-                alt=""
-                className={`w-full aspect-[4/3] object-cover border ${t.border}`}
-                loading="lazy"
-              />
-            )}
-            <p className="mt-4 font-serif text-3xl font-light">{shown.name}</p>
-            {shown.zh && (
-              <p lang="zh" className={`mt-1 text-xl ${t.muted}`}>
-                {shown.zh}
-              </p>
-            )}
-            {shown.detail && <p className={`mt-3 eyebrow ${t.muted}`}>{shown.detail}</p>}
-          </div>
-        ) : (
-          <p className={`eyebrow ${t.muted}`}>{idleText}</p>
-        )}
+        {/* The frame and text block keep a fixed size, so changing the preview never moves the map or the page. */}
+        <div className={`w-full aspect-[4/3] border ${t.border}`}>
+          {shown?.photo && <img src={shown.photo} alt="" className="size-full object-cover" loading="lazy" />}
+        </div>
+        <div className="mt-4 min-h-32">
+          {shown ? (
+            <>
+              <p className="font-serif text-3xl font-light">{shown.name}</p>
+              {shown.zh && (
+                <p lang="zh" className={`mt-1 text-xl ${t.muted}`}>
+                  {shown.zh}
+                </p>
+              )}
+              {shown.detail && <p className={`mt-3 eyebrow ${t.muted}`}>{shown.detail}</p>}
+            </>
+          ) : (
+            <p className={`eyebrow ${t.muted}`}>{idleText}</p>
+          )}
+        </div>
       </div>
     </div>
   );
