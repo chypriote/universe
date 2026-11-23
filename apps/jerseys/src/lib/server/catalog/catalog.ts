@@ -60,7 +60,7 @@ import {
 	type LookupContext
 } from './lookup';
 import { checkImage, MAX_UPLOAD_BYTES, readBody, tooBig } from './images';
-import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from './auth';
+import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@universe/owner/auth';
 import type {
 	Acquisition,
 	AcquisitionInput,

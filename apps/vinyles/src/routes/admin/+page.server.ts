@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { catalogFromPlatform } from '#lib/server/catalog';
 import { MAX_SUGGESTIONS } from '#lib/server/catalog/suggestions';
-import { ownerToken } from '#lib/server/owner';
+import { ownerToken } from '@universe/owner/cookie';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ platform, cookies }) => {

@@ -35,7 +35,7 @@ import {
 	type AutomaticStore,
 	type Offer
 } from './store-prices';
-import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from './auth';
+import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@universe/owner/auth';
 import {
 	findAlbum,
 	findCandidateImage,

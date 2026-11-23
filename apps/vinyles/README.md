@@ -27,8 +27,9 @@ Nico's vinyl Collection and Wishlist as a wall of Covers. SvelteKit (Svelte 5) o
 2. `npx wrangler r2 bucket create vinyles-covers`.
 3. `npm run db:migrate:remote` (the second migration seeds the "Official Store").
 4. Secrets:
-   - `OWNER_PASSWORD`: the one Owner password. `npx wrangler secret put OWNER_PASSWORD`
-   - `JWT_SECRET`: key that signs the Owner login token. Use a long random value. `npx wrangler secret put JWT_SECRET`
+   - `OWNER_PASSWORD`: the one Owner password, the same in every Universe app. `npx wrangler secret put OWNER_PASSWORD`
+   - `JWT_SECRET`: key that signs the Owner login token. Use a long random value, the same in every Universe app so one login covers them all. `npx wrangler secret put JWT_SECRET`
+   - `OWNER_COOKIE_DOMAIN` (a var in `wrangler.jsonc`, not a secret): the parent domain all the apps share. Empty keeps the login on this app only.
    - `CRON_SECRET`: bearer value the cron trigger sends to `/api/cron/refresh-prices`. Use a long random value, different from `JWT_SECRET`. `npx wrangler secret put CRON_SECRET`
    - `DISCOGS_TOKEN` (optional): Discogs personal access token (free; discogs.com > Settings > Developers > Generate new token). Adds Discogs covers to the cover search (the first list and typed searches). Deezer needs no key. `npx wrangler secret put DISCOGS_TOKEN`
    - `LASTFM_API_KEY` (optional): Last.fm API key (free; last.fm/api/account/create). Adds Suggestions of similar Artists on the admin page. `npx wrangler secret put LASTFM_API_KEY`

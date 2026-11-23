@@ -27,8 +27,9 @@ Nico's football jersey Collection and Wishlist as a wall of Kits. SvelteKit (Sve
 2. `npx wrangler r2 bucket create jerseys-covers`.
 3. `npm run db:migrate:remote`.
 4. Secrets:
-   - `OWNER_PASSWORD`: the one Owner password. `npx wrangler secret put OWNER_PASSWORD`
-   - `JWT_SECRET`: key that signs the Owner login token. Use a long random value. `npx wrangler secret put JWT_SECRET`
+   - `OWNER_PASSWORD`: the one Owner password, the same in every Universe app. `npx wrangler secret put OWNER_PASSWORD`
+   - `JWT_SECRET`: key that signs the Owner login token. Use a long random value, the same in every Universe app so one login covers them all. `npx wrangler secret put JWT_SECRET`
+   - `OWNER_COOKIE_DOMAIN` (a var in `wrangler.jsonc`, not a secret): the parent domain all the apps share. Empty keeps the login on this app only.
    - `THESPORTSDB_KEY`: TheSportsDB API key, for the Kit picture lookup. The free test key `123` works but returns few rows; a paid key returns all of them. `npx wrangler secret put THESPORTSDB_KEY`
 5. `npm run deploy`.
 

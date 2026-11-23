@@ -3,6 +3,8 @@
 	"name": "vinyles",
 	"compatibility_date": "2026-11-01",
 	"compatibility_flags": ["nodejs_compat"],
+	// Parent domain shared by every Universe app: one Owner login for all of them. Empty: this app only.
+	"vars": { "OWNER_COOKIE_DOMAIN": "" },
 	"d1_databases": [
 		{
 			"binding": "DB",

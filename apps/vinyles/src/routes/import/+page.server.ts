@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import { catalogFromPlatform } from '#lib/server/catalog';
-import { ownerToken } from '#lib/server/owner';
+import { ownerToken } from '@universe/owner/cookie';
 import { ownerActions } from '#lib/server/owner-actions';
 import type { Actions, PageServerLoad } from './$types';
 

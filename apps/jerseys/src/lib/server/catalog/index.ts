@@ -2,7 +2,7 @@ import { env } from 'cloudflare:workers';
 import { buildCatalog, type CatalogEnv, type CatalogOptions } from './catalog';
 import type { Catalog } from './types';
 
-export { UnauthorizedError } from './auth';
+export { UnauthorizedError } from '@universe/owner/auth';
 export type { CatalogEnv, CatalogOptions } from './catalog';
 export type * from './types';
 

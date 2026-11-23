@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { catalogFromPlatform, type Desire } from '#lib/server/catalog';
-import { ownerToken } from '#lib/server/owner';
+import { ownerToken } from '@universe/owner/cookie';
 import { endpointError } from '#lib/server/owner-actions';
 import type { RequestHandler } from './$types';
 

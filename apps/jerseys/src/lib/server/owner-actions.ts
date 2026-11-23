@@ -10,7 +10,7 @@ import type {
 	MainPictureFile,
 	TeamEditInput
 } from '#lib/server/catalog';
-import { ownerToken } from '#lib/server/owner';
+import { ownerToken } from '@universe/owner/cookie';
 
 /**
  * Thin form actions over the Catalog. The forms send one JSON `payload` field, and the Kit forms
