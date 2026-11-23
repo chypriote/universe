@@ -4,15 +4,15 @@ Sources: [DESIGN.md](DESIGN.md) for the look, [TOKENS.md](TOKENS.md) for values,
 
 Accepted by Nico on 2026-11-20.
 
-Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Vinyles.
+Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState, LoginAction) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Vinyles.
 
 ## Hierarchy
 
-| Level | Components |
-|---|---|
-| Primitive | DesireDots |
-| Component | Cover, DesireFilter, Popup, StoreSelect |
-| Pattern | StickyBar, CoverGrid, LoginForm, RecordForm, WishlistItemForm, GotItForm, ImportReview |
+| Level     | Components                                                                  |
+| --------- | --------------------------------------------------------------------------- |
+| Primitive | DesireDots                                                                  |
+| Component | Cover, DesireFilter, Popup, StoreSelect                                     |
+| Pattern   | StickyBar, CoverGrid, RecordForm, WishlistItemForm, GotItForm, ImportReview |
 
 Nico accepted the Owner UI, EmptyState and ImportReview sections on 2026-11-20. They add no token: they reuse the tokens above.
 
@@ -22,13 +22,15 @@ Nico accepted the Owner UI, EmptyState and ImportReview sections on 2026-11-20. 
 **Purpose:** Shows the Desire of a Wishlist Item, 1 to 3.
 
 ### Props API
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| value | `1 \| 2 \| 3` | — | Number of dots |
+
+| Prop  | Type          | Default | Description    |
+| ----- | ------------- | ------- | -------------- |
+| value | `1 \| 2 \| 3` | —       | Number of dots |
 
 Dots: `color.icon.accent`. Visually hidden text: "Desire {value} of 3". The dots are `aria-hidden`.
 
 ### States
+
 Default only.
 
 ---
@@ -39,30 +41,34 @@ Default only.
 **Purpose:** One Album in the grid: cover image and caption. It opens the Popup.
 
 ### Variant Matrix
-| Dimension | Type | Values |
-|---|---|---|
-| desire | optional prop | absent (Collection), 1–3 (Wishlist) |
+
+| Dimension | Type          | Values                              |
+| --------- | ------------- | ----------------------------------- |
+| desire    | optional prop | absent (Collection), 1–3 (Wishlist) |
 
 ### Props API
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| album | string | — | Album title, caption line 1 (`text.caption.album`) |
-| artist | string | — | Artist name, caption line 2 (`text.caption.artist`) |
-| coverUrl | string \| null | null | Image from R2. Null shows the initials tile |
-| desire | `1 \| 2 \| 3` | — | When set, DesireDots show under the caption |
-| onSelect | `(el: HTMLElement) => void` | — | Gives the Popup the element to open over |
+
+| Prop     | Type                        | Default | Description                                         |
+| -------- | --------------------------- | ------- | --------------------------------------------------- |
+| album    | string                      | —       | Album title, caption line 1 (`text.caption.album`)  |
+| artist   | string                      | —       | Artist name, caption line 2 (`text.caption.artist`) |
+| coverUrl | string \| null              | null    | Image from R2. Null shows the initials tile         |
+| desire   | `1 \| 2 \| 3`               | —       | When set, DesireDots show under the caption         |
+| onSelect | `(el: HTMLElement) => void` | —       | Gives the Popup the element to open over            |
 
 The whole Cover is one `<button>`. The image has `alt=""`, because the caption names the album. Image: square, `cover.radius`, `loading="lazy"`.
 
 Initials tile: first letters of the first two words of the artist name, in `text.heading.page` weight, color `cover.tile.text`. The background is one of the four `cover.tile.bg` colors. The artist name picks it: sum of the name's character codes, modulo 4. All albums by one artist get the same color.
 
 ### States
+
 - Default.
 - Hover and focus: `cover.hover.lift` and `cover.hover.tilt`, motion allowed only. Focus also shows the focus ring.
 - No cover: initials tile.
 - Image load fails: initials tile.
 
 ### Slots
+
 None.
 
 ---
@@ -75,13 +81,15 @@ None.
 Three toggle buttons: 3, 2 and 1 dots. Each one uses DesireDots for its face.
 
 ### Props API
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| value | `(1 \| 2 \| 3)[]` | `[]` | Bindable. The pressed desires. Empty = show all |
+
+| Prop  | Type              | Default | Description                                     |
+| ----- | ----------------- | ------- | ----------------------------------------------- |
+| value | `(1 \| 2 \| 3)[]` | `[]`    | Bindable. The pressed desires. Empty = show all |
 
 Each button has `aria-pressed`. Pressed: `color.bg.highlight` and `color.text.on-chip`. Not pressed: `color.bg.surface`. Group label (visually hidden): "Desire".
 
 ### States
+
 Default, hover, focus, pressed.
 
 ---
@@ -94,21 +102,24 @@ Default, hover, focus, pressed.
 Native `<dialog>` with `showModal()`. Native gives the focus trap, Esc, the `inert` page and the backdrop (`color.bg.overlay`). On close, focus goes back to the Cover.
 
 ### Props API
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| open | boolean | false | Bindable |
-| anchor | HTMLElement \| null | null | The Cover. The Popup opens over it, clamped to the screen |
-| album | string | — | Title (`text.heading.popup`) |
-| artist | string | — | Under the title (`text.body.detail`, muted) |
-| coverUrl | string \| null | null | `popup.cover.size` image, or the initials tile |
-| onDismiss | `() => void` | — | X button, Esc, tap on the backdrop |
+
+| Prop      | Type                | Default | Description                                               |
+| --------- | ------------------- | ------- | --------------------------------------------------------- |
+| open      | boolean             | false   | Bindable                                                  |
+| anchor    | HTMLElement \| null | null    | The Cover. The Popup opens over it, clamped to the screen |
+| album     | string              | —       | Title (`text.heading.popup`)                              |
+| artist    | string              | —       | Under the title (`text.body.detail`, muted)               |
+| coverUrl  | string \| null      | null    | `popup.cover.size` image, or the initials tile            |
+| onDismiss | `() => void`        | —       | X button, Esc, tap on the backdrop                        |
 
 Box: `color.bg.surface`, `popup.radius`, max width `popup.width.max`. The X button is at top right, label "Close" (visually hidden), 44px target.
 
 ### States
+
 Open, closed.
 
 ### Slots
+
 - `details`: a `<dl>` of rows. Collection: year, variant, acquisition (Purchase: store and price; Gift: from). Wishlist: year, variant, desire (DesireDots), one Price Quote per Store.
 - `actions`: optional. Wishlist, Owner only: Button `success` "Got it" and Button `neutral` "Drop". Viewers do not get the snippet.
 
@@ -148,15 +159,11 @@ Viewers see only the lock Button. After login, the Owner sees an "Add" Button in
 
 Native Select over the Stores, plus a last option "Add a store…". That option shows a Field for the new name and an "Add" Button. The new Store joins the list at once.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| value | string | — | Bindable store id |
-| stores | `{ id: string; name: string }[]` | — | |
-| onAddStore | `(name: string) => Promise<{ id: string }>` | — | |
-
-### LoginForm
-
-One password Field, one `success` Button "Log in". Wrong password: Field `error` "Wrong password". It opens in Popup from a lock icon Button at the top right of the StickyBar, right after the Chips (after total spent on the Collection). The icon has a visually hidden label "Owner login". There is no "owner only" text.
+| Prop       | Type                                        | Default | Description       |
+| ---------- | ------------------------------------------- | ------- | ----------------- |
+| value      | string                                      | —       | Bindable store id |
+| stores     | `{ id: string; name: string }[]`            | —       |                   |
+| onAddStore | `(name: string) => Promise<{ id: string }>` | —       |                   |
 
 ### RecordForm
 

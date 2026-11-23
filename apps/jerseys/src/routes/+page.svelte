@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import type { PageProps } from './$types';
 	import type { CollectionJersey } from '#lib/server/catalog/types';
 	import { continents } from '#lib/countries';
@@ -18,7 +19,7 @@
 	import CoverageMap from '#lib/components/CoverageMap.svelte';
 	import CountryFilter from '#lib/components/CountryFilter.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
-	import LoginAction from '#lib/components/LoginAction.svelte';
+	import LoginAction from '@universe/showcase/components/LoginAction.svelte';
 	import Popup from '#lib/components/Popup.svelte';
 	import SearchField from '@universe/showcase/components/SearchField.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
@@ -131,7 +132,7 @@
 		<Chip tone="success" label="spent" value={formatCents(totalSpentCents)} />
 	{/snippet}
 	{#snippet login()}
-		<LoginAction isOwner={data.isOwner} />
+		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} />
 	{/snippet}
 	{#snippet action()}
 		{#if data.form}

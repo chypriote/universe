@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import DiscIcon from '@lucide/svelte/icons/disc-3';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { PageProps } from './$types';
@@ -13,7 +14,7 @@
 	import CoverGrid from '#lib/components/CoverGrid.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
 	import AddAction from '#lib/components/AddAction.svelte';
-	import LoginAction from '#lib/components/LoginAction.svelte';
+	import LoginAction from '@universe/showcase/components/LoginAction.svelte';
 	import Popup from '#lib/components/Popup.svelte';
 	import RecordForm from '#lib/components/RecordForm.svelte';
 	import SearchField from '@universe/showcase/components/SearchField.svelte';
@@ -124,7 +125,7 @@
 		<Chip tone="success" label="spent" value={formatCents(data.totals.totalSpentCents)} compact />
 	{/snippet}
 	{#snippet login()}
-		<LoginAction isOwner={data.isOwner} />
+		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} size="icon-sm" />
 	{/snippet}
 	{#snippet action()}
 		{#if data.isOwner}

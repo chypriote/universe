@@ -95,3 +95,15 @@ An icon Button that switches light and dark and saves the choice. `size`: `icon`
 ### EmptyState
 
 A short message, and an optional action ("Clear filters"). No illustration.
+
+### LoginAction
+
+The Owner login in the StickyBar title row. Viewer: a lock icon Button (hidden label "Owner login") that opens a Popup with LoginForm. Owner: a gear icon link to the admin page (hidden label "Admin"). No "owner only" text.
+
+| Prop      | Type                  | Default  | Description         |
+| --------- | --------------------- | -------- | ------------------- |
+| isOwner   | boolean               | —        | From the page data  |
+| adminHref | string                | —        | `resolve('/admin')` |
+| size      | `'icon' \| 'icon-sm'` | `'icon'` | Icon Button size    |
+
+LoginForm: one password Field and a `success` Button "Log in". It posts to the app's `/login` action. Wrong password: Field error "Wrong password". On success the page data reloads, so `isOwner` flips.
