@@ -1,6 +1,6 @@
 # Universe layer
 
-What every Universe app shares, whatever its design family. A family (Showcase for the collection apps, Ink for Zhongguo) sets everything else: fonts, colours, shapes, focus ring, effects. Decision: [docs/adr/0001-design-families.md](../../docs/adr/0001-design-families.md). Components: [COMPONENTS.md](COMPONENTS.md).
+What every Universe app shares, whatever its design family. A family (Showcase for the collection apps, Journal for personal journal apps like Zhongguo) sets everything else: fonts, colours, shapes, focus ring, effects. Decision: [docs/adr/0001-design-families.md](../../docs/adr/0001-design-families.md). Components: [COMPONENTS.md](COMPONENTS.md).
 
 ## 1. Shared
 
@@ -11,7 +11,7 @@ What every Universe app shares, whatever its design family. A family (Showcase f
 | Formats   | Euros and numbers the French way ("1 604,20 €", "12 345"), dates the English way ("12 May 2024"), never American. Tabular figures.                                                        | `src/format.ts`                                                   |
 | The koala | Nico's mark: one flat SVG in fixed greys, never recoloured or redrawn. Only in a footer or signature line; each app keeps its own logo and favicon. The one emoji-like image in Universe. | `src/koala.svg`, `Koala` wrappers                                 |
 
-A family's own effects (Showcase's tile lift and tilt, Ink's scroll reveals) use the shared timings where they are short and stay in the family.
+A family's own effects (Showcase's tile lift and tilt, Journal's scroll reveals) use the shared timings where they are short and stay in the family.
 
 ## 2. Not shared
 
