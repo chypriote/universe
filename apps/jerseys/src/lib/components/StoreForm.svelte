@@ -1,9 +1,9 @@
 <script lang="ts">
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
 	import { untrack, type Snippet } from 'svelte';
 	import { postAction } from '#lib/forms';
 	import type { Store } from '#lib/server/catalog/types';
 	import Field from '@universe/showcase/components/Field.svelte';
-	import FormActions from './FormActions.svelte';
 
 	/** `store` set: edits it. Unset: adds a Store. */
 	let {
@@ -35,5 +35,5 @@
 
 <form class="flex flex-col gap-4" onsubmit={save}>
 	<Field label="Name" required bind:value={name} {error} />
-	<FormActions {busy} {remove} />
+	<FormActions {busy} start={remove} />
 </form>

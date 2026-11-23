@@ -58,11 +58,10 @@ Each app sets these on `:root` in its `src/app.css`. The defaults only keep a ne
 | `--display-family`                       | font.family.display                     | Barlow Condensed        | Nunito (default)            |
 | `--display-style`, `--display-transform` | Display labels                          | italic, uppercase       | normal, none                |
 | `--tracking-label-value`                 | Tab label tracking                      | 0.03em                  | 0                           |
+| `--tracking-caption-value`               | Main tile caption tracking              | 0.02em                  | 0                           |
 | `--tracking-heading-value`               | Title tracking                          | 0                       | -0.025em                    |
 | `--heading-page-size`                    | text.heading.page                       | 28px                    | 24px                        |
 | `--heading-popup-size`                   | text.heading.popup                      | 24px                    | 22px                        |
-| `--popup-width-max`                      | popup.width.max                         | 560px                   | 420px                       |
-| `--shadow-popup`                         | Popup shadow                            | none (default)          | offset 10px and a 34px blur |
 
 ## Semantic bindings
 
@@ -99,6 +98,7 @@ Type roles: `text.heading.page` and `text.heading.popup` use the display face (`
 | tile.radius           | radius.md                          | Tile                      |
 | tile.hover.lift, tilt | -3px, -1.5deg                      | Tile, motion allowed only |
 | popup.radius          | radius.xl                          | Popup                     |
+| popup.width.max       | 560px                              | Popup                     |
 | popup.width.wide      | 672px                              | Form Popup                |
 | popup.picture.size    | 150px                              | Popup                     |
 | grid.columns          | 3; 5 from sm; 7 from md; 8 from lg | Tile grid                 |

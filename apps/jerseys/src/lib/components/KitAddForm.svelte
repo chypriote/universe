@@ -1,4 +1,6 @@
 <script lang="ts">
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { untrack } from 'svelte';
 	import { mainPictureUpload, postAction, teamProblem } from '#lib/forms';
 	import { newTeamName, unknownTeamMessage } from '#lib/team-name';
@@ -10,7 +12,6 @@
 		TeamChoice,
 		TeamView
 	} from '#lib/server/catalog/types';
-	import FormActions from './FormActions.svelte';
 	import KitFields from './KitFields.svelte';
 
 	let {
@@ -98,7 +99,7 @@
 		{teamError}
 	/>
 	{#if error}
-		<p class="text-sm font-bold text-destructive sm:col-span-2" role="alert">! {error}</p>
+		<ErrorMessage message={error} class="sm:col-span-2" />
 	{/if}
 	<div class="sm:col-span-2"><FormActions {busy} /></div>
 </form>

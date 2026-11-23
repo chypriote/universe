@@ -32,7 +32,7 @@ Nunito (Google Fonts), weights 500, 700, 800. Fallback: ui-rounded, system-ui. N
 |---|---|
 | h1 | 24 / 800 |
 | Popup title | 22 / 800 |
-| Caption, album | 12 / 800 |
+| Caption, album | 14 / 800 |
 | Caption, artist | 11 / 500, muted |
 | Body | 14 / 500 |
 | Popup details | 15 / 500 |
@@ -55,7 +55,7 @@ Nunito (Google Fonts), weights 500, 700, 800. Fallback: ui-rounded, system-ui. N
 ## Components
 
 - **Cover:** square, real album art from the first import. If none is found: a flat tile with the artist initials.
-- **Popup:** opens over the tapped cover, clamped to the screen. Max width 420px, cover 150px, X button at top right. Tap outside or Esc closes it.
+- **Popup:** opens over the tapped cover, clamped to the screen. Max width 560px, cover 150px, X button at top right. Tap outside or Esc closes it.
   - Collection: year, variant, acquisition (purchase: store and price; gift: from).
   - Wishlist: year, variant, desire, price quote per store, pill buttons Got it (mint) and Drop.
 - No "owner only" text in the UI.

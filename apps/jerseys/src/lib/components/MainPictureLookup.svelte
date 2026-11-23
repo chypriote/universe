@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import type { LookupProgress } from '#lib/server/catalog/types';
 	import Button from '@universe/showcase/components/Button.svelte';
@@ -65,6 +66,6 @@
 		</p>
 	{/if}
 	{#if error}
-		<p class="text-sm text-destructive" role="alert">{error}</p>
+		<ErrorMessage message={error} />
 	{/if}
 </div>

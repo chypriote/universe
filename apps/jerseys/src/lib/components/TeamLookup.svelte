@@ -15,7 +15,7 @@
 		/** A known Team or a new one. Null until a pick. */
 		value?: TeamChoice | null;
 		teams: TeamView[];
-		/** For the new Team's Country, as CountryFilter groups. */
+		/** For the new Team's Country, grouped by Continent. */
 		countries: { continent: string; countries: { id: string; name: string }[] }[];
 		error?: string | null;
 	} = $props();

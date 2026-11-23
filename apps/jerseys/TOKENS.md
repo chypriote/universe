@@ -14,9 +14,9 @@ Jerseys is a Showcase theme. Core tokens, semantic bindings and the contrast tab
 | `--display-family` | "Barlow Condensed", "Arial Narrow", system-ui, sans-serif | 700 and 800 |
 | `--display-style`, `--display-transform` | italic, uppercase | |
 | `--tracking-label-value` | 0.03em | Tab labels |
+| `--tracking-caption-value` | 0.02em | Team caption, Print on the Tile |
 | `--heading-page-size` | 28px | |
 | `--heading-popup-size` | 24px | |
-| `--popup-width-max` | 560px | |
 | `--popup-picture-size` | 180px | Main Picture, portrait 3:4, at most 40% of the Popup on a phone |
 
 ## Type roles

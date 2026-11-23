@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { tick } from 'svelte';
 	import { shrinkImage } from '#lib/pictures';
@@ -161,6 +162,6 @@
 		<p class="text-sm text-muted-foreground" aria-live="polite">Adding…</p>
 	{/if}
 	{#if error}
-		<p class="text-sm font-bold text-destructive" role="alert">! {error}</p>
+		<ErrorMessage message={error} />
 	{/if}
 </div>

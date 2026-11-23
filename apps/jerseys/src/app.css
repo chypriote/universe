@@ -23,9 +23,9 @@
 	--display-style: italic;
 	--display-transform: uppercase;
 	--tracking-label-value: 0.03em;
+	--tracking-caption-value: 0.02em;
 	--heading-page-size: 28px;
 	--heading-popup-size: 24px;
-	--popup-width-max: 560px;
 	--popup-picture-size: 180px;
 
 	--map-country-covered: var(--icon-accent);
@@ -34,9 +34,4 @@
 	--map-country-border: var(--card);
 	--map-width-min: 900px;
 	--map-country-border-width: 0.5px;
-}
-
-@theme inline {
-	/* text.caption.team */
-	--tracking-caption: 0.02em;
 }

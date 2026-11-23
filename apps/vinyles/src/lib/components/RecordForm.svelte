@@ -1,4 +1,6 @@
 <script lang="ts">
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import {
 		addStore,
 		emptyAcquisition,
@@ -102,31 +104,22 @@
 	<Field label="Variant" bind:value={variant} />
 	<Field label="Date" type="date" required bind:value={acquisition.date} />
 	<AcquisitionFields bind:acquisition {stores} onAddStore={addStore} />
-	{#if error}<p class="text-sm font-medium text-foreground" role="alert">! {error}</p>{/if}
-	<div class="flex flex-wrap gap-2">
-		<Button onclick={onDone}>Cancel</Button>
-		{#if record}
-			<Button onclick={onChangeCover}>Change cover</Button>
-			<Button
-				intent="danger"
-				class="ml-auto"
-				disabled={busy}
-				loading={removing}
-				onclick={() => (confirmOpen = true)}
-			>
-				Delete record
-			</Button>
-		{/if}
-	</div>
-	<Button
-		intent="success"
-		type="submit"
-		class="w-full"
-		disabled={removing}
-		loading={busy && !removing}
-	>
-		Save
-	</Button>
+	{#if error}<ErrorMessage message={error} />{/if}
+	<FormActions busy={busy && !removing} disabled={removing} onCancel={onDone}>
+		{#snippet start()}
+			{#if record}
+				<Button
+					intent="danger"
+					disabled={busy}
+					loading={removing}
+					onclick={() => (confirmOpen = true)}
+				>
+					Delete record
+				</Button>
+				<Button onclick={onChangeCover}>Change cover</Button>
+			{/if}
+		{/snippet}
+	</FormActions>
 </form>
 
 {#if record}

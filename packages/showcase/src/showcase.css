@@ -63,11 +63,9 @@
 	--display-transform: none;
 	--tracking-heading-value: 0;
 	--tracking-label-value: 0;
+	--tracking-caption-value: 0;
 	--heading-page-size: 24px;
 	--heading-popup-size: 22px;
-	--popup-width-max: 560px;
-	--popup-width-wide: 672px;
-	--shadow-popup: none;
 
 	/* shadcn variables bound to the Showcase semantic tokens */
 	--background: light-dark(var(--theme-page), var(--navy-950)); /* color.bg.page */
@@ -109,6 +107,8 @@
 	--outline-focus-width: 3px;
 	--control-size-min: 44px;
 	--popup-radius: var(--radius-xl-px);
+	--popup-width-max: 560px;
+	--popup-width-wide: 672px;
 	--popup-picture-size: 150px;
 	--tile-radius: var(--radius-md-px);
 	--tile-hover-lift: -3px;
@@ -141,6 +141,7 @@
 	--leading-snug: 1.25;
 	--tracking-label: var(--tracking-label-value);
 	--tracking-heading: var(--tracking-heading-value);
+	--tracking-caption: var(--tracking-caption-value);
 
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);

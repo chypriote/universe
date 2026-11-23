@@ -1,4 +1,6 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
 	import { untrack } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -13,7 +15,6 @@
 	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from './DeleteAction.svelte';
 	import Field from '@universe/showcase/components/Field.svelte';
-	import FormActions from './FormActions.svelte';
 	import MainPicture from './MainPicture.svelte';
 	import PictureInput from './PictureInput.svelte';
 	import KitAddForm from './KitAddForm.svelte';
@@ -175,7 +176,7 @@
 					<Select label="Season" bind:value={season} options={seasonOptions} />
 				</div>
 				{#if error}
-					<p class="text-sm font-bold text-destructive" role="alert">! {error}</p>
+					<ErrorMessage message={error} />
 				{/if}
 			</div>
 			<div class="flex flex-col gap-1.5">
@@ -194,7 +195,7 @@
 					: null}
 			/>
 			<FormActions {busy}>
-				{#snippet remove()}
+				{#snippet start()}
 					{#if editing}
 						{@const row = editing}
 						<DeleteAction

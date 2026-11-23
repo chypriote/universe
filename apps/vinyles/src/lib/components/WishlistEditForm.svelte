@@ -1,4 +1,6 @@
 <script lang="ts">
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { postAction } from '#lib/forms';
 	import type { WishlistItemView } from '#lib/server/catalog/types';
 	import Button from '@universe/showcase/components/Button.svelte';
@@ -71,16 +73,6 @@
 			</div>
 		</div>
 	{/if}
-	{#if error}<p class="text-sm font-medium text-foreground" role="alert">! {error}</p>{/if}
-	<div class="flex flex-wrap gap-2">
-		<Button
-			intent="success"
-			type="submit"
-			disabled={busy && addingAnyway}
-			loading={busy && !addingAnyway}
-		>
-			Save
-		</Button>
-		<Button onclick={onDone}>Cancel</Button>
-	</div>
+	{#if error}<ErrorMessage message={error} />{/if}
+	<FormActions busy={busy && !addingAnyway} disabled={busy && addingAnyway} onCancel={onDone} />
 </form>

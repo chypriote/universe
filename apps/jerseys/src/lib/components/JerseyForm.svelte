@@ -1,4 +1,6 @@
 <script lang="ts">
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { untrack } from 'svelte';
 	import {
 		acquisitionState,
@@ -25,7 +27,6 @@
 		Version
 	} from '#lib/server/catalog/types';
 	import AcquisitionFields from './AcquisitionFields.svelte';
-	import Button from '@universe/showcase/components/Button.svelte';
 	import Field from '@universe/showcase/components/Field.svelte';
 	import KitFields from './KitFields.svelte';
 	import ToggleGroup from '@universe/showcase/components/ToggleGroup.svelte';
@@ -143,10 +144,7 @@
 	<Field label="Print" bind:value={print} />
 	<AcquisitionFields bind:acquisition {stores} onAddStore={addStore} />
 	{#if error}
-		<p class="text-sm font-bold text-destructive sm:col-span-2" role="alert">! {error}</p>
+		<ErrorMessage message={error} class="sm:col-span-2" />
 	{/if}
-	<div class="flex flex-wrap justify-end gap-2 sm:col-span-2">
-		<Button onclick={onDone}>Cancel</Button>
-		<Button intent="success" type="submit" loading={busy}>Save</Button>
-	</div>
+	<div class="sm:col-span-2"><FormActions {busy} onCancel={onDone} /></div>
 </form>

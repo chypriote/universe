@@ -2,7 +2,7 @@
 	import type { AcquisitionState } from '#lib/forms';
 	import Field from '@universe/showcase/components/Field.svelte';
 	import StoreSelect from '@universe/showcase/components/StoreSelect.svelte';
-	import { ToggleGroup, ToggleGroupItem } from '@universe/showcase/ui/toggle-group';
+	import ToggleGroup from '@universe/showcase/components/ToggleGroup.svelte';
 
 	let {
 		acquisition = $bindable(),
@@ -13,32 +13,19 @@
 		stores: { id: number; name: string }[];
 		onAddStore: (name: string) => Promise<{ id: number | string }>;
 	} = $props();
-
-	const labelId = $props.id();
 </script>
 
-<div class="flex flex-col gap-1.5">
-	<span class="text-sm font-bold" id={labelId}>Acquisition</span>
-	<div class="flex items-center gap-3">
-		<ToggleGroup
-			type="single"
-			aria-labelledby={labelId}
-			value={acquisition.kind}
-			onValueChange={(v) => {
-				if (v === 'purchase' || v === 'gift') acquisition.kind = v;
-			}}
-		>
-			<ToggleGroupItem value="purchase">Purchase</ToggleGroupItem>
-			<ToggleGroupItem value="gift">Gift</ToggleGroupItem>
-		</ToggleGroup>
-		{#if acquisition.kind === 'gift'}
-			<div class="min-w-0 flex-1">
-				<Field label="From" bind:value={acquisition.giver} />
-			</div>
-		{/if}
-	</div>
-</div>
+<ToggleGroup
+	label="Acquisition"
+	bind:value={acquisition.kind}
+	options={[
+		{ value: 'purchase', label: 'Purchase' },
+		{ value: 'gift', label: 'Gift' }
+	]}
+/>
 {#if acquisition.kind === 'purchase'}
 	<StoreSelect bind:value={acquisition.storeId} {stores} {onAddStore} />
 	<Field label="Price (€)" type="number" required bind:value={acquisition.price} />
+{:else}
+	<Field label="From" bind:value={acquisition.giver} />
 {/if}

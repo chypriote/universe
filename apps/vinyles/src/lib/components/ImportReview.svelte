@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { resolve } from '$app/paths';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { postAction } from '#lib/forms';
@@ -102,7 +103,7 @@
 		</section>
 	{/if}
 
-	{#if error}<p class="text-sm font-medium" role="alert">! {error}</p>{/if}
+	{#if error}<ErrorMessage message={error} />{/if}
 
 	{#if finished}
 		<div>

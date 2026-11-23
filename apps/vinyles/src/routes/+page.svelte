@@ -6,12 +6,12 @@
 	import type { WithCoverUrl } from '#lib/covers';
 	import type { RecordView } from '#lib/server/catalog/types';
 	import { formatCents, formatDate } from '@universe/universe/format';
-	import ArtistFilter from '#lib/components/ArtistFilter.svelte';
+	import MultiSelectFilter from '@universe/showcase/components/MultiSelectFilter.svelte';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import CoverPicker from '#lib/components/CoverPicker.svelte';
 	import Chip from '@universe/showcase/components/Chip.svelte';
 	import Cover from '#lib/components/Cover.svelte';
-	import CoverGrid from '#lib/components/CoverGrid.svelte';
+	import TileGrid from '@universe/showcase/components/TileGrid.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
 	import AddAction from '@universe/showcase/components/AddAction.svelte';
 	import LoginAction from '@universe/showcase/components/LoginAction.svelte';
@@ -147,7 +147,11 @@
 		/>
 	{/snippet}
 	{#snippet controls()}
-		<ArtistFilter bind:value={selectedArtists} names={artistNames} />
+		<MultiSelectFilter
+			bind:value={selectedArtists}
+			label="Artists"
+			groups={[{ options: artistNames.map((name) => ({ value: name, label: name })) }]}
+		/>
 		<Select bind:value={sort} label="Sort by" options={sorts} />
 		<SortDirection bind:value={direction} />
 	{/snippet}
@@ -163,7 +167,7 @@
 			{/snippet}
 		</EmptyState>
 	{:else}
-		<CoverGrid>
+		<TileGrid>
 			{#each records as record (record.id)}
 				<li>
 					<Cover
@@ -174,7 +178,7 @@
 					/>
 				</li>
 			{/each}
-		</CoverGrid>
+		</TileGrid>
 	{/if}
 </main>
 

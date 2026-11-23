@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import type { CoverCandidate } from '#lib/server/catalog/types';
 	import Button from '@universe/showcase/components/Button.svelte';
@@ -332,10 +333,10 @@
 		</form>
 	{/if}
 	{#if pickError}
-		<p role="alert" class="text-sm text-destructive">{pickError}</p>
+		<ErrorMessage message={pickError} />
 	{/if}
 	{#if error}
-		<p role="alert" class="text-sm text-destructive">{error}</p>
+		<ErrorMessage message={error} />
 	{:else if candidates === null}
 		<ul class="grid grid-cols-4 gap-3" aria-busy="true" aria-label="Loading covers">
 			{#each Array.from({ length: 8 }, (_, i) => i) as i (i)}

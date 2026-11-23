@@ -1,4 +1,5 @@
 <script lang="ts">
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -12,7 +13,6 @@
 	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from './DeleteAction.svelte';
 	import Field from '@universe/showcase/components/Field.svelte';
-	import FormActions from './FormActions.svelte';
 	import Popup from './Popup.svelte';
 	import SearchField from '@universe/showcase/components/SearchField.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
@@ -149,7 +149,7 @@
 				/>
 			</div>
 			<FormActions {busy}>
-				{#snippet remove()}
+				{#snippet start()}
 					{#if editing}
 						{@const row = editing}
 						<DeleteAction

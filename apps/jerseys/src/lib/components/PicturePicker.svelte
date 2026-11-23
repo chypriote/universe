@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { tick } from 'svelte';
 	import { shrinkImage } from '#lib/pictures';
@@ -190,7 +191,7 @@
 		</div>
 	{/if}
 	{#if listError}
-		<p role="alert" class="text-sm text-destructive">{listError}</p>
+		<ErrorMessage message={listError} />
 	{:else if listing === null}
 		<ul class="grid grid-cols-3 gap-3" aria-busy="true" aria-label="Loading pictures">
 			{#each Array.from({ length: 6 }, (_, i) => i) as i (i)}
@@ -311,6 +312,6 @@
 		</form>
 	{/if}
 	{#if error}
-		<p role="alert" class="text-sm text-destructive">{error}</p>
+		<ErrorMessage message={error} />
 	{/if}
 </div>

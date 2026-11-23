@@ -10,8 +10,8 @@ Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, 
 
 | Level     | Components                                                                                                                         |
 | --------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Component | Tile, Popup, CountryFilter, StoreSelect, TeamLookup                                                                                |
-| Pattern   | StickyBar, TileGrid, CoverageMap, AddAction, DeleteAction, FormActions, AcquisitionFields, JerseyForm, WishlistItemForm, GotItForm |
+| Component | Tile, Popup, StoreSelect, TeamLookup                                                                                               |
+| Pattern   | StickyBar, TileGrid, CoverageMap, AddAction, DeleteAction, AcquisitionFields, JerseyForm, WishlistItemForm, GotItForm              |
 
 ## Components
 
@@ -62,11 +62,9 @@ Slots:
 - `actions`: optional, Owner only.
 - `findPicturesUrl`: optional, Owner only: the "Find pictures on Football Kit Archive" link under the Buttons. The Edit Kit and Set main picture Popups pass it.
 
-### CountryFilter
+### Country filter
 
-**Purpose:** Filter a list by Country.
-
-Same shape as the Vinyles ArtistFilter: a `<details>` pill with checkboxes. Summary: "All countries ({n})" or "Countries ({n})". Countries are grouped under their Continent heading. Each heading has a checkbox that selects or clears all the Countries of that Continent (checked when all are selected, indeterminate when some are). A "Clear filter" Button stays at the top of the open list while it scrolls; it is disabled when nothing is selected. Only Countries that have at least one Tile on this page are listed. A Jersey matches its Country by Coverage rules: the National Team's Country, or the Club's League's Country.
+The Showcase MultiSelectFilter, label "Countries", one group per Continent. Only Countries that have at least one Tile on this page are listed. A Jersey matches its Country by Coverage rules: the National Team's Country, or the Club's League's Country.
 
 | Prop   | Type                                                                 | Default | Description                       |
 | ------ | -------------------------------------------------------------------- | ------- | --------------------------------- |
@@ -90,7 +88,7 @@ Same shape as the Vinyles ArtistFilter: a `<details>` pill with checkboxes. Summ
 | --------- | --------------------------------------------------------------------------------------- | ------- | ----------------------------------- |
 | value     | `{ teamId: string } \| { name: string; kind: 'club' \| 'national'; countryId: string }` | —       | Bindable. A known Team or a new one |
 | teams     | `{ id: string; name: string; country: string }[]`                                       | —       | Known Teams                         |
-| countries | same as CountryFilter `groups`                                                          | —       | For the new Team's Country          |
+| countries | `{ continent, countries: { id, name }[] }[]`                                            | —       | For the new Team's Country          |
 
 ### EmptyState
 
@@ -105,13 +103,13 @@ Showcase EmptyState. Messages: "No jerseys yet", "Nothing on the wishlist", "No 
 The Showcase StickyBar.
 
 - Title: "Jerseys". The chips, the LoginAction and the ThemeToggle sit on the right of it; they wrap under the title when the row is too narrow.
-- Collection chips: `highlight` jersey count, `success` total spent (`compact`). Filters: CountryFilter. Sorts: Team, Season, Acquired (Bought date or Gift date). Default: Acquired, newest first.
-- Wishlist chips: `info` item count. Filters: CountryFilter. Sorts: Team, Season. Default: Season, newest first.
+- Collection chips: `highlight` jersey count, `success` total spent (`compact`). Filters: Country filter. Sorts: Team, Season, Acquired (Bought date or Gift date). Default: Acquired, newest first.
+- Wishlist chips: `info` item count. Filters: Country filter. Sorts: Team, Season. Default: Season, newest first.
 - Search covers Team name and Print.
 
 ### TileGrid
 
-Same as the Vinyles CoverGrid: `grid.columns` per breakpoint, gaps `space.grid.gap-x` and `space.grid.gap-y`, gutter `space.gutter` plus safe-area insets. Key each Tile by Jersey id or Wishlist Item id. Two Jerseys of one Kit are two Tiles with the same Main Picture.
+The Showcase TileGrid. Key each Tile by Jersey id or Wishlist Item id. Two Jerseys of one Kit are two Tiles with the same Main Picture.
 
 ### CoverageMap
 
@@ -164,10 +162,6 @@ Delete fixes a mistake (Nico, 2026-11-23). It refuses, never cascades: a Store w
 ### Admin sections
 
 Owner only. `/admin` redirects to `/admin/countries`. One page per section: `/admin/countries`, `/admin/stores`, `/admin/teams`, `/admin/kits`, `/admin/main-pictures` (Kits without a Main Picture). A nav under the title (AdminNav, styled like Tabs) links the pages and marks the current one with `aria-current="page"`. Each page has a SearchField above its list that filters the loaded rows by every word typed (page state, not in the URL). The Countries, Stores and Teams rows end their subtitle with the Jersey count ("3 jerseys"; Jerseys only, a Gift counts for no Store). The Edit team Popup lists the Team's Kits under the form, each a link to `/admin/kits?search=<Team Season Kit Type>`; the Kits page starts with that text in its SearchField. On the Kits and Teams pages the address follows the SearchField: a text sets `?search=`, an empty field removes it (no new history entry), so a refresh keeps only what is typed. The Edit kit Popup ends with a link "Edit {Team name}" to `/admin/teams?search=<Team name>`; the Teams page starts with that text in its SearchField. The Teams page has a `success` Button "Add a team" next to its heading: the same Popup as Edit team, with no DeleteAction and no Kits list; Save creates the Team (no Kit) and goes to `/admin/kits?addKit=<Team id>`, which opens the Add kit Popup with that Team pre-filled. The Edit team Popup has the same link, "Add a kit to {Team name}", above its Kits list. The Kits page has a `success` Button "Add a kit" next to its heading: a wide Popup with the Kit fields of JerseyForm (Team, Season, Kit Type, Comment for a Special Kit, Main Picture) and FormActions; Save creates the Kit, with the Main Picture lookup unless a picture is sent. A Kit that exists is refused. Next to the Kits SearchField, a Toggle "No main picture" (`aria-pressed`, off at first) keeps only the Kits with no Main Picture; it combines with the search. The Kits rows show the Main Picture in a small square tile on the left (the shirt outline when there is none), with no subtitle. The Stores are small cards in a grid, two per row on a phone and three from `breakpoint.sm`: name and Jersey count on the left, then a round pencil icon Button (`size="icon"`, label "Edit {store name}") on the right, vertically centred. The Name of a new Country is a typeahead (CountryNameLookup, the TeamLookup pattern) over the Countries of the map, 8 options at most, and the server refuses a name that is not one of them; editing a Country keeps a plain Name field. Each row has a Button that opens its form in a Popup ("Edit"). The Popup of an existing Country, Store, Team or Kit ends with one footer row (FormActions): DeleteAction on the left, `success` Button "Save" on the right, each at its natural width. The Add Popups have the Save Button alone, on the right. The Edit Kit Popup also has the "Find pictures on Football Kit Archive" link. A delete closes the Popup.
-
-### FormActions
-
-The footer row of an admin form: an optional `remove` slot (DeleteAction) on the left and a `success` Button "Save" with `loading` on the right (`busy`). The row wraps on a narrow screen. A refused delete shows its error on its own line under the row.
 
 ### AcquisitionFields
 
