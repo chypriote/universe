@@ -44,7 +44,7 @@ Default only.
 
 | Dimension | Type          | Values                              |
 | --------- | ------------- | ----------------------------------- |
-| desire    | optional prop | absent (Collection), 1–3 (Wishlist) |
+| desire    | optional prop | absent (Collection), 1–5 (Wishlist) |
 
 ### Props API
 
@@ -99,7 +99,7 @@ Default, hover, focus, pressed.
 **Hierarchy:** Component
 **Purpose:** Shows the details of one Record or Wishlist Item over its Cover.
 
-Native `<dialog>` with `showModal()`. Native gives the focus trap, Esc, the `inert` page and the backdrop (`color.bg.overlay`). On close, focus goes back to the Cover.
+The Showcase dialog (bits-ui), portalled to `<body>` at `layer.popup`. It gives the focus trap, Esc, the `inert` page and the backdrop (`color.bg.overlay`). On close, focus goes back to the Cover.
 
 ### Props API
 
@@ -171,7 +171,7 @@ Fields: Artist (Field, with the existing artists as native `<datalist>`), Album 
 
 ### WishlistItemForm
 
-Fields: Artist, Album, Variant (optional), Desire (three radio pills, 3, 2, 1 dots, each with DesireDots as its face), Price quotes (rows of StoreSelect + Price, "Add a quote" Button). If the Album is already a Record: a notice "Already owned" with a "Add anyway" Button before the form saves.
+Fields: Artist, Album, Variant (optional), Desire (DesireSelect, 1 to 5 dots, 3 at first), Price quotes (rows of StoreSelect + Price, "Add a quote" Button). If the Album is already a Record: a notice "Already owned" with a "Add anyway" Button before the form saves.
 
 ### GotItForm
 

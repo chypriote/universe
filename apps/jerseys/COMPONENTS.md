@@ -40,7 +40,7 @@ States: default, hover and focus (`tile.hover.lift`, `tile.hover.tilt`, motion a
 
 ### Popup
 
-Same as Vinyles: native `<dialog>` with `showModal()`. A Tile Popup opens over `anchor`, clamped to the screen; a form Popup is centred. Focus goes back to `anchor` on close. Title: `text.heading.popup`.
+The Showcase dialog (bits-ui), portalled to `<body>` at `layer.popup`. A Tile Popup opens over `anchor`, clamped to the screen; a form Popup is centred. Focus goes back to `anchor` on close. Title: `text.heading.popup`.
 
 | Prop           | Type                | Default | Description                                                                                                                 |
 | -------------- | ------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |

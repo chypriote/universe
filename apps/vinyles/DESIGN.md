@@ -48,7 +48,7 @@ Nunito (Google Fonts), weights 500, 700, 800. Fallback: ui-rounded, system-ui. N
 ## Layout
 
 - Grid: 3 columns on phone, 5 from 640px, 7 from 900px, 8 from 1200px. Gap 8px across, 12px down. Side gutter 16px plus safe-area insets.
-- Sticky bar: title, chips (collection: record count and total spent; wishlist: item count), tab pills (Collection, Wishlist), search, artist select, sort select, wishlist desire filter (3, 2, 1 dots; pressed = sun).
+- Sticky bar: title, chips (collection: record count and total spent; wishlist: item count), tab pills (Collection, Wishlist), search, artist select, sort select, wishlist desire filter (DesireSelect: any desire, or 1 to 5 dots).
 - Sorts: artist, album, release year, acquired (collection only).
 - Caption under each cover: album title (bold), then artist (muted). Wishlist adds desire dots in the accent color. No year in the caption.
 
