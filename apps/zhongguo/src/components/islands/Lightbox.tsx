@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import type { GalleryPhoto } from '@/lib/itineraries.server';
 
 export type LightboxPhoto = Pick<GalleryPhoto, 'url' | 'alt' | 'tripTitle' | 'photographer'> &
@@ -47,9 +48,7 @@ export function Lightbox({ photos, index, onIndexChange, onClose }: LightboxProp
         className="absolute top-6 right-6 text-dark-foreground hover:text-primary transition-colors z-[110]"
         aria-label="Close"
       >
-        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <X size={32} aria-hidden="true" />
       </button>
 
       <button
@@ -58,9 +57,7 @@ export function Lightbox({ photos, index, onIndexChange, onClose }: LightboxProp
         className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-dark-foreground hover:text-primary transition-colors p-2"
         aria-label="Previous"
       >
-        <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-        </svg>
+        <ChevronLeft size={40} aria-hidden="true" />
       </button>
 
       <button
@@ -69,9 +66,7 @@ export function Lightbox({ photos, index, onIndexChange, onClose }: LightboxProp
         className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-dark-foreground hover:text-primary transition-colors p-2"
         aria-label="Next"
       >
-        <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-        </svg>
+        <ChevronRight size={40} aria-hidden="true" />
       </button>
 
       <div className="w-full h-full flex flex-col items-center justify-center gap-6">

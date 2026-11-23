@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Clock } from 'lucide-react';
+import { formatDayMonth, formatEuros, monthName } from '@universe/universe/format';
 import { isVietnamAirport } from '@/lib/flight-utils';
 
 interface FlightSearchRow {
@@ -42,15 +44,10 @@ const VIETNAM_ROW_CLASS =
 const VIETNAM_PILL_CLASS =
   'border-[hsl(205_45%_72%)] bg-[hsl(205_70%_90%)] hover:bg-[hsl(205_70%_86%)]';
 
-function formatShortDate(dateStr: string): string {
-  return new Date(`${dateStr}T12:00:00`).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-  });
-}
+const formatShortDate = formatDayMonth;
 
 function formatPrice(price: number): string {
-  return `${price.toLocaleString('fr-FR')}\u00a0€`;
+  return formatEuros(price, { whole: true });
 }
 
 function toDateKey(date: Date): string {
@@ -89,7 +86,7 @@ function buildCalendarDays(flights: FlightSearchRow[]): CalendarDay[] {
     days.push({
       date,
       day: cursor.getDate(),
-      month: cursor.toLocaleDateString('en-GB', { month: 'short' }),
+      month: monthName(date),
       flights: flightsByDate.get(date) ?? [],
     });
   }
@@ -289,14 +286,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
       >
         <div className="shrink-0 p-4 border-b border-border bg-background">
           <h2 className="eyebrow text-foreground flex items-center gap-2">
-            <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <Clock size={16} className="text-primary" aria-hidden="true" />
             Recent Search Results
           </h2>
           <p className="mt-2 text-[11px] text-muted-foreground leading-relaxed">

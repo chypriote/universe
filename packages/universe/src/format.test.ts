@@ -5,7 +5,8 @@ import {
 	formatDayMonth,
 	formatEuros,
 	formatMonth,
-	formatNumber
+	formatNumber,
+	monthName
 } from './format';
 
 // Intl puts no-break spaces in French numbers.
@@ -31,5 +32,6 @@ describe('dates', () => {
 		expect(formatDate('2024')).toBe('2024');
 		expect(formatMonth('2024-11-02')).toBe('Nov 2024');
 		expect(formatDayMonth('2024-11-02')).toBe('2 Nov');
+		expect(monthName('2024-09-30')).toBe('Sep');
 	});
 });

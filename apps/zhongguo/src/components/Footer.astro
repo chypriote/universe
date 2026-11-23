@@ -1,4 +1,5 @@
 ---
+import Koala from '@universe/universe/astro/Koala.astro';
 import Container from '@/components/Container.astro';
 import { SITE } from '@/config/site';
 
@@ -32,6 +33,9 @@ const links = [
       </ul>
     </div>
 
-    <p class="pt-8 text-xs text-dark-muted-foreground">© {new Date().getFullYear()} {SITE.title}</p>
+    <p class="pt-8 flex items-center gap-2 text-xs text-dark-muted-foreground">
+      <Koala size={16} />
+      © {new Date().getFullYear()} {SITE.title}
+    </p>
   </Container>
 </footer>
