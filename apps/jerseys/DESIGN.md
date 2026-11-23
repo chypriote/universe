@@ -90,7 +90,7 @@ Layering, bottom to top:
 1. Page content
 2. Sticky bar (z 10)
 3. Page-colour strip over the top safe-area inset (z 20)
-4. Popup: native `<dialog>` in the top layer, over the overlay colour
+4. Popup: the Showcase dialog, portalled to `<body>` at `layer.popup` (z 30), over the overlay colour
 
 ## 7. Do's and don'ts
 

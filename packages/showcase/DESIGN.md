@@ -46,6 +46,7 @@ A new app sets every theme slot in its `src/app.css` and lists them in its own D
 ## 6. Depth and motion
 
 - Depth is a soft offset shadow (0 3px 0), never a blur. Pressed: shadow 0, down 3px.
+- Hover on a pill adds an 8% `currentColor` layer.
 - Durations: 80ms (press), 150ms (hover). Easing: cubic-bezier(.2, .8, .2, 1).
 - Hover or focus on a tile: lift 3px, tilt -1.5deg. Nothing moves under `prefers-reduced-motion: reduce`.
 
@@ -66,11 +67,22 @@ A new app sets every theme slot in its `src/app.css` and lists them in its own D
 
 ## 8. Voice
 
-- Names come from each app's GLOSSARY.md.
-- Labels are short and plain: "Got it", "Drop", "Add", "Save", "Cancel", "Delete".
-- No "owner only" text in the UI.
+- Names come from each app's GLOSSARY.md. The UI and the code use the same word.
+- Labels are short, plain, sentence case: "Got it", "Drop", "Add", "Save", "Cancel", "Delete", "Log in".
+- A confirmation names the thing: "Delete Blue Train?", "Delete Lyon 2023-24 · Home?".
+- An empty state is one line: "No records yet", "Nothing on the wishlist", "No match".
+- An error starts with "!" and says how to fix it: "! Wrong password", "! Type the price in euros, like 12,50".
+- Money is euros in French format ("1 604,20 €"); every number uses tabular figures.
+- No "owner only" text in the UI: Owner controls simply appear after login.
 
-## 9. Agent prompt guide
+## 9. Iconography
+
+- Lucide (`@lucide/svelte`), stroke 2, in `currentColor`. 20px in an `icon` Button, 16px in an `icon-sm` Button.
+- Every icon-only Button has a visually hidden label.
+- Each app keeps its own mark in `static/` (favicon and home-screen icon). Never redraw it.
+- No emoji, stickers or illustrations. The pictures of the things are the only imagery.
+
+## 10. Agent prompt guide
 
 - UI that two apps use goes in this package. An app keeps only its theme and domain components.
 - Use a component from [COMPONENTS.md](COMPONENTS.md) before you propose one. A new shared component goes into COMPONENTS.md first.
