@@ -144,6 +144,10 @@ An `icon-sm` Button that switches light and dark and saves the choice.
 
 A short message, and an optional action ("Clear filters"). No illustration.
 
+### Signature
+
+The line at the bottom of every page: the koala (`packages/universe/COMPONENTS.md`) and the app's name, "Nico's jerseys". Muted, centred, after the last tile.
+
 ### LoginAction
 
 The Owner login in the StickyBar title row. Viewer: a lock `icon-sm` Button (hidden label "Owner login") that opens a Popup with LoginForm. Owner: a gear icon link to the admin page (hidden label "Admin"). No "owner only" text.

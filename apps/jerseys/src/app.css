@@ -1,6 +1,8 @@
 @import 'tailwindcss';
+@import '@universe/universe/universe.css';
 @import '@universe/showcase/showcase.css';
 @source '../../../packages/showcase/src';
+@source '../../../packages/universe/src';
 
 /* "Kit wall" theme (DESIGN.md): the Showcase theme slots, then the tokens only Jerseys has. */
 :root {

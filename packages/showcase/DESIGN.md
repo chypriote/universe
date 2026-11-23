@@ -1,6 +1,6 @@
 # Showcase design system
 
-The shared design language of every collection app in Universe. An app is a packed wall of square tiles (the things Nico owns or wants), a sticky bar to search and filter it, and popups for details and forms. Each app keeps the same structure, shapes and controls, and brings its own page tint, accent and display face.
+The design family of the collection apps in Universe, built on the Universe layer (`packages/universe/DESIGN.md`). An app is a packed wall of square tiles (the things Nico owns or wants), a sticky bar to search and filter it, and popups for details and forms. Each app keeps the same structure, shapes and controls, and brings its own page tint, accent and display face.
 
 Decided by Nico on 2026-11-23. Tokens: [TOKENS.md](TOKENS.md). Components: [COMPONENTS.md](COMPONENTS.md).
 
@@ -49,7 +49,7 @@ A new app sets every theme slot in its `src/app.css` and lists them in its own D
 
 - Depth is a soft offset shadow (0 3px 0), never a blur. Pressed: shadow 0, down 3px.
 - Hover on a pill adds an 8% `currentColor` layer.
-- Durations: 80ms (press), 150ms (hover). Easing: cubic-bezier(.2, .8, .2, 1).
+- Durations and easing come from the Universe layer (`packages/universe/DESIGN.md`).
 - Hover or focus on a tile: lift 3px, tilt -1.5deg. Nothing moves under `prefers-reduced-motion: reduce`.
 
 ## 7. Do's and don'ts
@@ -82,7 +82,7 @@ A new app sets every theme slot in its `src/app.css` and lists them in its own D
 - Lucide (`@lucide/svelte`), stroke 2, in `currentColor`. 20px in an `icon` Button, 16px in an `icon-sm` Button.
 - Every icon-only Button has a visually hidden label.
 - Each app keeps its own mark in `static/` (favicon and home-screen icon). Never redraw it.
-- No emoji, stickers or illustrations. The pictures of the things are the only imagery.
+- No emoji, stickers or illustrations. The pictures of the things are the only imagery, plus the koala in the Signature (`packages/universe/DESIGN.md`).
 
 ## 10. Agent prompt guide
 

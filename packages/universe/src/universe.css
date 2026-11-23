@@ -1,0 +1,20 @@
+/*
+ * Universe layer (DESIGN.md): what every app shares, whatever its design family.
+ * Import it before the family's own CSS.
+ */
+
+:root {
+	--universe-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
+	--universe-duration-press: 80ms;
+	--universe-duration-hover: 150ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	::before,
+	::after {
+		transition: none !important;
+		animation: none !important;
+		scroll-behavior: auto !important;
+	}
+}

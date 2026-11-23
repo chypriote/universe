@@ -4,7 +4,7 @@
 	import type { PageProps } from './$types';
 	import type { CollectionJersey } from '#lib/server/catalog/types';
 	import { continents } from '#lib/countries';
-	import { formatCents, formatDate } from '#lib/format';
+	import { formatCents, formatDate } from '@universe/universe/format';
 	import { fitLabels, kitTypeText, versionLabels } from '#lib/labels';
 	import { mainPictureUrl } from '#lib/pictures';
 	import { deleteRow } from '#lib/forms';

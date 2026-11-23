@@ -5,7 +5,7 @@
 	import type { PageProps } from './$types';
 	import type { WithCoverUrl } from '#lib/covers';
 	import type { Desire, PriceQuote, Store, WishlistItemView } from '#lib/server/catalog/types';
-	import { formatCents, formatDate } from '#lib/format';
+	import { formatCents, formatDate } from '@universe/universe/format';
 	import { postAction } from '#lib/forms';
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
 	import ArtistFilter from '#lib/components/ArtistFilter.svelte';
