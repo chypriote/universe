@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TileCaption from '@universe/showcase/components/TileCaption.svelte';
 	import MainPicture from './MainPicture.svelte';
 
 	let {
@@ -50,14 +51,5 @@
 			</span>
 		{/if}
 	</span>
-	<span class="grid min-w-0 px-0.5 pt-2">
-		<span
-			class="truncate font-display text-sm leading-snug font-extrabold tracking-caption uppercase italic"
-		>
-			{team}
-		</span>
-		<span class="truncate text-2xs leading-snug font-medium text-muted-foreground">
-			{season} · {kitType}
-		</span>
-	</span>
+	<TileCaption title={team} subtitle="{season} · {kitType}" />
 </button>

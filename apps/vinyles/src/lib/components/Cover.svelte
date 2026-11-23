@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TileCaption from '@universe/showcase/components/TileCaption.svelte';
 	import { initials, tileClass } from '#lib/tile';
 	import DesireDots from './DesireDots.svelte';
 
@@ -32,13 +33,13 @@
 <button
 	type="button"
 	aria-pressed={selected}
-	class="group flex min-h-11 w-full cursor-pointer flex-col gap-1 rounded-(--cover-radius) text-start outline-ring focus-visible:outline-3 focus-visible:outline-solid"
+	class="group flex min-h-11 w-full cursor-pointer flex-col rounded-(--cover-radius) text-start outline-ring focus-visible:outline-3 focus-visible:outline-solid"
 	onclick={(e) => onSelect?.(e.currentTarget)}
 >
 	<span
 		class="block aspect-square w-full overflow-hidden rounded-(--cover-radius) shadow-(--shadow-raised) {selected
 			? 'outline-4 outline-offset-2 outline-ring outline-solid'
-			: ''} motion-safe:transition-transform motion-safe:duration-150 motion-safe:ease-out motion-safe:group-hover:-translate-y-[3px] motion-safe:group-hover:-rotate-[1.5deg] motion-safe:group-focus-visible:-translate-y-[3px] motion-safe:group-focus-visible:-rotate-[1.5deg]"
+			: ''} motion-safe:transition-transform motion-safe:duration-150 motion-safe:ease-(--easing-out) motion-safe:group-hover:translate-y-(--tile-hover-lift) motion-safe:group-hover:rotate-(--tile-hover-tilt) motion-safe:group-focus-visible:translate-y-(--tile-hover-lift) motion-safe:group-focus-visible:rotate-(--tile-hover-tilt)"
 	>
 		{#if showImage}
 			<img
@@ -60,13 +61,8 @@
 			</span>
 		{/if}
 	</span>
-	<span class="block text-xs leading-tight font-extrabold break-words text-foreground">
-		{album}
-	</span>
-	<span class="block text-[11px] leading-tight font-medium break-words text-muted-foreground">
-		{artist}
-	</span>
+	<TileCaption title={album} subtitle={artist} />
 	{#if desire}
-		<DesireDots value={desire} />
+		<span class="px-0.5 pt-1"><DesireDots value={desire} /></span>
 	{/if}
 </button>

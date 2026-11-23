@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { resolve } from '$app/paths';
 	import type { PageProps } from './$types';
 	import type { WishlistItem } from '#lib/server/catalog/types';
@@ -14,7 +15,7 @@
 	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from '#lib/components/DeleteAction.svelte';
 	import Chip from '@universe/showcase/components/Chip.svelte';
-	import CountryFilter from '#lib/components/CountryFilter.svelte';
+	import MultiSelectFilter from '@universe/showcase/components/MultiSelectFilter.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
 	import GotItForm from '#lib/components/GotItForm.svelte';
 	import LoginAction from '@universe/showcase/components/LoginAction.svelte';
@@ -25,7 +26,7 @@
 	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
 	import { lists } from '#lib/lists';
 	import Tile from '#lib/components/Tile.svelte';
-	import TileGrid from '#lib/components/TileGrid.svelte';
+	import TileGrid from '@universe/showcase/components/TileGrid.svelte';
 	import WishlistItemForm from '#lib/components/WishlistItemForm.svelte';
 
 	let { data }: PageProps = $props();
@@ -56,13 +57,13 @@
 		const present = new Map(data.items.map((i) => [i.kit.team.country.id, i.kit.team.country]));
 		return continents
 			.map((continent) => ({
-				continent: continent.label,
-				countries: [...present.values()]
+				label: continent.label,
+				options: [...present.values()]
 					.filter((c) => c.continent === continent.value)
 					.sort((a, b) => compareText(a.name, b.name))
-					.map((c) => ({ id: String(c.id), name: c.name }))
+					.map((c) => ({ value: String(c.id), label: c.name }))
 			}))
-			.filter((group) => group.countries.length > 0);
+			.filter((group) => group.options.length > 0);
 	});
 
 	// A Wishlist Item has no Print: search covers the Team name.
@@ -155,7 +156,7 @@
 		<SearchField bind:value={search} label="Search team" placeholder="Search team" />
 	{/snippet}
 	{#snippet controls()}
-		<CountryFilter bind:value={selectedCountries} groups={countryGroups} />
+		<MultiSelectFilter bind:value={selectedCountries} label="Countries" groups={countryGroups} />
 		<Select bind:value={sort} label="Sort by" options={sorts} />
 		<SortDirection bind:value={direction} />
 	{/snippet}
@@ -244,7 +245,7 @@
 					<dd>{selected.version ? versionLabels[selected.version] : 'Any version'}</dd>
 				</dl>
 				{#if actionError}
-					<p class="text-sm font-bold text-destructive" role="alert">! {actionError}</p>
+					<ErrorMessage message={actionError} />
 				{/if}
 			{/if}
 		{/snippet}

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { mainPictureUpload, postAction, teamProblem } from '#lib/forms';
 	import { labelOptions, versionLabels } from '#lib/labels';
 	import { newTeamName, unknownTeamMessage } from '#lib/team-name';
@@ -118,17 +120,9 @@
 		</div>
 	{/if}
 	{#if error}
-		<p class="text-sm font-bold text-destructive sm:col-span-2" role="alert">! {error}</p>
+		<ErrorMessage message={error} class="sm:col-span-2" />
 	{/if}
-	<div class="flex flex-wrap justify-end gap-2 sm:col-span-2">
-		<Button onclick={onDone}>Cancel</Button>
-		<Button
-			intent="success"
-			type="submit"
-			disabled={busy && addingAnyway}
-			loading={busy && !addingAnyway}
-		>
-			Save
-		</Button>
+	<div class="sm:col-span-2">
+		<FormActions busy={busy && !addingAnyway} disabled={busy && addingAnyway} onCancel={onDone} />
 	</div>
 </form>

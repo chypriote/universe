@@ -16,14 +16,12 @@ Vinyles is a Showcase theme. Core tokens, semantic bindings and the contrast tab
 | `--tracking-heading-value` | -0.025em | |
 | `--heading-page-size` | 24px | |
 | `--heading-popup-size` | 22px | |
-| `--popup-width-max` | 420px | Login, confirm |
-| `--shadow-popup` | 0 10px 0 shadow, 0 14px 34px rgb(26 47 107 / .3) (dark: rgb(0 0 0 / .5)) | |
 
 ## Type roles
 
 | Token | Size / weight | Color |
 |---|---|---|
-| text.caption.album | 12 / 800 | text.primary |
+| text.caption.album | 14 / 800, display (Nunito) | text.primary |
 | text.caption.artist | 11 / 500 | text.muted |
 
 ## Component tokens

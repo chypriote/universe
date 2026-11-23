@@ -58,6 +58,15 @@ Visible label, native input, `error` text in `color.text.error` linked with `ari
 
 Radio pills, `type="single"`: one option is always picked. Pressed: `--theme-selected` (the accent unless the app sets another).
 
+### ErrorMessage
+
+A form or action error in `color.text.error`, 14px / 700, `role="alert"`. It adds the leading "!". Field shows its own error the same way.
+
+| Prop    | Type   | Default | Description               |
+| ------- | ------ | ------- | ------------------------- |
+| message | string | —       | "Wrong password"          |
+| class   | string | —       | Grid or flex placement    |
+
 ## Components
 
 ### Tabs
@@ -68,6 +77,34 @@ Links between an app's lists, not an ARIA tab widget, on one raised track. Curre
 | ------- | ------------------------ | ------- | -------------------------- |
 | current | string                   | —       | Key of the current list    |
 | links   | `{ key, href, label }[]` | —       | `href` resolved by the app |
+
+### TileGrid
+
+The wall of tiles: `grid.columns` per breakpoint, gap 8px across and 12px down, gutter 16px plus safe-area insets. Children are `<li>`, keyed by the thing's id.
+
+### TileCaption
+
+The two lines under a tile: `title` in the display face, 14px / 800, `--tracking-caption`; `subtitle` 11px / 500, muted. Both lines truncate.
+
+### MultiSelectFilter
+
+A `<details>` pill with checkboxes, in the StickyBar `controls`. Summary: "All {label} ({n})" or "{label} ({picked})". The list opens under the pill from its start edge. A neutral Button "Clear filter" stays at the top while the list scrolls; it is disabled when nothing is picked. A group with a `label` has a heading checkbox that picks or clears its options (indeterminate when some are picked).
+
+| Prop   | Type                                                    | Default | Description                        |
+| ------ | ------------------------------------------------------- | ------- | ---------------------------------- |
+| value  | string[]                                                | `[]`    | Bindable. Empty = all              |
+| label  | string                                                  | —       | Plural, capitalised: "Countries"   |
+| groups | `{ label?, options: { value, label }[] }[]`             | —       | One group with no label for a flat list |
+
+### FormActions
+
+The footer row of a form. The `start` snippet (Delete, other actions on the thing) sits on the left; "Cancel" (when `onCancel` is set) then the `success` Button "Save" sit on the right. The row wraps on a narrow screen.
+
+| Prop     | Type         | Default | Description              |
+| -------- | ------------ | ------- | ------------------------ |
+| busy     | boolean      | false   | Save shows `loading`     |
+| disabled | boolean      | false   | Save is disabled         |
+| onCancel | `() => void` | —       | Shows "Cancel"           |
 
 ### ConfirmDialog
 

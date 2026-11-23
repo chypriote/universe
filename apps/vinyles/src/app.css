@@ -22,10 +22,6 @@
 	--tracking-heading-value: -0.025em;
 	--heading-page-size: 24px;
 	--heading-popup-size: 22px;
-	--popup-width-max: 420px;
-	--shadow-popup:
-		0 10px 0 light-dark(var(--shadow-color), var(--shadow-color-dark)),
-		0 14px 34px light-dark(rgb(26 47 107 / 0.3), rgb(0 0 0 / 0.5));
 
 	--popup-cover-size: 150px;
 	--popup-cover-size-large: 280px;

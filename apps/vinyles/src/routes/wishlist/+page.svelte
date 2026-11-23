@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { resolve } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
@@ -8,13 +9,13 @@
 	import { formatCents, formatDate } from '@universe/universe/format';
 	import { postAction } from '#lib/forms';
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
-	import ArtistFilter from '#lib/components/ArtistFilter.svelte';
+	import MultiSelectFilter from '@universe/showcase/components/MultiSelectFilter.svelte';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import { Button as UiButton } from '@universe/showcase/ui/button';
 	import Chip from '@universe/showcase/components/Chip.svelte';
 	import Cover from '#lib/components/Cover.svelte';
 	import CoverPicker from '#lib/components/CoverPicker.svelte';
-	import CoverGrid from '#lib/components/CoverGrid.svelte';
+	import TileGrid from '@universe/showcase/components/TileGrid.svelte';
 	import DesireDots from '#lib/components/DesireDots.svelte';
 	import DesireSelect from '#lib/components/DesireSelect.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
@@ -247,7 +248,11 @@
 		/>
 	{/snippet}
 	{#snippet controls()}
-		<ArtistFilter bind:value={selectedArtists} names={artistNames} />
+		<MultiSelectFilter
+			bind:value={selectedArtists}
+			label="Artists"
+			groups={[{ options: artistNames.map((name) => ({ value: name, label: name })) }]}
+		/>
 		<Select bind:value={sort} label="Sort by" options={sorts} />
 		<SortDirection bind:value={direction} />
 		<DesireSelect
@@ -269,7 +274,7 @@
 			{/snippet}
 		</EmptyState>
 	{:else}
-		<CoverGrid>
+		<TileGrid>
 			{#each items as item (item.id)}
 				<li>
 					<Cover
@@ -282,7 +287,7 @@
 					/>
 				</li>
 			{/each}
-		</CoverGrid>
+		</TileGrid>
 	{/if}
 </main>
 
@@ -408,7 +413,7 @@
 					Product links
 				</Button>
 				{#if refreshError}
-					<p class="text-sm font-extrabold text-destructive" role="alert">{refreshError}</p>
+					<ErrorMessage message={refreshError} />
 				{/if}
 			{/if}
 		{/snippet}

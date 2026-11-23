@@ -1,11 +1,11 @@
 <script lang="ts">
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
 	import { untrack, type Snippet } from 'svelte';
 	import { continents, seasonFormats } from '#lib/countries';
 	import { postAction } from '#lib/forms';
 	import type { Continent, Country, SeasonFormat } from '#lib/server/catalog/types';
 	import CountryNameLookup from './CountryNameLookup.svelte';
 	import Field from '@universe/showcase/components/Field.svelte';
-	import FormActions from './FormActions.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
 
 	/** `country` set: edits it and its League. Unset: adds a Country with its League. */
@@ -63,5 +63,5 @@
 			}))}
 		/>
 	</div>
-	<FormActions {busy} {remove} />
+	<FormActions {busy} start={remove} />
 </form>

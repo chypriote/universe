@@ -12,7 +12,7 @@ Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, 
 | --------- | --------------------------------------------------------------------------- |
 | Primitive | DesireDots                                                                  |
 | Component | Cover, DesireSelect, Popup, StoreSelect                                     |
-| Pattern   | StickyBar, CoverGrid, RecordForm, WishlistItemForm, GotItForm, ImportReview |
+| Pattern   | StickyBar, RecordForm, WishlistItemForm, GotItForm, ImportReview            |
 
 Nico accepted the Owner UI, EmptyState and ImportReview sections on 2026-11-20. They add no token: they reuse the tokens above.
 
@@ -52,7 +52,7 @@ Default, hover preview, focus, disabled.
 
 | Prop     | Type                        | Default | Description                                         |
 | -------- | --------------------------- | ------- | --------------------------------------------------- |
-| album    | string                      | —       | Album title, caption line 1 (`text.caption.album`)  |
+| album    | string                      | —       | Album title, TileCaption line 1 (`text.caption.album`) |
 | artist   | string                      | —       | Artist name, caption line 2 (`text.caption.artist`) |
 | coverUrl | string \| null              | null    | Image from R2. Null shows the initials tile         |
 | desire | `1` to `5` | — | When set, DesireDots show under the caption |
@@ -65,7 +65,7 @@ Initials tile: first letters of the first two words of the artist name, in `text
 ### States
 
 - Default.
-- Hover and focus: `cover.hover.lift` and `cover.hover.tilt`, motion allowed only. Focus also shows the focus ring.
+- Hover and focus: `tile.hover.lift` and `tile.hover.tilt`, motion allowed only. Focus also shows the focus ring.
 - No cover: initials tile.
 - Image load fails: initials tile.
 
@@ -134,28 +134,19 @@ The page fills the snippets. Popup does not know Records from Wishlist Items.
 
 The Showcase StickyBar. Title "Vinyles." with the period in `color.icon.accent`.
 
-- Collection: Chip `highlight` record count (a disc icon below `sm`), Chip `success` total spent (`compact`). Filters: artist. Sorts: artist, album, release year, acquired.
+- Collection: Chip `highlight` record count (a disc icon below `sm`), Chip `success` total spent (`compact`). Filters: artist (Showcase MultiSelectFilter, label "Artists"). Sorts: artist, album, release year, acquired. Covers sit in the Showcase TileGrid, keyed by Record id.
 - Wishlist: Chip `info` item count. Filters: artist, DesireSelect. Sorts: artist, album, release year.
 - The Owner's AddAction opens RecordForm ("Add a record") or WishlistItemForm ("Add to wishlist").
 
 ---
 
-## CoverGrid
-
-**Hierarchy:** Pattern
-**Purpose:** The wall of Covers.
-
-CSS grid, `grid.columns` per breakpoint, gaps `space.grid.gap-x` and `space.grid.gap-y`, side gutter `space.gutter` plus safe-area insets. Key each Cover by its Record or Wishlist Item id, not by index.
-
----
-
 ## Owner UI
 
-Viewers see only the lock Button. After login, the Owner sees an "Add" Button in its place. Every form opens in Popup with `anchor` null: centered, same box, same X button and Esc. Forms use native inputs and a native `<form>`; the submit Button is `success`, with "Cancel" as `neutral`.
+Viewers see only the lock Button. After login, the Owner sees an "Add" Button in its place. Every form opens in Popup with `anchor` null: centered, same box, same X button and Esc. Forms use native inputs and a native `<form>`; the buttons are the Showcase FormActions; errors are ErrorMessage.
 
 ### RecordForm
 
-Fields: Artist (Field, with the existing artists as native `<datalist>`), Album (Field), Variant (Field, optional), Acquisition (two radio pills: Purchase, Gift), Date (Field `date`). Purchase shows StoreSelect and Price. Gift shows "From" (Field, optional). Edit mode fills the values and adds a `neutral` Button "Delete record", which opens ConfirmDialog. Release year and cover come from the lookup on save.
+Fields: Artist (Field, with the existing artists as native `<datalist>`), Album (Field), Variant (Field, optional), Acquisition (two radio pills: Purchase, Gift), Date (Field `date`). Purchase shows StoreSelect and Price. Gift shows "From" (Field, optional). Edit mode fills the values and adds, left of FormActions, a `danger` Button "Delete record" and a Button "Change cover". "Delete record" opens ConfirmDialog. Release year and cover come from the lookup on save.
 
 ### WishlistItemForm
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import XIcon from '@lucide/svelte/icons/x';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import ConfirmDialog from '@universe/showcase/components/ConfirmDialog.svelte';
@@ -61,6 +62,6 @@
 		</p>
 	{:else}
 		<!-- A full row, last, in the flex-wrap actions of a Popup or form. -->
-		<p class="order-last basis-full text-sm font-bold text-destructive" role="alert">! {error}</p>
+		<ErrorMessage message={error} class="order-last basis-full" />
 	{/if}
 {/if}

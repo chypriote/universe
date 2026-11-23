@@ -18,7 +18,7 @@
 	import JerseyForm from '#lib/components/JerseyForm.svelte';
 	import Chip from '@universe/showcase/components/Chip.svelte';
 	import CoverageMap from '#lib/components/CoverageMap.svelte';
-	import CountryFilter from '#lib/components/CountryFilter.svelte';
+	import MultiSelectFilter from '@universe/showcase/components/MultiSelectFilter.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
 	import LoginAction from '@universe/showcase/components/LoginAction.svelte';
 	import Popup from '#lib/components/Popup.svelte';
@@ -28,7 +28,7 @@
 	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
 	import { lists } from '#lib/lists';
 	import Tile from '#lib/components/Tile.svelte';
-	import TileGrid from '#lib/components/TileGrid.svelte';
+	import TileGrid from '@universe/showcase/components/TileGrid.svelte';
 	import { printName, printNumber } from '#lib/print-number';
 
 	let { data }: PageProps = $props();
@@ -71,13 +71,13 @@
 		const present = new Map(data.jerseys.map((j) => [j.kit.team.country.id, j.kit.team.country]));
 		return continents
 			.map((continent) => ({
-				continent: continent.label,
-				countries: [...present.values()]
+				label: continent.label,
+				options: [...present.values()]
 					.filter((c) => c.continent === continent.value)
 					.sort((a, b) => compareText(a.name, b.name))
-					.map((c) => ({ id: String(c.id), name: c.name }))
+					.map((c) => ({ value: String(c.id), label: c.name }))
 			}))
-			.filter((group) => group.countries.length > 0);
+			.filter((group) => group.options.length > 0);
 	});
 
 	const query = $derived(search.trim().toLocaleLowerCase());
@@ -167,7 +167,7 @@
 		/>
 	{/snippet}
 	{#snippet controls()}
-		<CountryFilter bind:value={selectedCountries} groups={countryGroups} />
+		<MultiSelectFilter bind:value={selectedCountries} label="Countries" groups={countryGroups} />
 		<Select bind:value={sort} label="Sort by" options={sorts} />
 		<SortDirection bind:value={direction} />
 	{/snippet}

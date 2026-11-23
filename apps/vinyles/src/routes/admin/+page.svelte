@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import type { PageProps } from './$types';
 	import type {
@@ -178,7 +179,7 @@
 					Check covers
 				</Button>
 			</div>
-			{#if error}<p class="text-sm font-medium" role="alert">! {error}</p>{/if}
+			{#if error}<ErrorMessage message={error} />{/if}
 			{#if data.failing.length > 0}
 				<ul class="flex flex-col divide-y divide-border">
 					{#each data.failing as album (album.albumId)}
@@ -237,7 +238,7 @@
 					Find suggestions
 				</Button>
 			</div>
-			{#if suggestionError}<p class="text-sm font-medium" role="alert">! {suggestionError}</p>{/if}
+			{#if suggestionError}<ErrorMessage message={suggestionError} />{/if}
 			<ul class="flex flex-col divide-y divide-border">
 				{#each data.suggestions as suggestion (suggestion.id)}
 					<li class="grid grid-cols-[auto_1fr_auto] items-center gap-x-3 gap-y-1 py-3">

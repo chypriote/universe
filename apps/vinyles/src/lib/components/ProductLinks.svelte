@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { addStore, postAction } from '#lib/forms';
 	import { centsToEuros, eurosToCents } from '#lib/money';
 	import type { PriceQuote, ProductLink } from '#lib/server/catalog/types';
@@ -116,7 +117,7 @@
 	<form class="flex flex-col gap-4" onsubmit={save}>
 		<StoreSelect bind:value={storeId} stores={offered} onAddStore={addStore} />
 		<Field label="Product page address" required bind:value={url} />
-		{#if error}<p class="text-sm font-medium text-foreground" role="alert">! {error}</p>{/if}
+		{#if error}<ErrorMessage message={error} />{/if}
 		<div class="flex flex-wrap gap-2">
 			<Button intent="success" type="submit" loading={busy}>Save and refresh</Button>
 			<Button onclick={onDone}>Back</Button>

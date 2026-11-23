@@ -1,8 +1,9 @@
 <script lang="ts">
+	import FormActions from '@universe/showcase/components/FormActions.svelte';
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { addStore, emptyAcquisition, postAction, toAcquisitionInput } from '#lib/forms';
 	import { untrack } from 'svelte';
 	import AcquisitionFields from './AcquisitionFields.svelte';
-	import Button from '@universe/showcase/components/Button.svelte';
 	import Field from '@universe/showcase/components/Field.svelte';
 
 	let {
@@ -46,9 +47,6 @@
 	<Field label="Variant" bind:value={variant} />
 	<Field label="Date" type="date" required bind:value={acquisition.date} />
 	<AcquisitionFields bind:acquisition {stores} onAddStore={addStore} />
-	{#if error}<p class="text-sm font-medium text-foreground" role="alert">! {error}</p>{/if}
-	<div class="flex flex-wrap gap-2">
-		<Button intent="success" type="submit" loading={busy}>Save</Button>
-		<Button onclick={onDone}>Cancel</Button>
-	</div>
+	{#if error}<ErrorMessage message={error} />{/if}
+	<FormActions {busy} onCancel={onDone} />
 </form>
