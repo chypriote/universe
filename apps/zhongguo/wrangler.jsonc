@@ -1,11 +1,21 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "zhongguo",
+  "account_id": "b5799f995ae02a61a7ed04892dfb5e74",
   "compatibility_date": "2026-11-01",
   "preview_urls": false,
   "assets": {
     "directory": "./dist",
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
-  }
+  },
+  // Flight searches. The site is static: the build reads them through the D1 REST API (src/lib/d1.ts).
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "zhongguo",
+      "database_id": "24f1267a-39b4-4d29-a5bc-155504507afc",
+      "migrations_dir": "migrations"
+    }
+  ]
 }

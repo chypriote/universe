@@ -1,94 +1,13 @@
 import { getJson } from "serpapi";
 import { format, getDay, addDays } from "date-fns";
-import { readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
-import {getFreshFlightSearch, insertFlightSearch, uuidv7FromDate} from "./scripts/db.js";
+import { getFreshFlightSearch, insertFlightSearch } from "./scripts/db.js";
 
 process.loadEnvFile();
-
-const root = join(dirname(fileURLToPath(import.meta.url)));
-const flightsJsonPath = join(root, "flights", "flights.json");
 
 const formatDate = date => format(date, 'yyyy-MM-dd')
 
 function formatSqliteDatetime(date = new Date()) {
   return date.toISOString().replace("T", " ").slice(0, 19);
-}
-
-let flightsCache = null
-
-function loadFlights() {
-  if (!flightsCache) {
-    flightsCache = JSON.parse(readFileSync(flightsJsonPath, "utf8"));
-  }
-  return flightsCache;
-}
-
-function sleepSync(ms) {
-  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
-}
-
-function persistFlights(flights) {
-  const payload = Buffer.from(JSON.stringify(flights, null, 2) + "\n");
-  const tmpPath = `${flightsJsonPath}.${process.pid}.tmp`;
-  const retryable = new Set(["UNKNOWN", "EBUSY", "EPERM", "EACCES", "EAGAIN"]);
-  const maxAttempts = 10;
-  let lastError;
-
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      writeFileSync(tmpPath, payload);
-      try {
-        renameSync(tmpPath, flightsJsonPath);
-      } catch {
-        writeFileSync(flightsJsonPath, payload);
-        try {
-          unlinkSync(tmpPath);
-        } catch {}
-      }
-      return;
-    } catch (err) {
-      lastError = err;
-      if (!retryable.has(err?.code) || attempt === maxAttempts) {
-        throw err;
-      }
-      sleepSync(Math.min(1000, 40 * 2 ** (attempt - 1)));
-    }
-  }
-
-  throw lastError;
-}
-
-function upsertFlightJson({ airport, stops, price, outboundDate, returnDate, responseText, searchedOn, createdAt }) {
-  const flights = loadFlights();
-  const idx = flights.findIndex(
-    (f) =>
-      f.airport === airport &&
-      f.stops === stops &&
-      f.outbound_date === outboundDate &&
-      f.return_date === returnDate
-  );
-
-  const entry = {
-    id: idx >= 0 ? flights[idx].id : uuidv7FromDate(new Date(createdAt.replace(" ", "T") + "Z")),
-    airport,
-    stops,
-    price,
-    outbound_date: outboundDate,
-    return_date: returnDate,
-    response: responseText,
-    searched_on: searchedOn,
-    created_at: createdAt,
-  };
-
-  if (idx >= 0) {
-    flights[idx] = entry;
-  } else {
-    flights.push(entry);
-  }
-
-  persistFlights(flights);
 }
 
 const requestObject = {
@@ -239,7 +158,7 @@ async function getFlights(airport, start, end, stops) {
   const returnDate = formatDate(end)
   const searchedOn = formatDate(new Date())
 
-  const cached = getFreshFlightSearch(airport, stopsValue, outboundDate, returnDate, CACHE_MAX_AGE_DAYS)
+  const cached = await getFreshFlightSearch(airport, stopsValue, outboundDate, returnDate, CACHE_MAX_AGE_DAYS)
   if (cached) {
     return cached
   }
@@ -258,7 +177,7 @@ async function getFlights(airport, start, end, stops) {
 
   const price = getFlightPrice(json)
   const createdAt = formatSqliteDatetime()
-  const responseText = insertFlightSearch(
+  await insertFlightSearch(
     airport,
     stopsValue,
     price,
@@ -268,16 +187,6 @@ async function getFlights(airport, start, end, stops) {
     searchedOn,
     createdAt
   )
-  upsertFlightJson({
-    airport,
-    stops: stopsValue,
-    price,
-    outboundDate,
-    returnDate,
-    responseText,
-    searchedOn,
-    createdAt,
-  })
   return json
 }
 

@@ -22,4 +22,4 @@ Every trip photo, grouped by Trip, at `/gallery`. Photos live in R2 (`docs/photo
 The flight table and price calendar at `/planner`, built from the stored Flight searches.
 
 **Flight search**:
-One stored price for an airport, outbound and return dates, with or without stops, made by `npm run china`.
+One stored price for an airport, outbound and return dates, with or without stops, made by `npm run china` and kept in D1.
