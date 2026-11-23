@@ -24,4 +24,5 @@ These rules override the same topics in the user's global rules.
 - Keep the branch name your session assigns. No `<type>/<issue>-<slug>` rename.
 - The Owner login token and cookie live in `packages/owner`: one session covers every app (see an app README for `OWNER_COOKIE_DOMAIN`).
 - UI used by more than one app goes in `packages/showcase`. An app keeps only its theme values and its domain components. See `packages/showcase/DESIGN.md`.
+- To add an app, follow `docs/adding-an-app.md` in order: domain (`/grill-with-docs`), theme, scaffold, repo wiring, deploy, design-system page.
 - Run a workspace script with `-w`, for example `npm run ci -w apps/jerseys`. Install from the root only.
