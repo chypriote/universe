@@ -110,7 +110,7 @@ export type GalleryArchive = {
 
 type TripPhoto = { slug: string; name: string; width: number; height: number; city?: string };
 
-const photosBaseUrl = (process.env.PHOTOS_URL ?? '').replace(/\/$/, '');
+const photosBaseUrl = (import.meta.env.PHOTOS_URL ?? process.env.PHOTOS_URL ?? '').replace(/\/$/, '');
 if (!photosBaseUrl) {
   throw new Error('PHOTOS_URL is not set. It is the public base URL of the photo bucket.');
 }

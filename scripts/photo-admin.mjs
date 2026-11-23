@@ -1,4 +1,4 @@
-// Local page to set the city of each photo. Usage: PHOTOS_URL=<bucket url> node scripts/photo-admin.mjs
+// Local page to set the city of each photo. Usage: node --env-file=.env scripts/photo-admin.mjs
 // Opens http://localhost:4322 and saves to src/data/photos.json. Commit the file when done.
 import { createServer } from 'node:http';
 import { readFile, readdir, writeFile } from 'node:fs/promises';
