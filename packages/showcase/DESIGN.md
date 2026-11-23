@@ -4,6 +4,8 @@ The shared design language of every collection app in Universe. An app is a pack
 
 Decided by Nico on 2026-11-23. Tokens: [TOKENS.md](TOKENS.md). Components: [COMPONENTS.md](COMPONENTS.md).
 
+Visual reference: the [Showcase design-system page](https://claude.ai/artifact/Fdnc2AfpFDeiV5cE7gEVuo) shows the tokens and every component in four themes (Jerseys and Vinyles, light and dark). It is a picture of this package: when they differ, this repo wins. Refresh the page when a token, a theme slot or a component changes.
+
 ## 1. Theme
 
 **Theme statement:** happy, round, packed.
