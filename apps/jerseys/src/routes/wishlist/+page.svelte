@@ -141,6 +141,7 @@
 						teams={lists.teams}
 						countries={lists.countries}
 						pictured={lists.pictured}
+						kits={lists.kits}
 						onDone={close}
 					/>
 				{/snippet}
