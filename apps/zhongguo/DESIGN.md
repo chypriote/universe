@@ -49,7 +49,7 @@ Used for the footer and dark feature sections, not for a dark mode.
 | `secondary-hover` | Darker jade | Secondary hover |
 | `secondary-foreground` | Paper | Text on secondary |
 
-Favicon: `public/favicon.svg`, the seal.
+Favicon: `public/favicon.svg`, the seal; `public/apple-touch-icon.png` is the same seal at 180px.
 
 ### Semantic
 | Role | Token |
