@@ -10,5 +10,7 @@ export function ownerToken(cookies: Cookies): string {
 
 /** See `ownerCookieOptions` for `domain`. */
 export function setOwnerToken(cookies: Cookies, token: string, secure: boolean, domain = '') {
+	// A host-only cookie from before `domain` was set is sent first and hides the new one.
+	if (domain) cookies.delete(OWNER_COOKIE, { path: '/' });
 	cookies.set(OWNER_COOKIE, token, ownerCookieOptions(secure, domain));
 }
