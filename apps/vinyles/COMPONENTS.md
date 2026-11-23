@@ -11,7 +11,7 @@ Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, 
 | Level     | Components                                                                  |
 | --------- | --------------------------------------------------------------------------- |
 | Primitive | DesireDots                                                                  |
-| Component | Cover, DesireFilter, Popup, StoreSelect                                     |
+| Component | Cover, DesireSelect, Popup, StoreSelect                                     |
 | Pattern   | StickyBar, CoverGrid, RecordForm, WishlistItemForm, GotItForm, ImportReview |
 
 Nico accepted the Owner UI, EmptyState and ImportReview sections on 2026-11-20. They add no token: they reuse the tokens above.
@@ -19,19 +19,21 @@ Nico accepted the Owner UI, EmptyState and ImportReview sections on 2026-11-20. 
 ## DesireDots
 
 **Hierarchy:** Primitive
-**Purpose:** Shows the Desire of a Wishlist Item, 1 to 3.
+**Purpose:** Shows the Desire of a Wishlist Item, 1 to 5, and lets the Owner set it.
 
 ### Props API
 
-| Prop  | Type          | Default | Description    |
-| ----- | ------------- | ------- | -------------- |
-| value | `1 \| 2 \| 3` | —       | Number of dots |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| value | `1` to `5` | — | Number of filled dots |
+| onPick | `(level) => void` | — | Owner: each dot becomes a Button that sets it |
+| disabled | boolean | false | While a save runs |
 
-Dots: `color.icon.accent`. Visually hidden text: "Desire {value} of 3". The dots are `aria-hidden`.
+Dots: `color.icon.accent`. Without `onPick`: `value` dots, `aria-hidden`, and the visually hidden text "Desire {value} of 5". With `onPick`: five 44px-tall dot Buttons in a group labelled "Desire", each "Set desire to {level}" with `aria-pressed`; hovering a dot previews that level (unfilled dots at 25%).
 
 ### States
 
-Default only.
+Default, hover preview, focus, disabled.
 
 ---
 
@@ -53,7 +55,7 @@ Default only.
 | album    | string                      | —       | Album title, caption line 1 (`text.caption.album`)  |
 | artist   | string                      | —       | Artist name, caption line 2 (`text.caption.artist`) |
 | coverUrl | string \| null              | null    | Image from R2. Null shows the initials tile         |
-| desire   | `1 \| 2 \| 3`               | —       | When set, DesireDots show under the caption         |
+| desire | `1` to `5` | — | When set, DesireDots show under the caption |
 | onSelect | `(el: HTMLElement) => void` | —       | Gives the Popup the element to open over            |
 
 The whole Cover is one `<button>`. The image has `alt=""`, because the caption names the album. Image: square, `cover.radius`, `loading="lazy"`.
@@ -73,24 +75,25 @@ None.
 
 ---
 
-## DesireFilter
+## DesireSelect
 
 **Hierarchy:** Component
-**Purpose:** Filters the Wishlist by Desire.
+**Purpose:** Picks a Desire: the Wishlist filter ("Any desire", then 5 to 1) and the Desire field of WishlistItemForm (3 at first).
 
-Three toggle buttons: 3, 2 and 1 dots. Each one uses DesireDots for its face.
+A Showcase native-select pill. Options run from 5 ("5 (most wanted)") down to 1 ("1 (least wanted)"). `placeholder` adds the empty option.
 
 ### Props API
 
-| Prop  | Type              | Default | Description                                     |
-| ----- | ----------------- | ------- | ----------------------------------------------- |
-| value | `(1 \| 2 \| 3)[]` | `[]`    | Bindable. The pressed desires. Empty = show all |
-
-Each button has `aria-pressed`. Pressed: `color.bg.highlight` and `color.text.on-chip`. Not pressed: `color.bg.surface`. Group label (visually hidden): "Desire".
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| value | Desire \| null | null | The chosen level |
+| label | string | — | Visually hidden label |
+| placeholder | string | — | Label of the empty option, for a filter |
+| onPick | `(level \| null) => void` | — | Called with the new level, or null |
 
 ### States
 
-Default, hover, focus, pressed.
+Default, focus, disabled.
 
 ---
 
@@ -132,7 +135,7 @@ The page fills the snippets. Popup does not know Records from Wishlist Items.
 **Hierarchy:** Pattern
 **Purpose:** The top bar of each list.
 
-Order: title (`text.heading.page`), Chips, lock Button (Viewer) or Add Button (Owner), Tabs, SearchField, artist Select, sort Select, DesireFilter (Wishlist only). It wraps to more lines on phone. Background `color.bg.page`, sticky at top.
+Order: title (`text.heading.page`), Chips, lock Button (Viewer) or Add Button (Owner), Tabs, SearchField, artist Select, sort Select, DesireSelect (Wishlist only). It wraps to more lines on phone. Background `color.bg.page`, sticky at top.
 
 - Collection: Chip `highlight` record count, Chip `success` total spent. Sorts: artist, album, release year, acquired.
 - Wishlist: Chip `info` item count. Sorts: artist, album, release year.
