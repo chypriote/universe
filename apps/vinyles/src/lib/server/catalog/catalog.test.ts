@@ -49,7 +49,15 @@ interface FakeCall {
 }
 
 let fakeAlbums: FakeAlbum[];
+/** A clock the pacing tests control: in workerd `Date.now()` only moves on I/O, so real gaps read short. */
+function fakeClock() {
+	let time = 0;
+	return { now: () => time, sleep: async (ms: number) => void (time += ms) };
+}
+
 let calls: FakeCall[];
+/** Time a fetch is recorded at; the pacing tests point it at their fake clock. */
+let now = () => Date.now();
 let failMusicBrainz: boolean;
 let failDiscogs: boolean;
 let failDeezer: boolean;
@@ -58,6 +66,7 @@ let endlessPulls = 0;
 function installFakeWeb() {
 	fakeAlbums = [];
 	calls = [];
+	now = () => Date.now();
 	failMusicBrainz = false;
 	failDiscogs = false;
 	failDeezer = false;
@@ -68,7 +77,7 @@ function installFakeWeb() {
 			host: url.host,
 			url,
 			userAgent: request.headers.get('user-agent'),
-			at: Date.now()
+			at: now()
 		});
 		if (url.host === 'musicbrainz.org') {
 			if (failMusicBrainz) return new Response('unavailable', { status: 503 });
@@ -610,14 +619,16 @@ describe('Album lookup when an Album is added', () => {
 	});
 
 	it('makes at most one MusicBrainz request per interval', async () => {
-		const slow = createCatalog(env, { lookupIntervalMs: 60 });
+		const clock = fakeClock();
+		now = clock.now;
+		const slow = createCatalog(env, { lookupIntervalMs: 60, lookupClock: clock });
 		for (const title of ['One', 'Two', 'Three']) {
 			await slow.addRecord(token, { artist: 'A', album: title, acquisition: gift() });
 		}
 		const times = musicBrainzCalls().map((c) => c.at);
 		expect(times).toHaveLength(3);
-		expect(times[1] - times[0]).toBeGreaterThanOrEqual(55);
-		expect(times[2] - times[1]).toBeGreaterThanOrEqual(55);
+		expect(times[1] - times[0]).toBeGreaterThanOrEqual(60);
+		expect(times[2] - times[1]).toBeGreaterThanOrEqual(60);
 	});
 });
 
@@ -1610,7 +1621,9 @@ describe('Changing the Cover of an Album', () => {
 		});
 
 		it('make at most one MusicBrainz request per interval', async () => {
-			const slow = createCatalog(env, { lookupIntervalMs: 60 });
+			const clock = fakeClock();
+			now = clock.now;
+			const slow = createCatalog(env, { lookupIntervalMs: 60, lookupClock: clock });
 			fakeAlbums.push(group({ releases: [{ id: 'r', cover: 'x' }] }));
 			const record = await addRecord({ artist: 'Air', album: 'Moon Safari' });
 			calls.length = 0;
@@ -1618,7 +1631,7 @@ describe('Changing the Cover of an Album', () => {
 			await slow.listCoverCandidates(token, record.album.id);
 			const times = musicBrainzCalls().map((c) => c.at);
 			expect(times).toHaveLength(2);
-			expect(times[1] - times[0]).toBeGreaterThanOrEqual(55);
+			expect(times[1] - times[0]).toBeGreaterThanOrEqual(60);
 		});
 	});
 

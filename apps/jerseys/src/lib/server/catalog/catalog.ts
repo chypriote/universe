@@ -49,7 +49,9 @@ import {
 	isKitPictureUrl,
 	listKitPictures,
 	RateLimitError,
+	realClock,
 	searchTeams,
+	type Clock,
 	type SportsDbConfig
 } from './thesportsdb';
 import {
@@ -93,6 +95,8 @@ export interface CatalogEnv {
 export interface CatalogOptions {
 	/** Minimum gap between TheSportsDB requests. Default 2000 (their limit). */
 	lookupIntervalMs?: number;
+	/** Paces the lookups. Default the real clock; tests pass a fake one. */
+	lookupClock?: Clock;
 	/** How long a save waits for the Main Picture lookup of a new Kit. Default 8000. */
 	lookupTimeoutMs?: number;
 }
@@ -151,7 +155,8 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 	const db = drizzle(env.DB);
 	const sportsDb: SportsDbConfig = {
 		key: env.THESPORTSDB_KEY,
-		intervalMs: options.lookupIntervalMs ?? 2000
+		intervalMs: options.lookupIntervalMs ?? 2000,
+		clock: options.lookupClock ?? realClock
 	};
 
 	async function requireOwner(token: string) {

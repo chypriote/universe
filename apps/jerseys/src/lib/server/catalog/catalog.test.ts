@@ -613,9 +613,17 @@ const PNG = Uint8Array.from(
 	(c) => c.charCodeAt(0)
 );
 
+/** A clock the pacing tests control: in workerd `Date.now()` only moves on I/O, so real gaps read short. */
+function fakeClock() {
+	let time = 0;
+	return { now: () => time, sleep: async (ms: number) => void (time += ms) };
+}
+
 describe('Picture candidates', () => {
 	const catalog = createCatalog(env, { lookupIntervalMs: 0 });
 	let token: string;
+	/** Time a fetch is recorded at; the pacing tests point it at their fake clock. */
+	let now = () => Date.now();
 
 	/** Fake TheSportsDB at the fetch boundary: saved answers keyed by search text and Team id. */
 	let searches: Record<string, unknown>;
@@ -642,10 +650,11 @@ describe('Picture candidates', () => {
 		searches = { 'Olympique Lyonnais': searchLyon, Lyon: searchLyon, Japan: searchJapan };
 		equipment = { '133713': equipmentLyon, '134502': equipmentJapan };
 		calls = [];
+		now = () => Date.now();
 		failing = false;
 		vi.spyOn(globalThis, 'fetch').mockImplementation(async (input, init) => {
 			const url = new URL(new Request(input as RequestInfo, init).url);
-			calls.push({ url, at: Date.now() });
+			calls.push({ url, at: now() });
 			if (url.host === 'www.thesportsdb.com') {
 				if (failing) return new Response('Too Many Requests', { status: 429 });
 				if (url.pathname === '/api/v1/json/test-sportsdb-key/searchteams.php') {
@@ -888,24 +897,28 @@ describe('Picture candidates', () => {
 	});
 
 	it('sends at most one TheSportsDB request per interval, images included', async () => {
-		const slow = createCatalog(env, { lookupIntervalMs: 60 });
+		const clock = fakeClock();
+		now = clock.now;
+		const slow = createCatalog(env, { lookupIntervalMs: 60, lookupClock: clock });
 		const kit = await lyon();
 		const [first] = (await slow.listPictureCandidates(token, kit)).candidates;
 		await slow.pickMainPicture(token, { kitId: kit, candidateId: first.id });
 		const times = calls.map((c) => c.at);
 		expect(times).toHaveLength(3);
-		expect(times[1] - times[0]).toBeGreaterThanOrEqual(55);
-		expect(times[2] - times[1]).toBeGreaterThanOrEqual(55);
+		expect(times[1] - times[0]).toBeGreaterThanOrEqual(60);
+		expect(times[2] - times[1]).toBeGreaterThanOrEqual(60);
 	});
 
 	it('waits for the TheSportsDB interval for a pasted TheSportsDB image address', async () => {
-		const slow = createCatalog(env, { lookupIntervalMs: 60 });
+		const clock = fakeClock();
+		now = clock.now;
+		const slow = createCatalog(env, { lookupIntervalMs: 60, lookupClock: clock });
 		const kit = await lyon();
 		await slow.listPictureCandidates(token, kit);
 		await slow.uploadMainPictureFromUrl(token, { kitId: kit, url: equipmentUrl('pasted') });
 		const times = calls.map((c) => c.at);
 		expect(times).toHaveLength(3);
-		expect(times[2] - times[1]).toBeGreaterThanOrEqual(55);
+		expect(times[2] - times[1]).toBeGreaterThanOrEqual(60);
 		expect((await mainPictureOf(kit))?.main_picture_chosen).toBe(1);
 	});
 

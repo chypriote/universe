@@ -22,14 +22,31 @@ export async function readBody(response: Response, max: number): Promise<Uint8Ar
 	return new Uint8Array(await new Blob(chunks as BlobPart[]).arrayBuffer());
 }
 
-/** Next time (ms since epoch) a MusicBrainz request may start. Shared by every Catalog in the isolate. */
-let nextSlot = 0;
+/** What paces the requests. Tests pass a fake one: in workerd `Date.now()` only moves on I/O. */
+export interface Clock {
+	now(): number;
+	sleep(ms: number): Promise<void>;
+}
 
-async function waitForSlot(intervalMs: number) {
-	const slot = Math.max(Date.now(), nextSlot);
-	nextSlot = slot + intervalMs;
-	const wait = slot - Date.now();
-	if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+export const realClock: Clock = {
+	now: () => Date.now(),
+	sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+};
+
+/** Minimum gap between two MusicBrainz requests, and the clock that measures it. */
+export interface Pace {
+	intervalMs: number;
+	clock: Clock;
+}
+
+/** Next time (ms) a MusicBrainz request may start, per clock. The real clock's is shared by every Catalog in the isolate. */
+const nextSlots = new WeakMap<Clock, number>();
+
+async function waitForSlot({ intervalMs, clock }: Pace) {
+	const slot = Math.max(clock.now(), nextSlots.get(clock) ?? 0);
+	nextSlots.set(clock, slot + intervalMs);
+	const wait = slot - clock.now();
+	if (wait > 0) await clock.sleep(wait);
 }
 
 export interface AlbumMatch {
@@ -50,9 +67,9 @@ function quote(value: string) {
 export async function findAlbum(
 	artist: string,
 	title: string,
-	intervalMs: number
+	pace: Pace
 ): Promise<AlbumMatch | null> {
-	await waitForSlot(intervalMs);
+	await waitForSlot(pace);
 	const url = new URL('https://musicbrainz.org/ws/2/release-group/');
 	url.searchParams.set('query', `artist:${quote(artist)} AND releasegroup:${quote(title)}`);
 	url.searchParams.set('fmt', 'json');
@@ -116,8 +133,8 @@ export interface FoundCandidate {
 const imageUrl = (source: 'release' | 'release-group', id: string, size: 250 | 500) =>
 	`${CAA}/${source}/${encodeURIComponent(id)}/front-${size}`;
 
-async function musicBrainz<T>(url: URL, intervalMs: number): Promise<T> {
-	await waitForSlot(intervalMs);
+async function musicBrainz<T>(url: URL, pace: Pace): Promise<T> {
+	await waitForSlot(pace);
 	url.searchParams.set('fmt', 'json');
 	const response = await fetch(url, {
 		headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' }
@@ -129,14 +146,14 @@ async function musicBrainz<T>(url: URL, intervalMs: number): Promise<T> {
 /** Releases of a release group that have a front image, at most 12. */
 export async function findReleaseCandidates(
 	releaseGroupId: string,
-	intervalMs: number
+	pace: Pace
 ): Promise<FoundCandidate[]> {
 	const url = new URL('https://musicbrainz.org/ws/2/release/');
 	url.searchParams.set('release-group', releaseGroupId);
 	url.searchParams.set('limit', '100');
 	const data = await musicBrainz<{
 		releases?: { id: string; 'cover-art-archive'?: { front?: boolean } }[];
-	}>(url, intervalMs);
+	}>(url, pace);
 	return (data.releases ?? [])
 		.filter((release) => release['cover-art-archive']?.front)
 		.slice(0, MAX_RELEASE_CANDIDATES)
@@ -148,7 +165,7 @@ export async function findReleaseCandidates(
 }
 
 /** Studio albums (primary type Album, no secondary type) credited to the Artist. */
-export async function findStudioAlbums(artist: string, intervalMs: number): Promise<StudioAlbum[]> {
+export async function findStudioAlbums(artist: string, pace: Pace): Promise<StudioAlbum[]> {
 	const url = new URL('https://musicbrainz.org/ws/2/release-group/');
 	url.searchParams.set('query', `artist:${quote(artist)} AND primarytype:album`);
 	url.searchParams.set('limit', '100');
@@ -161,7 +178,7 @@ export async function findStudioAlbums(artist: string, intervalMs: number): Prom
 			'artist-credit'?: { name: string }[];
 			'first-release-date'?: string;
 		}[];
-	}>(url, intervalMs);
+	}>(url, pace);
 	const wanted = normalize(artist);
 	return (data['release-groups'] ?? []).flatMap((hit) => {
 		const year = Number.parseInt(hit['first-release-date']?.slice(0, 4) ?? '', 10);
@@ -220,12 +237,12 @@ type ReleaseGroupHits = {
 async function searchReleaseGroups(
 	query: string,
 	limit: number,
-	intervalMs: number
+	pace: Pace
 ): Promise<FoundCandidate[]> {
 	const url = new URL('https://musicbrainz.org/ws/2/release-group/');
 	url.searchParams.set('query', query);
 	url.searchParams.set('limit', String(limit));
-	const data = await musicBrainz<ReleaseGroupHits>(url, intervalMs);
+	const data = await musicBrainz<ReleaseGroupHits>(url, pace);
 	return (data['release-groups'] ?? []).slice(0, limit).map((hit) => {
 		const year = Number.parseInt(hit['first-release-date']?.slice(0, 4) ?? '', 10);
 		return {
@@ -243,20 +260,17 @@ async function searchReleaseGroups(
 export function searchCandidates(
 	artist: string,
 	title: string,
-	intervalMs: number
+	pace: Pace
 ): Promise<FoundCandidate[]> {
 	return searchReleaseGroups(
 		`artist:${quote(artist)} AND releasegroup:${quote(title)} AND primarytype:album`,
 		MAX_SEARCH_CANDIDATES,
-		intervalMs
+		pace
 	);
 }
 
 /** Release-group search hits for text the Owner typed, at most 12. Empty text finds nothing. */
-export async function searchTypedCandidates(
-	text: string,
-	intervalMs: number
-): Promise<FoundCandidate[]> {
+export async function searchTypedCandidates(text: string, pace: Pace): Promise<FoundCandidate[]> {
 	// Lucene special characters and the uppercase operators AND, OR and NOT would break the query.
 	const words = text
 		.replace(/[^\p{L}\p{N}\s]/gu, ' ')
@@ -266,7 +280,7 @@ export async function searchTypedCandidates(
 	return searchReleaseGroups(
 		`(releasegroup:(${words}) OR artist:(${words})) AND primarytype:album`,
 		MAX_RELEASE_CANDIDATES,
-		intervalMs
+		pace
 	);
 }
 

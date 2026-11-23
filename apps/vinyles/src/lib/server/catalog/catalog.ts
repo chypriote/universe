@@ -42,11 +42,14 @@ import {
 	findCover,
 	findReleaseCandidates,
 	readBody,
+	realClock,
 	searchCandidates,
 	searchDeezer,
 	searchDiscogs,
 	searchTypedCandidates,
-	type FoundCandidate
+	type Clock,
+	type FoundCandidate,
+	type Pace
 } from './lookup';
 import { findSimilarArtists, findStudioAlbums, findTopAlbums } from './lookup';
 import {
@@ -100,6 +103,8 @@ export interface CatalogEnv {
 export interface CatalogOptions {
 	/** Minimum gap between MusicBrainz requests. Default 1000 (their limit). */
 	lookupIntervalMs?: number;
+	/** Paces the lookups. Default the real clock; tests pass a fake one. */
+	lookupClock?: Clock;
 }
 
 type Db = DrizzleD1Database;
@@ -185,7 +190,10 @@ function sortBy<T extends { id: number; album: AlbumSummary }>(
 
 export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Catalog {
 	const db = drizzle(env.DB);
-	const intervalMs = options.lookupIntervalMs ?? 1000;
+	const pace: Pace = {
+		intervalMs: options.lookupIntervalMs ?? 1000,
+		clock: options.lookupClock ?? realClock
+	};
 
 	/** A new Cover version, already checked: the cover check has nothing left to do for it. */
 	function newCoverVersion(body: ArrayBuffer) {
@@ -464,7 +472,7 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 	 * An Owner-chosen Cover is kept unless `replace` is set; any Cover written is unmarked and gets a new version.
 	 */
 	async function lookUpAlbum(albumId: number, artist: string, title: string, replace = false) {
-		const match = await findAlbum(artist, title, intervalMs);
+		const match = await findAlbum(artist, title, pace);
 		if (!match) {
 			await db.update(albums).set({ musicbrainzId: NO_MATCH }).where(eq(albums.id, albumId));
 			return;
@@ -812,10 +820,10 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 			if (!album) throw new Error('Album not found');
 			let musicBrainz: FoundCandidate[] = [];
 			if (album.musicbrainzId && album.musicbrainzId !== NO_MATCH) {
-				musicBrainz = await findReleaseCandidates(album.musicbrainzId, intervalMs);
+				musicBrainz = await findReleaseCandidates(album.musicbrainzId, pace);
 			}
 			if (!musicBrainz.length) {
-				musicBrainz = await searchCandidates(album.artist, album.title, intervalMs);
+				musicBrainz = await searchCandidates(album.artist, album.title, pace);
 			}
 			return [...musicBrainz, ...(await otherSources(`${album.artist} ${album.title}`))];
 		},
@@ -823,7 +831,7 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 		async searchCoverCandidates(token, query) {
 			await owner(token);
 			if (!/[\p{L}\p{N}]/u.test(query)) return [];
-			const musicBrainz = await searchTypedCandidates(query, intervalMs);
+			const musicBrainz = await searchTypedCandidates(query, pace);
 			return [...musicBrainz, ...(await otherSources(query))];
 		},
 
@@ -1194,7 +1202,7 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 				addTitle(avoid, values.artist, values.title);
 			};
 			const fromMusicBrainz = async (artist: string, rank: number) => {
-				const pick = oldestUnknown(await findStudioAlbums(artist, intervalMs), avoid, artist);
+				const pick = oldestUnknown(await findStudioAlbums(artist, pace), avoid, artist);
 				if (!pick) return;
 				await save({
 					artist,
@@ -1213,7 +1221,7 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 				for (const name of similar) {
 					const title = (await findTopAlbums(key, name)).find((t) => !hasSimilar(avoid, name, t));
 					if (!title) continue;
-					const match = await findAlbum(name, title, intervalMs).catch(() => null);
+					const match = await findAlbum(name, title, pace).catch(() => null);
 					await save({
 						artist: name,
 						title,

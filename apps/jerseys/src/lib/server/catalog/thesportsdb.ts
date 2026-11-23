@@ -25,6 +25,7 @@ export interface SportsDbConfig {
 	key: string;
 	/** Minimum gap between two TheSportsDB requests. */
 	intervalMs: number;
+	clock: Clock;
 }
 
 export interface FoundTeam {
@@ -51,14 +52,25 @@ export interface FoundKitPicture {
 	kitType: KitType | null;
 }
 
-/** Next time (ms since epoch) a TheSportsDB request may start. Shared by every Catalog in the isolate. */
-let nextSlot = 0;
+/** What paces the requests. Tests pass a fake one: in workerd `Date.now()` only moves on I/O. */
+export interface Clock {
+	now(): number;
+	sleep(ms: number): Promise<void>;
+}
 
-async function waitForSlot(intervalMs: number) {
-	const slot = Math.max(Date.now(), nextSlot);
-	nextSlot = slot + intervalMs;
-	const wait = slot - Date.now();
-	if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+export const realClock: Clock = {
+	now: () => Date.now(),
+	sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+};
+
+/** Next time (ms) a TheSportsDB request may start, per clock. The real clock's is shared by every Catalog in the isolate. */
+const nextSlots = new WeakMap<Clock, number>();
+
+async function waitForSlot(intervalMs: number, clock: Clock) {
+	const slot = Math.max(clock.now(), nextSlots.get(clock) ?? 0);
+	nextSlots.set(clock, slot + intervalMs);
+	const wait = slot - clock.now();
+	if (wait > 0) await clock.sleep(wait);
 }
 
 /** TheSportsDB answered 429: stop and try again later, never retry at once. */
@@ -70,7 +82,7 @@ export class RateLimitError extends Error {
 }
 
 async function request(config: SportsDbConfig, url: URL | string) {
-	await waitForSlot(config.intervalMs);
+	await waitForSlot(config.intervalMs, config.clock);
 	const response = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
 	if (response.status === 429) throw new RateLimitError();
 	if (!response.ok) throw new Error(`TheSportsDB answered ${response.status}`);
