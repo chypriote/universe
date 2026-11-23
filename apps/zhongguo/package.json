@@ -1,7 +1,7 @@
 {
-  "name": "stunning-astro-template",
+  "name": "zhongguo",
+  "private": true,
   "type": "module",
-  "license": "MIT",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
@@ -39,6 +39,5 @@
     "@astrojs/check": "^0.9.10",
     "typescript": "^6.0.3",
     "wrangler": "^4.165.0"
-  },
-  "packageManager": "pnpm@12.21.0"
+  }
 }

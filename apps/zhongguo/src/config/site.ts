@@ -5,7 +5,7 @@ export const SITE = {
   lang: 'en',
   url:
     (typeof process !== 'undefined' && process.env.SITE_URL) ||
-    'https://example.com',
+    'https://zhongguo.nicolastemeni.workers.dev',
   twitterHandle: '@example',
   socials: {
     twitter: 'https://twitter.com/example',

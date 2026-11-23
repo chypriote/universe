@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        workspace: [packages/showcase, packages/owner, apps/jerseys, apps/vinyles]
+        workspace: [packages/showcase, packages/owner, apps/jerseys, apps/vinyles, apps/zhongguo]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,3 +20,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run ci --workspace ${{ matrix.workspace }}
+        env:
+          PHOTOS_URL: ${{ vars.PHOTOS_URL }}

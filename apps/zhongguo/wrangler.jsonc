@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "nico-zhongguo",
+  "name": "zhongguo",
   "compatibility_date": "2026-11-01",
   "preview_urls": false,
   "assets": {
