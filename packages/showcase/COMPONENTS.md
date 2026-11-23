@@ -84,6 +84,10 @@ The shadcn-svelte alert dialog, over the Popup. Title "Delete {what}?", a line o
 | actionDisabled | boolean      | false   |                                  |
 | children       | Snippet      | —       | Between the text and the buttons |
 
+### Dialog placement
+
+`ui/dialog` Content takes `placeOver`: the element the dialog opens over (the tapped tile), clamped to the screen with a 16px gutter. It stays clamped when the dialog grows (a picture loads) or the window resizes. Without `placeOver` the dialog is centred: use that for forms.
+
 ### SortDirection
 
 An `icon` Button that flips `value` between `asc` and `desc`.
