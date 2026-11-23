@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { tick } from 'svelte';
 	import type { PageProps } from './$types';
 	import type { CollectionJersey } from '#lib/server/catalog/types';
