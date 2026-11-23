@@ -1,0 +1,48 @@
+---
+import Container from '@/components/Container.astro';
+import TripMap from '@/components/TripMap.astro';
+import type { TripRoute } from '@/lib/itineraries.server';
+
+interface Props {
+  route: TripRoute;
+}
+
+const { route } = Astro.props;
+---
+
+{route.stops.length > 0 && (
+  <section class="border-b border-border bg-surface py-20 lg:py-32">
+    <Container>
+      <div class="mx-auto max-w-5xl space-y-10">
+        <div class="space-y-3">
+          <span class="eyebrow">The route</span>
+          <h2 class="text-h2 font-serif font-light">Cities in order</h2>
+        </div>
+
+        <div class="w-full overflow-hidden border border-border bg-background">
+          <TripMap route={route} />
+        </div>
+
+        <ol class="flex flex-wrap items-baseline gap-x-2 gap-y-2 text-sm">
+          {route.stops.map((stop, index) => (
+            <li class="flex items-baseline gap-2 font-sans">
+              {index > 0 && (
+                <span class="text-primary" aria-hidden="true">→</span>
+              )}
+              <a
+                href={`#day-${stop.days[0]}`}
+                class="text-foreground hover:text-primary transition-colors"
+              >
+                <span class="font-serif text-base">{stop.name}</span>
+                <span class="ml-1.5 font-sans text-[11px] text-muted-foreground" lang="zh">{stop.nameZh}</span>
+                <span class="ml-1.5 eyebrow text-[0.625rem] text-muted-foreground">
+                  {stop.dayLabel}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Container>
+  </section>
+)}

@@ -1,12 +1,12 @@
 # Universe
 
-Nico's collection apps: one app per kind of collection, all built on the Showcase design system. npm workspaces: `packages/*` and `apps/*`. Each app deploys as its own Cloudflare Worker with its own D1 and R2.
+Nico's apps. The collection apps (Jerseys, Vinyles) share the Showcase design system; other apps, like Zhongguo, bring their own design family (`docs/adr/0001-design-families.md`). npm workspaces: `packages/*` and `apps/*`. Each app deploys as its own Cloudflare Worker.
 
 ## Agent skills
 
 ### Issue tracker
 
-Issues live in GitHub Issues for `chypriote/universe`. Each issue carries one area label: `app:jerseys`, `app:vinyles` or `showcase`. See `docs/agents/issue-tracker.md`. Older issues stay in `chypriote/jerseys` and `chypriote/vinyles`.
+Issues live in GitHub Issues for `chypriote/universe`. Each issue carries one area label: `app:jerseys`, `app:vinyles`, `app:zhongguo`, `showcase` or `universe`. See `docs/agents/issue-tracker.md`. Older issues stay in `chypriote/jerseys`, `chypriote/vinyles` and `chypriote/nico-zhongguo`.
 
 ### Triage labels
 
@@ -23,6 +23,6 @@ These rules override the same topics in the user's global rules.
 - Merge your own PR after you review it. Do not wait for the user.
 - Keep the branch name your session assigns. No `<type>/<issue>-<slug>` rename.
 - The Owner login token and cookie live in `packages/owner`: one session covers every app (see an app README for `OWNER_COOKIE_DOMAIN`).
-- UI used by more than one app goes in `packages/showcase`. An app keeps only its theme values and its domain components. See `packages/showcase/DESIGN.md`.
+- UI used by more than one collection app goes in `packages/showcase`. A collection app keeps only its theme values and its domain components. See `packages/showcase/DESIGN.md`.
 - To add an app, follow `docs/adding-an-app.md` in order: domain (`/grill-with-docs`), theme, scaffold, repo wiring, deploy, design-system page.
 - Run a workspace script with `-w`, for example `npm run ci -w apps/jerseys`. Install from the root only.

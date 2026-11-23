@@ -1,0 +1,15 @@
+node_modules
+
+# Output
+dist/
+.astro/
+.wrangler
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+*.log
