@@ -34,6 +34,9 @@
 }
 
 @theme inline {
+	/* text.tile.number */
+	--text-number: 26px;
+	--text-number--line-height: 1;
 	/* text.caption.team */
 	--tracking-caption: 0.02em;
 }

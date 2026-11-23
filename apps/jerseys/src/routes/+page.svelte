@@ -27,6 +27,7 @@
 	import StickyBar from '#lib/components/StickyBar.svelte';
 	import Tile from '#lib/components/Tile.svelte';
 	import TileGrid from '#lib/components/TileGrid.svelte';
+	import { printNumber } from '#lib/print-number';
 
 	let { data }: PageProps = $props();
 
@@ -187,6 +188,7 @@
 						season={jersey.kit.season}
 						kitType={kitTypeText(jersey.kit)}
 						mainPictureUrl={mainPictureUrl(jersey.kit)}
+						number={printNumber(jersey.print)}
 						onSelect={(el) => select(jersey, el)}
 					/>
 				</li>
