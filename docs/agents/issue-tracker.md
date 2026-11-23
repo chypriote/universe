@@ -13,6 +13,8 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 
 Infer the repo from `git remote -v` — `gh` does this automatically when run inside a clone.
 
+Give every new issue one area label: `app:jerseys`, `app:vinyles` (one per app) or `showcase` for the shared design system. Issues from before the monorepo stay in `chypriote/jerseys` and `chypriote/vinyles`; write them as `chypriote/jerseys#<n>`.
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_
