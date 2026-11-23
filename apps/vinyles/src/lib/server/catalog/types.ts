@@ -1,6 +1,6 @@
 /**
  * Public interface of the Catalog module: the one test seam.
- * Types only. Domain names follow CONTEXT.md. Prices are integer euro cents.
+ * Types only. Domain names follow GLOSSARY.md. Prices are integer euro cents.
  */
 
 export type Desire = 1 | 2 | 3 | 4 | 5;

@@ -1,6 +1,6 @@
 # Vinyles components: "Wall" v1
 
-Sources: [DESIGN.md](DESIGN.md) for the look, [TOKENS.md](TOKENS.md) for values, [CONTEXT.md](CONTEXT.md) for names. Components use only semantic or component tokens.
+Sources: [DESIGN.md](DESIGN.md) for the look, [TOKENS.md](TOKENS.md) for values, [GLOSSARY.md](GLOSSARY.md) for names. Components use only semantic or component tokens.
 
 Accepted by Nico on 2026-11-20.
 
