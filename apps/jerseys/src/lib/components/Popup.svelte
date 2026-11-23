@@ -17,7 +17,7 @@
 		pictureAction
 	}: {
 		open?: boolean;
-		/** The Tile that opened the Popup. Focus goes back to it on close. */
+		/** The Tile that opened the Popup. A Tile Popup opens over it; focus goes back to it on close. */
 		anchor?: HTMLElement | null;
 		title: string;
 		/** "{season} · {kitType}". Set it for a Tile Popup: the Main Picture shows next to the details. */
@@ -56,6 +56,7 @@
 <Dialog.Root bind:open {onOpenChange}>
 	<Dialog.Content
 		class={wide ? 'max-w-(--popup-width-wide)' : undefined}
+		placeOver={subtitle && !wide ? anchor : null}
 		onCloseAutoFocus={(e: Event) => {
 			if (anchor?.isConnected) {
 				e.preventDefault();

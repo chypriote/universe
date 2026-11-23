@@ -17,7 +17,7 @@
 		actions
 	}: {
 		open?: boolean;
-		/** The Cover that opened the Popup. Focus goes back to it on close. */
+		/** The Cover that opened the Popup. A Cover Popup opens over it; focus goes back to it on close. */
 		anchor?: HTMLElement | null;
 		album: string;
 		/** Empty for a form Popup: no cover tile and no subtitle. */
@@ -48,6 +48,7 @@
 <Dialog.Root bind:open {onOpenChange}>
 	<Dialog.Content
 		class={large ? 'max-w-3xl p-6' : wide || artist ? 'max-w-2xl' : undefined}
+		placeOver={artist ? anchor : null}
 		onCloseAutoFocus={(e: Event) => {
 			if (anchor) {
 				e.preventDefault();

@@ -33,7 +33,7 @@ A new app sets every theme slot in its `src/app.css` and lists them in its own D
 ## 4. Components
 
 - **Tile:** square, 14px radius, raised shadow, on a neutral surface. The thing's picture sits contained on it. The thing's own colour never fills the tile.
-- **Popup:** a native-feeling dialog, 28px radius, X at top right; tap outside or Esc closes it. The detail popup shows the tile's picture next to the details. Forms (add, edit, Got it, confirm) open centred.
+- **Popup:** a native-feeling dialog, 28px radius, X at top right; tap outside or Esc closes it. The detail popup opens over the tapped tile, clamped to the screen 16px from each edge, and shows the tile's picture next to the details. Forms (add, edit, Got it, confirm) open centred.
 - **StickyBar:** title, chips, tabs, search, filters, sort.
 - **Controls:** Button, Chip, Tabs, SearchField, Select, ToggleGroup are pills with the raised shadow and no hard border. Text fields and selects have a 2px field border (WCAG 1.4.11).
 
