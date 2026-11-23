@@ -39,6 +39,8 @@ const PLACES: Record<string, PlaceName> = {
   xining: { zh: '西宁', pinyin: 'Xīníng' },
   'chaka town': { zh: '茶卡', pinyin: 'Chákǎ' },
   'charhan salt lake': { zh: '察尔汗盐湖', pinyin: "Chá'ěrhán Yánhú" },
+  'riyue shan': { zh: '日月山', pinyin: 'Rìyuè Shān' },
+  yadan: { zh: '雅丹', pinyin: 'Yǎdān' },
   dunhuang: { zh: '敦煌', pinyin: 'Dūnhuáng' },
   jiayuguan: { zh: '嘉峪关', pinyin: 'Jiāyùguān' },
   zhangye: { zh: '张掖', pinyin: 'Zhāngyè' },

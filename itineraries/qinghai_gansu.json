@@ -151,13 +151,13 @@
       "attractions": [
         {
           "name": "RiyueShan",
-          "city": "Xining",
+          "city": "Riyue Shan",
           "rating": 4,
           "description": "Sun and Moon Mountain area."
         },
         {
           "name": "Qinghai Lake",
-          "city": "Xining",
+          "city": "Qinghai Lake",
           "rating": 5,
           "description": "Large high-altitude lake in Qinghai."
         },
@@ -288,7 +288,7 @@
       "attractions": [
         {
           "name": "Yardang landform",
-          "city": "Dunhuang",
+          "city": "Yadan",
           "rating": 5,
           "description": "Wind-shaped desert landform."
         },
@@ -949,6 +949,27 @@
     },
     {
       "name": "Charhan Salt Lake",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Qinghai Lake",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Riyue Shan",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Yadan",
       "country": "China",
       "region": "Qinghai",
       "hotels": [],
