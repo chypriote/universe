@@ -1,0 +1,23 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "vinyles",
+	"compatibility_date": "2026-11-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "vinyles",
+			"database_id": "cbf119c3-ce45-4671-9965-bd20b4a8b09d",
+			"migrations_dir": "drizzle"
+		}
+	],
+	// Every 6 hours: the Refresh of the oldest Wishlist Items (see src/routes/api/cron).
+	"triggers": { "crons": ["0 */6 * * *"] },
+	"r2_buckets": [
+		{
+			"binding": "COVERS",
+			"bucket_name": "vinyles-covers"
+		}
+	]
+	// Secrets (not in this file): OWNER_PASSWORD, JWT_SECRET and CRON_SECRET. See README.
+}

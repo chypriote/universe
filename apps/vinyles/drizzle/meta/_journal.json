@@ -1,0 +1,111 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1795139994259,
+      "tag": "0000_init",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1795139998049,
+      "tag": "0001_seed_official_store",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1795168872437,
+      "tag": "0002_cover_chosen",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1795186584861,
+      "tag": "0003_cover_check",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1795187855638,
+      "tag": "0004_price_quote_url",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1795188111376,
+      "tag": "0005_product_link",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1795188298427,
+      "tag": "0006_wishlist_item_refreshed_at",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1795353168619,
+      "tag": "0007_price_quote_found_at",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1795368762510,
+      "tag": "0008_clear_fetched_prices",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1795369714176,
+      "tag": "0009_discarded_album",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1795369880821,
+      "tag": "0010_suggestion",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1795379789778,
+      "tag": "0011_discarded_at",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1795385136905,
+      "tag": "0012_store_product_links_enabled",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1795385292064,
+      "tag": "0013_desire_one_to_five",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1795386497922,
+      "tag": "0014_album_id_indexes",
+      "breakpoints": true
+    }
+  ]
+}
