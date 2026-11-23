@@ -18,7 +18,8 @@
 	import DesireDots from '#lib/components/DesireDots.svelte';
 	import DesireSelect from '#lib/components/DesireSelect.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
-	import AddAction from '#lib/components/AddAction.svelte';
+	import AddAction from '@universe/showcase/components/AddAction.svelte';
+	import WishlistItemForm from '#lib/components/WishlistItemForm.svelte';
 	import LoginAction from '@universe/showcase/components/LoginAction.svelte';
 	import ProductLinks from '#lib/components/ProductLinks.svelte';
 	import WishlistEditForm from '#lib/components/WishlistEditForm.svelte';
@@ -27,7 +28,8 @@
 	import SearchField from '@universe/showcase/components/SearchField.svelte';
 	import SortDirection from '@universe/showcase/components/SortDirection.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
-	import StickyBar from '#lib/components/StickyBar.svelte';
+	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
+	import { lists } from '#lib/lists';
 
 	type Row = WithCoverUrl<WishlistItemView>;
 
@@ -205,9 +207,12 @@
 
 <StickyBar
 	current="wishlist"
+	links={lists}
+	packed
 	searchActive={search.trim() !== ''}
 	filtersActive={selectedArtists.length > 0 || desires.length > 0}
 >
+	{#snippet title()}Vinyles<span class="text-icon-accent">.</span>{/snippet}
 	{#snippet chips()}
 		<Chip tone="info" label="items" value={String(data.count)} />
 	{/snippet}
@@ -216,7 +221,11 @@
 	{/snippet}
 	{#snippet action()}
 		{#if data.isOwner}
-			<AddAction current="wishlist" artists={data.artists} stores={data.stores} />
+			<AddAction title="Add to wishlist">
+				{#snippet form(close)}
+					<WishlistItemForm artists={data.artists} stores={data.stores} onDone={close} />
+				{/snippet}
+			</AddAction>
 			<Button onclick={toggleSelecting}>{selecting ? 'Done' : 'Select'}</Button>
 			{#if selecting}
 				<span class="text-sm font-extrabold">{checked.length} selected</span>

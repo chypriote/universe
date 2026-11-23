@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import ShowcasePopup from '@universe/showcase/components/Popup.svelte';
 	import MainPicture from './MainPicture.svelte';
-	import * as Dialog from '@universe/showcase/ui/dialog';
 
 	let {
 		open = $bindable(false),
@@ -47,66 +47,45 @@
 		void pictureUrls.length;
 		shown = 0;
 	});
-
-	function onOpenChange(next: boolean) {
-		if (!next) onDismiss?.();
-	}
 </script>
 
-<Dialog.Root bind:open {onOpenChange}>
-	<Dialog.Content
-		class={wide ? 'max-w-(--popup-width-wide)' : undefined}
-		placeOver={subtitle && !wide ? anchor : null}
-		onCloseAutoFocus={(e: Event) => {
-			if (anchor?.isConnected) {
-				e.preventDefault();
-				anchor.focus();
-			}
-		}}
+{#snippet picture()}
+	<span
+		class="flex aspect-3/4 items-center justify-center overflow-hidden rounded-md bg-background"
 	>
-		{#if subtitle && !wide}
-			<div
-				class="grid grid-cols-[minmax(0,min(var(--popup-picture-size),40%))_minmax(0,1fr)] gap-4"
-			>
-				<div class="flex min-w-0 flex-col gap-2">
-					<span
-						class="flex aspect-3/4 items-center justify-center overflow-hidden rounded-md bg-background"
+		<MainPicture url={thumbnails[shown] ?? mainPictureUrl} />
+	</span>
+	{#if pictureUrls.length}
+		<div class="flex flex-wrap gap-1" role="group" aria-label="Pictures">
+			{#each thumbnails as url, index (index)}
+				<div class="relative">
+					<button
+						type="button"
+						class="flex size-(--control-size-min) items-center justify-center overflow-hidden rounded-md bg-background outline-ring focus-visible:outline-3 focus-visible:outline-solid aria-pressed:outline-3 aria-pressed:outline-solid"
+						aria-label={index === 0 && offset ? 'Main picture' : `Picture ${index + 1}`}
+						aria-pressed={shown === index}
+						onclick={() => (shown = index)}
 					>
-						<MainPicture url={thumbnails[shown] ?? mainPictureUrl} />
-					</span>
-					{#if pictureUrls.length}
-						<div class="flex flex-wrap gap-1" role="group" aria-label="Pictures">
-							{#each thumbnails as url, index (index)}
-								<div class="relative">
-									<button
-										type="button"
-										class="flex size-(--control-size-min) items-center justify-center overflow-hidden rounded-md bg-background outline-ring focus-visible:outline-3 focus-visible:outline-solid aria-pressed:outline-3 aria-pressed:outline-solid"
-										aria-label={index === 0 && offset ? 'Main picture' : `Picture ${index + 1}`}
-										aria-pressed={shown === index}
-										onclick={() => (shown = index)}
-									>
-										<MainPicture {url} />
-									</button>
-									{#if pictureAction && index >= offset}
-										{@render pictureAction(index - offset)}
-									{/if}
-								</div>
-							{/each}
-						</div>
+						<MainPicture {url} />
+					</button>
+					{#if pictureAction && index >= offset}
+						{@render pictureAction(index - offset)}
 					{/if}
 				</div>
-				<div class="min-w-0">
-					<Dialog.Title class="[overflow-wrap:anywhere]">{title}</Dialog.Title>
-					<p class="mt-1 mb-3 text-md text-muted-foreground">{subtitle}</p>
-					{@render details?.()}
-				</div>
-			</div>
-		{:else}
-			<Dialog.Title>{title}</Dialog.Title>
-			{@render details?.()}
-		{/if}
-		{#if actions}
-			<div class="flex flex-wrap gap-2">{@render actions()}</div>
-		{/if}
-	</Dialog.Content>
-</Dialog.Root>
+			{/each}
+		</div>
+	{/if}
+{/snippet}
+
+<ShowcasePopup
+	bind:open
+	{anchor}
+	{title}
+	{subtitle}
+	{wide}
+	{onDismiss}
+	{details}
+	{actions}
+	mediaWidth="min(var(--popup-picture-size), 40%)"
+	media={subtitle && !wide ? picture : undefined}
+/>

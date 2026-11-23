@@ -13,14 +13,15 @@
 	import Cover from '#lib/components/Cover.svelte';
 	import CoverGrid from '#lib/components/CoverGrid.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
-	import AddAction from '#lib/components/AddAction.svelte';
+	import AddAction from '@universe/showcase/components/AddAction.svelte';
 	import LoginAction from '@universe/showcase/components/LoginAction.svelte';
 	import Popup from '#lib/components/Popup.svelte';
 	import RecordForm from '#lib/components/RecordForm.svelte';
 	import SearchField from '@universe/showcase/components/SearchField.svelte';
 	import SortDirection from '@universe/showcase/components/SortDirection.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
-	import StickyBar from '#lib/components/StickyBar.svelte';
+	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
+	import { lists } from '#lib/lists';
 
 	type Row = WithCoverUrl<RecordView>;
 
@@ -112,9 +113,12 @@
 
 <StickyBar
 	current="collection"
+	links={lists}
+	packed
 	searchActive={search.trim() !== ''}
 	filtersActive={selectedArtists.length > 0}
 >
+	{#snippet title()}Vinyles<span class="text-icon-accent">.</span>{/snippet}
 	{#snippet chips()}
 		<Chip
 			tone="highlight"
@@ -129,7 +133,11 @@
 	{/snippet}
 	{#snippet action()}
 		{#if data.isOwner}
-			<AddAction current="collection" artists={data.artists} stores={data.stores} />
+			<AddAction title="Add a record">
+				{#snippet form(close)}
+					<RecordForm artists={data.artists} stores={data.stores} onDone={close} />
+				{/snippet}
+			</AddAction>
 		{/if}
 	{/snippet}
 	{#snippet searchBox()}

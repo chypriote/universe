@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { AcquisitionState } from '#lib/forms';
 	import Field from '@universe/showcase/components/Field.svelte';
-	import StoreSelect from './StoreSelect.svelte';
+	import StoreSelect from '@universe/showcase/components/StoreSelect.svelte';
 	import ToggleGroup from '@universe/showcase/components/ToggleGroup.svelte';
 
 	let {
