@@ -71,7 +71,7 @@ A form or action error in `color.text.error`, 14px / 700, `role="alert"`. It add
 
 ### Tabs
 
-Links between an app's lists, not an ARIA tab widget, on one raised track. Current tab: `color.bg.accent`, `aria-current="page"`. Label in the display face at `text-sm`, `--tracking-label`.
+Links between an app's lists, not an ARIA tab widget, on one raised track. Current tab: `color.bg.accent`, `aria-current="page"`. Label in the display face at `text-sm`, `--tracking-label`, upright: the theme's `--display-style` applies to titles and captions only.
 
 | Prop    | Type                     | Default | Description                |
 | ------- | ------------------------ | ------- | -------------------------- |

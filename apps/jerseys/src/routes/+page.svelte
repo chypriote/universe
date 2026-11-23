@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ShirtIcon from '@lucide/svelte/icons/shirt';
 	import { resolve } from '$app/paths';
 	import { tick } from 'svelte';
 	import type { PageProps } from './$types';
@@ -143,7 +144,7 @@
 >
 	{#snippet title()}Jerseys{/snippet}
 	{#snippet chips()}
-		<Chip tone="highlight" label="jerseys" value={String(data.jerseys.length)} />
+		<Chip tone="highlight" label="jerseys" value={String(data.jerseys.length)} icon={ShirtIcon} />
 		<Chip tone="success" label="spent" value={formatCents(totalSpentCents)} compact />
 	{/snippet}
 	{#snippet login()}

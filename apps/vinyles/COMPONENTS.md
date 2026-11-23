@@ -135,7 +135,7 @@ The page fills the snippets. Popup does not know Records from Wishlist Items.
 The Showcase StickyBar. Title "Vinyles." with the period in `color.icon.accent`.
 
 - Collection: Chip `highlight` record count (a disc icon below `sm`), Chip `success` total spent (`compact`). Filters: artist (Showcase MultiSelectFilter, label "Artists"). Sorts: artist, album, release year, acquired. Covers sit in the Showcase TileGrid, keyed by Record id.
-- Wishlist: Chip `info` item count. Filters: artist, DesireSelect. Sorts: artist, album, release year.
+- Wishlist: Chip `info` item count, label "wanted". Filters: artist, DesireSelect. Sorts: artist, album, release year.
 - The Owner's AddAction opens RecordForm ("Add a record") or WishlistItemForm ("Add to wishlist").
 
 ---
