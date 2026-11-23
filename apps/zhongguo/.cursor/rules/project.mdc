@@ -1,0 +1,17 @@
+---
+description: Core project guidance applied to every new agent session
+alwaysApply: true
+---
+
+# Project guidance
+
+Add standing instructions here. This rule is included in every new agent in this repo.
+
+## Conventions
+
+- Prefer existing patterns in the codebase over new abstractions
+- Keep changes focused on the requested task
+
+## Notes
+
+Replace or extend this file with project-specific standards, stack preferences, and non-negotiables.

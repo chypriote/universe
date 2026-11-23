@@ -1,0 +1,93 @@
+---
+import Container from '@/components/Container.astro';
+
+const links = [
+  { href: '/trips', label: 'Journeys' },
+  { href: '/guides', label: 'Guides' },
+  { href: '/planner', label: 'Planner' },
+  { href: '/gallery', label: 'Photography' },
+];
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header id="navbar" class="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+  <nav class="h-[var(--nav-height)] flex items-center" aria-label="Main navigation">
+    <Container class="flex justify-between items-center">
+      <a href="/" class="group flex items-center gap-3 no-underline text-foreground">
+        <span class="seal w-8 text-base" aria-hidden="true">中</span>
+        <span class="font-serif text-xl font-medium tracking-tight group-hover:text-primary transition-colors">
+          Nico to <span lang="zh">中国</span>
+        </span>
+      </a>
+
+      <div class="hidden md:flex gap-10 items-center">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            aria-current={isCurrent(link.href) ? 'page' : undefined}
+            class="relative py-1 eyebrow no-underline text-muted-foreground hover:text-foreground transition-colors aria-[current=page]:text-foreground after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:bg-primary after:scale-x-0 after:transition-transform aria-[current=page]:after:scale-x-100 hover:after:scale-x-100"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+
+      <button
+        id="mobile-menu-button"
+        type="button"
+        class="md:hidden p-2 -mr-2 text-foreground hover:text-primary transition-colors"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="square" stroke-width="1.5" d="M4 8h16M4 16h16" />
+        </svg>
+        <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="square" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </Container>
+  </nav>
+
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden bg-background border-t border-border"
+    role="navigation"
+    aria-label="Mobile navigation"
+  >
+    <Container class="flex flex-col py-6">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          aria-current={isCurrent(link.href) ? 'page' : undefined}
+          class="py-3 border-b border-border last:border-b-0 font-serif text-2xl no-underline text-foreground hover:text-primary aria-[current=page]:text-primary transition-colors"
+        >
+          {link.label}
+        </a>
+      ))}
+    </Container>
+  </div>
+</header>
+
+<script is:inline>
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIconOpen = document.getElementById('menu-icon-open');
+  const menuIconClose = document.getElementById('menu-icon-close');
+
+  function setMenu(open) {
+    mobileMenu?.classList.toggle('hidden', !open);
+    menuIconOpen?.classList.toggle('hidden', open);
+    menuIconClose?.classList.toggle('hidden', !open);
+    mobileMenuButton?.setAttribute('aria-expanded', String(open));
+  }
+
+  mobileMenuButton?.addEventListener('click', () => setMenu(mobileMenu?.classList.contains('hidden')));
+  mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setMenu(false);
+  });
+</script>

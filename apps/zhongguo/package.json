@@ -1,0 +1,44 @@
+{
+  "name": "stunning-astro-template",
+  "type": "module",
+  "license": "MIT",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "deploy": "astro build && wrangler deploy",
+    "ci": "astro check && astro build",
+    "astro": "astro",
+    "china": "node china.js"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.2.4",
+    "@astrojs/mdx": "7.0.8",
+    "@astrojs/react": "6.0.4",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.17",
+    "astro": "7.2.7",
+    "better-sqlite3": "^12.11.1",
+    "cheerio": "^1.2.0",
+    "date-fns": "^4.4.0",
+    "glob": "^13.0.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "remark-gfm": "^4.0.1",
+    "serpapi": "^2.2.1",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.3",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.165.0"
+  },
+  "packageManager": "pnpm@12.21.0"
+}

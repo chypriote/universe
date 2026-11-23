@@ -1,0 +1,57 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import { SITE } from '@/config/site';
+import { getCollection } from 'astro:content';
+
+const title = "Guides";
+const description = "What to know before a trip to China: visa, internet, apps, payment, transport, food, etiquette and emergencies.";
+
+const guides = (await getCollection('guides'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((guide) => ({
+    title: guide.data.title,
+    description: guide.data.description,
+    href: `/guides/${guide.id}`,
+  }));
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": title,
+  "description": description,
+  "url": `${SITE.url}/guides`
+};
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <div class="py-20 lg:py-28">
+    <Container>
+      <header class="max-w-3xl mb-16 lg:mb-20">
+        <span class="eyebrow">Before you go</span>
+        <h1 class="mt-4 text-h1 font-serif font-light">Guides</h1>
+        <p class="mt-6 text-lg text-muted-foreground leading-relaxed">
+          What to know before the trip, in eight steps: visa, internet, apps, payment, transport, food, etiquette and emergencies.
+        </p>
+      </header>
+
+      <ol class="border-t border-border">
+        {guides.map((guide, index) => (
+          <li class="border-b border-border">
+            <a href={guide.href} class="group grid grid-cols-[3rem_1fr_auto] md:grid-cols-[5rem_1fr_2fr_auto] items-baseline gap-x-6 gap-y-2 py-8">
+              <span class="font-serif text-3xl font-light text-primary">{String(index + 1).padStart(2, '0')}</span>
+              <h2 class="text-2xl md:text-3xl font-serif group-hover:text-primary transition-colors">{guide.title}</h2>
+              <p class="col-start-2 md:col-start-auto text-muted-foreground leading-relaxed">{guide.description}</p>
+              <span class="row-start-1 col-start-3 md:col-start-4 text-xl transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+
+      <div class="mt-24 pt-16 border-t border-border flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <p class="font-serif text-2xl font-light">Next step: find the flight.</p>
+        <a href="/planner" class="btn btn-primary shrink-0">Flight prices</a>
+      </div>
+    </Container>
+  </div>
+</BaseLayout>

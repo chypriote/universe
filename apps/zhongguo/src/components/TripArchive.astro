@@ -1,0 +1,158 @@
+---
+import type { TripArchiveEntry } from '@/lib/itineraries.server';
+
+interface Props {
+  trips: TripArchiveEntry[];
+}
+
+const { trips } = Astro.props;
+---
+
+<div class="space-y-12 lg:space-y-20" data-trip-archive data-view="report">
+  <div class="flex gap-10 border-b border-border" role="group" aria-label="Archive view">
+    <button type="button" data-view-button="report" aria-pressed="true" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-primary">Trip reports</button>
+    <button type="button" data-view-button="plan" aria-pressed="false" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-primary">Trip plans</button>
+  </div>
+
+  <div class="grid grid-cols-1 gap-12 lg:gap-24">
+    {['report', 'plan'].map((view) => {
+      if (trips.some((trip) => trip.type === view)) return null;
+      return (
+        <p
+          class:list={[
+            'text-muted-foreground font-serif italic',
+            view === 'plan' && 'hidden',
+          ]}
+          data-empty={view}
+        >
+          No {view === 'report' ? 'trip reports' : 'trip plans'} in the archive yet.
+        </p>
+      );
+    })}
+    {trips.map((trip) => {
+      const [landscape, ...portraits] = trip.photos;
+      const firstRowPortrait = portraits[0];
+      const secondRowPortraits = portraits.slice(1, 4);
+
+      return (
+        <article
+          class:list={[
+            'group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start',
+            trip.type === 'report' ? '' : 'hidden',
+          ]}
+          data-trip-type={trip.type}
+        >
+          <div class="lg:col-span-5 space-y-6 pt-2">
+            <div class="space-y-2">
+              <span class="eyebrow text-muted-foreground">
+                {trip.durationDays ? `${trip.durationDays} days · ` : ''}{trip.dates}
+              </span>
+              <h2 class="text-h2 font-serif font-light">
+                <a href={trip.link} class="hover:text-primary transition-colors">
+                  {trip.title}
+                </a>
+              </h2>
+            </div>
+
+            <p class="text-muted-foreground leading-relaxed text-balance">
+              {trip.description}
+            </p>
+
+            {trip.regions.length > 0 && (
+              <div class="flex flex-wrap gap-3">
+                {trip.regions.map((region) => (
+                  <span class="eyebrow text-[0.625rem] text-foreground border border-border px-2 py-1">
+                    {region}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <a href={trip.link} class="group/link inline-flex items-center gap-3 eyebrow">
+              Read the journal
+              <span class="transition-transform group-hover/link:translate-x-1" aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          {trip.photos.length > 0 && (
+            <div class="lg:col-span-7 space-y-4">
+              {(landscape || firstRowPortrait) && (
+                <div
+                  class="grid gap-4 items-start"
+                  style={landscape && firstRowPortrait ? 'grid-template-columns: 256fr 81fr' : 'grid-template-columns: 1fr'}
+                >
+                  {landscape && (
+                    <div class="relative aspect-video overflow-hidden bg-surface">
+                      <img
+                        src={landscape}
+                        alt={`${trip.title} visual fragment`}
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                  {firstRowPortrait && (
+                    <div class="relative aspect-[9/16] overflow-hidden bg-surface">
+                      <img
+                        src={firstRowPortrait}
+                        alt={`${trip.title} visual fragment`}
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {secondRowPortraits.length > 0 && (
+                <div class="grid grid-cols-3 gap-4">
+                  {secondRowPortraits.map((photo) => (
+                    <div class="relative aspect-[9/16] overflow-hidden bg-surface">
+                      <img
+                        src={photo}
+                        alt={`${trip.title} visual fragment`}
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </article>
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  const archive = document.querySelector('[data-trip-archive]');
+  if (archive instanceof HTMLElement) {
+    const root = archive;
+    const buttons = [...root.querySelectorAll('[data-view-button]')];
+    const articles = [...root.querySelectorAll('[data-trip-type]')];
+    const empties = [...root.querySelectorAll('[data-empty]')];
+
+
+    function setView(view: string) {
+      root.dataset.view = view;
+      for (const button of buttons) {
+        button.setAttribute('aria-pressed', String(button.getAttribute('data-view-button') === view));
+      }
+      for (const article of articles) {
+        article.classList.toggle('hidden', article.getAttribute('data-trip-type') !== view);
+      }
+      for (const empty of empties) {
+        empty.classList.toggle('hidden', empty.getAttribute('data-empty') !== view);
+      }
+    }
+
+    root.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest('[data-view-button]');
+      if (!(button instanceof HTMLElement)) return;
+      const view = button.getAttribute('data-view-button');
+      if (view) setView(view);
+    });
+  }
+</script>

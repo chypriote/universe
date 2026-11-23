@@ -1,0 +1,1014 @@
+{
+  "title": "Qinghai Gansu",
+  "slug": "qinghai-gansu",
+  "suggested_duration_days": 15,
+  "released_itinerary": {
+    "start_date": "2026-05-15",
+    "end_date": "2026-05-29",
+    "pictures": [
+      "2026-05-21-19-20.jpg",
+      "2026-05-16-20-35.png",
+      "2026-05-18-13-14.jpg",
+      "2026-05-21-15-43.jpg",
+      "2026-05-24-11-11.jpg"
+    ]
+  },
+  "days": [
+    {
+      "day_number": 1,
+      "main_city": "Xian",
+      "title": "Arrival in Xi'an",
+      "notes": "Arrival day and time to settle in.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260515_181109.jpg",
+          "caption": "2026-05-15 18:11",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260515_181135_1.jpg",
+          "caption": "2026-05-15 18:11",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260515_213949.jpg",
+          "caption": "2026-05-15 21:39",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260515_213949_1.jpg",
+          "caption": "2026-05-15 21:39",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [],
+      "train_trips": []
+    },
+    {
+      "day_number": 2,
+      "main_city": "Xian",
+      "title": "Huashan from Xi'an",
+      "notes": "Day trip to Huashan and return to Xi'an.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260516_163614.jpg",
+          "caption": "2026-05-16 16:36",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260516_175722 (1).jpg",
+          "caption": "2026-05-16 17:57",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260516_175722.jpg",
+          "caption": "2026-05-16 17:57",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Huashan",
+          "city": "Xian",
+          "rating": 5,
+          "description": "A famous mountain day trip from Xi'an."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 3,
+      "main_city": "Xining",
+      "title": "Shaanxi Museum to Xining",
+      "notes": "Visit the Shaanxi Museum, then travel from Xi'an to Xining.",
+      "pictures": [],
+      "attractions": [
+        {
+          "name": "Shaanxi Museum",
+          "city": "Xian",
+          "rating": 5,
+          "description": "Major museum in Xi'an focused on Shaanxi history."
+        }
+      ],
+      "train_trips": [
+        {
+          "outgoing_city": "Xian",
+          "destination_city": "Xining",
+          "time_of_day": "afternoon",
+          "departure_time": "17:47",
+          "arrival_time": "21:35",
+          "duration_minutes": 228
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "main_city": "Chaka town",
+      "title": "Riyue Shan, Qinghai Lake, Chaka Salt Lake",
+      "notes": "Scenic route through Qinghai highlights.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260518_101556.jpg",
+          "caption": "2026-05-18 10:15",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260518143335.jpg",
+          "caption": "2026-05-18 14:33",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260518_145502 (1).jpg",
+          "caption": "2026-05-18 14:55",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260518_154904.jpg",
+          "caption": "2026-05-18 15:49",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260518_162316.jpg",
+          "caption": "2026-05-18 16:23",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260518_193357.jpg",
+          "caption": "2026-05-18 19:33",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260518_193357_1.jpg",
+          "caption": "2026-05-18 19:33",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260518_193920.jpg",
+          "caption": "2026-05-18 19:39",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "RiyueShan",
+          "city": "Riyue Shan",
+          "rating": 4,
+          "description": "Sun and Moon Mountain area."
+        },
+        {
+          "name": "Qinghai Lake",
+          "city": "Qinghai Lake",
+          "rating": 5,
+          "description": "Large high-altitude lake in Qinghai."
+        },
+        {
+          "name": "Chaka Salt Lake",
+          "city": "Chaka town",
+          "rating": 5,
+          "description": "Salt lake known for mirror-like reflections."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 5,
+      "main_city": "Charhan Salt Lake",
+      "title": "Charhan Salt Lake and Lonely Star",
+      "notes": "Visit Charhan Salt Lake and Lonely Star.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260519163124_01.jpg",
+          "caption": "2026-05-19 16:31",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260519172034.jpg",
+          "caption": "2026-05-19 17:20",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260519_173902.jpg",
+          "caption": "2026-05-19 17:39",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260519_203207.jpg",
+          "caption": "2026-05-19 20:32",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260519_203346.jpg",
+          "caption": "2026-05-19 20:33",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Charhan Salt Lake",
+          "city": "Charhan Salt Lake",
+          "rating": 5,
+          "description": "Salt lake in Qinghai."
+        },
+        {
+          "name": "Lonely Star",
+          "city": "Charhan Salt Lake",
+          "rating": 4,
+          "description": "Lonely star stop on the route."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 6,
+      "main_city": "Dunhuang",
+      "title": "Yardang and Heidu Mountain",
+      "notes": "Move to Dunhuang via desert landforms.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260520105107 (1).jpg",
+          "caption": "2026-05-20 10:51",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_113001.jpg",
+          "caption": "2026-05-20 11:30",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_115551.jpg",
+          "caption": "2026-05-20 11:55",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_123852.jpg",
+          "caption": "2026-05-20 12:38",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_125433.jpg",
+          "caption": "2026-05-20 12:54",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_154026.jpg",
+          "caption": "2026-05-20 15:40",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_155007.jpg",
+          "caption": "2026-05-20 15:50",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_201047.jpg",
+          "caption": "2026-05-20 20:10",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_201047_1.jpg",
+          "caption": "2026-05-20 20:10",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_203242.jpg",
+          "caption": "2026-05-20 20:32",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_203824.jpg",
+          "caption": "2026-05-20 20:38",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260520_203824_1.jpg",
+          "caption": "2026-05-20 20:38",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Yardang landform",
+          "city": "Yadan",
+          "rating": 5,
+          "description": "Wind-shaped desert landform."
+        },
+        {
+          "name": "Heidu Mountain",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Black mountain landscape near Dunhuang."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 7,
+      "main_city": "Dunhuang",
+      "title": "Mogao and Mingsha",
+      "notes": "Caves, dunes, and night market in Dunhuang.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260521_004852.jpg",
+          "caption": "2026-05-21 00:48",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260521_011443.jpg",
+          "caption": "2026-05-21 01:14",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260521_011454.jpg",
+          "caption": "2026-05-21 01:14",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260521_094126_1.jpg",
+          "caption": "2026-05-21 09:41",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260521_110933.jpg",
+          "caption": "2026-05-21 11:09",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260521183046.jpg",
+          "caption": "2026-05-21 18:30",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260521201356.jpg",
+          "caption": "2026-05-21 20:13",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Mogao caves",
+          "city": "Dunhuang",
+          "rating": 5,
+          "description": "Famous Buddhist cave temples."
+        },
+        {
+          "name": "Mingsha mountain",
+          "city": "Dunhuang",
+          "rating": 5,
+          "description": "Singing sand dunes and Crescent Lake area."
+        },
+        {
+          "name": "Shazhou night market",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Popular night market in Dunhuang."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 8,
+      "main_city": "Dunhuang",
+      "title": "Silk Road sites and Yadan",
+      "notes": "Heritage city, passes, and geologic park.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260522_004548 (2).jpg",
+          "caption": "2026-05-22 00:45",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260522_015027_1.jpg",
+          "caption": "2026-05-22 01:50",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260522_080325.jpg",
+          "caption": "2026-05-22 08:03",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260522_111710.jpg",
+          "caption": "2026-05-22 11:17",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260522_112057 (1).jpg",
+          "caption": "2026-05-22 11:20",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260522_112203.jpg",
+          "caption": "2026-05-22 11:22",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260522_115450.jpg",
+          "caption": "2026-05-22 11:54",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260522130411.jpg",
+          "caption": "2026-05-22 13:04",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260522184040 (1).jpg",
+          "caption": "2026-05-22 18:40",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260522184741 (1).jpg",
+          "caption": "2026-05-22 18:47",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260522190826_1.jpg",
+          "caption": "2026-05-22 19:08",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260522195412_1.jpg",
+          "caption": "2026-05-22 19:54",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260522200000_1.jpg",
+          "caption": "2026-05-22 20:00",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260522_215804.jpg",
+          "caption": "2026-05-22 21:58",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260522_225047.jpg",
+          "caption": "2026-05-22 22:50",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Silk Road Heritage City",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Cultural heritage site themed around the Silk Road."
+        },
+        {
+          "name": "Yangguan",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Historic frontier pass."
+        },
+        {
+          "name": "Yumenguan",
+          "city": "Dunhuang",
+          "rating": 4,
+          "description": "Historic Jade Gate pass."
+        },
+        {
+          "name": "Dunhuang Yadan",
+          "city": "Dunhuang",
+          "rating": 5,
+          "description": "Dunhuang Yadan geological park."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 9,
+      "main_city": "Jiayuguan",
+      "title": "Son of Earth and caves",
+      "notes": "Travel toward Jiayuguan with cultural stops.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260523_100355_1.jpg",
+          "caption": "2026-05-23 10:03",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260523_111803.jpg",
+          "caption": "2026-05-23 11:18",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260523_143308_1.jpg",
+          "caption": "2026-05-23 14:33",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260523210718.jpg",
+          "caption": "2026-05-23 21:07",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Son of Earth",
+          "city": "Jiayuguan",
+          "rating": 4,
+          "description": "Large desert art installation."
+        },
+        {
+          "name": "Yulin Caves",
+          "city": "Jiayuguan",
+          "rating": 5,
+          "description": "Ancient cave complex in the region."
+        },
+        {
+          "name": "Jiayuguan Fortress",
+          "city": "Jiayuguan",
+          "rating": 5,
+          "description": "Historic fortress at the western end of the Great Wall."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 10,
+      "main_city": "Zhangye",
+      "title": "Overhanging Wall and Danxia",
+      "notes": "Great Wall and colorful landforms.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260524_085825.jpg",
+          "caption": "2026-05-24 08:58",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260524_090742.jpg",
+          "caption": "2026-05-24 09:07",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260524093055 (1).jpg",
+          "caption": "2026-05-24 09:30",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260524102728_1.jpg",
+          "caption": "2026-05-24 10:27",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260524_110714.jpg",
+          "caption": "2026-05-24 11:07",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260524_112246_1.jpg",
+          "caption": "2026-05-24 11:22",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260524_115024.jpg",
+          "caption": "2026-05-24 11:50",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260524_115053_1.jpg",
+          "caption": "2026-05-24 11:50",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260524_140624 (1).jpg",
+          "caption": "2026-05-24 14:06",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260524152342.jpg",
+          "caption": "2026-05-24 15:23",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260524152912.jpg",
+          "caption": "2026-05-24 15:29",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260524_210450.jpg",
+          "caption": "2026-05-24 21:04",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Overhanging great wall",
+          "city": "Jiayuguan",
+          "rating": 4,
+          "description": "Section of the Great Wall built on steep terrain."
+        },
+        {
+          "name": "Zhangye Danxia",
+          "city": "Zhangye",
+          "rating": 5,
+          "description": "Colorful Danxia landform area."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 11,
+      "main_city": "Xining",
+      "title": "Mati Temple and Qilian",
+      "notes": "Temple visit and steppe scenery en route to Xining.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260525103933_1.jpg",
+          "caption": "2026-05-25 10:39",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260525_125037.jpg",
+          "caption": "2026-05-25 12:50",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260525_144232_1.jpg",
+          "caption": "2026-05-25 14:42",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260525_144403_1.jpg",
+          "caption": "2026-05-25 14:44",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260525_144544_1.jpg",
+          "caption": "2026-05-25 14:45",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260525_145136_1.jpg",
+          "caption": "2026-05-25 14:51",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Mati Temple",
+          "city": "Zhangye",
+          "rating": 5,
+          "description": "Temple and grotto site in the region."
+        },
+        {
+          "name": "Qilian Great Steppe",
+          "city": "Qilian",
+          "rating": 5,
+          "description": "Wide grasslands and mountain scenery."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 12,
+      "main_city": "Xining",
+      "title": "Dongguan Mosque and Kumbum",
+      "notes": "City sightseeing in Xining.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260526_093937_1.jpg",
+          "caption": "2026-05-26 09:39",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260526_094302 (2).jpg",
+          "caption": "2026-05-26 09:43",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260526_102216.jpg",
+          "caption": "2026-05-26 10:22",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260526113535 (1).jpg",
+          "caption": "2026-05-26 11:35",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG20260526113558.jpg",
+          "caption": "2026-05-26 11:35",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260526_130131_1.jpg",
+          "caption": "2026-05-26 13:01",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260526_130148 (1).jpg",
+          "caption": "2026-05-26 13:01",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260526_130201 (1).jpg",
+          "caption": "2026-05-26 13:02",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260526_130225_1.jpg",
+          "caption": "2026-05-26 13:02",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260526_130256_1.jpg",
+          "caption": "2026-05-26 13:02",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260526_130302_1.jpg",
+          "caption": "2026-05-26 13:03",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Dongguan Great Mosque",
+          "city": "Xining",
+          "rating": 5,
+          "description": "Major mosque in Xining."
+        },
+        {
+          "name": "Kumbum Monastery",
+          "city": "Xining",
+          "rating": 5,
+          "description": "Important Tibetan Buddhist monastery near Xining."
+        },
+        {
+          "name": "Xining wildlife Park",
+          "city": "Xining",
+          "rating": 4,
+          "description": "Urban wildlife park in Xining."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 13,
+      "main_city": "Lanzhou",
+      "title": "Lanzhou city highlights",
+      "notes": "Move to Lanzhou and explore the city.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527.jpg",
+          "caption": "2026-05-27",
+          "format": "16:9"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_002709 (1).jpg",
+          "caption": "2026-05-27 00:27",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_104946.jpg",
+          "caption": "2026-05-27 10:49",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_112022.png",
+          "caption": "2026-05-27 11:20",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_131937_1.jpg",
+          "caption": "2026-05-27 13:19",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_132023_1.jpg",
+          "caption": "2026-05-27 13:20",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_132253_1.jpg",
+          "caption": "2026-05-27 13:22",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_134341_1.jpg",
+          "caption": "2026-05-27 13:43",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_134433_1.jpg",
+          "caption": "2026-05-27 13:44",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_134948_1.jpg",
+          "caption": "2026-05-27 13:49",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260527_221702.jpg",
+          "caption": "2026-05-27 22:17",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [
+        {
+          "name": "Zhongshan bridge",
+          "city": "Lanzhou",
+          "rating": 4,
+          "description": "Historic bridge over the Yellow River."
+        },
+        {
+          "name": "Baitashan Park",
+          "city": "Lanzhou",
+          "rating": 4,
+          "description": "Park with views over Lanzhou."
+        },
+        {
+          "name": "Yellow River Tower",
+          "city": "Lanzhou",
+          "rating": 5,
+          "description": "Tower and scenic viewpoint in Lanzhou."
+        },
+        {
+          "name": "Lanzhou old street",
+          "city": "Lanzhou",
+          "rating": 4,
+          "description": "Old street area for walking and food."
+        }
+      ],
+      "train_trips": []
+    },
+    {
+      "day_number": 14,
+      "main_city": "Xian",
+      "title": "Return to Xi'an",
+      "notes": "Return to Xi'an before departure.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260528_094738.jpg",
+          "caption": "2026-05-28 09:47",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260528_103859.jpg",
+          "caption": "2026-05-28 10:38",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260528_104557.jpg",
+          "caption": "2026-05-28 10:45",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260528_142556.jpg",
+          "caption": "2026-05-28 14:25",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260528_142613.jpg",
+          "caption": "2026-05-28 14:26",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260528_142724.jpg",
+          "caption": "2026-05-28 14:27",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260528_142743.jpg",
+          "caption": "2026-05-28 14:27",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260528_142819.jpg",
+          "caption": "2026-05-28 14:28",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260528_142913.jpg",
+          "caption": "2026-05-28 14:29",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [],
+      "train_trips": []
+    },
+    {
+      "day_number": 15,
+      "main_city": "Xian",
+      "title": "Departure",
+      "notes": "Depart Xi'an at 20:30.",
+      "pictures": [
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260529_093520.jpg",
+          "caption": "2026-05-29 09:35",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260529_112458.jpg",
+          "caption": "2026-05-29 11:24",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260529_113542 (1).jpg",
+          "caption": "2026-05-29 11:35",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260529_113542.jpg",
+          "caption": "2026-05-29 11:35",
+          "format": "9:16"
+        },
+        {
+          "url": "src/assets/trips/qinghai-gansu/IMG_20260529_174152.jpg",
+          "caption": "2026-05-29 17:41",
+          "format": "9:16"
+        }
+      ],
+      "attractions": [],
+      "train_trips": []
+    }
+  ],
+  "cities": [
+    {
+      "name": "Xian",
+      "country": "China",
+      "region": "Shaanxi",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Xining",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Chaka town",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Charhan Salt Lake",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Qinghai Lake",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Riyue Shan",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Yadan",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Dunhuang",
+      "country": "China",
+      "region": "Gansu",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Jiayuguan",
+      "country": "China",
+      "region": "Gansu",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Zhangye",
+      "country": "China",
+      "region": "Gansu",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Qilian",
+      "country": "China",
+      "region": "Qinghai",
+      "hotels": [],
+      "restaurants": []
+    },
+    {
+      "name": "Lanzhou",
+      "country": "China",
+      "region": "Gansu",
+      "hotels": [],
+      "restaurants": []
+    }
+  ]
+}
