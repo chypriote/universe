@@ -6,15 +6,15 @@
 	import { matchesSearch } from '#lib/search';
 	import { kitLabel, kitTypeLabels, kitTypeText, labelOptions } from '#lib/labels';
 	import type { KitType, KitView, TeamView } from '#lib/server/catalog/types';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from './DeleteAction.svelte';
-	import Field from './Field.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 	import FormActions from './FormActions.svelte';
 	import MainPicture from './MainPicture.svelte';
 	import PictureInput from './PictureInput.svelte';
 	import Popup from './Popup.svelte';
-	import SearchField from './SearchField.svelte';
-	import Select from './Select.svelte';
+	import SearchField from '@universe/showcase/components/SearchField.svelte';
+	import Select from '@universe/showcase/components/Select.svelte';
 
 	let { kits, teams }: { kits: KitView[]; teams: TeamView[] } = $props();
 

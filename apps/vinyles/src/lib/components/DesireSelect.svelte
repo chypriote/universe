@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Desire } from '#lib/server/catalog/types';
-	import { NativeSelect, NativeSelectOption } from './ui/native-select/index.js';
+	import { NativeSelect, NativeSelectOption } from '@universe/showcase/ui/native-select';
 
 	let {
 		value = null,

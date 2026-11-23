@@ -8,7 +8,7 @@ Direction chosen by Nico on 2026-11-22. Reference: [visual direction page](https
 
 **Theme statement:** happy, sporty, kit wall.
 
-**Character:** A full wall of football shirts. Sibling of the Vinyles "Wall" language: same structure and shapes, own palette and display type. Dials: Creativity=Balanced, Density=Packed, Variance=Uniform, Motion=Static (hover tilt only).
+**Character:** A full wall of football shirts. A theme of [Showcase](../../packages/showcase/DESIGN.md), the shared design system: Showcase sets the structure, shapes and controls; Jerseys sets its palette, display type and domain components. Dials: Creativity=Balanced, Density=Packed, Variance=Uniform, Motion=Static (hover tilt only).
 
 **References:** Vinyles "Wall" (structure, shapes, popup), a club shop wall of shirts (packed square tiles), pitch green and sky blue (palette), condensed italic shirt lettering (display type).
 
@@ -63,7 +63,7 @@ The scale is ad-hoc: a size not in this table does not appear in the app.
 - **StickyBar:** title, chips, tab pills, search, filters, sort.
 - **Controls:** Chip, Button, Tabs, SearchField, Select, ToggleGroup are pills.
 
-Full catalog (all levels, props, states, Owner UI, empty states, import screen): [COMPONENTS.md](COMPONENTS.md). All components are planned: none is in code yet.
+Full catalog (all levels, props, states, Owner UI, empty states, import screen): [COMPONENTS.md](COMPONENTS.md).
 
 ## 5. Layout
 
@@ -140,7 +140,7 @@ Mobile first.
 
 When you make UI for this app:
 
-- Use semantic or component tokens from [TOKENS.md](TOKENS.md). Never put a raw hex or pixel value in component code.
+- Use semantic or component tokens from [TOKENS.md](TOKENS.md) and the [Showcase tokens](../../packages/showcase/TOKENS.md). Never put a raw hex or pixel value in component code.
 - Use a component from [COMPONENTS.md](COMPONENTS.md) before you propose a new one. A new component goes into COMPONENTS.md first.
 - Apply section 7 as hard rules.
 

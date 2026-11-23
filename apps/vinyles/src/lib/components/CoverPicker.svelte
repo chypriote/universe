@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import type { CoverCandidate } from '#lib/server/catalog/types';
-	import Button from './Button.svelte';
-	import ConfirmDialog from './ConfirmDialog.svelte';
-	import { Button as IconButton } from './ui/button/index.js';
-	import { Input } from './ui/input/index.js';
+	import Button from '@universe/showcase/components/Button.svelte';
+	import ConfirmDialog from '@universe/showcase/components/ConfirmDialog.svelte';
+	import { Button as IconButton } from '@universe/showcase/ui/button';
+	import { Input } from '@universe/showcase/ui/input';
 	import UploadIcon from '@lucide/svelte/icons/upload';
 	import LinkIcon from '@lucide/svelte/icons/link';
 	import SpinnerIcon from '@lucide/svelte/icons/loader-circle';

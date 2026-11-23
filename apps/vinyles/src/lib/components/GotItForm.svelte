@@ -2,8 +2,8 @@
 	import { addStore, emptyAcquisition, postAction, toAcquisitionInput } from '#lib/forms';
 	import { untrack } from 'svelte';
 	import AcquisitionFields from './AcquisitionFields.svelte';
-	import Button from './Button.svelte';
-	import Field from './Field.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 
 	let {
 		wishlistItemId,

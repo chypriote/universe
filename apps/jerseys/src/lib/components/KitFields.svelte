@@ -11,9 +11,9 @@
 		TeamChoice,
 		TeamView
 	} from '#lib/server/catalog/types';
-	import Field from './Field.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 	import PictureInput from './PictureInput.svelte';
-	import Select from './Select.svelte';
+	import Select from '@universe/showcase/components/Select.svelte';
 	import TeamLookup from './TeamLookup.svelte';
 
 	let {

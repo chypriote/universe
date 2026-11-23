@@ -1,0 +1,28 @@
+{
+	"name": "@universe/showcase",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./showcase.css": "./src/showcase.css",
+		"./utils": "./src/utils.ts",
+		"./components/*": "./src/components/*",
+		"./ui/*": "./src/components/ui/*/index.ts"
+	},
+	"scripts": {
+		"check": "svelte-check --tsconfig ./tsconfig.json",
+		"lint": "eslint .",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"verify": "npm run format:check && npm run lint && npm run check",
+		"ci": "npm run verify"
+	},
+	"peerDependencies": {
+		"@lucide/svelte": "^1.77.0",
+		"bits-ui": "^2.21.0",
+		"clsx": "^2.1.1",
+		"svelte": "^5.57.3",
+		"tailwind-merge": "^3.7.1",
+		"tailwind-variants": "^3.3.1"
+	}
+}

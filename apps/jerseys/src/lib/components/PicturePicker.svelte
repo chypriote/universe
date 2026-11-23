@@ -6,10 +6,10 @@
 	import UploadIcon from '@lucide/svelte/icons/upload';
 	import LinkIcon from '@lucide/svelte/icons/link';
 	import SpinnerIcon from '@lucide/svelte/icons/loader-circle';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import FindPicturesLink from './FindPicturesLink.svelte';
-	import { Button as IconButton } from './ui/button/index.js';
-	import { Input } from './ui/input/index.js';
+	import { Button as IconButton } from '@universe/showcase/ui/button';
+	import { Input } from '@universe/showcase/ui/input';
 
 	/** Sets the Main Picture of a Kit from a TheSportsDB candidate, an uploaded image or an image address. */
 	let {

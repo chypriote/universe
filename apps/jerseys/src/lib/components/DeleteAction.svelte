@@ -1,7 +1,7 @@
 <script lang="ts">
 	import XIcon from '@lucide/svelte/icons/x';
-	import Button from './Button.svelte';
-	import ConfirmDialog from './ConfirmDialog.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
+	import ConfirmDialog from '@universe/showcase/components/ConfirmDialog.svelte';
 
 	let {
 		what,

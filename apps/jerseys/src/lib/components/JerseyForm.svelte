@@ -23,10 +23,10 @@
 		Version
 	} from '#lib/server/catalog/types';
 	import AcquisitionFields from './AcquisitionFields.svelte';
-	import Button from './Button.svelte';
-	import Field from './Field.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 	import KitFields from './KitFields.svelte';
-	import ToggleGroup from './ToggleGroup.svelte';
+	import ToggleGroup from '@universe/showcase/components/ToggleGroup.svelte';
 
 	let {
 		jersey = null,

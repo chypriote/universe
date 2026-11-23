@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { AcquisitionState } from '#lib/forms';
-	import Field from './Field.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 	import StoreSelect from './StoreSelect.svelte';
-	import ToggleGroup from './ToggleGroup.svelte';
+	import ToggleGroup from '@universe/showcase/components/ToggleGroup.svelte';
 
 	let {
 		acquisition = $bindable(),

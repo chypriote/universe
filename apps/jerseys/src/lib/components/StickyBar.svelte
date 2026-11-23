@@ -2,9 +2,15 @@
 	import FilterIcon from '@lucide/svelte/icons/sliders-horizontal';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import type { Snippet } from 'svelte';
-	import { Button } from './ui/button/index.js';
-	import Tabs from './Tabs.svelte';
-	import ThemeToggle from './ThemeToggle.svelte';
+	import { resolve } from '$app/paths';
+	import { Button } from '@universe/showcase/ui/button';
+	import Tabs from '@universe/showcase/components/Tabs.svelte';
+	import ThemeToggle from '@universe/showcase/components/ThemeToggle.svelte';
+
+	const lists = [
+		{ key: 'collection', href: resolve('/'), label: 'Collection' },
+		{ key: 'wishlist', href: resolve('/wishlist'), label: 'Wishlist' }
+	];
 
 	let {
 		current,
@@ -74,7 +80,7 @@
 		</div>
 	</div>
 	<div class="flex flex-wrap items-center gap-2">
-		<Tabs {current} />
+		<Tabs {current} links={lists} />
 		{@render action?.()}
 		<div class="ms-auto flex gap-2 sm:hidden">
 			{@render toggleButton('search', 'Search', searchActive)}

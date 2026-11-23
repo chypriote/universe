@@ -2,11 +2,11 @@
 	import { kitArchiveUrl } from '#lib/kit-archive';
 	import type { KitSummary } from '#lib/server/catalog/types';
 	import { matchesSearch } from '#lib/search';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import MainPictureLookup from './MainPictureLookup.svelte';
 	import PicturePicker from './PicturePicker.svelte';
 	import Popup from './Popup.svelte';
-	import SearchField from './SearchField.svelte';
+	import SearchField from '@universe/showcase/components/SearchField.svelte';
 
 	let { kits }: { kits: KitSummary[] } = $props();
 

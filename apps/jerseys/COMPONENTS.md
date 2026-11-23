@@ -4,68 +4,14 @@ Sources: [DESIGN.md](DESIGN.md) for the look, [TOKENS.md](TOKENS.md) for values,
 
 Accepted by Nico on 2026-11-23.
 
-Stack: same as Vinyles, SvelteKit (Svelte 5) with shadcn-svelte and Tailwind CSS v4. "Snippet" is a Svelte 5 slot. Props are camelCase; callbacks start with `on`. Where a component is the same as in Vinyles, this file says so and lists only the differences.
+Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Jerseys.
 
 ## Hierarchy
 
 | Level | Components |
 |---|---|
-| Primitive | Chip, Button, SearchField, Select, Field, ToggleGroup |
-| Component | Tile, Tabs, Popup, ConfirmDialog, CountryFilter, SortDirection, ThemeToggle, StoreSelect, TeamLookup, EmptyState |
+| Component | Tile, Popup, CountryFilter, StoreSelect, TeamLookup |
 | Pattern | StickyBar, TileGrid, CoverageMap, LoginAction, AddAction, DeleteAction, FormActions, AcquisitionFields, JerseyForm, WishlistItemForm, GotItForm |
-
-## Shared rules
-
-- Touch target: every control is at least `control.size.min` (44px).
-- Focus: `outline.focus.width` in `color.outline.focus`, on `:focus-visible` only.
-- Motion: hover tilt and lift only under `prefers-reduced-motion: no-preference`.
-- Controls (pills) use `radius.control` and `shadow.raised`. No borders.
-- Numbers use `font.numeric`.
-- Components set no outer margin and no width. The pattern sets the layout.
-- Display face (`font.family.display`) only for the roles DESIGN.md names. Everything else is Nunito.
-
----
-
-## Primitives
-
-### Chip
-
-Same as Vinyles. Tones: `highlight` (jersey count), `success` (total spent), `info` (wishlist count). Not interactive.
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| tone | `'highlight' \| 'success' \| 'info'` | — | `color.bg.highlight`, `.success` or `.info` |
-| label | string | — | "jerseys", "spent", "wanted" |
-| value | string | — | Already formatted ("67", "4 120,00 €") |
-
-### Button
-
-Same as Vinyles. Intents `success` (Got it, Save, Log in), `neutral` (Drop, Cancel) and `danger` (the Delete Button of DeleteAction, `color.bg.danger`). Also `size="icon"` for the icon pills (search toggle, filter toggle, sort order, lock, theme): a visually hidden label is required.
-
-States: default, hover (8% state layer of the text color), focus, pressed (shadow to 0, move down 3px), disabled (50% opacity, no shadow).
-
-### SearchField
-
-Native `<input type="search">`. Searches the Team name and the Print. Label (visually hidden): "Search team or print".
-
-### Select
-
-Native `<select>`, styled as a pill. Used for sort.
-
-### Field
-
-SearchField, Select and Field share one look: fill `color.bg.field`, a 2px `color.border.field` border, a pill with `shadow.raised`. They stand out from the page and from the Popup in light and dark (contrast ratios in TOKENS.md).
-
-
-Same as Vinyles: visible label, native input, `error` text in `color.text.error`, linked with `aria-describedby`. Types: `text`, `password`, `number`.
-
-Dates in this app can be a year only (GLOSSARY: Purchase). So a date Field is `type="text"` with no `inputmode` (the iOS number pad has no "-"), placeholder "2024 or 2024-05-12", and the form checks the pattern `YYYY` or `YYYY-MM-DD`. Native `type="date"` cannot hold a year only.
-
-### ToggleGroup
-
-The shadcn-svelte toggle group, as radio pills, `type="single"`. Used for Version, Size, Fit, Kit kind and Acquisition. Selected: `color.bg.accent` + `color.text.on-accent`.
-
----
 
 ## Components
 
@@ -87,10 +33,6 @@ The shadcn-svelte toggle group, as radio pills, `type="single"`. Used for Versio
 - Never fill the tile with a kit colour (DESIGN.md).
 
 States: default, hover and focus (`tile.hover.lift`, `tile.hover.tilt`, motion allowed only; focus also shows the ring), no Main Picture.
-
-### Tabs
-
-Same as Vinyles: two links, `/` (Collection) and `/wishlist`, not an ARIA tab widget. Label text: `text.label.tab`. Current: `color.bg.accent` + `color.text.on-accent`, `aria-current="page"`.
 
 ### Popup
 
@@ -115,18 +57,6 @@ Slots:
 - `actions`: optional, Owner only.
 - `findPicturesUrl`: optional, Owner only: the "Find pictures on Football Kit Archive" link under the Buttons. The Edit Kit and Set main picture Popups pass it.
 
-### ConfirmDialog
-
-Same as Vinyles: the shadcn-svelte alert dialog, over the Popup. Title "Delete {what}?", a line of `text.body.detail` in `color.text.muted` on what goes, then Buttons `neutral` "Cancel" and `neutral` "Delete". Esc and "Cancel" close it and change nothing. "Delete" closes it and runs the delete.
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| open | boolean | false | Bindable |
-| title | string | — | "Delete Lyon 2023-24 · Home?" |
-| text | string | — | What the delete removes |
-| actionLabel | string | — | "Delete" |
-| onConfirm | `() => void` | — | |
-
 ### CountryFilter
 
 **Purpose:** Filter a list by Country.
@@ -137,10 +67,6 @@ Same shape as the Vinyles ArtistFilter: a `<details>` pill with checkboxes. Summ
 |---|---|---|---|
 | value | string[] | `[]` | Bindable Country ids. Empty = all |
 | groups | `{ continent: string; countries: { id: string; name: string }[] }[]` | — | |
-
-### SortDirection, ThemeToggle
-
-Same as Vinyles.
 
 ### StoreSelect
 
@@ -166,7 +92,7 @@ Same as Vinyles: native Select over the Stores and a last option "Add a store…
 
 ### EmptyState
 
-Same as Vinyles. Messages: "No jerseys yet", "Nothing on the wishlist", "No match" with a "Clear filters" Button. No illustration.
+Showcase EmptyState. Messages: "No jerseys yet", "Nothing on the wishlist", "No match" with a "Clear filters" Button. No illustration.
 
 ---
 

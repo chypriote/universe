@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import type { LookupProgress } from '#lib/server/catalog/types';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 
 	let progress = $state<LookupProgress | null>(null);
 	let rerun = $state(false);

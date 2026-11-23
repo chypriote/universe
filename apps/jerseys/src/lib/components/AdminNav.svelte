@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { cn } from '#lib/utils';
+	import { cn } from '@universe/showcase/utils';
 
 	const links = [
 		{ href: '/admin/countries', label: 'Countries' },

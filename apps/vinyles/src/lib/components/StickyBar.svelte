@@ -2,9 +2,15 @@
 	import FilterIcon from '@lucide/svelte/icons/sliders-horizontal';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import type { Snippet } from 'svelte';
-	import { Button } from './ui/button/index.js';
-	import Tabs from './Tabs.svelte';
-	import ThemeToggle from './ThemeToggle.svelte';
+	import { resolve } from '$app/paths';
+	import { Button } from '@universe/showcase/ui/button';
+	import Tabs from '@universe/showcase/components/Tabs.svelte';
+	import ThemeToggle from '@universe/showcase/components/ThemeToggle.svelte';
+
+	const lists = [
+		{ key: 'collection', href: resolve('/'), label: 'Collection' },
+		{ key: 'wishlist', href: resolve('/wishlist'), label: 'Wishlist' }
+	];
 
 	let {
 		current,
@@ -68,11 +74,11 @@
 		<div class="flex items-center gap-1.5 sm:flex-wrap sm:gap-2">
 			{@render chips?.()}
 			{@render login?.()}
-			<ThemeToggle />
+			<ThemeToggle size="icon-sm" />
 		</div>
 	</div>
 	<div class="flex flex-wrap items-center gap-2">
-		<Tabs {current} />
+		<Tabs {current} links={lists} variant="segmented" />
 		{@render action?.()}
 		{@render toggleButton('search', 'Search', searchActive)}
 		{@render toggleButton('filters', 'Filters and sort', filtersActive)}

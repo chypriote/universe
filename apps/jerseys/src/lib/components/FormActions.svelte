@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 
 	let { busy = false, remove }: { busy?: boolean; remove?: Snippet } = $props();
 </script>

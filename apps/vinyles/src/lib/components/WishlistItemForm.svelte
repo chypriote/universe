@@ -2,9 +2,9 @@
 	import { addStore, postAction } from '#lib/forms';
 	import { eurosToCents } from '#lib/money';
 	import type { AddWishlistItemInput, Desire } from '#lib/server/catalog/types';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import DesireSelect from './DesireSelect.svelte';
-	import Field from './Field.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 	import StoreSelect from './StoreSelect.svelte';
 
 	let {

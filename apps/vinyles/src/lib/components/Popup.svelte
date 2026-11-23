@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { initials, tileClass } from '#lib/tile';
-	import * as Dialog from './ui/dialog/index.js';
+	import * as Dialog from '@universe/showcase/ui/dialog';
 
 	let {
 		open = $bindable(false),

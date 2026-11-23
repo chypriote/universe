@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from './Button.svelte';
-	import { Button as UiButton } from './ui/button/index.js';
+	import Button from '@universe/showcase/components/Button.svelte';
+	import { Button as UiButton } from '@universe/showcase/ui/button';
 	import LoginForm from './LoginForm.svelte';
 	import Popup from './Popup.svelte';
 

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { postAction } from '#lib/forms';
 	import type { WishlistItemView } from '#lib/server/catalog/types';
-	import Button from './Button.svelte';
-	import Field from './Field.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 
 	let {
 		item,

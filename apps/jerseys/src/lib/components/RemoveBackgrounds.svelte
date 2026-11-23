@@ -2,7 +2,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { checkedPictures, cleanMainPicture, rememberChecked } from '#lib/clean-pictures';
 	import type { KitView } from '#lib/server/catalog/types';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 
 	let { kits }: { kits: KitView[] } = $props();
 

@@ -2,7 +2,7 @@
 	import { untrack, type Snippet } from 'svelte';
 	import { postAction } from '#lib/forms';
 	import type { Store } from '#lib/server/catalog/types';
-	import Field from './Field.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 	import FormActions from './FormActions.svelte';
 
 	/** `store` set: edits it. Unset: adds a Store. */

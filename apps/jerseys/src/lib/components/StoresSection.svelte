@@ -4,10 +4,10 @@
 	import { jerseyCount } from '#lib/format-count';
 	import { matchesSearch } from '#lib/search';
 	import PencilIcon from '@lucide/svelte/icons/pencil';
-	import Button from './Button.svelte';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from './DeleteAction.svelte';
 	import Popup from './Popup.svelte';
-	import SearchField from './SearchField.svelte';
+	import SearchField from '@universe/showcase/components/SearchField.svelte';
 	import StoreForm from './StoreForm.svelte';
 
 	let { stores, counts }: { stores: Store[]; counts: Record<number, number> } = $props();

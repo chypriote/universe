@@ -4,9 +4,9 @@
 	import { postAction } from '#lib/forms';
 	import type { Continent, Country, SeasonFormat } from '#lib/server/catalog/types';
 	import CountryNameLookup from './CountryNameLookup.svelte';
-	import Field from './Field.svelte';
+	import Field from '@universe/showcase/components/Field.svelte';
 	import FormActions from './FormActions.svelte';
-	import Select from './Select.svelte';
+	import Select from '@universe/showcase/components/Select.svelte';
 
 	/** `country` set: edits it and its League. Unset: adds a Country with its League. */
 	let {
