@@ -1,8 +1,8 @@
-# Ink: the Zhongguo design family
+# Journal: the design family of Zhongguo
 
 > A personal travel site about China (and nearby Asia: Japan, Vietnam): trip reports, trip plans, photography and a flight price planner.
 
-Ink is a working name (#22). It builds on the Universe layer ([packages/universe/DESIGN.md](../../packages/universe/DESIGN.md)): press and hover timings, reduced motion, Lucide icons, money and date formats and the koala come from there and are not repeated here.
+Journal is the family for personal journal apps: Zhongguo today, maybe a food review app later. It builds on the Universe layer ([packages/universe/DESIGN.md](../../packages/universe/DESIGN.md)): press and hover timings, reduced motion, Lucide icons, money and date formats and the koala come from there and are not repeated here.
 
 ## 1. Theme
 
