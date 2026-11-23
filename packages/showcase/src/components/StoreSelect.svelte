@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Button from '@universe/showcase/components/Button.svelte';
-	import Field from '@universe/showcase/components/Field.svelte';
-	import Select from '@universe/showcase/components/Select.svelte';
+	import Button from './Button.svelte';
+	import Field from './Field.svelte';
+	import Select from './Select.svelte';
 
 	let {
 		value = $bindable(''),

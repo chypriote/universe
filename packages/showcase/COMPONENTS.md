@@ -84,9 +84,55 @@ The shadcn-svelte alert dialog, over the Popup. Title "Delete {what}?", a line o
 | actionDisabled | boolean      | false   |                                  |
 | children       | Snippet      | —       | Between the text and the buttons |
 
-### Dialog placement
+### Popup
 
-`ui/dialog` Content takes `placeOver`: the element the dialog opens over (the tapped tile), clamped to the screen with a 16px gutter. It stays clamped when the dialog grows (a picture loads) or the window resizes. Without `placeOver` the dialog is centred: use that for forms.
+The dialog for one thing's details, or for a form. Built on `ui/dialog` (bits-ui), portalled to `<body>` at `layer.popup`. Each app wraps it to supply its picture column (Jerseys: the Main Picture and its thumbnails; Vinyles: the cover or initials tile).
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| open | boolean | false | Bindable |
+| anchor | HTMLElement \| null | null | The tile that opened it. A detail Popup opens over it; focus goes back to it on close |
+| title | string | — | `text.heading.popup` in the display face |
+| subtitle | string | `''` | Under the title of a detail Popup, 15px / 700, muted |
+| wide | boolean | false | Form Popup: `popup.width.wide`, no media |
+| large | boolean | false | A bigger detail card (`max-w-3xl`); the actions sit bottom right of the details |
+| mediaWidth | string | `var(--popup-picture-size)` | CSS width of the media column |
+| stackMedia | boolean | false | Below `sm`, the media sits above the details |
+| class | string | — | Extra classes on the dialog (a width) |
+| onDismiss | `() => void` | — | X button, Esc, tap on the backdrop |
+
+Snippets: `media` (set it for a detail Popup), `details`, `below` (full width under the media and details), `actions`.
+
+Placement: a detail Popup (`media` set, not `wide`) opens over `anchor`, clamped to the screen with a 16px gutter, and stays clamped when it grows (a picture loads) or the window resizes (`ui/dialog` Content `placeOver`). A form Popup is centred.
+
+### StickyBar
+
+The top of every list page, sticky at `layer.sticky` on `color.bg.page`. Title row: the `title` snippet in the `<h1>`, then Chips, LoginAction and ThemeToggle. Tabs row: Tabs and the Owner's `action`, then below `sm` the search and filter icon toggles (an `icon-accent` dot marks a set search or filter). Third row: `searchBox` and `controls`, each behind its toggle below `sm`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | Snippet | — | The page title |
+| current | string | — | Key of the current list |
+| links | `{ key, href, label }[]` | — | The app's lists, `href` already resolved |
+| packed | boolean | false | Vinyles: segmented Tabs, `icon-sm` ThemeToggle, toggles right after the Tabs, the title row never wraps on a phone |
+| searchActive, filtersActive | boolean | false | Show the dot on a closed toggle |
+
+Snippets: `title`, `chips`, `login`, `action`, `searchBox`, `controls`.
+
+### AddAction
+
+The Owner's `success` Button "Add" next to the Tabs. It opens a form Popup titled `title` and renders `form(close)` in it; the form calls `close` when it is done. `wide` gives the form two columns from `sm`.
+
+### StoreSelect
+
+A Select over the Stores, plus a last option "Add a store…". That option shows a Field for the new name and an "Add" Button; the new Store joins the list at once, before the page data reloads.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| value | string | `''` | Bindable Store id |
+| stores | `{ id, name }[]` | — | |
+| onAddStore | `(name) => Promise<{ id }>` | — | Creates the Store |
+| label | string | "Store" | |
 
 ### SortDirection
 

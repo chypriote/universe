@@ -2,18 +2,16 @@
 	import FilterIcon from '@lucide/svelte/icons/sliders-horizontal';
 	import SearchIcon from '@lucide/svelte/icons/search';
 	import type { Snippet } from 'svelte';
-	import { resolve } from '$app/paths';
-	import { Button } from '@universe/showcase/ui/button';
-	import Tabs from '@universe/showcase/components/Tabs.svelte';
-	import ThemeToggle from '@universe/showcase/components/ThemeToggle.svelte';
-
-	const lists = [
-		{ key: 'collection', href: resolve('/'), label: 'Collection' },
-		{ key: 'wishlist', href: resolve('/wishlist'), label: 'Wishlist' }
-	];
+	import { cn } from '../utils.js';
+	import { Button } from './ui/button/index.js';
+	import Tabs from './Tabs.svelte';
+	import ThemeToggle from './ThemeToggle.svelte';
 
 	let {
+		title,
 		current,
+		links,
+		packed = false,
 		chips,
 		login,
 		action,
@@ -22,15 +20,21 @@
 		searchActive = false,
 		filtersActive = false
 	}: {
-		current: 'collection' | 'wishlist';
+		/** The page title, rendered inside the `<h1>`. */
+		title: Snippet;
+		current: string;
+		/** The app's lists for Tabs, `href` already resolved. */
+		links: { key: string; href: string; label: string }[];
+		/** Packed bar (Vinyles): segmented Tabs, `icon-sm` theme toggle, the title row never wraps on a phone. */
+		packed?: boolean;
 		chips?: Snippet;
-		/** LoginAction: lock (Viewer) or admin link (Owner), in the title row. */
+		/** LoginAction, in the title row. */
 		login?: Snippet;
 		/** Add button (Owner), next to the tabs. */
 		action?: Snippet;
 		/** SearchField. */
 		searchBox?: Snippet;
-		/** CountryFilter, Selects, SortDirection. */
+		/** Filters, Selects, SortDirection. */
 		controls?: Snippet;
 		/** Show a dot on the closed toggle when a search or filter is set. */
 		searchActive?: boolean;
@@ -43,6 +47,8 @@
 	function toggle(next: 'search' | 'filters') {
 		panel = panel === next ? null : next;
 	}
+
+	const iconClass = $derived(packed ? 'size-4' : 'size-5');
 </script>
 
 {#snippet toggleButton(key: 'search' | 'filters', label: string, active: boolean)}
@@ -54,9 +60,9 @@
 		onclick={() => toggle(key)}
 	>
 		{#if key === 'search'}
-			<SearchIcon aria-hidden="true" class="size-5" />
+			<SearchIcon aria-hidden="true" class={iconClass} />
 		{:else}
-			<FilterIcon aria-hidden="true" class="size-5" />
+			<FilterIcon aria-hidden="true" class={iconClass} />
 		{/if}
 		<span class="sr-only">{label}</span>
 		{#if active && panel !== key}
@@ -69,20 +75,28 @@
 <header
 	class="sticky top-0 z-(--layer-sticky) flex flex-col gap-3 bg-background pt-[max(0.75rem,env(safe-area-inset-top))] pe-[max(1rem,env(safe-area-inset-right))] pb-3 ps-[max(1rem,env(safe-area-inset-left))]"
 >
-	<div class="flex flex-wrap items-center justify-between gap-2">
-		<h1>Jerseys</h1>
-		<div class="flex flex-wrap items-center justify-end gap-2">
-			<div class="flex flex-wrap gap-2" aria-live="polite">
+	<div
+		class={packed
+			? 'flex items-center justify-between gap-x-2 gap-y-2 sm:flex-wrap sm:gap-x-3'
+			: 'flex flex-wrap items-center justify-between gap-2'}
+	>
+		<h1>{@render title()}</h1>
+		<div
+			class={packed
+				? 'flex items-center gap-1.5 sm:flex-wrap sm:gap-2'
+				: 'flex flex-wrap items-center justify-end gap-2'}
+		>
+			<div class={cn('flex gap-2', packed ? 'gap-1.5 sm:gap-2' : 'flex-wrap')} aria-live="polite">
 				{@render chips?.()}
 			</div>
 			{@render login?.()}
-			<ThemeToggle />
+			<ThemeToggle size={packed ? 'icon-sm' : 'icon'} />
 		</div>
 	</div>
 	<div class="flex flex-wrap items-center gap-2">
-		<Tabs {current} links={lists} />
+		<Tabs {current} {links} variant={packed ? 'segmented' : 'pills'} />
 		{@render action?.()}
-		<div class="ms-auto flex gap-2 sm:hidden">
+		<div class={cn('flex gap-2 sm:hidden', !packed && 'ms-auto')}>
 			{@render toggleButton('search', 'Search', searchActive)}
 			{@render toggleButton('filters', 'Filters and sort', filtersActive)}
 		</div>

@@ -4,7 +4,7 @@ Sources: [DESIGN.md](DESIGN.md) for the look, [TOKENS.md](TOKENS.md) for values,
 
 Accepted by Nico on 2026-11-20.
 
-Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState, LoginAction) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Vinyles.
+Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState, LoginAction, Popup, StickyBar, AddAction, StoreSelect) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Vinyles.
 
 ## Hierarchy
 
@@ -102,7 +102,7 @@ Default, focus, disabled.
 **Hierarchy:** Component
 **Purpose:** Shows the details of one Record or Wishlist Item over its Cover.
 
-The Showcase dialog (bits-ui), portalled to `<body>` at `layer.popup`. It gives the focus trap, Esc, the `inert` page and the backdrop (`color.bg.overlay`). On close, focus goes back to the Cover.
+Wraps the Showcase Popup: the cover (or initials tile) is the `media` snippet, `min(popup.cover.size, 28vw)` wide, or `min(popup.cover.size.large, 34vw)` for the `large` Collection Popup, stacked above the details below `sm`. A Cover Popup is 672px wide and opens over the Cover, clamped to the screen; a form Popup is centred. The dialog gives the focus trap, Esc, the `inert` page and the backdrop (`color.bg.overlay`). On close, focus goes back to the Cover.
 
 ### Props API
 
@@ -132,13 +132,11 @@ The page fills the snippets. Popup does not know Records from Wishlist Items.
 
 ## StickyBar
 
-**Hierarchy:** Pattern
-**Purpose:** The top bar of each list.
+The Showcase StickyBar, `packed`. Title "Vinyles." with the period in `color.icon.accent`.
 
-Order: title (`text.heading.page`), Chips, lock Button (Viewer) or Add Button (Owner), Tabs, SearchField, artist Select, sort Select, DesireSelect (Wishlist only). It wraps to more lines on phone. Background `color.bg.page`, sticky at top.
-
-- Collection: Chip `highlight` record count, Chip `success` total spent. Sorts: artist, album, release year, acquired.
-- Wishlist: Chip `info` item count. Sorts: artist, album, release year.
+- Collection: Chip `highlight` record count (a disc icon below `sm`), Chip `success` total spent (`compact`). Filters: artist. Sorts: artist, album, release year, acquired.
+- Wishlist: Chip `info` item count. Filters: artist, DesireSelect. Sorts: artist, album, release year.
+- The Owner's AddAction opens RecordForm ("Add a record") or WishlistItemForm ("Add to wishlist").
 
 ---
 
@@ -154,19 +152,6 @@ CSS grid, `grid.columns` per breakpoint, gaps `space.grid.gap-x` and `space.grid
 ## Owner UI
 
 Viewers see only the lock Button. After login, the Owner sees an "Add" Button in its place. Every form opens in Popup with `anchor` null: centered, same box, same X button and Esc. Forms use native inputs and a native `<form>`; the submit Button is `success`, with "Cancel" as `neutral`.
-
-### StoreSelect
-
-**Hierarchy:** Component
-**Purpose:** Pick a Store, or add a new one.
-
-Native Select over the Stores, plus a last option "Add a store…". That option shows a Field for the new name and an "Add" Button. The new Store joins the list at once.
-
-| Prop       | Type                                        | Default | Description       |
-| ---------- | ------------------------------------------- | ------- | ----------------- |
-| value      | string                                      | —       | Bindable store id |
-| stores     | `{ id: string; name: string }[]`            | —       |                   |
-| onAddStore | `(name: string) => Promise<{ id: string }>` | —       |                   |
 
 ### RecordForm
 

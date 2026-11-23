@@ -4,7 +4,7 @@
 	import type { PriceQuote, ProductLink } from '#lib/server/catalog/types';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import Field from '@universe/showcase/components/Field.svelte';
-	import StoreSelect from './StoreSelect.svelte';
+	import StoreSelect from '@universe/showcase/components/StoreSelect.svelte';
 
 	let {
 		itemId,

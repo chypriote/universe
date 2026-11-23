@@ -10,7 +10,7 @@
 	import AddPictures from '#lib/components/AddPictures.svelte';
 	import { kitArchiveUrl } from '#lib/kit-archive';
 	import { postAction } from '#lib/forms';
-	import AddAction from '#lib/components/AddAction.svelte';
+	import AddAction from '@universe/showcase/components/AddAction.svelte';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from '#lib/components/DeleteAction.svelte';
 	import Chip from '@universe/showcase/components/Chip.svelte';
@@ -22,7 +22,8 @@
 	import SearchField from '@universe/showcase/components/SearchField.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
 	import SortDirection from '@universe/showcase/components/SortDirection.svelte';
-	import StickyBar from '#lib/components/StickyBar.svelte';
+	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
+	import { lists } from '#lib/lists';
 	import Tile from '#lib/components/Tile.svelte';
 	import TileGrid from '#lib/components/TileGrid.svelte';
 	import WishlistItemForm from '#lib/components/WishlistItemForm.svelte';
@@ -123,9 +124,11 @@
 
 <StickyBar
 	current="wishlist"
+	links={lists}
 	searchActive={query !== ''}
 	filtersActive={selectedCountries.length > 0}
 >
+	{#snippet title()}Jerseys{/snippet}
 	{#snippet chips()}
 		<Chip tone="info" label="wanted" value={String(data.items.length)} />
 	{/snippet}
@@ -135,7 +138,7 @@
 	{#snippet action()}
 		{#if data.form}
 			{@const lists = data.form}
-			<AddAction title="Add a wishlist item">
+			<AddAction title="Add a wishlist item" wide>
 				{#snippet form(close)}
 					<WishlistItemForm
 						teams={lists.teams}

@@ -12,7 +12,7 @@
 	import PictureCleaner from '#lib/components/PictureCleaner.svelte';
 	import AddPictures from '#lib/components/AddPictures.svelte';
 	import { kitArchiveUrl } from '#lib/kit-archive';
-	import AddAction from '#lib/components/AddAction.svelte';
+	import AddAction from '@universe/showcase/components/AddAction.svelte';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import DeleteAction from '#lib/components/DeleteAction.svelte';
 	import JerseyForm from '#lib/components/JerseyForm.svelte';
@@ -25,7 +25,8 @@
 	import SearchField from '@universe/showcase/components/SearchField.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
 	import SortDirection from '@universe/showcase/components/SortDirection.svelte';
-	import StickyBar from '#lib/components/StickyBar.svelte';
+	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
+	import { lists } from '#lib/lists';
 	import Tile from '#lib/components/Tile.svelte';
 	import TileGrid from '#lib/components/TileGrid.svelte';
 	import { printName, printNumber } from '#lib/print-number';
@@ -136,9 +137,11 @@
 
 <StickyBar
 	current="collection"
+	links={lists}
 	searchActive={query !== ''}
 	filtersActive={selectedCountries.length > 0}
 >
+	{#snippet title()}Jerseys{/snippet}
 	{#snippet chips()}
 		<Chip tone="highlight" label="jerseys" value={String(data.jerseys.length)} />
 		<Chip tone="success" label="spent" value={formatCents(totalSpentCents)} />
@@ -149,7 +152,7 @@
 	{#snippet action()}
 		{#if data.form}
 			{@const lists = data.form}
-			<AddAction title="Add a jersey">
+			<AddAction title="Add a jersey" wide>
 				{#snippet form(close)}
 					<JerseyForm {...lists} onDone={close} />
 				{/snippet}

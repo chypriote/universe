@@ -4,7 +4,7 @@ Sources: [DESIGN.md](DESIGN.md) for the look, [TOKENS.md](TOKENS.md) for values,
 
 Accepted by Nico on 2026-11-23.
 
-Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState, LoginAction) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Jerseys.
+Shared components (Button, Chip, Field, SearchField, Select, ToggleGroup, Tabs, ConfirmDialog, SortDirection, ThemeToggle, EmptyState, LoginAction, Popup, StickyBar, AddAction, StoreSelect) and the shared rules live in Showcase: [packages/showcase/COMPONENTS.md](../../packages/showcase/COMPONENTS.md). This file lists only what is specific to Jerseys.
 
 ## Hierarchy
 
@@ -40,7 +40,7 @@ States: default, hover and focus (`tile.hover.lift`, `tile.hover.tilt`, motion a
 
 ### Popup
 
-The Showcase dialog (bits-ui), portalled to `<body>` at `layer.popup`. A Tile Popup opens over `anchor`, clamped to the screen; a form Popup is centred. Focus goes back to `anchor` on close. Title: `text.heading.popup`.
+Wraps the Showcase Popup: the Main Picture column (portrait 3:4, `min(popup.picture.size, 40%)`) and its thumbnails are the `media` snippet, shown when `subtitle` is set and the Popup is not `wide`. A Tile Popup opens over `anchor`, clamped to the screen; a form Popup is centred. Focus goes back to `anchor` on close. Title: `text.heading.popup`.
 
 | Prop           | Type                | Default | Description                                                                                                                 |
 | -------------- | ------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
@@ -73,10 +73,6 @@ Same shape as the Vinyles ArtistFilter: a `<details>` pill with checkboxes. Summ
 | value  | string[]                                                             | `[]`    | Bindable Country ids. Empty = all |
 | groups | `{ continent: string; countries: { id: string; name: string }[] }[]` | —       |                                   |
 
-### StoreSelect
-
-Same as Vinyles: native Select over the Stores and a last option "Add a store…".
-
 ### TeamLookup
 
 **Purpose:** Pick a known Team, or add a new Team on the fly, in JerseyForm and WishlistItemForm.
@@ -106,9 +102,9 @@ Showcase EmptyState. Messages: "No jerseys yet", "Nothing on the wishlist", "No 
 
 ### StickyBar
 
-Same structure as the current Vinyles StickyBar (title row; tabs row; search and filters row, behind icon toggles below `breakpoint.sm`).
+The Showcase StickyBar, not `packed`.
 
-- Title: "Jerseys" in `text.heading.page`, on the left of the title row. The chips, the LoginAction and the ThemeToggle sit on the right of it, as in Vinyles; they wrap under the title when the row is too narrow.
+- Title: "Jerseys". The chips, the LoginAction and the ThemeToggle sit on the right of it; they wrap under the title when the row is too narrow.
 - Collection chips: `highlight` jersey count, `success` total spent. Filters: CountryFilter. Sorts: Team, Season, Acquired (Bought date or Gift date). Default: Acquired, newest first.
 - Wishlist chips: `info` item count. Filters: CountryFilter. Sorts: Team, Season. Default: Season, newest first.
 - Search covers Team name and Print.
@@ -157,7 +153,7 @@ Rows are `<dt>` label, `<dd>` value, `text.body.detail`. A row with no value is 
 
 ### AddAction
 
-AddAction: `success` Button "Add" next to the Tabs, Owner only. It opens JerseyForm (Collection) or WishlistItemForm (Wishlist) in the Popup.
+The Showcase AddAction, `wide`. It opens JerseyForm (Collection) or WishlistItemForm (Wishlist).
 
 ### DeleteAction
 
