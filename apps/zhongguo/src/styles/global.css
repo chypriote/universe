@@ -2,8 +2,26 @@
 @import '@universe/universe/universe.css';
 @plugin "@tailwindcss/typography";
 
+/* Brush calligraphy (Ma Shan Zheng, OFL). Subset to the characters the site writes in it: see DESIGN.md. */
+/* Titles: Yuji Syuku (OFL), a brush serif. Subset to Latin: see DESIGN.md. */
+@font-face {
+  font-family: 'Yuji Syuku';
+  src: url('/fonts/yuji-syuku-latin.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ma Shan Zheng';
+  src: url('/fonts/ma-shan-zheng-subset.woff2') format('woff2');
+  font-display: swap;
+}
+
 :root {
   --nav-height: 64px;
+  /* Rice-paper fibres: a faint noise on every paper surface. */
+  --bamboo-stalk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='12'%3E%3Cpath d='M1 2.6Q90 4.4 172 2.6V9.4Q90 7.6 1 9.4z'/%3E%3Cpath d='M174 1.2h3.2v9.6H174z'/%3E%3C/svg%3E");
+  --bamboo-leaves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cpath d='M6 8Q20 4 34 8' stroke='black' stroke-width='2' fill='none'/%3E%3Cpath d='M30 8Q58 0 104 10Q62 14 30 8z'/%3E%3Cpath d='M30 8Q62 16 84 46Q52 28 30 8z'/%3E%3Cpath d='M30 8Q48 26 50 58Q34 34 30 8z'/%3E%3Cpath d='M30 8Q70 6 118 30Q66 20 30 8z'/%3E%3C/svg%3E");
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.35' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
 }
 
 @theme {
@@ -19,6 +37,7 @@
   --color-primary-hover: hsl(7 65% 36%);
 
   --color-gold: hsl(44 75% 66%);
+  --color-gold-ink: hsl(38 62% 34%);
 
   --color-secondary: hsl(164 27% 33%);
   --color-secondary-foreground: hsl(40 50% 97%);
@@ -47,11 +66,11 @@
   /* Press and hover timings come from the Universe layer. */
   --default-transition-duration: var(--universe-duration-hover);
   --default-transition-timing-function: var(--universe-easing);
-  /* Astro Fonts injects --font-inter and --font-fraunces */
+  /* Astro Fonts injects --font-inter */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-fraunces), Georgia, serif;
-  --font-display: var(--font-dm-serif-display), Georgia, serif;
+  --font-serif: 'Yuji Syuku', Georgia, serif;
   /* No webfont for Chinese: a full CJK font is several MB. */
+  --font-brush: 'Ma Shan Zheng', var(--font-cjk);
   --font-cjk: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', STSong, SimSun, serif;
   /* Legacy aliases — bg-dark / text-dark-muted keep working */
   --color-dark: var(--color-dark-background);
@@ -79,6 +98,68 @@
   font-family: var(--font-cjk);
   font-weight: 700;
   line-height: 1;
+  outline: 1px solid color-mix(in srgb, var(--color-primary-foreground) 55%, transparent);
+  outline-offset: -3px;
+}
+
+/* Bamboo divider: a thin ink stalk with nodes, and a leaf spray at the right end. */
+@utility bamboo-t {
+  position: relative;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    pointer-events: none;
+    background-color: var(--color-foreground);
+  }
+  &::before {
+    inset-inline: 0;
+    height: 12px;
+    opacity: 0.6;
+    mask: var(--bamboo-stalk) left center / auto 12px repeat-x;
+  }
+  &::after {
+    right: 4%;
+    width: 120px;
+    height: 60px;
+    background-color: var(--color-gold-ink);
+    opacity: 0.85;
+    mask: var(--bamboo-leaves) center / contain no-repeat;
+  }
+}
+
+@utility bamboo-b {
+  position: relative;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    pointer-events: none;
+    background-color: var(--color-foreground);
+  }
+  &::before {
+    inset-inline: 0;
+    height: 12px;
+    opacity: 0.6;
+    mask: var(--bamboo-stalk) left center / auto 12px repeat-x;
+  }
+  &::after {
+    right: 4%;
+    bottom: -54px;
+    width: 120px;
+    height: 60px;
+    background-color: var(--color-gold-ink);
+    opacity: 0.85;
+    mask: var(--bamboo-leaves) center / contain no-repeat;
+  }
+}
+
+/* Vertical calligraphy, read top to bottom. */
+@utility vertical {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
 }
 
 @utility btn {
@@ -128,13 +209,27 @@ html {
 /* Apply theme colors globally */
 body {
   background-color: var(--color-background);
+  background-image: var(--paper-grain);
   color: var(--color-foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-:lang(zh) {
-  font-family: var(--font-cjk);
+/* Paper panels keep the grain that their flat colour would hide. */
+.bg-background,
+.bg-surface {
+  background-image: var(--paper-grain);
+}
+
+@layer base {
+  /* Yuji Syuku is set wide; titles read better a little tighter. Tracking utilities still win. */
+  .font-serif {
+    letter-spacing: -0.03em;
+  }
+
+  :lang(zh) {
+    font-family: var(--font-cjk);
+  }
 }
 
 ::selection {

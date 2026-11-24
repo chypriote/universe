@@ -10,8 +10,8 @@ const { trips } = Astro.props;
 
 <div class="space-y-12 lg:space-y-20" data-trip-archive data-view="report">
   <div class="flex gap-10 border-b border-border" role="group" aria-label="Archive view">
-    <button type="button" data-view-button="report" aria-pressed="true" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-primary">Trip reports</button>
-    <button type="button" data-view-button="plan" aria-pressed="false" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-primary">Trip plans</button>
+    <button type="button" data-view-button="report" aria-pressed="true" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-gold-ink">Trip reports</button>
+    <button type="button" data-view-button="plan" aria-pressed="false" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-gold-ink">Trip plans</button>
   </div>
 
   <div class="grid grid-cols-1 gap-12 lg:gap-24">
@@ -20,7 +20,7 @@ const { trips } = Astro.props;
       return (
         <p
           class:list={[
-            'text-muted-foreground font-serif italic',
+            'text-muted-foreground font-serif',
             view === 'plan' && 'hidden',
           ]}
           data-empty={view}

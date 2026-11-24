@@ -419,7 +419,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
                     </td>
                     <td className="px-4 py-4 text-right align-top">
                       <div
-                        className="font-serif text-lg font-semibold tabular-nums"
+                        className="font-serif text-lg tabular-nums"
                         style={{ color: flight.priceColor }}
                       >
                         {formatPrice(flight.price)}
@@ -442,7 +442,7 @@ export function FlightPlanner({ flights }: FlightPlannerProps) {
         <div className="p-6 lg:p-8 border-b border-border">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h3 className="font-serif text-3xl font-bold mb-1">Price Calendar</h3>
+              <h3 className="font-serif text-3xl mb-1">Price Calendar</h3>
               <p className="text-muted-foreground text-sm font-sans">
                 {calendarSummary
                   ? `${calendarSummary.rangeLabel} · ${calendarSummary.daysWithResults} departure days with fares`

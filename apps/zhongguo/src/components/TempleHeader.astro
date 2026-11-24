@@ -1,0 +1,39 @@
+---
+import Container from '@/components/Container.astro';
+import InkWash from '@/components/InkWash.astro';
+import TempleGate from '@/components/TempleGate.astro';
+
+// Page header of the index pages: an ink-wash landscape with a temple gate in the mist,
+// and the page name in vertical brush calligraphy.
+interface Props {
+  /** Brush calligraphy beside the title. Add new characters to the font subset (DESIGN.md). */
+  zh: string;
+  eyebrow: string;
+  title: string;
+}
+const { zh, eyebrow, title } = Astro.props;
+---
+
+<header class="bamboo-b">
+  <div class="absolute inset-0 overflow-hidden">
+    <InkWash class="absolute inset-0 w-full h-full text-foreground opacity-50 md:opacity-100" />
+  </div>
+  <div class="absolute right-[10%] bottom-[20%] w-48 lg:w-64 text-foreground/70 hidden md:block">
+    <TempleGate>
+      <span slot="plaque" lang="zh" class="font-brush text-gold text-[0.6rem] lg:text-xs leading-none whitespace-nowrap">{zh}</span>
+    </TempleGate>
+  </div>
+
+  <Container class="relative pt-20 pb-32 lg:pt-28 lg:pb-44">
+    <div class="flex items-start gap-6 lg:gap-10 max-w-3xl">
+      <span lang="zh" class="vertical font-brush text-6xl lg:text-8xl leading-none" aria-hidden="true">{zh}</span>
+      <div>
+        <span class="eyebrow">{eyebrow}</span>
+        <h1 class="mt-4 text-h1 font-serif font-light">{title}</h1>
+        <div class="mt-6 text-lg text-muted-foreground leading-relaxed max-w-xl">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </Container>
+</header>

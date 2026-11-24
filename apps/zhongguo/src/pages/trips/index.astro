@@ -1,4 +1,5 @@
 ---
+import TempleHeader from '@/components/TempleHeader.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import TripArchive from '@/components/TripArchive.astro';
@@ -29,15 +30,11 @@ const jsonLd = {
 ---
 
 <BaseLayout title="Journeys" description="Trip reports and trip plans from my travels in China." jsonLd={jsonLd}>
-  <div class="py-20 lg:py-28">
+  <TempleHeader zh="游记" eyebrow="Archive" title="Journeys">
+    Trip reports from the road, day by day, and plans for the next trips.
+  </TempleHeader>
+  <div class="py-16 lg:py-24">
     <Container>
-      <header class="max-w-3xl mb-16 lg:mb-20">
-        <span class="eyebrow">Archive</span>
-        <h1 class="mt-4 text-h1 font-serif font-light">Journeys</h1>
-        <p class="mt-6 text-lg text-muted-foreground leading-relaxed">
-          Trip reports from the road, day by day, and plans for the next trips.
-        </p>
-      </header>
 
       <TripArchive trips={trips} />
     </Container>
