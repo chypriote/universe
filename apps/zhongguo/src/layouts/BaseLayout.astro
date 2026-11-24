@@ -51,11 +51,11 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
       <main data-ps="src/layouts/BaseLayout.astro:yuyoow">
         <slot />
       </main>
-      <!-- Before the footer, so the footer (positioned, opaque) covers it and shows its own bamboo clump. -->
+      <Footer />
+      <!-- After the footer, so the stalks run on over the ink footer. -->
       <div id="bamboo-grove" class="pointer-events-none absolute inset-y-0 right-0 hidden min-[1400px]:block text-gold-ink" aria-hidden="true">
         <BambooGrove class="h-full" />
       </div>
-      <Footer />
       <BackToTop />
 
       <!-- Animation Styles -->
