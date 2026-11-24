@@ -1,20 +1,16 @@
 ---
 import AdminLayout from '@/layouts/AdminLayout.astro';
+import { ADMIN_SECTIONS } from '@/lib/admin-sections';
 
 export const prerender = false;
 
-const sections = [
-  { href: '/admin/trips', label: 'Trips', text: 'Edit Trips and their Days.' },
-  { href: '/admin/photos', label: 'Photos', text: 'Upload, edit and delete Photos.' },
-  { href: '/admin/cities', label: 'Cities', text: 'Add, edit and delete Cities and move their Photos.' },
-  { href: '/admin/home', label: 'Home', text: 'Pick the Province Covers of the home map.' },
-];
+const sections = ADMIN_SECTIONS;
 ---
 
 <AdminLayout title="Admin">
   <p class="eyebrow">Admin</p>
   <h1 class="mt-3 font-serif text-h1">Journal</h1>
-  <ul class="mt-12 grid gap-px border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
+  <ul class="mt-12 grid gap-px border border-border bg-border md:grid-cols-2">
     {sections.map((section) => (
       <li class="bg-background">
         <a href={section.href} class="block h-full p-8 no-underline text-foreground hover:text-primary">
