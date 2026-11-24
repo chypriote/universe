@@ -1,6 +1,8 @@
 import { fileNameDate, isDate, readPhotoFile } from './photo-file';
 import type {
   AddCityInput,
+  AddDayInput,
+  AddDayResult,
   AddCityResult,
   AdminCity,
   AdminCityDetail,
@@ -49,6 +51,7 @@ type AdminMethods = Pick<
   | 'setHighlightPhotos'
   | 'setDayVisible'
   | 'editDay'
+  | 'addDay'
   | 'setDayPhotos'
   | 'listAdminPhotos'
   | 'listCities'
@@ -312,6 +315,52 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       await env.DB.prepare(`UPDATE days SET ${sets.join(', ')} WHERE id = ?`).bind(...params, input.dayId).run();
     }
     return { ok: true };
+  }
+
+  async function addDay(tripSlug: string, input: AddDayInput): Promise<AddDayResult> {
+    const trip = await tripBySlug(tripSlug);
+    if (!trip) return { ok: false, error: 'unknown-trip' };
+    const title = input.title?.trim();
+    if (!title) return { ok: false, error: 'invalid-title' };
+    if (!isDate(input.date)) return { ok: false, error: 'invalid-date' };
+    if (!(await env.DB.prepare('SELECT id FROM cities WHERE id = ?').bind(input.cityId).first())) {
+      return { ok: false, error: 'unknown-city' };
+    }
+    const days = await all<{ id: number; date: string }>('SELECT id, date FROM days WHERE trip_id = ? ORDER BY date', trip.id);
+    if (days.some((day) => day.date === input.date)) return { ok: false, error: 'date-taken' };
+
+    // Positions are unique per Trip: park the old ones below zero, insert at 0, then number every Day by date.
+    // One batch, so a lost race on the date leaves nothing half done.
+    try {
+      await env.DB.batch([
+        env.DB.prepare('UPDATE days SET position = -position WHERE trip_id = ?').bind(trip.id),
+        env.DB.prepare('INSERT INTO days (trip_id, position, date, city_id, title, notes) VALUES (?, 0, ?, ?, ?, ?)').bind(
+          trip.id,
+          input.date,
+          input.cityId,
+          title,
+          input.notes ?? '',
+        ),
+        env.DB.prepare(
+          `UPDATE days SET position = (SELECT COUNT(*) FROM days AS earlier WHERE earlier.trip_id = days.trip_id AND earlier.date <= days.date)
+           WHERE trip_id = ?`,
+        ).bind(trip.id),
+        env.DB.prepare(
+          `UPDATE trips SET start_date = (SELECT MIN(date) FROM days WHERE trip_id = trips.id),
+                            end_date = (SELECT MAX(date) FROM days WHERE trip_id = trips.id)
+           WHERE id = ?`,
+        ).bind(trip.id),
+        env.DB.prepare(
+          `INSERT INTO day_photos (day_id, position, photo_id)
+           SELECT (SELECT id FROM days WHERE trip_id = ?1 AND date = ?2), ROW_NUMBER() OVER (ORDER BY name), id FROM photos
+           WHERE trip_id = ?1 AND date = ?2 AND id NOT IN (SELECT photo_id FROM day_photos)`,
+        ).bind(trip.id, input.date),
+      ]);
+    } catch {
+      return { ok: false, error: 'date-taken' };
+    }
+    const added = await env.DB.prepare('SELECT id FROM days WHERE trip_id = ? AND date = ?').bind(trip.id, input.date).first<{ id: number }>();
+    return { ok: true, dayId: added!.id };
   }
 
   async function setDayPhotos(dayId: number, photoIds: number[]): Promise<SetDayPhotosResult> {
@@ -780,6 +829,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     editPhotos,
     deletePhotos,
     editDay,
+    addDay,
     getAdminTrip,
     setDayPhotos,
     setDayVisible,
