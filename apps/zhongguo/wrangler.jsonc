@@ -4,10 +4,9 @@
   "account_id": "b5799f995ae02a61a7ed04892dfb5e74",
   "compatibility_date": "2026-11-01",
   "preview_urls": false,
-  // The directory is set by the Astro adapter.
+  // The directory is set by the Astro adapter. No not_found_handling: a path with no static file must reach the Worker (home, trips, gallery and admin render on request).
   "assets": {
-    "html_handling": "drop-trailing-slash",
-    "not_found_handling": "404-page"
+    "html_handling": "drop-trailing-slash"
   },
   // Parent domain shared by every Universe app: one Owner login for all of them. Empty: this app only.
   "vars": { "OWNER_COOKIE_DOMAIN": "nicolastemeni.workers.dev" },
