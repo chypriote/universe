@@ -145,10 +145,11 @@ Drawing order
 - Body, legs, head, props, arms. Arms go over props so the paws hold them. A raised arm goes behind the head.
 
 Standing poses
-- Same head and face. The body is taller (box 200 × 260), the black chest is a narrow band under the head, and the belly is larger.
-- Legs: two short ink stumps under the body, a little apart.
-- Views: front, three quarters (the face turns to one side: the features shift that way), or three quarters from behind (back of the head, black shoulder band, paper lower back, only the edge of one eye patch).
-- Hanging on a stalk (the site's pose): rounded body against the stalk, head tilted toward it, slanted belly line. Here the arms have no paper edge and grow out of the black chest; the raised paw grips the stalk, the free arm leaves the body just under the head.
+- Same head and face. The body is taller (box 200 × 270), round at the bottom, the black chest is a narrow band under the head, and the belly line curves.
+- Legs: two ink stumps under the body, longer than in the sitting poses and set well apart.
+- Arms: plain ink with no paper edge; they grow out of the black chest. A pose can show paws only (the backpack paws hold the straps).
+- Views: front or three quarters (the face turns to one side: the features shift that way).
+- Hanging on a stalk (the site's pose): body against the stalk, head tilted toward it, slanted belly line; the raised paw grips the stalk, the free arm leaves the body just under the head.
 
 New poses
 - Keep the head, body and legs. Change only the arms, the head turn or tilt, the eye mood and the prop.
