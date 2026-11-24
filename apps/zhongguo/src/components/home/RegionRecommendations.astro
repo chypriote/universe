@@ -13,7 +13,8 @@ const { trips, photos } = Astro.props;
 
 const byRegion = new Map<string, ChinaMapRegion>();
 const tripCount = new Map<string, number>();
-for (const trip of trips) {
+// Only past journeys count: a plan's provinces are not visited yet.
+for (const trip of trips.filter((trip) => trip.type === 'report')) {
   for (const name of trip.regions) {
     const count = (tripCount.get(name) ?? 0) + 1;
     tripCount.set(name, count);
@@ -36,7 +37,7 @@ const regions = [...byRegion.values()];
         <div>
           <span class="eyebrow">By province</span>
           <h2 class="mt-4 text-h2 font-serif font-light">Provinces</h2>
-          <p class="mt-4 text-muted-foreground text-lg">Every province in the journeys and plans. Each links to a trip.</p>
+          <p class="mt-4 text-muted-foreground text-lg">Every province from past journeys. Each links to a trip.</p>
         </div>
       </div>
       <ChinaMap client:visible regions={regions} idleText="Hover a province" />
