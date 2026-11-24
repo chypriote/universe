@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ZoomIn } from 'lucide-react';
-import type { GalleryPhoto } from '@/lib/itineraries.server';
+import type { GalleryPhoto } from '@/lib/journal';
 import { Lightbox } from '@/components/islands/Lightbox';
 
 interface GalleryGridProps {

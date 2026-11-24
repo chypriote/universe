@@ -4,12 +4,13 @@
   "account_id": "b5799f995ae02a61a7ed04892dfb5e74",
   "compatibility_date": "2026-11-01",
   "preview_urls": false,
+  // The directory is set by the Astro adapter.
   "assets": {
-    "directory": "./dist",
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
   },
-  // Flight searches. The site is static: the build reads them through the D1 REST API (src/lib/d1.ts).
+  // Trips, Days, Cities and Photos: the Journal reads them on each request (src/lib/journal).
+  // Flight searches: the build reads them through the D1 REST API (scripts/d1.js).
   "d1_databases": [
     {
       "binding": "DB",
@@ -17,5 +18,16 @@
       "database_id": "24f1267a-39b4-4d29-a5bc-155504507afc",
       "migrations_dir": "migrations"
     }
-  ]
+  ],
+  // The photo bucket. Read-only until the admin (docs/adr/0001).
+  "r2_buckets": [
+    {
+      "binding": "PHOTOS",
+      "bucket_name": "nico-zhongguo-photos"
+    }
+  ],
+  // Not in this file: set it with `wrangler secret put PHOTOS_URL` (public base URL of the photo bucket, no trailing slash).
+  "secrets": {
+    "required": ["PHOTOS_URL"]
+  }
 }

@@ -5,35 +5,23 @@ import TripRouteSection from '@/components/TripRouteSection.astro';
 import { TripDayGallery } from '@/components/islands/TripDayGallery';
 import { PlanCalendar } from '@/components/islands/PlanCalendar';
 import { SITE } from '@/config/site';
-import { getCollection } from 'astro:content';
-import {
-  buildTripArchiveEntry,
-  buildTripPage,
-  isPublishedItinerary,
-} from '@/lib/itineraries.server';
+import { env } from 'cloudflare:workers';
+import { journalFromEnv } from '@/lib/journal';
 
-export async function getStaticPaths() {
-  const itineraries = await getCollection('itineraries');
+export const prerender = false;
 
-  return Promise.all(
-    itineraries.filter(isPublishedItinerary).map(async (entry) => ({
-      params: { slug: entry.data.slug },
-      props: { trip: await buildTripPage(entry) },
-    })),
-  );
+const { slug } = Astro.params;
+const journal = journalFromEnv();
+const trip = slug ? await journal.getTrip(slug) : null;
+if (!trip) {
+  // A missing or Hidden Trip: the site's 404 page, with the 404 status.
+  const { ASSETS } = env as unknown as { ASSETS: Fetcher };
+  const notFound = await ASSETS.fetch(new URL('/404', Astro.url));
+  return new Response(notFound.body, { status: 404, headers: notFound.headers });
 }
 
-const { trip } = Astro.props;
-const { slug } = Astro.params;
-
-const otherTrips = (
-  await Promise.all(
-    (await getCollection('itineraries'))
-      .filter(isPublishedItinerary)
-      .filter((entry) => entry.data.slug !== slug)
-      .map(buildTripArchiveEntry),
-  )
-)
+const otherTrips = (await journal.listTripCards())
+  .filter((other) => other.slug !== slug)
   .sort(() => Math.random() - 0.5)
   .slice(0, 3);
 
@@ -71,10 +59,7 @@ const jsonLd = {
               {trip.cities.map((city) => (
                 <li>
                   <p class="font-serif text-lg leading-tight">{city.name}</p>
-                  <p class="text-xs text-muted-foreground">
-                    <span lang="zh">{city.nameZh}</span>
-                    <span class="ml-1.5">{city.pinyin}</span>
-                  </p>
+                  <p class="text-xs text-muted-foreground" lang="zh">{city.nameZh}</p>
                 </li>
               ))}
             </ul>
@@ -90,14 +75,14 @@ const jsonLd = {
       <Container>
         <div class="xl:grid xl:grid-cols-[minmax(0,1fr)_12rem] xl:gap-12">
         <div class="max-w-5xl mx-auto w-full space-y-24 lg:space-y-40">
-          {trip.days.map((day, __psIdx) => (
-            <section class="scroll-mt-32" id={`day-${day.day}`}>
+          {trip.days.map((day) => (
+            <section class="scroll-mt-32" id={`day-${day.number}`}>
               <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
                 {/* Day Marker & Meta (Sticky-ish) */}
                 <div class="lg:col-span-3 lg:sticky lg:top-32 h-fit space-y-6">
                   <div class="space-y-2">
-                    <span class="block font-serif text-6xl font-light leading-none text-gold-ink">{String(day.day).padStart(2, '0')}</span>
-                    <span class="eyebrow text-muted-foreground">Day {day.day}</span>
+                    <span class="block font-serif text-6xl font-light leading-none text-gold-ink">{String(day.number).padStart(2, '0')}</span>
+                    <span class="eyebrow text-muted-foreground">Day {day.number}</span>
                     <h2 class="text-h3 font-serif">{day.title}</h2>
                   </div>
                   
@@ -138,11 +123,11 @@ const jsonLd = {
                 {/* Narrative & Gallery */}
                 <div class="lg:col-span-9 space-y-12">
                   <div class="max-w-2xl text-lg leading-relaxed text-foreground/85">
-                    <p>{day.description}</p>
+                    <p>{day.notes}</p>
                   </div>
 
-                  {day.gallery.length > 0 && (
-                    <TripDayGallery client:visible photos={day.gallery} day={day.day} tripTitle={trip.title} />
+                  {day.photos.length > 0 && (
+                    <TripDayGallery client:visible photos={day.photos} day={day.number} tripTitle={trip.title} />
                   )}
                 </div>
               </div>
@@ -158,10 +143,10 @@ const jsonLd = {
                 {trip.days.map((day) => (
                   <li class="border-b border-border">
                     <a
-                      href={`#day-${day.day}`}
+                      href={`#day-${day.number}`}
                       class="flex gap-3 py-3 text-sm text-muted-foreground hover:text-primary transition-colors aria-[current=true]:text-primary"
                     >
-                      <span class="font-serif tabular-nums">{String(day.day).padStart(2, '0')}</span>
+                      <span class="font-serif tabular-nums">{String(day.number).padStart(2, '0')}</span>
                       <span class="line-clamp-2">{day.title}</span>
                     </a>
                   </li>
@@ -195,10 +180,10 @@ const jsonLd = {
             <div class={`grid gap-10 lg:gap-16 ${otherTrips.length === 1 ? 'max-w-xl mx-auto' : otherTrips.length === 2 ? 'md:grid-cols-2 max-w-4xl mx-auto' : 'md:grid-cols-3'}`}>
               {otherTrips.map((other) => (
                 <a href={other.link} class="group block space-y-4">
-                  {other.photos[0] && (
+                  {other.cover && (
                     <div class="relative overflow-hidden aspect-[4/3] bg-background">
                       <img
-                        src={other.photos[0]}
+                        src={other.cover}
                         alt={other.title}
                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                         loading="lazy"

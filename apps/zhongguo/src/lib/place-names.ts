@@ -1,4 +1,12 @@
-import { normalizeCityName } from '@/lib/city-coordinates';
+export function normalizeCityName(name: string): string {
+  return name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/['’′]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 export type PlaceName = {
   zh: string;

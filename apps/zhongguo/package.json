@@ -18,7 +18,7 @@
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^14.3.0",
+    "@astrojs/cloudflare": "14.2.0",
     "@astrojs/markdown-remark": "^7.2.4",
     "@astrojs/mdx": "7.0.8",
     "@astrojs/react": "6.0.4",
