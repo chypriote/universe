@@ -7,14 +7,17 @@ One journey, stored as a JSON file in `itineraries/` and shown at `/trips/<slug>
 One day of a Trip: its number, main City, title, notes, photos and train rides.
 
 **City**:
-A place a Trip stays in or passes through. Shown in English and Chinese.
+A place a Trip stays in or passes through, in one Province. Shown in English and Chinese. One City is shared by every Trip that visits it.
+
+**Major City**:
+A City that gets a pin on the Gallery map, such as Xi'an, Xining or Chengdu. A minor City, such as Huanglong or Jiayuguan, gets a pin only on the map of a Trip that visits it.
 
 **Province**:
 A Chinese province, autonomous region or direct-administered city (Beijing, Shanghai, Tianjin, Chongqing) on the China map. Clicking one filters the Gallery or opens a Trip. A Photo's Province follows from its City.
 _Avoid_: Region
 
 **Photo**:
-A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip, and its date places it on a Day. Pictures that belong to no Trip are site images kept in the repo, not Photos.
+A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip, and its date places it on a Day. Its date can be edited. Pictures that belong to no Trip are site images kept in the repo, not Photos.
 
 **Trip Cover**:
 The one Photo of a Trip, picked from that Trip's Photos, that stands for the Trip on cards and lists.
