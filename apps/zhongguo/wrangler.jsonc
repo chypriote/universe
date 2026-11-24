@@ -21,7 +21,7 @@
       "migrations_dir": "migrations"
     }
   ],
-  // The photo bucket. Read-only until the admin (docs/adr/0001).
+  // The photo bucket: the admin writes it (docs/photos.md).
   "r2_buckets": [
     {
       "binding": "PHOTOS",
