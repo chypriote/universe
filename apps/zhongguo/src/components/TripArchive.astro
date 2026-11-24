@@ -1,5 +1,6 @@
 ---
 import InkStroke from '@/components/InkStroke.astro';
+import TripRegionsMap from '@/components/TripRegionsMap.astro';
 import type { TripArchiveEntry } from '@/lib/itineraries.server';
 
 interface Props {
@@ -40,92 +41,50 @@ const tabs = [
         </p>
       );
     })}
-    {trips.map((trip) => {
+    {trips.map((trip, i) => {
       const [landscape, ...portraits] = trip.photos;
-      const firstRowPortrait = portraits[0];
-      const secondRowPortraits = portraits.slice(1, 4);
+      const firstOfType = trips.findIndex((t) => t.type === trip.type) === i;
+      const hasMap = trip.regions.length > 0 || trip.route.stops.length > 0;
 
       return (
         <article
-          class:list={[
-            'snap-center group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start',
-            trip.type === 'report' ? '' : 'hidden',
-          ]}
+          class:list={['snap-center relative flex flex-col gap-6 lg:gap-10', !firstOfType && 'mt-4 pt-10 lg:mt-12 lg:pt-16', trip.type === 'report' ? '' : 'hidden']}
           data-trip-type={trip.type}
         >
-          <div class="lg:col-span-5 space-y-6 pt-2">
-            <div class="space-y-2">
-              <span class="eyebrow text-muted-foreground">
-                {trip.durationDays ? `${trip.durationDays} days · ` : ''}{trip.dates}
-              </span>
-              <h2 class="text-h2 font-serif font-light">
-                <a href={trip.link} class="hover:text-primary transition-colors">
-                  {trip.title}
-                </a>
+          {!firstOfType && <div aria-hidden="true" class="bamboo-b absolute inset-x-0 top-0 after:right-auto after:left-[4%] after:-scale-x-100" />}
+          {hasMap && (
+            <>
+              <TripRegionsMap route={trip.route} regions={trip.regions} aspect={1.6} compact class="order-last w-full lg:hidden" />
+              <TripRegionsMap route={trip.route} regions={trip.regions} aspect={1.9} class:list={['hidden lg:block absolute -right-4 w-[72%] map-fade', firstOfType ? '-top-6' : 'top-10']} />
+            </>
+          )}
+          <div class="relative flex gap-6 max-w-xl pt-4 lg:min-h-88">
+            <span class="[writing-mode:vertical-rl] rotate-180 eyebrow text-gold-ink pt-2">{trip.dates}</span>
+            <div class="flex flex-col gap-5">
+              <h2 class="font-script lg:text-nowrap! leading-[0.95] text-5xl lg:text-[6rem]">
+                <a href={trip.link} class="hover:text-primary transition-colors">{trip.title}</a>
               </h2>
+              <p class="text-muted-foreground leading-relaxed">{trip.description}</p>
+              <a href={trip.link} class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit">
+                <span lang="zh" aria-hidden="true" class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25">游记</span>
+                <InkStroke class="absolute left-14 bottom-0 w-[calc(100%-3.5rem)] h-4 text-gold-ink" />
+                <span class="relative transition-colors group-hover/link:text-gold-ink">Explore<span class="sr-only"> {trip.title}</span></span>
+              </a>
             </div>
-
-            <p class="text-muted-foreground leading-relaxed text-balance">
-              {trip.description}
-            </p>
-
-            {trip.regions.length > 0 && (
-              <div class="flex flex-wrap gap-3">
-                {trip.regions.map((region) => (
-                  <span class="eyebrow text-[0.625rem] text-foreground border border-border px-2 py-1">
-                    {region}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <a href={trip.link} class="group/link inline-flex items-center gap-3 eyebrow">
-              Read the journal
-              <span class="transition-transform group-hover/link:translate-x-1" aria-hidden="true">→</span>
-            </a>
           </div>
 
-          {trip.photos.length > 0 && (
-            <div class="lg:col-span-7 space-y-4">
-              {(landscape || firstRowPortrait) && (
-                <div
-                  class="grid gap-4 items-start"
-                  style={landscape && firstRowPortrait ? 'grid-template-columns: 256fr 81fr' : 'grid-template-columns: 1fr'}
-                >
-                  {landscape && (
-                    <div class="relative aspect-video overflow-hidden bg-surface">
-                      <img
-                        src={landscape}
-                        alt={`${trip.title} visual fragment`}
-                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-                  {firstRowPortrait && (
-                    <div class="relative aspect-[9/16] overflow-hidden bg-surface">
-                      <img
-                        src={firstRowPortrait}
-                        alt={`${trip.title} visual fragment`}
-                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {secondRowPortraits.length > 0 && (
-                <div class="grid grid-cols-3 gap-4">
-                  {secondRowPortraits.map((photo) => (
-                    <div class="relative aspect-[9/16] overflow-hidden bg-surface">
-                      <img
-                        src={photo}
-                        alt={`${trip.title} visual fragment`}
-                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                        loading="lazy"
-                      />
-                    </div>
+          {landscape && (
+            <div class="relative flex flex-col gap-3 lg:flex-row lg:gap-1.5 lg:h-[clamp(200px,32svh,290px)] lg:mist-strip">
+              <img src={landscape} alt={`${trip.title}, landscape`} class="w-full aspect-video object-cover lg:order-3 lg:w-auto lg:h-full" loading="lazy" />
+              {portraits.length > 0 && (
+                <div class="grid grid-cols-4 gap-3 lg:contents">
+                  {portraits.slice(0, 4).map((photo, index) => (
+                    <img
+                      src={photo}
+                      alt={`${trip.title}, photo ${index + 1}`}
+                      class:list={['w-full aspect-[3/4] object-cover lg:aspect-auto lg:h-full lg:flex-1 lg:min-w-0', index < 2 ? 'lg:order-1' : 'lg:order-4']}
+                      loading="lazy"
+                    />
                   ))}
                 </div>
               )}

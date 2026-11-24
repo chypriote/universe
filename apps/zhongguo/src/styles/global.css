@@ -16,6 +16,13 @@
   font-display: swap;
 }
 
+/* Journey titles: Kaushan Script (OFL), Latin subset from @fontsource/kaushan-script. */
+@font-face {
+  font-family: 'Kaushan Script';
+  src: url('/fonts/kaushan-script-latin.woff2') format('woff2');
+  font-display: swap;
+}
+
 :root {
   --nav-height: 64px;
   /* Rice-paper fibres: a faint noise on every paper surface. */
@@ -70,6 +77,7 @@
   /* Astro Fonts injects --font-inter */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: 'Yuji Syuku', Georgia, serif;
+  --font-script: 'Kaushan Script', var(--font-serif);
   /* No webfont for Chinese: a full CJK font is several MB. */
   --font-brush: 'Ma Shan Zheng', var(--font-cjk);
   --font-cjk: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', STSong, SimSun, serif;
@@ -192,6 +200,15 @@
     opacity: 0.85;
     mask: var(--bamboo-leaves) center / contain no-repeat;
   }
+}
+
+/* Journey card: the map fades in from the left, the photo strip fades out at both ends. */
+@utility map-fade {
+  mask-image: linear-gradient(to right, transparent, black 30%);
+}
+
+@utility mist-strip {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
 /* Vertical calligraphy, read top to bottom. */
