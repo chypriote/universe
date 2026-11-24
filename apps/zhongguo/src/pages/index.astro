@@ -44,9 +44,11 @@ const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
 </BaseLayout>
 
 <style is:global>
-  /* Snap each home page section to the top. The footer snaps to the bottom so it stays reachable. */
+  /* Snap each home page section to the top. The footer snaps to the bottom so it stays reachable.
+     The extra 7px shows the whole bamboo bar (12px, centred on the section edge) below the header border. */
   html {
     scroll-snap-type: y mandatory;
+    scroll-padding-top: calc(var(--nav-height) + 7px);
   }
   footer {
     scroll-snap-align: end;
