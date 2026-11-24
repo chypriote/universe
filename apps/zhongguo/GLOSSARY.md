@@ -1,7 +1,7 @@
 # Zhongguo glossary
 
 **Trip**:
-One journey, stored as a JSON file in `itineraries/` and shown at `/trips/<slug>`. It has days, cities and optional start and end dates.
+One journey, shown at `/trips/<slug>`. It has days, cities and optional start and end dates.
 
 **Trip Card**:
 The summary of a Trip on the home page and `/trips`. It names only the Trip's Major Cities. The Trip page itself lists every City.
