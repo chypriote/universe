@@ -12,10 +12,10 @@ Journal is the family for personal journal apps: Zhongguo today, maybe a food re
 
 **Art direction:**
 - Signature move: the square cinnabar seal (印章) with 中. It is the logo, the favicon and the main solid red block on a page.
-- Temple moves (2026-11-23): vertical brush calligraphy (`font-brush`) beside titles, ink bamboo, an ink-wash landscape (水墨: misty hills, plum branch, birds) with a paifang gate in the mist on the index page headers. No red or dark bands: ink on paper. The footer is the one exception: it is inverted to ink.
+- Temple moves (2026-11-23): vertical brush calligraphy (`font-brush`) beside titles, ink bamboo, an ink-wash landscape (水墨: misty hills, plum branch, birds) behind the home hero and the index page headers. No red or dark bands: ink on paper. The footer is the one exception: it is inverted to ink.
 - Second move: a sticky side panel (planner, day meta, guide navigation) that stays in view while the content scrolls.
 - Layout rhythm: wide white space, 12-column splits (7/5, 5/7), thin 1px rules between sections.
-- Imagery: own photographs from the trips (in R2, see `docs/photos.md`) and hand-drawn ink SVG (hills, bamboo, gate, plum). No stock or AI images.
+- Imagery: own photographs from the trips (in R2, see `docs/photos.md`) and hand-drawn ink SVG (hills, bamboo, plum). No stock or AI images.
 - Surface: the whole site is rice paper drawn upon. Faint ink mountains (`InkWash`, hills only) are fixed behind every page in `BaseLayout.astro`, so page sections stay transparent: no opaque section backgrounds.
 - Surface detail: A faint fibre grain (`--paper-grain` in `global.css`) sits on the body and on every `bg-background` / `bg-surface` panel.
 
@@ -47,7 +47,7 @@ Used only for the photo lightbox and the footer, not for other page sections and
 | `primary` | Cinnabar (朱砂) | Seal, primary button, eyebrow labels, links, map route. AA on `background`. |
 | `primary-hover` | Darker cinnabar | Primary hover |
 | `primary-foreground` | Paper | Text on primary |
-| `gold` | Gold leaf | Letters on the jade plaque of the temple gate |
+| `gold` | Gold leaf | Footer link hover and brush watermarks |
 | `gold-ink` | Gold on paper | Accent: trip and day numbers, current-page and active-tab underline, hero subtitle, bamboo leaf sprays, footer bamboo. AA on `background`. |
 | `secondary` | Jade | Rare data highlight (for example the cheapest fare) |
 | `secondary-hover` | Darker jade | Secondary hover |
@@ -101,13 +101,11 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Tabs | Primitive | Toggle Trip reports / Trip plans (`aria-pressed`): large serif labels, each over a faint brush character (游记, 行程) | Active = ink text, darker character, gold-ink brush stroke underneath |
 | Section header | Component | Home sections: vertical brush characters, an eyebrow that translates them, `h2`, lead (`home/SectionHeader.astro`). Same top padding in every home section | — |
 | Bamboo | Decoration | Bamboo stalks and leaf sprays (`Bamboo.astro`, currentColor) | `flip` |
-| Bamboo grove | Decoration | Four gold stalks with leaf sprays on the right edge, from the top of the page through the footer, which adds extra leaf sprays (`leavesOnly`) so it stays full (`BambooGrove.astro`, SVG patterns, in `BaseLayout.astro`). Below 1400px the footer shows its own clump (`Bamboo.astro`) instead. The tops are cut at a node; on the home and Journeys pages they sit in the hero, fading into mist. Only from 1400px, where it fits in the margin | — |
+| Bamboo grove | Decoration | Four gold stalks with leaf sprays on the right edge, from the top of the page through the footer, which adds extra leaf sprays (`leavesOnly`) so it stays full (`BambooGrove.astro`, SVG patterns, in `BaseLayout.astro`). Below 1400px the footer shows its own clump (`Bamboo.astro`) instead. The tops are cut at a node; on the home and index pages they sit in the hero or page header, fading into mist. Only from 1400px, where it fits in the margin | — |
 | Panda | Decoration | Waving panda holding a grove stalk with its raised paw (`Panda.astro`, see "Panda drawing"). Two only: "Next on the list" (paw on the left, middle of the section) and the footer (mirrored). From 1400px | `dark`, `mirror` |
-| Temple gate | Decoration | Ink-painted paifang, three bays and four columns, feet fading into mist, jade plaque (`TempleGate.astro`, currentColor) | — |
 | Ink stroke | Decoration | One dry-brush ink stroke with ragged edges (`InkStroke.astro`, currentColor). Stretches to its box | — |
 | Ink wash | Decoration | Misty ink hills, plum branch with cinnabar blossoms, birds (`InkWash.astro`) | — |
-| Page header | Pattern | Ink wash + gate in the mist + vertical brush name, eyebrow, `h1`, lead (`TempleHeader.astro`). Guides, Planner, Photos. | — |
-| Journeys hero | Pattern | A shorter home hero: ink wash (no plum, no birds, no gate), 游记 in ink brush with the 中 seal, "Journeys" in gold serif caps, lead. The bamboo grove tops sit in it, as on the home page (`trips/index.astro`) | — |
+| Page header | Pattern | A short version of the home hero on every index page (Journeys, Guides, Planner, Photos): ink wash (no plum, no birds), the page name in ink brush with the 中 seal, the English title in gold serif caps, lead. The bamboo grove tops sit in it (`TempleHeader.astro`) | — |
 | Trip card | Component | Trip preview: photo, meta line, title, text, link | Portrait 3/4 (plans), wide 16/9 alternating split (reports) |
 | Navigation | Component | Sticky top bar: seal + name, 4 links with a gold underline on the current page, mobile menu | — |
 | Footer | Component | Inverted: `dark-background` with `dark-foreground` text, gold-ink bamboo, 中国游记 in vertical brush, seal + name + description, one link list, each over its Chinese title (游记, 指南, 机票, 影集) as a faint `gold` brush watermark; labels in tracked `font-serif` caps, gold on hover, the koala before the copyright line | — |
@@ -199,7 +197,7 @@ Hover feedback is a color change, a border change or a slow image zoom (at most 
 - Don't use shadows (`shadow-*`, `.hover-lift`).
 - Don't use rounded pills or rounded cards (`rounded-*`), except round dots in maps and legends.
 - Don't use neon colors, gradients or startup-style illustrations.
-- Don't use stock or AI images for the temple mood: bamboo, gate and ink wash are hand-made SVG.
+- Don't use stock or AI images for the temple mood: bamboo and ink wash are hand-made SVG.
 - Don't put display headlines in columns narrower than 60% of the container.
 - Don't add a dark mode.
 
@@ -210,7 +208,7 @@ Hover feedback is a color change, a border change or a slow image zoom (at most 
 - Titles use `font-serif` + `text-h1/h2/h3`; labels use `eyebrow`; buttons use `btn`.
 - Wrap page content in `Container.astro`; sections use `py-24 lg:py-32`.
 - Write copy in Nico's first-person voice, not marketing voice.
-- Icons are Lucide (`@lucide/astro`, `lucide-react` in islands); maps, bamboo, gate, ink wash and the seal are hand-drawn SVG.
+- Icons are Lucide (`@lucide/astro`, `lucide-react` in islands); maps, bamboo, ink wash and the seal are hand-drawn SVG.
 
 ### Known gaps (code vs. this file)
 
