@@ -24,7 +24,7 @@ _Avoid_: Region
 A Province where a visible Day of a visible Trip has its main City. Only Visited Provinces are coloured on the home map and filter the Gallery.
 
 **Photo**:
-A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip, and its date places it on a Day. Its date can be edited. It can have a title typed by hand, which replaces its place in captions. Pictures that belong to no Trip are site images kept in the repo, not Photos.
+A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip. A new Photo goes on the Day of its date; it can then be moved to another Day or taken off every Day, and still shows in the Gallery. Its date can be edited. It can have a title typed by hand, which replaces its place in captions. Pictures that belong to no Trip are site images kept in the repo, not Photos.
 
 **On the way photo**:
 A Photo taken between two Cities, for example from a train. It has no City. It can name a Province, which only its caption shows. It never makes a Province visited.
