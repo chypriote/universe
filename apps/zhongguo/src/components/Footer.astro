@@ -29,9 +29,9 @@ const links = [
       <ul class="md:ml-auto md:mr-40 list-none p-0 m-0 flex flex-col gap-3">
         {links.map((link) => (
           <li>
-            <a href={link.href} class="grid grid-cols-[8rem_auto] items-baseline text-sm text-foreground no-underline hover:text-primary transition-colors">
+            <a href={link.href} class="relative isolate inline-flex items-center min-h-14 pl-8 text-base text-foreground no-underline hover:text-primary transition-colors">
+              <span lang="zh" class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[3.25rem] leading-none whitespace-nowrap text-gold-ink/20 pointer-events-none" aria-hidden="true">{link.zh}</span>
               {link.label}
-              <span lang="zh" class="font-brush text-lg leading-none text-muted-foreground" aria-hidden="true">{link.zh}</span>
             </a>
           </li>
         ))}
