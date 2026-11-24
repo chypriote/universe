@@ -13,7 +13,7 @@ const { trips } = Astro.props;
 <!-- The header snaps to the top with the same padding above it as the other home sections; each trip then snaps to the centre. -->
 <section id="completed-trips" class="pt-12 pb-24 lg:pt-10 lg:pb-32">
   <Container>
-    <header class="snap-start scroll-mt-12 lg:scroll-mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 lg:mb-24 pb-8 bamboo-b reveal">
+    <header class="snap-start scroll-mt-12 lg:scroll-mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 lg:mb-24 pb-8 bamboo-b after:right-auto after:left-[4%] after:-scale-x-100 reveal">
       <SectionHeader zh="游记" eyebrow="Travel memories" title="Recent journeys" lead="Day-by-day journals and photos from each trip." />
       <a href="/trips" class="eyebrow text-foreground hover:text-primary transition-colors">All journeys →</a>
     </header>
