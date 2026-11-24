@@ -1,6 +1,6 @@
 ---
 import Container from '@/components/Container.astro';
-import TripCard from '@/components/TripCard.astro';
+import InkStroke from '@/components/InkStroke.astro';
 import SectionHeader from '@/components/home/SectionHeader.astro';
 import type { TripArchiveEntry } from '@/lib/itineraries.server';
 
@@ -11,7 +11,7 @@ interface Props {
 const { trips } = Astro.props;
 ---
 
-<!-- The header snaps to the top with the same padding above it as the other home sections; each trip card is the one used on the Journeys page and snaps to the centre. -->
+<!-- The header snaps to the top with the same padding above it as the other home sections; each trip is a short teaser (cover, dates, title, one line, Explore) that snaps to the centre; the full card with map and photo strip is on the Journeys page. -->
 <section id="completed-trips" class="pt-12 pb-24 lg:pt-10 lg:pb-32">
   <Container>
     <header class="snap-start scroll-mt-12 lg:scroll-mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 lg:mb-24 pb-8 bamboo-b after:right-auto after:left-[4%] after:-scale-x-100 reveal">
@@ -20,7 +20,33 @@ const { trips } = Astro.props;
     </header>
 
     <div class="grid grid-cols-1 gap-12 lg:gap-24">
-      {trips.map((trip, index) => <TripCard trip={trip} firstOfType={index === 0} />)}
+      {trips.map((trip, index) => {
+        const cover = trip.photos[0];
+        return (
+          <article class:list={['snap-center group relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center', index > 0 && 'pt-10 lg:pt-16']}>
+            {index > 0 && <div aria-hidden="true" class="bamboo-b absolute inset-x-0 top-0 after:right-auto after:left-[4%] after:-scale-x-100" />}
+            {cover && (
+              <a href={trip.link} tabindex="-1" aria-hidden="true" class:list={['block overflow-hidden mist-strip lg:col-span-7', index % 2 === 1 && 'lg:order-2']}>
+                <img src={cover} alt="" class="w-full aspect-[3/2] object-cover transition-transform duration-700 group-hover:scale-[1.03]" loading="lazy" />
+              </a>
+            )}
+            <div class="lg:col-span-5 flex gap-6">
+              <span class="[writing-mode:vertical-rl] rotate-180 eyebrow text-gold-ink pt-2">{trip.dates}</span>
+              <div class="flex flex-col gap-5">
+                <h3 class="font-script leading-[0.95] text-5xl lg:text-7xl">
+                  <a href={trip.link} class="hover:text-primary transition-colors">{trip.title}</a>
+                </h3>
+                <p class="text-muted-foreground leading-relaxed line-clamp-2">{trip.description}</p>
+                <a href={trip.link} class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit">
+                  <span lang="zh" aria-hidden="true" class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25">游记</span>
+                  <InkStroke class="absolute left-14 bottom-0 w-[calc(100%-3.5rem)] h-4 text-gold-ink" />
+                  <span class="relative transition-colors group-hover/link:text-gold-ink">Explore<span class="sr-only"> {trip.title}</span></span>
+                </a>
+              </div>
+            </div>
+          </article>
+        );
+      })}
     </div>
   </Container>
 </section>
