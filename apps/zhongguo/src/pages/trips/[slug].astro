@@ -69,13 +69,13 @@ const jsonLd = {
             const city = cityOfDay(day.number);
             const newCity = city && cityOfDay(trip.days[index - 1]?.number ?? 0)?.name !== city.name;
             return (
-              <section class="snap-start scroll-mt-32 lg:grid lg:grid-cols-[11rem_1fr]" id={`day-${day.number}`}>
-                <div class="hidden pr-10 pt-1 text-right lg:block">
+              <section class="snap-start scroll-mt-32 lg:grid lg:grid-cols-[14rem_1fr]" id={`day-${day.number}`}>
+                <div class="hidden lg:block">
                   {newCity && (
-                    <>
-                      <span lang="zh" class="block text-5xl leading-none text-gold-ink/45">{city.nameZh}</span>
-                      <span class="eyebrow text-muted-foreground">{city.name}</span>
-                    </>
+                    <div class="relative isolate flex min-h-20 items-center justify-end pr-8">
+                      <span lang="zh" aria-hidden="true" class="absolute right-6 top-1/2 -z-10 -translate-y-1/2 whitespace-nowrap font-brush text-[4rem] leading-none text-gold-ink/25">{city.nameZh}</span>
+                      <span class="eyebrow text-foreground">{city.name}</span>
+                    </div>
                   )}
                 </div>
                 <div class="relative space-y-6 border-gold-ink/50 pb-20 lg:border-l lg:pl-14 lg:pb-24">
