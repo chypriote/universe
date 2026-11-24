@@ -45,7 +45,7 @@ The one landscape Photo of a Trip, picked from that Trip's Photos, that stands f
 The five Photos that show a Trip in the `/trips` list: the Trip Cover, then four portrait Photos, picked and ordered by hand.
 
 **Province Cover**:
-The one Photo the home map shows for a Province. It can come from any Trip, as long as its City is in that Province. Without one, the Province's first Photo is shown.
+The one Photo the home map shows for a Province. It can come from any Trip, as long as its City is in that Province. Without one, the Province's first Photo is shown. A chosen cover has a focal point (x and y in percent, the centre by default) that picks the part the home map frame shows; the fallback Photo has none.
 
 **Guide**:
 A practical article (visa, payments, apps, transport) at `/guides/<slug>`.

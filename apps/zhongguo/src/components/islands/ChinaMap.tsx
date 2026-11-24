@@ -5,6 +5,8 @@ export type ChinaMapRegion = {
   name: string;
   zh: string;
   photo?: string;
+  /** Focal point of the photo in percent, as `object-position`; the centre without one. */
+  focus?: { x: number; y: number };
   detail?: string;
   /** With an href the region is a link; without one it calls onSelectRegion. */
   href?: string;
@@ -275,7 +277,13 @@ export function ChinaMap({
         {/* The frame and text block keep a fixed size, so changing the preview never moves the map or the page. */}
         <div className={`w-full aspect-[4/3] border ${t.border}`}>
           {shown?.photo ? (
-            <img src={shown.photo} alt="" className="size-full object-cover" loading="lazy" />
+            <img
+              src={shown.photo}
+              alt=""
+              className="size-full object-cover"
+              style={'focus' in shown && shown.focus ? { objectPosition: `${shown.focus.x}% ${shown.focus.y}%` } : undefined}
+              loading="lazy"
+            />
           ) : (
             <span
               lang="zh"

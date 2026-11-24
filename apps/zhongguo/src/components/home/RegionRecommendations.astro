@@ -15,6 +15,7 @@ const regions: ChinaMapRegion[] = provinces.map((province) => ({
   zh: province.nameZh,
   href: province.href,
   photo: province.photo ?? undefined,
+  focus: province.focus,
   detail: `${province.tripCount} ${province.tripCount === 1 ? 'trip' : 'trips'}`,
 }));
 ---

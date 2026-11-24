@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import type { CoverCandidate, VisitedProvince } from '@/lib/journal';
+import { useRef, useState } from 'react';
+import type { CoverCandidate, FocalPoint, VisitedProvince } from '@/lib/journal';
 
 const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
 
 const MESSAGES: Record<string, string> = {
   'unknown-province': 'The Province is no longer visited: reload the page',
   'unknown-photo': 'That Photo cannot be the cover: reload the page',
+  'no-cover': 'The Province has no chosen cover: reload the page',
+  'invalid-focus': 'That position is not valid',
 };
 
 type Result = { ok: boolean; error?: string };
@@ -21,6 +23,66 @@ async function call(method: string, url: string, body?: unknown): Promise<Result
   } catch {
     return { ok: false, error: 'The request failed' };
   }
+}
+
+const clamp = (value: number) => Math.min(100, Math.max(0, value));
+
+/** The home map frame (same aspect and `object-fit`); with `onCommit`, dragging the Photo moves its focal point. */
+function Frame(props: { photo: string; focus: FocalPoint; disabled: boolean; onCommit?: (focus: FocalPoint) => void }) {
+  const { photo, focus, disabled, onCommit } = props;
+  const [drag, setDrag] = useState<FocalPoint | null>(null);
+  const start = useRef<{ x: number; y: number; focus: FocalPoint } | null>(null);
+  const shown = drag ?? focus;
+
+  function move(event: React.PointerEvent<HTMLDivElement>) {
+    const origin = start.current;
+    const image = event.currentTarget.querySelector('img');
+    if (!origin || !image || !image.naturalWidth) return;
+    const frame = event.currentTarget.getBoundingClientRect();
+    const scale = Math.max(frame.width / image.naturalWidth, frame.height / image.naturalHeight);
+    const overflowX = image.naturalWidth * scale - frame.width;
+    const overflowY = image.naturalHeight * scale - frame.height;
+    // The Photo follows the pointer, so the visible part moves the other way.
+    setDrag({
+      x: overflowX > 0 ? clamp(origin.focus.x - ((event.clientX - origin.x) / overflowX) * 100) : origin.focus.x,
+      y: overflowY > 0 ? clamp(origin.focus.y - ((event.clientY - origin.y) / overflowY) * 100) : origin.focus.y,
+    });
+  }
+
+  function end(event: React.PointerEvent<HTMLDivElement>, save: boolean) {
+    const moved = drag;
+    start.current = null;
+    setDrag(null);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (save && moved) onCommit?.({ x: Math.round(moved.x), y: Math.round(moved.y) });
+  }
+
+  const draggable = onCommit !== undefined && !disabled;
+  return (
+    <div
+      className={`aspect-[4/3] w-40 shrink-0 select-none overflow-hidden border border-border bg-surface ${draggable ? 'cursor-grab touch-none active:cursor-grabbing' : ''}`}
+      onPointerDown={
+        draggable
+          ? (event) => {
+              if (event.pointerType === 'mouse' && event.button !== 0) return;
+              event.currentTarget.setPointerCapture(event.pointerId);
+              start.current = { x: event.clientX, y: event.clientY, focus: shown };
+            }
+          : undefined
+      }
+      onPointerMove={draggable ? move : undefined}
+      onPointerUp={draggable ? (event) => end(event, true) : undefined}
+      onPointerCancel={draggable ? (event) => end(event, false) : undefined}
+    >
+      <img
+        src={photo}
+        alt=""
+        draggable={false}
+        className="size-full object-cover"
+        style={{ objectPosition: `${shown.x}% ${shown.y}%` }}
+      />
+    </div>
+  );
 }
 
 /** Each Visited Province with its Province Cover; pick a new one from its Photos or clear it. */
@@ -59,6 +121,18 @@ export function AdminHome(props: { provinces: VisitedProvince[] }) {
     setBusy(false);
   }
 
+  async function reposition(name: string, focus: FocalPoint) {
+    setBusy(true);
+    setNotice('');
+    const result = await call('PUT', url(name, 'focus'), focus);
+    if (result.ok) {
+      setProvinces((list) => list.map((province) => (province.name === name ? { ...province, focus } : province)));
+    } else {
+      setNotice(MESSAGES[result.error ?? ''] ?? result.error ?? 'Not saved');
+    }
+    setBusy(false);
+  }
+
   async function change(request: () => Promise<Result>) {
     setBusy(true);
     setNotice('');
@@ -87,9 +161,14 @@ export function AdminHome(props: { provinces: VisitedProvince[] }) {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 {province.photo ? (
-                  <img src={province.photo} alt="" className="h-20 w-28 bg-surface object-cover" />
+                  <Frame
+                    photo={province.photo}
+                    focus={province.focus ?? { x: 50, y: 50 }}
+                    disabled={busy}
+                    onCommit={province.fallback ? undefined : (focus) => void reposition(province.name, focus)}
+                  />
                 ) : (
-                  <div className="h-20 w-28 bg-surface" aria-hidden="true" />
+                  <div className="aspect-[4/3] w-40 shrink-0 bg-surface" aria-hidden="true" />
                 )}
                 <div>
                   <p className="font-serif text-xl">
@@ -98,6 +177,7 @@ export function AdminHome(props: { provinces: VisitedProvince[] }) {
                   <p className={`eyebrow ${province.fallback ? 'text-muted-foreground' : 'text-gold-ink'}`}>
                     {province.fallback ? 'Fallback: first Photo' : 'Chosen cover'}
                   </p>
+                  {!province.fallback && <p className="mt-1 text-xs text-muted-foreground">Drag the Photo to choose what shows.</p>}
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-3">
