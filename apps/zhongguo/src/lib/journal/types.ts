@@ -337,6 +337,19 @@ export type EditDayInput = {
 
 export type EditDayResult = { ok: true } | { ok: false; error: 'unknown-day' | 'unknown-city' | 'invalid-title' };
 
+export type AddDayInput = {
+  /** A calendar date, YYYY-MM-DD; one Day per date and Trip. */
+  date: string;
+  /** The main City. */
+  cityId: number;
+  title: string;
+  notes?: string;
+};
+
+export type AddDayResult =
+  | { ok: true; dayId: number }
+  | { ok: false; error: 'unknown-trip' | 'invalid-date' | 'date-taken' | 'unknown-city' | 'invalid-title' };
+
 export type SetDayPhotosResult =
   | { ok: true }
   | { ok: false; error: 'unknown-day' | 'unknown-photo' | 'duplicate-photo' };
@@ -375,6 +388,11 @@ export type Journal = {
   /** A Hidden Day keeps its date and Photos; the visible Days are numbered again. */
   setDayVisible(dayId: number, visible: boolean): Promise<SetDayVisibleResult>;
   editDay(input: EditDayInput): Promise<EditDayResult>;
+  /**
+   * A new Day on a Trip, plans included. Days stay in date order, the Trip dates become the first and last
+   * Day dates, and the Photos of the Trip with that date and no Day join it.
+   */
+  addDay(tripSlug: string, input: AddDayInput): Promise<AddDayResult>;
   /** The Photos of a Day in order. A Photo on another Day leaves it; one left out stays in the Gallery. */
   setDayPhotos(dayId: number, photoIds: number[]): Promise<SetDayPhotosResult>;
   /** The Photos of a Trip by date and name; null when the Trip does not exist. */

@@ -3,7 +3,7 @@ import type { AdminTrip } from '@/lib/journal';
 
 const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
 
-/** Every Trip with its on/off switch. Plans (no Days) have nothing else to edit. */
+/** Every Trip with its on/off switch. A plan opens the page to add its first Day. */
 export function AdminTrips(props: { trips: AdminTrip[] }) {
   const [trips, setTrips] = useState(props.trips);
   const [busy, setBusy] = useState('');
@@ -47,11 +47,9 @@ export function AdminTrips(props: { trips: AdminTrip[] }) {
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              {trip.hasDays && (
-                <a href={`/admin/trips/${trip.slug}`} className={`${button} no-underline`}>
-                  Edit
-                </a>
-              )}
+              <a href={`/admin/trips/${trip.slug}`} className={`${button} no-underline`}>
+                Edit
+              </a>
               <button
                 type="button"
                 role="switch"
