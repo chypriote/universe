@@ -49,6 +49,7 @@ describe('Visited Provinces of the admin', () => {
       nameZh: '四川',
       photo: thumb('second', 'z.jpg'),
       coverId: picked,
+      focus: { x: 50, y: 50 },
       fallback: false,
     });
   });
@@ -206,5 +207,88 @@ describe('Province Cover', () => {
     const row = (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
 
     expect(row).toMatchObject({ photo: thumb('first', 'a.jpg'), coverId: null, fallback: true });
+  });
+});
+
+describe('Province Cover focal point', () => {
+  async function coverOfSichuan() {
+    const { chengdu, first } = await world();
+    await addPhoto(first, '2024-03-01', { name: 'a.jpg', cityId: chengdu });
+    const picked = await addPhoto(first, '2024-03-01', { name: 'b.jpg', cityId: chengdu });
+    await journal.setProvinceCover('Sichuan', picked);
+    return picked;
+  }
+  const sichuanHome = async () => (await journal.getHomeMap()).find((province) => province.name === 'Sichuan');
+  const sichuanAdmin = async () => (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
+
+  it('is the centre of a new cover', async () => {
+    await coverOfSichuan();
+
+    expect((await sichuanHome())?.focus).toEqual({ x: 50, y: 50 });
+    expect((await sichuanAdmin())?.focus).toEqual({ x: 50, y: 50 });
+  });
+
+  it('set shows on the home map and in the admin list', async () => {
+    await coverOfSichuan();
+
+    expect(await journal.setProvinceCoverFocus('Sichuan', 20, 75)).toEqual({ ok: true });
+
+    expect((await sichuanHome())?.focus).toEqual({ x: 20, y: 75 });
+    expect((await sichuanAdmin())?.focus).toEqual({ x: 20, y: 75 });
+  });
+
+  it('accepts the edges, 0 and 100', async () => {
+    await coverOfSichuan();
+
+    expect(await journal.setProvinceCoverFocus('Sichuan', 0, 100)).toEqual({ ok: true });
+    expect((await sichuanHome())?.focus).toEqual({ x: 0, y: 100 });
+  });
+
+  it('refuses values outside 0 to 100 and keeps the point', async () => {
+    await coverOfSichuan();
+    await journal.setProvinceCoverFocus('Sichuan', 20, 75);
+
+    for (const [x, y] of [[-1, 50], [50, 101], [100.5, 50], [Number.NaN, 50], [50, Number.POSITIVE_INFINITY]]) {
+      expect(await journal.setProvinceCoverFocus('Sichuan', x, y)).toEqual({ ok: false, error: 'invalid-focus' });
+    }
+    expect((await sichuanHome())?.focus).toEqual({ x: 20, y: 75 });
+  });
+
+  it('is refused for a Province without a chosen cover', async () => {
+    const { chengdu, first } = await world();
+    await addPhoto(first, '2024-03-01', { name: 'a.jpg', cityId: chengdu });
+
+    expect(await journal.setProvinceCoverFocus('Sichuan', 10, 10)).toEqual({ ok: false, error: 'no-cover' });
+    expect((await sichuanHome())?.focus).toBeUndefined();
+    expect((await sichuanAdmin())?.focus).toBeUndefined();
+  });
+
+  it('is refused for a Province that is not visited', async () => {
+    await world();
+
+    expect(await journal.setProvinceCoverFocus('Qinghai', 10, 10)).toEqual({ ok: false, error: 'unknown-province' });
+  });
+
+  it('goes back to the centre when a new cover is set', async () => {
+    const { chengdu, first } = await world();
+    const a = await addPhoto(first, '2024-03-01', { name: 'a.jpg', cityId: chengdu });
+    const b = await addPhoto(first, '2024-03-01', { name: 'b.jpg', cityId: chengdu });
+    await journal.setProvinceCover('Sichuan', a);
+    await journal.setProvinceCoverFocus('Sichuan', 10, 90);
+
+    await journal.setProvinceCover('Sichuan', b);
+
+    expect((await sichuanHome())?.focus).toEqual({ x: 50, y: 50 });
+  });
+
+  it('goes with the cover when it is cleared', async () => {
+    const picked = await coverOfSichuan();
+    await journal.setProvinceCoverFocus('Sichuan', 10, 90);
+
+    await journal.clearProvinceCover('Sichuan');
+    expect((await sichuanHome())?.focus).toBeUndefined();
+
+    await journal.setProvinceCover('Sichuan', picked);
+    expect((await sichuanHome())?.focus).toEqual({ x: 50, y: 50 });
   });
 });

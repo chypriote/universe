@@ -117,6 +117,8 @@ export type HomeProvince = {
   nameZh: string;
   /** Thumbnail of the Province Cover, else of the Province's first Photo. */
   photo: string | null;
+  /** Focal point of the Province Cover in percent, for `object-position`; absent on the fallback Photo (centre). */
+  focus?: FocalPoint;
   tripCount: number;
   href: string;
 };
@@ -129,13 +131,22 @@ export type VisitedProvince = {
   photo: string | null;
   /** The picked Province Cover; null when the Province falls back to its first Photo. */
   coverId: number | null;
+  /** Focal point of the Province Cover; absent on the fallback Photo. */
+  focus?: FocalPoint;
   fallback: boolean;
 };
+
+/** A point of a Photo in percent, 0 to 100 on each axis. */
+export type FocalPoint = { x: number; y: number };
 
 /** A Photo that can be the cover of a Province. */
 export type CoverCandidate = { id: number; name: string; thumb: string; tripTitle: string };
 
 export type SetProvinceCoverResult = { ok: true } | { ok: false; error: 'unknown-province' | 'unknown-photo' };
+
+export type SetProvinceCoverFocusResult =
+  | { ok: true }
+  | { ok: false; error: 'unknown-province' | 'no-cover' | 'invalid-focus' };
 
 export type ClearProvinceCoverResult = { ok: true } | { ok: false; error: 'unknown-province' };
 
@@ -323,6 +334,8 @@ export type Journal = {
   /** Only a candidate Photo can be picked. The row stays when the Province stops being visited. */
   setProvinceCover(province: string, photoId: number): Promise<SetProvinceCoverResult>;
   /** The Province falls back to its first Photo. */
+  /** The focal point of the Province Cover, in percent (0 to 100); needs a chosen cover. */
+  setProvinceCoverFocus(province: string, x: number, y: number): Promise<SetProvinceCoverFocusResult>;
   clearProvinceCover(province: string): Promise<ClearProvinceCoverResult>;
   /** The Owner login: a signed token for the Owner password. */
   login(password: string): Promise<LoginResult>;
