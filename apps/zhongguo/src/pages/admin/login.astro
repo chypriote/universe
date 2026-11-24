@@ -1,0 +1,49 @@
+---
+import { env } from 'cloudflare:workers';
+import { ownerToken, setOwnerToken } from '@universe/owner/astro';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { journalFromEnv } from '@/lib/journal';
+
+export const prerender = false;
+
+const journal = journalFromEnv();
+
+const token = ownerToken(Astro.cookies);
+if (token && (await journal.verifyToken(token))) return Astro.redirect('/admin', 303);
+
+let error = '';
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const result = await journal.login(String(form.get('password') ?? ''));
+  if (result.ok) {
+    setOwnerToken(Astro.cookies, result.token, Astro.url.protocol === 'https:', env.OWNER_COOKIE_DOMAIN);
+    return Astro.redirect('/admin', 303);
+  }
+  error = 'Wrong password';
+  Astro.response.status = 400;
+}
+---
+
+<AdminLayout title="Log in" nav={false}>
+  <div class="max-w-md">
+    <p class="eyebrow">Admin</p>
+    <h1 class="mt-3 font-serif text-h1">Log in</h1>
+    <form method="post" class="mt-10 flex flex-col gap-6">
+      <label class="flex flex-col gap-2">
+        <span class="eyebrow text-muted-foreground">Owner password</span>
+        <input
+          type="password"
+          name="password"
+          required
+          autofocus
+          autocomplete="current-password"
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={error ? 'login-error' : undefined}
+          class="border border-border bg-surface px-4 py-3 text-base text-foreground"
+        />
+      </label>
+      {error && <p id="login-error" role="alert" class="text-sm text-error">{error}</p>}
+      <button type="submit" class="btn btn-primary self-start cursor-pointer">Log in</button>
+    </form>
+  </div>
+</AdminLayout>

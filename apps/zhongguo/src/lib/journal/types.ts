@@ -121,6 +121,8 @@ export type HomeProvince = {
   href: string;
 };
 
+export type LoginResult = { ok: true; token: string } | { ok: false; error: 'wrong-password' };
+
 export type Journal = {
   /** The visible Trips, newest first. */
   listTripCards(): Promise<TripCard[]>;
@@ -129,4 +131,8 @@ export type Journal = {
   getGallery(): Promise<Gallery>;
   /** The Visited Provinces of the home map. */
   getHomeMap(): Promise<HomeProvince[]>;
+  /** The Owner login: a signed token for the Owner password. */
+  login(password: string): Promise<LoginResult>;
+  /** Whether a token is signed by this app's secret and not expired. */
+  verifyToken(token: string): Promise<boolean>;
 };

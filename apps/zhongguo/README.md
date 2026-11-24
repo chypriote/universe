@@ -23,10 +23,16 @@ Run from the repo root with `-w apps/zhongguo`, or from this folder.
 `.env` in this folder, never committed:
 
 - `PHOTOS_URL`: public base URL of the photo bucket, no trailing slash. It is a runtime value of the Worker, read by the Journal: a Worker secret in production (`npx wrangler secret put PHOTOS_URL`), and in `.dev.vars` for `npm run dev`.
+- `OWNER_PASSWORD` and `JWT_SECRET`: the Owner password and the key that signs the login token, the same values as in the other Universe apps so one login covers them all. Worker secrets (`npx wrangler secret put OWNER_PASSWORD`, `npx wrangler secret put JWT_SECRET`) and in `.dev.vars` for `npm run dev`. Without them nobody can log in.
+- `OWNER_COOKIE_DOMAIN`: a var in `wrangler.jsonc`, not a secret: the parent domain all the apps share. Empty keeps the login on this app only.
 - `API_KEY`: SerpApi key for `npm run china`.
 - `D1_API_TOKEN`: Cloudflare API token with Account · D1 · Edit. The build reads the flight searches from the `zhongguo` D1 database with it (the Planner is prerendered), and `npm run china` writes them. Only the Planner build needs it. CI reads the `D1_API_TOKEN` repository secret; Workers Builds needs it as a build variable.
 
 Photos: `docs/photos.md`.
+
+## Admin
+
+`/admin` is behind the Owner login (`/admin/login`, same cookie as the other apps through `packages/owner`). The Journal holds the login and token check; `src/middleware.ts` refuses every `/admin` page and `/api/admin` request without a valid token (pages redirect to the login, the API answers 401). Admin pages render on request and are `noIndex`; no public page links to them. Trips, Photos and Home are placeholders until the next parts of the admin.
 
 ## Trips and Photos
 

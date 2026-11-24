@@ -1,3 +1,4 @@
+import { issueToken, passwordMatches, tokenIsValid } from '@universe/owner/auth';
 import { formatDateRange } from '../plan-calendar';
 import { getPlaceName } from '../place-names';
 import type {
@@ -7,6 +8,7 @@ import type {
   GalleryPhoto,
   HomeProvince,
   Journal,
+  LoginResult,
   Orientation,
   Photo,
   Route,
@@ -21,6 +23,10 @@ export type JournalEnv = {
   DB: D1Database;
   /** Public base URL of the photo bucket. */
   PHOTOS_URL: string;
+  /** The Owner password, the same in every Universe app. */
+  OWNER_PASSWORD: string;
+  /** Key that signs the Owner login token, the same in every Universe app. */
+  JWT_SECRET: string;
 };
 
 type TripRow = {
@@ -444,5 +450,19 @@ export function buildJournal(env: JournalEnv): Journal {
     });
   }
 
-  return { listTripCards, getTrip, getGallery, getHomeMap };
+  async function login(password: string): Promise<LoginResult> {
+    if (
+      !env.OWNER_PASSWORD ||
+      !env.JWT_SECRET ||
+      !password ||
+      !(await passwordMatches(password, env.OWNER_PASSWORD))
+    ) {
+      return { ok: false, error: 'wrong-password' };
+    }
+    return { ok: true, token: await issueToken(env.JWT_SECRET) };
+  }
+
+  const verifyToken = async (token: string) => !!env.JWT_SECRET && (await tokenIsValid(token, env.JWT_SECRET));
+
+  return { listTripCards, getTrip, getGallery, getHomeMap, login, verifyToken };
 }

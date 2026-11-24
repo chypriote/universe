@@ -1,0 +1,60 @@
+---
+import '@/styles/global.css';
+import { Font } from 'astro:assets';
+import SEOHead from '@/components/SEOHead.astro';
+import Container from '@/components/Container.astro';
+
+export interface Props {
+  title: string;
+  /** Shows the nav with Trips, Photos, Home and Log out. Off on the login page. */
+  nav?: boolean;
+}
+
+const { title, nav = true } = Astro.props;
+const links = [
+  { href: '/admin/trips', label: 'Trips' },
+  { href: '/admin/photos', label: 'Photos' },
+  { href: '/admin/home', label: 'Home' },
+];
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <Font cssVariable="--font-inter" preload />
+    <SEOHead title={`${title} · Admin`} noIndex={true} />
+  </head>
+  <body class="min-h-svh">
+    <header class="border-b border-border bg-background">
+      <Container class="flex flex-wrap items-center justify-between gap-x-10 gap-y-3 py-4">
+        <a href={nav ? '/admin' : '/admin/login'} class="flex items-center gap-3 no-underline text-foreground">
+          <span class="seal w-8 text-base" aria-hidden="true">中</span>
+          <span class="font-serif text-xl tracking-tight">Admin</span>
+        </a>
+        {nav && (
+          <nav class="flex flex-wrap items-center gap-x-8 gap-y-2" aria-label="Admin">
+            {links.map((link) => (
+              <a
+                href={link.href}
+                aria-current={isCurrent(link.href) ? 'page' : undefined}
+                class="eyebrow text-foreground aria-[current=page]:text-gold-ink hover:text-primary no-underline"
+              >
+                {link.label}
+              </a>
+            ))}
+            <form method="post" action="/admin/logout">
+              <button type="submit" class="eyebrow text-muted-foreground hover:text-primary cursor-pointer">Log out</button>
+            </form>
+          </nav>
+        )}
+      </Container>
+    </header>
+    <main>
+      <Container class="py-12 lg:py-16">
+        <slot />
+      </Container>
+    </main>
+  </body>
+</html>
