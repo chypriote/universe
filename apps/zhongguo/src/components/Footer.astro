@@ -1,6 +1,7 @@
 ---
 import Koala from '@universe/universe/astro/Koala.astro';
 import Bamboo from '@/components/Bamboo.astro';
+import Panda from '@/components/Panda.astro';
 import Container from '@/components/Container.astro';
 import { SITE } from '@/config/site';
 
@@ -16,6 +17,7 @@ const links = [
   <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
     <Bamboo class="absolute -right-12 -bottom-10 h-[130%] w-auto text-gold-ink hidden md:block" flip />
   </div>
+  <Panda dark class="absolute right-[28px] top-24 z-[1] w-16 hidden min-[1400px]:block" />
   <Container class="relative">
     <div class="flex flex-col md:flex-row md:items-center gap-12 pb-16 border-b border-dark-border">
       <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">一路平安</span>
