@@ -2,7 +2,7 @@
 export function respond(result: object): Response {
   if (!('ok' in result) || result.ok) return Response.json(result);
   const error = 'error' in result ? result.error : '';
-  return Response.json(result, { status: error === 'exists' || error === 'breaks-cover' ? 409 : 400 });
+  return Response.json(result, { status: error === 'exists' || error === 'breaks-cover' || error === 'date-taken' ? 409 : 400 });
 }
 
 /** The JSON body of a request, or null when it is not valid JSON. */
