@@ -1,39 +1,38 @@
 ---
-import Container from '@/components/Container.astro';
 import InkWash from '@/components/InkWash.astro';
-import TempleGate from '@/components/TempleGate.astro';
 
-// Page header of the index pages: an ink-wash landscape with a temple gate in the mist,
-// and the page name in vertical brush calligraphy.
+// Page header of the index pages: a short version of the home hero. Ink wash, the page name in brush
+// calligraphy with the 中 seal, the English title in gold serif caps, and a lead.
 interface Props {
-  /** Brush calligraphy beside the title. Add new characters to the font subset (DESIGN.md). */
+  /** Brush calligraphy above the title. Add new characters to the font subset (DESIGN.md). */
   zh: string;
-  eyebrow: string;
   title: string;
 }
-const { zh, eyebrow, title } = Astro.props;
+const { zh, title } = Astro.props;
 ---
 
 <header class="bamboo-b">
   <div class="absolute inset-0 overflow-hidden">
-    <InkWash class="absolute inset-0 w-full h-full text-foreground opacity-50 md:opacity-100" />
+    <InkWash plum={false} birds={false} class="absolute inset-0 w-full h-full text-foreground opacity-60 md:opacity-100" />
   </div>
-  <div class="absolute right-[10%] bottom-[20%] w-48 lg:w-64 text-foreground/70 hidden md:block" aria-hidden="true">
-    <TempleGate>
-      <span slot="plaque" lang="zh" class="font-brush text-gold text-[0.6rem] lg:text-xs leading-none whitespace-nowrap">{zh}</span>
-    </TempleGate>
+  <div class="relative z-10 flex flex-col items-center px-4 pt-14 pb-24 lg:pt-20 lg:pb-32 text-center">
+    <h1>
+      <span class="relative inline-block">
+        <span lang="zh" class="block font-brush text-[clamp(3.5rem,2rem+5vw,6.5rem)] leading-none tracking-[0.05em]" aria-hidden="true">{zh}</span>
+        <span lang="zh" class="seal absolute -right-6 lg:-right-10 -bottom-1 w-6 lg:w-8 text-[0.65rem] lg:text-sm" aria-hidden="true">中</span>
+      </span>
+      <span class="mt-5 block font-serif uppercase font-light tracking-[0.35em] text-sm lg:text-base text-gold-ink">{title}</span>
+    </h1>
+    <p class="mt-5 text-lg text-muted-foreground leading-relaxed max-w-xl">
+      <slot />
+    </p>
   </div>
-
-  <Container class="relative pt-20 pb-32 lg:pt-28 lg:pb-44">
-    <div class="flex items-start gap-6 lg:gap-10 max-w-3xl">
-      <span lang="zh" class="vertical font-brush text-6xl lg:text-8xl leading-none" aria-hidden="true">{zh}</span>
-      <div>
-        <span class="eyebrow">{eyebrow}</span>
-        <h1 class="mt-4 text-h1 font-serif font-light">{title}</h1>
-        <div class="mt-6 text-lg text-muted-foreground leading-relaxed max-w-xl">
-          <slot />
-        </div>
-      </div>
-    </div>
-  </Container>
 </header>
+
+<style is:global>
+  /* The bamboo tops end inside the header, half in mist, as on the home page. */
+  #bamboo-grove {
+    top: calc(var(--nav-height) + 6rem);
+    mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.3), black 360px);
+  }
+</style>
