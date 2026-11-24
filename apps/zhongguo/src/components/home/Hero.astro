@@ -1,16 +1,10 @@
 ---
 import InkWash from '@/components/InkWash.astro';
-import TempleGate from '@/components/TempleGate.astro';
 ---
 
 <section class="snap-section h-[calc(100svh-var(--nav-height))] min-h-[600px] bamboo-b">
   <div class="absolute inset-0 overflow-hidden">
     <InkWash plum={false} birds={false} class="absolute inset-0 w-full h-full text-foreground opacity-60 md:opacity-100" />
-  </div>
-  <div class="absolute right-[9%] bottom-[16%] w-52 lg:w-80 text-foreground/70 hidden md:block" aria-hidden="true">
-    <TempleGate>
-      <span slot="plaque" lang="zh" class="font-brush text-gold text-[0.65rem] lg:text-sm leading-none whitespace-nowrap">游记</span>
-    </TempleGate>
   </div>
 
   <div class="relative z-10 h-full flex flex-col items-center pt-[14vh] px-4 text-center">
