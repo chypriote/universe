@@ -1,5 +1,5 @@
 ---
-// Gold bamboo stalks from the top of the page down to the footer, on the right edge. Their tops end in tapered tips and a leafy crown.
+// Gold bamboo stalks from the top of the page down to the footer, on the right edge. Their tops are cut at a node, as in ink paintings.
 // Stalks and leaf sprays are SVG patterns, so they repeat for any page height. Colour is currentColor.
 interface Props {
   class?: string;
@@ -8,7 +8,7 @@ interface Props {
 const { class: className } = Astro.props;
 
 // x and width in px from the left of the 160px strip; node = distance between nodes;
-// top = where the stalk's tapered tip starts, so the tops do not end on one line.
+// top = where the stalk is cut, minus 60px, so the tops do not end on one line.
 const stalks = [
   { x: 62, width: 13, node: 124, offset: 30, top: 50 },
   { x: 86, width: 11, node: 108, offset: 0, top: 0 },
@@ -37,17 +37,11 @@ function spray(cx: number, cy: number, dir: 1 | -1, seed: number) {
   return leaves;
 }
 
-// Crown: small leaves rising from each tip, and two full sprays below it.
+// Crown: two full sprays below each cut top.
 const crown = stalks.flatMap((stalk, i) => {
   const cx = stalk.x + 2 + stalk.width / 2;
   const base = stalk.top + tip;
-  const rising = [-62, -118, -80].map((angle, k) => ({
-    d: leaf(30 + k * 6, 3.5),
-    transform: `translate(${cx} ${stalk.top + 24 + k * 22}) rotate(${angle + i * 4})`,
-    fill: k % 2 ? dark : 'currentColor',
-  }));
   return [
-    ...rising,
     ...spray(cx, base - 10, i % 2 ? 1 : -1, i + 2),
     ...spray(cx, base + 40, i % 2 ? -1 : 1, i + 6),
   ];
@@ -85,10 +79,10 @@ const sprays = stalks.flatMap((stalk, i) =>
   </defs>
   {stalks.map((stalk, i) => (
     <>
-      <path
-        d={`M${stalk.x + 2},${stalk.top + tip} C${stalk.x + 3},${stalk.top + tip * 0.4} ${stalk.x + 2 + stalk.width * 0.4},${stalk.top + 12} ${stalk.x + 2 + stalk.width * 0.55},${stalk.top} C${stalk.x + 2 + stalk.width * 0.7},${stalk.top + 12} ${stalk.x + 1 + stalk.width},${stalk.top + tip * 0.4} ${stalk.x + 2 + stalk.width},${stalk.top + tip}Z`}
-        style={`fill:${i % 2 ? dark : 'currentColor'}`}
-      />
+      <rect x={stalk.x + 2} y={stalk.top + tip - 30} width={stalk.width} height="32" style={`fill:${i % 2 ? dark : 'currentColor'}`} />
+      <ellipse cx={stalk.x + 2 + stalk.width / 2} cy={stalk.top + tip - 30} rx={stalk.width / 2} ry="2.6" style={`fill:${dark}`} />
+      <ellipse cx={stalk.x + 2 + stalk.width / 2} cy={stalk.top + tip - 30} rx={stalk.width / 2 - 2} ry="1.4" style={`fill:${light}`} />
+      <rect x={stalk.x} y={stalk.top + tip - 4} width={stalk.width + 4} height="2.2" style={`fill:${dark}`} />
       <rect x={stalk.x} y={stalk.top + tip} width={stalk.width + 4} height="100%" fill={`url(#bamboo-stalk-${i})`} />
     </>
   ))}
