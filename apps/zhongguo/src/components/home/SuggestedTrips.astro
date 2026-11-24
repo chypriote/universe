@@ -3,10 +3,10 @@ import Container from '@/components/Container.astro';
 import InkStroke from '@/components/InkStroke.astro';
 import Panda from '@/components/Panda.astro';
 import SectionHeader from '@/components/home/SectionHeader.astro';
-import type { TripArchiveEntry } from '@/lib/itineraries.server';
+import type { TripCard as TripCardData } from '@/lib/journal';
 
 interface Props {
-  trips: TripArchiveEntry[];
+  trips: TripCardData[];
 }
 
 const { trips } = Astro.props;
@@ -24,7 +24,7 @@ const { trips } = Astro.props;
     ) : (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
         {trips.map((trip, index) => {
-          const cover = trip.photos[0];
+          const cover = trip.cover;
 
           return (
             <article class={`snap-center group flex flex-col gap-5 reveal reveal-delay-${Math.min(index + 1, 5)}`}>

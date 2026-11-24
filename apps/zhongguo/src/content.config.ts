@@ -96,83 +96,6 @@ const flights = defineCollection({
   }),
 });
 
-const pictureSchema = z.object({
-  url: z.string(),
-  caption: z.string().optional(),
-  format: z.enum(['16:9', '9:16']),
-});
-
-const attractionSchema = z.object({
-  name: z.string(),
-  city: z.string(),
-  rating: z.number(),
-  description: z.string(),
-  pictures: z.array(pictureSchema).default([]),
-});
-
-const trainTripSchema = z.object({
-  outgoing_city: z.string(),
-  destination_city: z.string(),
-  time_of_day: z.string(),
-  departure_time: z.string(),
-  arrival_time: z.string(),
-  duration_minutes: z.number(),
-});
-
-const daySchema = z.object({
-  day_number: z.number(),
-  main_city: z.string(),
-  title: z.string(),
-  notes: z.string(),
-  pictures: z.array(pictureSchema).default([]),
-  attractions: z.array(attractionSchema),
-  train_trips: z.array(trainTripSchema).default([]),
-});
-
-const hotelSchema = z.object({
-  name: z.string(),
-  address: z.string(),
-  rating: z.number(),
-  price: z.number().nullable(),
-  pictures: z.array(pictureSchema).default([]),
-});
-
-const restaurantSchema = z.object({
-  name: z.string(),
-  address: z.string(),
-  rating: z.number(),
-  suggested_dishes: z.array(z.string()).default([]),
-  pictures: z.array(pictureSchema).default([]),
-});
-
-const citySchema = z.object({
-  name: z.string(),
-  country: z.string(),
-  region: z.string(),
-  hotels: z.array(hotelSchema).default([]),
-  restaurants: z.array(restaurantSchema).default([]),
-});
-
-const itineraries = defineCollection({
-  loader: glob({
-    pattern: '**/!(example_itinerary).json',
-    base: './itineraries',
-    generateId: ({ entry }) => entry.replace(/\.json$/, '').replace(/_/g, '-'),
-  }),
-  schema: z.object({
-    title: z.string(),
-    slug: z.string(),
-    suggested_duration_days: z.number().optional(),
-    released_itinerary: z.object({
-      start_date: z.string().optional(),
-      end_date: z.string().optional(),
-      pictures: z.array(z.string()).default([]),
-    }),
-    days: z.array(daySchema),
-    cities: z.array(citySchema).default([]),
-  }),
-});
-
 const guides = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/guides' }),
   schema: z.object({
@@ -183,4 +106,4 @@ const guides = defineCollection({
   }),
 });
 
-export const collections = { blog, docs, flights, itineraries, guides };
+export const collections = { blog, docs, flights, guides };

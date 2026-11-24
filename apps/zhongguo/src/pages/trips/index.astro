@@ -4,21 +4,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import TripArchive from '@/components/TripArchive.astro';
 import { SITE } from '@/config/site';
-import { getCollection } from 'astro:content';
-import { buildTripArchiveEntry, isPublishedItinerary } from '@/lib/itineraries.server';
+import { journalFromEnv } from '@/lib/journal';
 
-const itineraries = await getCollection('itineraries');
-const trips = await Promise.all(
-  itineraries
-    .filter(isPublishedItinerary)
-    .sort(
-      (a, b) =>
-        (b.data.released_itinerary.start_date ?? '').localeCompare(
-          a.data.released_itinerary.start_date ?? '',
-        ),
-    )
-    .map(buildTripArchiveEntry),
-);
+export const prerender = false;
+
+const trips = await journalFromEnv().listTripCards();
 
 const jsonLd = {
   "@context": "https://schema.org",

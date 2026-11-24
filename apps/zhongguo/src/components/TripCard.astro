@@ -1,18 +1,18 @@
 ---
 import InkStroke from '@/components/InkStroke.astro';
 import TripRegionsMap from '@/components/TripRegionsMap.astro';
-import type { TripArchiveEntry } from '@/lib/itineraries.server';
+import type { TripCard as TripCardData } from '@/lib/journal';
 
 interface Props {
-  trip: TripArchiveEntry;
+  trip: TripCardData;
   /** The first card of a list has no bamboo divider above it. */
   firstOfType?: boolean;
   class?: string;
 }
 
 const { trip, firstOfType = true, class: className } = Astro.props;
-const [landscape, ...portraits] = trip.photos;
-const hasMap = trip.regions.length > 0 || trip.route.stops.length > 0;
+const { cover: landscape, highlights: portraits } = trip;
+const hasMap = trip.provinces.length > 0 || trip.route.stops.length > 0;
 ---
 
 <article
@@ -22,8 +22,8 @@ const hasMap = trip.regions.length > 0 || trip.route.stops.length > 0;
   {!firstOfType && <div aria-hidden="true" class="bamboo-b absolute inset-x-0 top-0 after:right-auto after:left-[4%] after:-scale-x-100" />}
   {hasMap && (
     <>
-      <TripRegionsMap route={trip.route} regions={trip.regions} aspect={1.6} compact class="order-last w-full lg:hidden" />
-      <TripRegionsMap route={trip.route} regions={trip.regions} aspect={1.9} class:list={['hidden lg:block absolute -right-4 w-[72%] map-fade', firstOfType ? '-top-6' : 'top-10']} />
+      <TripRegionsMap route={trip.route} regions={trip.provinces} aspect={1.6} compact class="order-last w-full lg:hidden" />
+      <TripRegionsMap route={trip.route} regions={trip.provinces} aspect={1.9} class:list={['hidden lg:block absolute -right-4 w-[72%] map-fade', firstOfType ? '-top-6' : 'top-10']} />
     </>
   )}
   <div class="relative flex gap-6 max-w-xl pt-4 lg:min-h-88">

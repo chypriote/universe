@@ -5,22 +5,13 @@ import Hero from '@/components/home/Hero.astro';
 import CompletedTrips from '@/components/home/CompletedTrips.astro';
 import SuggestedTrips from '@/components/home/SuggestedTrips.astro';
 import RegionRecommendations from '@/components/home/RegionRecommendations.astro';
-import { getCollection } from 'astro:content';
-import { buildGalleryArchive, buildTripArchiveEntry, isPublishedItinerary } from '@/lib/itineraries.server';
+import { journalFromEnv } from '@/lib/journal';
 
-const itineraries = await getCollection('itineraries');
-const publishedTrips = await Promise.all(
-  itineraries
-    .filter(isPublishedItinerary)
-    .sort(
-      (a, b) =>
-        (b.data.released_itinerary.start_date ?? '').localeCompare(
-          a.data.released_itinerary.start_date ?? '',
-        ),
-    )
-    .map(buildTripArchiveEntry),
-);
-const { photos } = await buildGalleryArchive(itineraries.filter(isPublishedItinerary));
+export const prerender = false;
+
+const journal = journalFromEnv();
+const publishedTrips = await journal.listTripCards();
+const provinces = await journal.getHomeMap();
 const completedTrips = publishedTrips.filter((trip) => trip.type === 'report');
 const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
 ---
@@ -40,7 +31,7 @@ const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
   <Hero />
   <CompletedTrips trips={completedTrips} />
   <SuggestedTrips trips={suggestedTrips} />
-  <RegionRecommendations trips={publishedTrips} photos={photos} />
+  <RegionRecommendations provinces={provinces} />
 </BaseLayout>
 
 <style is:global>

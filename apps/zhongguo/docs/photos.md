@@ -5,19 +5,10 @@ Trip photos live in the R2 bucket `nico-zhongguo-photos`, not in git.
 - `trips/<slug>/<file>`: the original, opened by the lightbox.
 - `thumbs/<slug>/<file>.webp`: the thumbnail shown in grids.
 
-`src/data/photos.json` lists every photo with its size. The build reads it. It does not read the bucket.
-A photo can have an optional `city`, for example `"city": "Zhangjiajie"`. The gallery then uses it instead of the city of the photo's date.
-A photo can also have `"cover": true`. The home map then shows it for the photo's province. Without a cover, it shows the province's first photo. The upload script keeps both fields.
+The `photos` table in D1 lists every photo with its size, date, optional title and its City (or, for an On the way photo, its Province). The Journal reads it; it does not read the bucket. `PHOTOS_URL` is the public base URL of the bucket, with no trailing slash: a Worker secret in production, `.dev.vars` locally. The Worker also has the bucket as the `PHOTOS` R2 binding, unused until the admin.
 
-## Set cities and covers
-
-Put `PHOTOS_URL=<bucket url>` in `.env`. Run `node scripts/photo-admin.mjs` and open http://localhost:4322. Pick a city per photo, or click photos and set one city on all of them. Tick Cover on one photo per province. Save, then commit `src/data/photos.json`.
-The build needs `PHOTOS_URL`, the public base URL of the bucket, with no trailing slash. Locally, set it in `.env`; Astro reads it from there.
+A photo's City, title and Province Cover are rows in D1. There is no screen to edit them yet (the admin comes in later parts of #56); until then, change them with SQL, for example `npx wrangler d1 execute DB --remote --command "UPDATE photos SET city_id = ... WHERE ..."`.
 
 ## Add photos
 
-1. Put them in `<photos-dir>/<trip-slug>/`.
-2. Run `npx wrangler login`, then `node scripts/upload-photos.mjs <photos-dir>`.
-3. Commit `src/data/photos.json`.
-
-The script uploads every photo again each time.
+`scripts/upload-photos.mjs <photos-dir>` uploads photos and thumbnails to the bucket (`npx wrangler login` first; `<photos-dir>` holds one folder per trip slug). It still writes `src/data/photos.json`, which nothing reads any more, so the new photos need rows in `photos` until the admin upload (#59) replaces the script. The script uploads every photo again each time.

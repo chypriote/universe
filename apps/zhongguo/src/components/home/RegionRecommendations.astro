@@ -2,32 +2,21 @@
 import Container from '@/components/Container.astro';
 import SectionHeader from '@/components/home/SectionHeader.astro';
 import { ChinaMap, type ChinaMapRegion } from '@/components/islands/ChinaMap';
-import { getRegionZh } from '@/lib/china-map';
-import type { GalleryPhoto, TripArchiveEntry } from '@/lib/itineraries.server';
+import type { HomeProvince } from '@/lib/journal';
 
 interface Props {
-  trips: TripArchiveEntry[];
-  photos: GalleryPhoto[];
+  provinces: HomeProvince[];
 }
 
-const { trips, photos } = Astro.props;
+const { provinces } = Astro.props;
 
-const byRegion = new Map<string, ChinaMapRegion>();
-const tripCount = new Map<string, number>();
-// Only past journeys count: a plan's provinces are not visited yet.
-for (const trip of trips.filter((trip) => trip.type === 'report')) {
-  for (const name of trip.regions) {
-    const count = (tripCount.get(name) ?? 0) + 1;
-    tripCount.set(name, count);
-    const entry = byRegion.get(name) ?? { name, zh: getRegionZh(name), href: trip.link };
-    entry.photo ??= (
-      photos.find((photo) => photo.region === name && photo.cover) ?? photos.find((photo) => photo.region === name)
-    )?.thumb;
-    entry.detail = `${count} ${count === 1 ? 'trip' : 'trips'}`;
-    byRegion.set(name, entry);
-  }
-}
-const regions = [...byRegion.values()];
+const regions: ChinaMapRegion[] = provinces.map((province) => ({
+  name: province.name,
+  zh: province.nameZh,
+  href: province.href,
+  photo: province.photo ?? undefined,
+  detail: `${province.tripCount} ${province.tripCount === 1 ? 'trip' : 'trips'}`,
+}));
 ---
 
 {regions.length > 0 && (

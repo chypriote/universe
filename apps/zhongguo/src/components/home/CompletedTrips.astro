@@ -2,10 +2,10 @@
 import Container from '@/components/Container.astro';
 import InkStroke from '@/components/InkStroke.astro';
 import SectionHeader from '@/components/home/SectionHeader.astro';
-import type { TripArchiveEntry } from '@/lib/itineraries.server';
+import type { TripCard as TripCardData } from '@/lib/journal';
 
 interface Props {
-  trips: TripArchiveEntry[];
+  trips: TripCardData[];
 }
 
 const { trips } = Astro.props;
@@ -21,7 +21,7 @@ const { trips } = Astro.props;
 
     <div class="grid grid-cols-1 gap-12 lg:gap-24">
       {trips.map((trip, index) => {
-        const cover = trip.photos[0];
+        const cover = trip.cover;
         return (
           <article class:list={['snap-center group relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center', index > 0 && 'pt-10 lg:pt-16']}>
             {index > 0 && <div aria-hidden="true" class="bamboo-b absolute inset-x-0 top-0 after:right-auto after:left-[4%] after:-scale-x-100" />}

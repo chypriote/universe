@@ -1,10 +1,10 @@
 ---
 import InkStroke from '@/components/InkStroke.astro';
 import TripCard from '@/components/TripCard.astro';
-import type { TripArchiveEntry } from '@/lib/itineraries.server';
+import type { TripCard as TripCardData } from '@/lib/journal';
 
 interface Props {
-  trips: TripArchiveEntry[];
+  trips: TripCardData[];
 }
 
 const { trips } = Astro.props;

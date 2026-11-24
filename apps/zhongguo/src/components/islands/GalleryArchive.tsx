@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
-import type { GalleryArchive as GalleryArchiveData, GalleryCity } from '@/lib/itineraries.server';
+import type { Gallery, GalleryCity } from '@/lib/journal';
 import { GalleryGrid } from '@/components/islands/GalleryGrid';
 import { ChinaMap, type ChinaMapCity, type ChinaMapRegion } from '@/components/islands/ChinaMap';
 import { getRegionZh, projectLngLat } from '@/lib/china-map';
@@ -20,42 +20,42 @@ function pillClass(active: boolean): string {
   }`;
 }
 
-export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) {
+export function GalleryArchive({ photos, provinces, cities }: Gallery) {
   const [filter, setFilter] = useState<Filter>({ region: null, city: null });
 
   const visibleCities = useMemo(
-    () => (filter.region ? cities.filter((city) => city.region === filter.region) : cities),
+    () => (filter.region ? cities.filter((city) => city.province === filter.region) : cities),
     [cities, filter.region],
   );
 
   const visiblePhotos = useMemo(() => {
     return photos.filter((photo) => {
-      if (filter.city) return photo.cityKey === filter.city;
-      if (filter.region) return photo.region === filter.region;
+      if (filter.city) return photo.city === filter.city;
+      if (filter.region) return photo.province === filter.region;
       return true;
     });
   }, [photos, filter]);
 
   const mapRegions = useMemo<ChinaMapRegion[]>(
     () =>
-      regions.map((name) => {
-        const inRegion = photos.filter((photo) => photo.region === name);
+      provinces.map((name) => {
+        const inRegion = photos.filter((photo) => photo.province === name);
         return { name, zh: getRegionZh(name), photo: inRegion[0]?.thumb, detail: count(inRegion.length) };
       }),
-    [photos, regions],
+    [photos, provinces],
   );
 
   const mapCities = useMemo<ChinaMapCity[]>(
     () =>
       cities.map((city) => {
-        const inCity = photos.filter((photo) => photo.cityKey === city.key);
+        const inCity = photos.filter((photo) => photo.city === city.name);
         const [x, y] = projectLngLat(city.lng, city.lat);
-        return { key: city.key, name: city.name, zh: city.nameZh, x, y, photo: inCity[0]?.thumb, detail: count(inCity.length) };
+        return { key: city.name, name: city.name, zh: city.nameZh, x, y, photo: inCity[0]?.thumb, detail: count(inCity.length) };
       }),
     [photos, cities],
   );
 
-  const selectedCity: GalleryCity | undefined = cities.find((city) => city.key === filter.city);
+  const selectedCity: GalleryCity | undefined = cities.find((city) => city.name === filter.city);
 
   const selectRegion = (region: string | null) => {
     setFilter({ region, city: null });
@@ -64,16 +64,16 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
   const selectMapRegion = (region: string) => selectRegion(filter.region === region ? null : region);
 
   const selectMapCity = (key: string) => {
-    const city = cities.find((item) => item.key === key);
+    const city = cities.find((item) => item.name === key);
     if (city) selectCity(city);
   };
 
   const selectCity = (city: GalleryCity) => {
-    if (filter.city === city.key) {
+    if (filter.city === city.name) {
       window.location.assign(city.href);
       return;
     }
-    setFilter({ region: city.region, city: city.key });
+    setFilter({ region: city.province, city: city.name });
   };
 
   return (
@@ -85,19 +85,19 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
         selectedCity={filter.city}
         onSelectRegion={selectMapRegion}
         onSelectCity={selectMapCity}
-        idleText="Hover a region or a dot, click to filter"
+        idleText="Hover a province or a dot, click to filter"
       />
 
       <div className="space-y-6">
         <div>
           <p className="mb-3 eyebrow">
-            Region
+            Province
           </p>
           <div className="flex flex-wrap gap-2">
             <button type="button" className={pillClass(filter.region === null)} onClick={() => selectRegion(null)}>
               All
             </button>
-            {regions.map((region) => (
+            {provinces.map((region) => (
               <button
                 key={region}
                 type="button"
@@ -118,12 +118,12 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
             <div className="flex flex-wrap gap-2">
               {visibleCities.map((city) => (
                 <button
-                  key={city.key}
+                  key={city.name}
                   type="button"
-                  className={pillClass(filter.city === city.key)}
+                  className={pillClass(filter.city === city.name)}
                   title={
-                    filter.city === city.key
-                      ? `Open day ${city.day} in ${city.tripTitle}`
+                    filter.city === city.name
+                      ? `Open ${city.day === null ? '' : `day ${city.day} in `}${city.tripTitle}`
                       : `Show photographs from ${city.name}`
                   }
                   onClick={() => selectCity(city)}
@@ -140,7 +140,7 @@ export function GalleryArchive({ photos, regions, cities }: GalleryArchiveData) 
                 href={selectedCity.href}
                 className="mt-4 inline-flex items-center gap-3 eyebrow text-foreground hover:text-primary transition-colors"
               >
-                Open day {selectedCity.day} in {selectedCity.tripTitle}
+                Open {selectedCity.day === null ? '' : `day ${selectedCity.day} in `}{selectedCity.tripTitle}
                 <ArrowRight size={16} aria-hidden="true" />
               </a>
             )}

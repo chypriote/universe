@@ -1,4 +1,5 @@
 // @ts-check
+import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import { unified } from '@astrojs/markdown-remark';
@@ -128,12 +129,14 @@ function prebundleCloudflareDevDeps() {
 
 // https://astro.build/config
 export default defineConfig({
+  // Static by default. Home, /trips, /trips/<slug> and /gallery set `prerender = false`: they read D1 on each request.
   output: 'static',
+  adapter: cloudflare(),
   trailingSlash: 'never',
   // Astro 6 + @astrojs/cloudflare 13 auto-provision a SESSION KV namespace
   // per deploy. Pinning a non-KV driver tells the adapter "sessions are
-  // handled" so it skips emitting the SESSION binding. Our pages are static
-  // and never call Astro.session at runtime.
+  // handled" so it skips emitting the SESSION binding. Our pages never call
+  // Astro.session at runtime.
   session: {
     driver: sessionDrivers.lruCache(),
   },
