@@ -71,9 +71,10 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 **Font families** (loaded in `astro.config.mjs` → `fonts`):
 - Titles (`font-serif`): Yuji Syuku (OFL), a brush-drawn serif. One weight, no italic: don't use `italic`, `font-semibold` or `font-bold` with it. Self-hosted in `public/fonts/yuji-syuku-latin.woff2`, subset to Latin (`pyftsubset YujiSyuku-Regular.ttf --unicodes="U+0020-007E,U+00A0-00FF,U+0152-0153,U+2010-2027,U+2030-203A,U+20AC,U+2122,U+2190-2193" --layout-features='*' --flavor=woff2`). Base letter spacing -0.03em.
 - Body and UI (`font-sans`): Inter.
-- Brush calligraphy (`font-brush`): Ma Shan Zheng (OFL), self-hosted in `public/fonts/ma-shan-zheng-subset.woff2`. The file holds only the characters the site writes in it. To add one, subset again from the Google Fonts source and replace the file:
-  `pyftsubset MaShanZheng-Regular.ttf --text="中国游记行程山河一路平安指南机票影集<new>" --flavor=woff2 --output-file=public/fonts/ma-shan-zheng-subset.woff2`
-  Use it for short decorative Chinese only (titles, plaques), with `lang="zh"`; vertical text uses the `vertical` utility.
+- Journey titles (`font-script`): Kaushan Script (OFL), self-hosted in `public/fonts/kaushan-script-latin.woff2` (Latin subset from `@fontsource/kaushan-script`). Only for the journey titles on the Journeys page, on one line from `lg`. Falls back to `font-serif`.
+- Brush calligraphy (`font-brush`): Ma Shan Zheng (OFL), self-hosted in `public/fonts/ma-shan-zheng-subset.woff2`. The file holds only the characters the site writes in it: 中国游记行程山河一路平安指南机票影集 plus every `zh` province name in `src/data/china-map.json`. To add one, subset again from the Google Fonts source with that text and the new character, and replace the file:
+  `pyftsubset MaShanZheng-Regular.ttf --text="<characters>" --flavor=woff2 --output-file=public/fonts/ma-shan-zheng-subset.woff2`
+  Use it for short decorative Chinese only (titles, plaques, province names on maps), with `lang="zh"`; vertical text uses the `vertical` utility.
 - Chinese (`font-cjk`): system serif (Noto Serif SC, Songti SC, SimSun). No webfont: a CJK font costs several MB. Mark Chinese text with `lang="zh"`; the base styles apply the font.
 
 **Type scale:** ad-hoc below `h3`; fluid tokens for headings (values in `global.css`).
@@ -97,7 +98,6 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Button | Primitive | CTA. `btn` utility: uppercase, semibold, sharp corners | `btn-primary` (cinnabar fill), `btn-outline` (current color, fills with ink on hover) |
 | Text link with arrow | Primitive | "Read more" style link | Primary color; arrow moves right on hover |
 | Eyebrow label | Primitive | Small label above a title (`eyebrow` utility) | Primary, muted |
-| Tag | Primitive | Region or city label | 1px border, sharp |
 | Tabs | Primitive | Toggle Trip reports / Trip plans (`aria-pressed`): large serif labels, each over a faint brush character (游记, 行程) | Active = ink text, darker character, gold-ink brush stroke underneath |
 | Section header | Component | Home sections: vertical brush characters, an eyebrow that translates them, `h2`, lead (`home/SectionHeader.astro`). Same top padding in every home section | — |
 | Bamboo | Decoration | Bamboo stalks and leaf sprays (`Bamboo.astro`, currentColor) | `flip` |
@@ -106,7 +106,9 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Ink stroke | Decoration | One dry-brush ink stroke with ragged edges (`InkStroke.astro`, currentColor). Stretches to its box | — |
 | Ink wash | Decoration | Misty ink hills, plum branch with cinnabar blossoms, birds (`InkWash.astro`) | — |
 | Page header | Pattern | A short version of the home hero on every index page (Journeys, Guides, Planner, Photos): ink wash (no plum, no birds), the page name in ink brush with the 中 seal, the English title in gold serif caps, lead. The bamboo grove tops sit in it (`TempleHeader.astro`) | — |
-| Trip card | Component | Trip preview: photo, meta line, title, text, link | Portrait 3/4 (plans), wide 16/9 alternating split (reports) |
+| Trip card (home) | Component | Trip preview on the home page: photo, meta line, title, text | Completed: 3/2 photo in a `bamboo-frame`, alternating 7/5 split, gold-ink number, region line, "Read the journal" arrow link. Suggested: 4/3 photo in a 3-column grid (the seal when there is no photo) |
+| Journey card | Pattern | One journey on the Journeys page (`TripArchive.astro`): vertical gold-ink dates, `font-script` title, description, an "Explore" link over a faint gold 游记 with a gold-ink `InkStroke` under it, then a photo strip (2 portraits, the landscape, 2 portraits) faded at both ends (`mist-strip`). From `lg` the Trip regions map sits behind the title and photos (`map-fade`); on mobile it comes after the photos. A bamboo divider with the leaf on the left separates journeys | Report, plan (tabs) |
+| Trip regions map | Component | The trip's provinces washed in ink on a faint map of China, with their brush (`font-brush`) and serif caps names, under the cinnabar dotted route and city dots (`TripRegionsMap.astro`). Labels move off a province's centre only to avoid each other | `compact` (mobile: larger labels, no room kept for title and photos) |
 | Navigation | Component | Sticky top bar: seal + name, 4 links with a gold underline on the current page, mobile menu | — |
 | Footer | Component | Inverted: `dark-background` with `dark-foreground` text, gold-ink bamboo, 中国游记 in vertical brush, seal + name + description, one link list, each over its Chinese title (游记, 指南, 机票, 影集) as a faint `gold` brush watermark; labels in tracked `font-serif` caps, gold on hover, the koala before the copyright line | — |
 | Hero | Pattern | Ink wash on paper (no plum, no birds), no gate; centered: wide-tracked eyebrow, 中国游记 in ink brush with the 中 seal, English subtitle, ink button + outline button, a thin ink scroll line | — |
@@ -169,7 +171,7 @@ New poses
 | Inside a card | `gap-3` to `gap-6` |
 | Between list items | `gap-12 lg:gap-24` |
 
-**Section separation:** a bamboo divider (`bamboo-t` / `bamboo-b` utilities: an ink stalk with nodes and a leaf spray at the right end) between sections and under page headers. Journey photos on the home page sit in a `bamboo-frame` (the same ink stalks on four sides, the leaf spray on the top edge). Thin 1px rules only inside lists and tab bars. No gradients except the ink-wash mist.
+**Section separation:** a bamboo divider (`bamboo-t` / `bamboo-b` utilities: an ink stalk with nodes and a leaf spray at the right end) between sections and under page headers. Journey photos on the home page sit in a `bamboo-frame` (the same ink stalks on four sides, the leaf spray on the top edge). Thin 1px rules only inside lists and tab bars. No gradients except the ink-wash mist and mask fades into the paper: `map-fade` (map fades in from the left) and `mist-strip` (photo strip fades out at both ends).
 
 **Breakpoints:** Tailwind defaults. `md` (768px) and `lg` (1024px) are the ones in use.
 
@@ -181,6 +183,8 @@ New poses
 - Nav links collapse into a full-width menu under `md`.
 - Planner: table and calendar stack on mobile; side by side (1/3 + 2/3) from `lg`.
 - Sticky panels are sticky only from `lg`.
+- Footer: 中国游记 is one horizontal line under `md` and vertical from `md`; top padding `pt-10 md:pt-20`.
+- Journey card: the Trip regions map moves after the photos under `lg`, and the photo strip becomes a full-width landscape over a row of four portraits.
 
 ## 6. Depth and motion
 
@@ -213,7 +217,7 @@ Hover feedback is a color change, a border change or a slow image zoom (at most 
 
 ### Do
 - Use the color tokens; never raw hex in components (map CSS included).
-- Use `font-serif` for all titles and `font-sans` for body and UI.
+- Use `font-serif` for all titles (except the Journeys page journey titles in `font-script`) and `font-sans` for body and UI.
 - Keep corners sharp and borders 1px.
 - Give photographs space: large images, wide margins.
 - Use own trip photos.
@@ -224,7 +228,7 @@ Hover feedback is a color change, a border change or a slow image zoom (at most 
 ### Don't
 - Don't use shadows (`shadow-*`, `.hover-lift`).
 - Don't use rounded pills or rounded cards (`rounded-*`), except round dots in maps and legends.
-- Don't use neon colors, gradients or startup-style illustrations.
+- Don't use neon colors, color gradients or startup-style illustrations. Mask fades into the paper (`map-fade`, `mist-strip`) are fine.
 - Don't use stock or AI images for the temple mood: bamboo and ink wash are hand-made SVG.
 - Don't put display headlines in columns narrower than 60% of the container.
 - Don't add a dark mode.
@@ -233,7 +237,7 @@ Hover feedback is a color change, a border change or a slow image zoom (at most 
 
 - Read colors, fonts and heading sizes only from `src/styles/global.css` tokens.
 - Sharp corners and no shadows, always.
-- Titles use `font-serif` + `text-h1/h2/h3`; labels use `eyebrow`; buttons use `btn`.
+- Titles use `font-serif` + `text-h1/h2/h3` (journey titles on the Journeys page use `font-script`); labels use `eyebrow`; buttons use `btn`.
 - Wrap page content in `Container.astro`; sections use `py-24 lg:py-32`.
 - Write copy in Nico's first-person voice, not marketing voice.
 - Icons are Lucide (`@lucide/astro`, `lucide-react` in islands); maps, bamboo, ink wash and the seal are hand-drawn SVG.
