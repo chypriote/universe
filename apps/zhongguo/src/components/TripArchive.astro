@@ -48,7 +48,7 @@ const tabs = [
       return (
         <article
           class:list={[
-            'group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start',
+            'snap-center group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start',
             trip.type === 'report' ? '' : 'hidden',
           ]}
           data-trip-type={trip.type}
