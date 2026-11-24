@@ -2,13 +2,14 @@
 import Container from '@/components/Container.astro';
 import { ChinaMap, type ChinaMapRegion } from '@/components/islands/ChinaMap';
 import { getRegionZh } from '@/lib/china-map';
-import type { TripArchiveEntry } from '@/lib/itineraries.server';
+import type { GalleryPhoto, TripArchiveEntry } from '@/lib/itineraries.server';
 
 interface Props {
   trips: TripArchiveEntry[];
+  photos: GalleryPhoto[];
 }
 
-const { trips } = Astro.props;
+const { trips, photos } = Astro.props;
 
 const byRegion = new Map<string, ChinaMapRegion>();
 const tripCount = new Map<string, number>();
@@ -17,7 +18,7 @@ for (const trip of trips) {
     const count = (tripCount.get(name) ?? 0) + 1;
     tripCount.set(name, count);
     const entry = byRegion.get(name) ?? { name, zh: getRegionZh(name), href: trip.link };
-    entry.photo ??= trip.photos[0];
+    entry.photo ??= photos.find((photo) => photo.region === name)?.thumb;
     entry.detail = `${count} ${count === 1 ? 'trip' : 'trips'}`;
     byRegion.set(name, entry);
   }
@@ -31,12 +32,12 @@ const regions = [...byRegion.values()];
       <div class="flex items-start gap-6 lg:gap-8 max-w-3xl mb-16">
         <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">山河</span>
         <div>
-          <span class="eyebrow">By region</span>
-          <h2 class="mt-4 text-h2 font-serif font-light">Regions</h2>
+          <span class="eyebrow">By province</span>
+          <h2 class="mt-4 text-h2 font-serif font-light">Provinces</h2>
           <p class="mt-4 text-muted-foreground text-lg">Every province in the journeys and plans. Each links to a trip.</p>
         </div>
       </div>
-      <ChinaMap client:visible regions={regions} idleText="Hover a region" />
+      <ChinaMap client:visible regions={regions} idleText="Hover a province" />
     </Container>
   </section>
 )}
