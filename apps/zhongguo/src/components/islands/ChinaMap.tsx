@@ -34,6 +34,13 @@ interface ChinaMapProps {
 /** Label font size in map units; keep in step with the text-[…px] class on the label. */
 const LABEL_SIZE = 22;
 
+/** Labels at a fixed point in map units. Hong Kong and Macao are too small to hover, so their labels sit offshore on a leader line. */
+const PINNED_LABELS: Record<string, { at: [number, number]; leader?: boolean }> = {
+  Guangdong: { at: [712, 712] },
+  'Hong Kong': { at: [820, 776], leader: true },
+  Macao: { at: [696, 790], leader: true },
+};
+
 const TONES = {
   light: {
     land: 'fill-foreground/10 stroke-background',
@@ -41,6 +48,7 @@ const TONES = {
     selected: 'fill-foreground stroke-background',
     dot: 'fill-foreground stroke-background',
     label: 'fill-foreground stroke-background stroke-[4]',
+    leader: 'stroke-foreground',
     muted: 'text-muted-foreground',
     border: 'border-border',
   },
@@ -50,6 +58,7 @@ const TONES = {
     selected: 'fill-dark-foreground stroke-dark-background',
     dot: 'fill-dark-foreground stroke-dark-background',
     label: 'fill-dark-foreground stroke-dark-background stroke-[4]',
+    leader: 'stroke-dark-foreground',
     muted: 'text-dark-muted-foreground',
     border: 'border-dark-border',
   },
@@ -69,9 +78,9 @@ export function ChinaMap({
   const [hoverCity, setHoverCity] = useState<string | null>(null);
   const t = TONES[tone];
   const svgRef = useRef<SVGSVGElement>(null);
-  const [labelPos, setLabelPos] = useState<Record<string, [number, number]>>({});
+  const [labelPos, setLabelPos] = useState<Record<string, { x: number; y: number; cx: number; cy: number }>>({});
 
-  // Touch screens have no hover, so each clickable region carries its name, centred on its shape.
+  // Touch screens have no hover, so each clickable region carries its name, centred on its shape unless pinned.
   useLayoutEffect(() => {
     const centres: [string, number, number][] = [];
     svgRef.current?.querySelectorAll<SVGPathElement>('path[data-region]').forEach((path) => {
@@ -79,14 +88,22 @@ export function ChinaMap({
       centres.push([path.dataset.region as string, box.x + box.width / 2, box.y + box.height / 2]);
     });
     // Small neighbouring regions would print on top of each other, so push a label down until it is clear.
+    const width = (name: string) => name.length * LABEL_SIZE * 0.6;
     const placed: { x: number; y: number; w: number }[] = [];
-    const next: Record<string, [number, number]> = {};
+    const next: Record<string, { x: number; y: number; cx: number; cy: number }> = {};
+    for (const [name, cx, cy] of centres) {
+      const pin = PINNED_LABELS[name];
+      if (!pin) continue;
+      placed.push({ x: pin.at[0], y: pin.at[1], w: width(name) });
+      next[name] = { x: pin.at[0], y: pin.at[1], cx, cy };
+    }
     for (const [name, x, y0] of centres.sort((a, b) => a[2] - b[2])) {
-      const w = name.length * LABEL_SIZE * 0.6;
+      if (next[name]) continue;
+      const w = width(name);
       let y = y0;
       while (placed.some((p) => Math.abs(p.x - x) < (p.w + w) / 2 && Math.abs(p.y - y) < LABEL_SIZE)) y += LABEL_SIZE;
       placed.push({ x, y, w });
-      next[name] = [x, y];
+      next[name] = { x, y, cx: x, cy: y0 };
     }
     setLabelPos(next);
   }, [regions]);
@@ -182,22 +199,42 @@ export function ChinaMap({
           );
         })}
 
+        {/* A label is a second hover and click target for its region; the shape keeps keyboard focus. */}
         {regions.map((region) => {
           const pos = labelPos[region.name];
-          return pos ? (
-            <text
-              key={region.name}
-              x={pos[0]}
-              y={pos[1]}
-              textAnchor="middle"
-              dominantBaseline="central"
-              aria-hidden="true"
-              className={`pointer-events-none select-none text-[22px] font-medium ${t.label}`}
-              style={{ paintOrder: 'stroke' }}
-            >
-              {region.name}
-            </text>
-          ) : null;
+          if (!pos) return null;
+          const label = (
+            <>
+              {PINNED_LABELS[region.name]?.leader && (
+                <line
+                  x1={pos.cx}
+                  y1={pos.cy}
+                  x2={pos.x}
+                  y2={pos.y - LABEL_SIZE / 2}
+                  className={`${hoverRegion === region.name ? 'stroke-primary' : t.leader} stroke-[1.5] pointer-events-none transition-colors`}
+                />
+              )}
+              <text
+                x={pos.x}
+                y={pos.y}
+                textAnchor="middle"
+                dominantBaseline="central"
+                className={`select-none text-[22px] font-medium ${t.label}`}
+                style={{ paintOrder: 'stroke' }}
+              >
+                {region.name}
+              </text>
+            </>
+          );
+          return region.href ? (
+            <a key={region.name} href={region.href} tabIndex={-1} aria-hidden="true" {...regionHandlers(region)}>
+              {label}
+            </a>
+          ) : (
+            <g key={region.name} aria-hidden="true" className="cursor-pointer" {...regionHandlers(region)}>
+              {label}
+            </g>
+          );
         })}
 
         {cities.map((city) => {
