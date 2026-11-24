@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import type { AdminCityDetail, AdminProvince, CityPhoto } from '@/lib/journal';
+import { ChinaMap, type ChinaMapCity } from './ChinaMap';
+import { projectLngLat } from '@/lib/china-map';
 import { AddCityForm, cityError, fieldClass as field } from './AddCityForm';
 
 type Props = {
@@ -105,24 +107,30 @@ export function AdminCities(props: Props) {
         {candidate.name} ({candidate.province})
       </option>
     ));
+  const selectCity = (id: string) => (window.location.search = `?city=${id}`);
+  const mapCities: ChinaMapCity[] = cities.map((item) => {
+    const [x, y] = projectLngLat(item.lng, item.lat);
+    return { key: String(item.id), name: item.name, zh: item.nameZh, x, y };
+  });
   const inUse = city ? city.photos + city.days + city.stays : 0;
 
   return (
     <div className="flex flex-col gap-10">
-      <label className="flex flex-col gap-2 self-start">
-        <span className="eyebrow text-muted-foreground">City</span>
-        <select
-          className={field}
-          value={cityId}
-          onChange={(event) => (window.location.search = `?city=${event.target.value}`)}
-        >
-          {cities.map((candidate) => (
-            <option key={candidate.id} value={candidate.id}>
-              {candidate.name} ({candidate.province}) · {candidate.photos} Photos
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+        <label className="flex flex-col gap-2 self-start">
+          <span className="eyebrow text-muted-foreground">City</span>
+          <select className={field} value={cityId} onChange={(event) => selectCity(event.target.value)}>
+            {cities.map((candidate) => (
+              <option key={candidate.id} value={candidate.id}>
+                {candidate.name} ({candidate.province}) · {candidate.photos} Photos
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="w-full max-w-xl">
+          <ChinaMap regions={[]} cities={mapCities} selectedCity={String(cityId)} onSelectCity={selectCity} preview={false} />
+        </div>
+      </div>
 
       {notice && (
         <p role="status" className="text-sm">
