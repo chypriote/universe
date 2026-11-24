@@ -6,7 +6,8 @@
 	"exports": {
 		"./auth": "./src/auth.ts",
 		"./session": "./src/session.ts",
-		"./cookie": "./src/sveltekit/cookie.ts"
+		"./cookie": "./src/sveltekit/cookie.ts",
+		"./astro": "./src/astro/cookie.ts"
 	},
 	"scripts": {
 		"check": "tsc -p tsconfig.json",
