@@ -1,0 +1,26 @@
+---
+// One dry-brush ink stroke (横): ragged edges and bristle streaks. Ink is currentColor.
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+// Filter ids must be unique when the stroke is on a page twice.
+const id = Math.random().toString(36).slice(2, 8);
+---
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true" class={className}>
+  <defs>
+    <filter id={`brush-${id}`} x="-5%" y="-30%" width="110%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.09" numOctaves="3" seed="7" result="edge" />
+      <feDisplacementMap in="SourceGraphic" in2="edge" scale="16" xChannelSelector="R" yChannelSelector="G" result="ragged" />
+      <feTurbulence type="fractalNoise" baseFrequency="0.004 0.35" numOctaves="2" seed="3" result="streak" />
+      <feColorMatrix in="streak" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.1 1.45" result="bristles" />
+      <feComposite in="ragged" in2="bristles" operator="in" />
+    </filter>
+  </defs>
+  <path
+    fill="currentColor"
+    filter={`url(#brush-${id})`}
+    d="M14,66 C40,44 120,30 250,30 C380,30 500,34 586,46 C596,60 590,78 572,84 C470,94 360,96 240,94 C130,92 60,88 14,66 Z"
+  />
+</svg>

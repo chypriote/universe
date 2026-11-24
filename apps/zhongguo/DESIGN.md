@@ -98,14 +98,16 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Text link with arrow | Primitive | "Read more" style link | Primary color; arrow moves right on hover |
 | Eyebrow label | Primitive | Small label above a title (`eyebrow` utility) | Primary, muted |
 | Tag | Primitive | Region or city label | 1px border, sharp |
-| Tabs | Primitive | Toggle Trip reports / Trip plans (`aria-pressed`) | Active = ink text + 2px gold underline |
+| Tabs | Primitive | Toggle Trip reports / Trip plans (`aria-pressed`): large serif labels, each over a faint brush character (游记, 行程) | Active = ink text, darker character, gold-ink brush stroke underneath |
 | Section header | Component | Home sections: vertical brush characters, an eyebrow that translates them, `h2`, lead (`home/SectionHeader.astro`). Same top padding in every home section | — |
 | Bamboo | Decoration | Bamboo stalks and leaf sprays (`Bamboo.astro`, currentColor) | `flip` |
-| Bamboo grove | Decoration | Four gold stalks with leaf sprays on the right edge, from the top of the page through the footer, which adds extra leaf sprays (`leavesOnly`) so it stays full (`BambooGrove.astro`, SVG patterns, in `BaseLayout.astro`). Below 1400px the footer shows its own clump (`Bamboo.astro`) instead. The tops are cut at a node; on the home page they sit in the hero, fading into mist. Only from 1400px, where it fits in the margin | — |
+| Bamboo grove | Decoration | Four gold stalks with leaf sprays on the right edge, from the top of the page through the footer, which adds extra leaf sprays (`leavesOnly`) so it stays full (`BambooGrove.astro`, SVG patterns, in `BaseLayout.astro`). Below 1400px the footer shows its own clump (`Bamboo.astro`) instead. The tops are cut at a node; on the home and Journeys pages they sit in the hero, fading into mist. Only from 1400px, where it fits in the margin | — |
 | Panda | Decoration | Waving panda holding a grove stalk with its raised paw (`Panda.astro`, see "Panda drawing"). Two only: "Next on the list" (paw on the left, middle of the section) and the footer (mirrored). From 1400px | `dark`, `mirror` |
 | Temple gate | Decoration | Ink-painted paifang, three bays and four columns, feet fading into mist, jade plaque (`TempleGate.astro`, currentColor) | — |
+| Ink stroke | Decoration | One dry-brush ink stroke with ragged edges (`InkStroke.astro`, currentColor). Stretches to its box | — |
 | Ink wash | Decoration | Misty ink hills, plum branch with cinnabar blossoms, birds (`InkWash.astro`) | — |
-| Page header | Pattern | Ink wash + gate in the mist + vertical brush name, eyebrow, `h1`, lead (`TempleHeader.astro`). Index pages. | — |
+| Page header | Pattern | Ink wash + gate in the mist + vertical brush name, eyebrow, `h1`, lead (`TempleHeader.astro`). Guides, Planner, Photos. | — |
+| Journeys hero | Pattern | A shorter home hero: ink wash (no plum, no birds, no gate), 游记 in ink brush with the 中 seal, "Journeys" in gold serif caps, lead. The bamboo grove tops sit in it, as on the home page (`trips/index.astro`) | — |
 | Trip card | Component | Trip preview: photo, meta line, title, text, link | Portrait 3/4 (plans), wide 16/9 alternating split (reports) |
 | Navigation | Component | Sticky top bar: seal + name, 4 links with a gold underline on the current page, mobile menu | — |
 | Footer | Component | Inverted: `dark-background` with `dark-foreground` text, gold-ink bamboo, 中国游记 in vertical brush, seal + name + description, one link list, each over its Chinese title (游记, 指南, 机票, 影集) as a faint `gold` brush watermark; labels in tracked `font-serif` caps, gold on hover, the koala before the copyright line | — |
