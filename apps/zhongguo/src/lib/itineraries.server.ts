@@ -87,6 +87,8 @@ export type GalleryPhoto = {
   region: string | null;
   day: number | null;
   href: string | null;
+  /** Chosen as its province's photo on the home map. */
+  cover: boolean;
 };
 
 export type GalleryCity = {
@@ -108,7 +110,7 @@ export type GalleryArchive = {
   cities: GalleryCity[];
 };
 
-type TripPhoto = { slug: string; name: string; width: number; height: number; city?: string };
+type TripPhoto = { slug: string; name: string; width: number; height: number; city?: string; cover?: boolean };
 
 const photosBaseUrl = (import.meta.env.PHOTOS_URL ?? process.env.PHOTOS_URL ?? '').replace(/\/$/, '');
 if (!photosBaseUrl) {
@@ -403,6 +405,7 @@ export async function buildGalleryArchive(
         region: match?.region ?? null,
         day: match?.day ?? null,
         href,
+        cover: image.cover === true,
       });
 
       if (!match?.city || !match.region || !cityKey) continue;

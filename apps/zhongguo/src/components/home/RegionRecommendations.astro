@@ -18,7 +18,9 @@ for (const trip of trips) {
     const count = (tripCount.get(name) ?? 0) + 1;
     tripCount.set(name, count);
     const entry = byRegion.get(name) ?? { name, zh: getRegionZh(name), href: trip.link };
-    entry.photo ??= photos.find((photo) => photo.region === name)?.thumb;
+    entry.photo ??= (
+      photos.find((photo) => photo.region === name && photo.cover) ?? photos.find((photo) => photo.region === name)
+    )?.thumb;
     entry.detail = `${count} ${count === 1 ? 'trip' : 'trips'}`;
     byRegion.set(name, entry);
   }

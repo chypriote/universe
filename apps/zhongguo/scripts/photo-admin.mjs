@@ -1,4 +1,4 @@
-// Local page to set the city of each photo. Usage: node scripts/photo-admin.mjs (reads PHOTOS_URL from .env)
+// Local page to set the city of each photo and the province covers. Usage: node scripts/photo-admin.mjs (reads PHOTOS_URL from .env)
 // Opens http://localhost:4322 and saves to src/data/photos.json. Commit the file when done.
 import { existsSync } from 'node:fs';
 import { createServer } from 'node:http';
@@ -20,7 +20,7 @@ const page = `<!doctype html><meta charset="utf-8"><title>Photo cities</title>
 <style>body{font:14px sans-serif;margin:1rem}.g{display:flex;flex-wrap:wrap;gap:8px}
 figure{margin:0;width:200px}img{width:200px;height:140px;object-fit:cover}
 select{width:100%}.sel{outline:3px solid #c0392b}</style>
-<h1>Photo cities</h1><p>Click photos to select them, pick a city to set it, then Save.</p>
+<h1>Photo cities</h1><p>Click photos to select them, pick a city to set it, then Save. Tick Cover on the photo the home map shows for its province.</p>
 <select id="bulk"></select> <button id="set">Set city on selected</button>
 <button id="save">Save</button> <span id="msg"></span>
 <div id="app"></div>
@@ -42,7 +42,9 @@ function render(){
       for(const c of ['',...trips[slug]]){const o=new Option(c||'(none)',c);s.add(o)}
       s.value=p.city||'';
       s.onchange=()=>{if(s.value)p.city=s.value;else delete p.city};
-      f.append(s);f.querySelector('img').onclick=()=>f.classList.toggle('sel');
+      const l=document.createElement('label');const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!p.cover;
+      cb.onchange=()=>{if(cb.checked)p.cover=true;else delete p.cover};l.append(cb,' Cover');
+      f.append(s,l);f.querySelector('img').onclick=()=>f.classList.toggle('sel');
       f._p=p;f._s=s;g.append(f);
     }
   }
