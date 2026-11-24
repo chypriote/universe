@@ -53,4 +53,8 @@ const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
   footer {
     scroll-snap-align: end;
   }
+  /* The bamboo stops at the bamboo bar under the hero (nav + hero height, see Hero.astro, + half the 12px bar). */
+  #bamboo-grove {
+    top: calc(var(--nav-height) + max(100svh - var(--nav-height), 600px) + 6px);
+  }
 </style>

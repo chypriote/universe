@@ -52,7 +52,7 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
         <slot />
       </main>
       <!-- Before the footer, so the footer (positioned, opaque) covers it and shows its own bamboo clump. -->
-      <div class="pointer-events-none absolute inset-y-0 right-0 hidden min-[1400px]:block text-gold-ink" aria-hidden="true">
+      <div id="bamboo-grove" class="pointer-events-none absolute inset-y-0 right-0 hidden min-[1400px]:block text-gold-ink" aria-hidden="true">
         <BambooGrove class="h-full" />
       </div>
       <Footer />
