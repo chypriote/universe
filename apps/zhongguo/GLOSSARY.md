@@ -9,8 +9,18 @@ One day of a Trip: its number, main City, title, notes, photos and train rides.
 **City**:
 A place a Trip stays in or passes through. Shown in English and Chinese.
 
-**Region**:
-A Chinese province or area on the China map. Clicking one filters the Gallery or opens a Trip.
+**Province**:
+A Chinese province, autonomous region or direct-administered city (Beijing, Shanghai, Tianjin, Chongqing) on the China map. Clicking one filters the Gallery or opens a Trip. A Photo's Province follows from its City.
+_Avoid_: Region
+
+**Photo**:
+A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip, and its date places it on a Day. Pictures that belong to no Trip are site images kept in the repo, not Photos.
+
+**Trip Cover**:
+The one Photo of a Trip, picked from that Trip's Photos, that stands for the Trip on cards and lists.
+
+**Province Cover**:
+The one Photo the home map shows for a Province. It can come from any Trip, as long as its City is in that Province. Without one, the Province's first Photo is shown.
 
 **Guide**:
 A practical article (visa, payments, apps, transport) at `/guides/<slug>`.
