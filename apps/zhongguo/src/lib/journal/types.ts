@@ -141,7 +141,41 @@ export type AdminPhoto = {
   onTheWay: boolean;
 };
 
-export type AdminTrip = { slug: string; title: string };
+export type AdminTrip = {
+  slug: string;
+  title: string;
+  visible: boolean;
+  /** A plan has no Days: it can only be switched on or off. */
+  hasDays: boolean;
+};
+
+/** A Day as the admin edits it. */
+export type AdminDay = {
+  id: number;
+  date: string;
+  /** Position among the visible Days; null while the Day is hidden. */
+  number: number | null;
+  visible: boolean;
+  title: string;
+  notes: string;
+  city: { id: number; name: string };
+  province: string;
+  /** Ids of its Photos, in order. */
+  photoIds: number[];
+};
+
+/** A Trip with its Days, as the admin edits it. */
+export type AdminTripDetail = {
+  slug: string;
+  title: string;
+  visible: boolean;
+  days: AdminDay[];
+  /** Every Photo of the Trip, by date and name; those on no Day are in no Day's `photoIds`. */
+  photos: AdminPhoto[];
+  coverId: number | null;
+  /** Ids of the 4 Highlight Photos, in order, or fewer while they are not all picked. */
+  highlightIds: number[];
+};
 
 export type AdminCity = { id: number; name: string; nameZh: string; province: string; major: boolean };
 
@@ -230,6 +264,32 @@ export type AddCityResult =
   | { ok: true; city: AdminCity }
   | { ok: false; error: 'invalid-name' | 'name-taken' | 'unknown-province' | 'invalid-position' };
 
+export type SetTripVisibleResult = { ok: true } | { ok: false; error: 'unknown-trip' };
+
+export type SetTripCoverResult =
+  | { ok: true }
+  | { ok: false; error: 'unknown-trip' | 'unknown-photo' | 'not-landscape' };
+
+export type SetHighlightPhotosResult =
+  | { ok: true }
+  | { ok: false; error: 'unknown-trip' | 'unknown-photo' | 'wrong-count' | 'duplicate-photo' | 'not-portrait' };
+
+export type SetDayVisibleResult = { ok: true } | { ok: false; error: 'unknown-day' };
+
+export type EditDayInput = {
+  dayId: number;
+  title?: string;
+  notes?: string;
+  /** The main City: the Day's Province follows. */
+  cityId?: number;
+};
+
+export type EditDayResult = { ok: true } | { ok: false; error: 'unknown-day' | 'unknown-city' | 'invalid-title' };
+
+export type SetDayPhotosResult =
+  | { ok: true }
+  | { ok: false; error: 'unknown-day' | 'unknown-photo' | 'duplicate-photo' };
+
 export type Journal = {
   /** The visible Trips, newest first. */
   listTripCards(): Promise<TripCard[]>;
@@ -244,6 +304,18 @@ export type Journal = {
   verifyToken(token: string): Promise<boolean>;
   /** Every Trip, hidden ones too, newest first. */
   listAdminTrips(): Promise<AdminTrip[]>;
+  /** A Trip with its Days and Photos, hidden or not; null when it does not exist. */
+  getAdminTrip(slug: string): Promise<AdminTripDetail | null>;
+  setTripVisible(slug: string, visible: boolean): Promise<SetTripVisibleResult>;
+  /** The Trip Cover: a landscape Photo of the Trip. */
+  setTripCover(slug: string, photoId: number): Promise<SetTripCoverResult>;
+  /** The 4 Highlight Photos in order: portrait Photos of the Trip. */
+  setHighlightPhotos(slug: string, photoIds: number[]): Promise<SetHighlightPhotosResult>;
+  /** A Hidden Day keeps its date and Photos; the visible Days are numbered again. */
+  setDayVisible(dayId: number, visible: boolean): Promise<SetDayVisibleResult>;
+  editDay(input: EditDayInput): Promise<EditDayResult>;
+  /** The Photos of a Day in order. A Photo on another Day leaves it; one left out stays in the Gallery. */
+  setDayPhotos(dayId: number, photoIds: number[]): Promise<SetDayPhotosResult>;
   /** The Photos of a Trip by date and name; null when the Trip does not exist. */
   listAdminPhotos(slug: string): Promise<AdminPhoto[] | null>;
   listCities(): Promise<AdminCity[]>;

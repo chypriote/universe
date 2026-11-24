@@ -65,6 +65,8 @@ type PhotoRow = {
   date: string;
   title: string | null;
   version: number;
+  /** The Day it is on, if any. */
+  day_id: number | null;
   city_id: number | null;
   city: string | null;
   city_zh: string | null;
@@ -82,8 +84,8 @@ type LoadedTrip = TripRow & {
   type: TripType;
   /** The visible Days, numbered from 1. */
   days: VisibleDay[];
-  /** Dates of the Hidden Days: their Photos are not shown. */
-  hiddenDates: Set<string>;
+  /** Ids of the Hidden Days: their Photos are not shown. */
+  hiddenDayIds: Set<number>;
   photos: PhotoRow[];
 };
 
@@ -133,11 +135,12 @@ export function buildJournal(env: JournalEnv): Journal {
     );
     const photos = await all<PhotoRow>(
       `SELECT photos.id, photos.trip_id, photos.name, photos.width, photos.height, photos.date, photos.title, photos.version,
-              cities.id AS city_id, cities.name AS city, cities.name_zh AS city_zh,
+              day_photos.day_id, cities.id AS city_id, cities.name AS city, cities.name_zh AS city_zh,
               cities.lng AS city_lng, cities.lat AS city_lat, cities.major AS city_major,
               city_provinces.name AS city_province, own_provinces.name AS on_the_way_province
        FROM photos
        JOIN trips ON trips.id = photos.trip_id
+       LEFT JOIN day_photos ON day_photos.photo_id = photos.id
        LEFT JOIN cities ON cities.id = photos.city_id
        LEFT JOIN provinces AS city_provinces ON city_provinces.id = cities.province_id
        LEFT JOIN provinces AS own_provinces ON own_provinces.id = photos.province_id
@@ -154,7 +157,7 @@ export function buildJournal(env: JournalEnv): Journal {
           ...trip,
           type: trip.end_date !== null && trip.end_date < today ? 'report' : 'plan',
           days: tripDays.filter((day) => day.visible === 1).map((day, index) => ({ ...day, number: index + 1 })),
-          hiddenDates: new Set(tripDays.filter((day) => day.visible !== 1).map((day) => day.date)),
+          hiddenDayIds: new Set(tripDays.filter((day) => day.visible !== 1).map((day) => day.id)),
           photos: photos.filter((photo) => photo.trip_id === trip.id),
         };
       })
@@ -185,7 +188,7 @@ export function buildJournal(env: JournalEnv): Journal {
   }
 
   function dayOf(trip: LoadedTrip, photo: PhotoRow): VisibleDay | undefined {
-    return trip.days.find((day) => day.date === photo.date);
+    return trip.days.find((day) => day.id === photo.day_id);
   }
 
   function dayLabel(days: number[]): string {
@@ -322,6 +325,12 @@ export function buildJournal(env: JournalEnv): Journal {
           ...dayIds,
         )
       : [];
+    const dayPhotos = dayIds.length
+      ? await all<{ day_id: number; photo_id: number }>(
+          `SELECT day_id, photo_id FROM day_photos WHERE day_id IN (${dayIds.map(() => '?').join(',')}) ORDER BY day_id, position`,
+          ...dayIds,
+        )
+      : [];
     const restaurants = await all<{ city_id: number; suggested_dishes: string }>(
       'SELECT city_id, suggested_dishes FROM trip_restaurants WHERE trip_id = ? ORDER BY city_id, position',
       trip.id,
@@ -350,7 +359,11 @@ export function buildJournal(env: JournalEnv): Journal {
       food: restaurants
         .filter((row) => row.city_id === day.city_id)
         .flatMap((row) => JSON.parse(row.suggested_dishes) as string[]),
-      photos: trip.photos.filter((photo) => photo.date === day.date).map((photo) => toPhoto(trip, photo)),
+      photos: dayPhotos
+        .filter((row) => row.day_id === day.id)
+        .map((row) => trip.photos.find((photo) => photo.id === row.photo_id))
+        .filter((photo): photo is PhotoRow => photo !== undefined)
+        .map((photo) => toPhoto(trip, photo)),
     }));
 
     const route = buildRoute(trip);
@@ -381,7 +394,7 @@ export function buildJournal(env: JournalEnv): Journal {
   function galleryPhotos(trips: LoadedTrip[]) {
     return trips.flatMap((trip) =>
       trip.photos
-        .filter((photo) => !trip.hiddenDates.has(photo.date))
+        .filter((photo) => photo.day_id === null || !trip.hiddenDayIds.has(photo.day_id))
         .map((photo) => ({ trip, photo, day: dayOf(trip, photo) })),
     );
   }
