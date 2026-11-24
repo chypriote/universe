@@ -7,6 +7,7 @@ import type {
   DeletePhotosResult,
   KeptPhoto,
 } from '@/lib/journal';
+import { AddCityForm } from './AddCityForm';
 
 type Props = {
   trips: AdminTrip[];
@@ -30,8 +31,6 @@ const MESSAGES: Record<string, string> = {
   'unknown-province': 'Unknown Province',
   'unknown-photo': 'A selected Photo no longer exists: reload the page',
   'invalid-date': 'Invalid date',
-  'invalid-position': 'Longitude or latitude out of range',
-  'name-taken': 'A City with this name exists',
 };
 const message = (error: string) => MESSAGES[error] ?? error;
 
@@ -158,30 +157,6 @@ export function AdminPhotos(props: Props) {
     if (confirm(`Delete ${ids.length} Photo(s) for good? Their files are removed too.`)) {
       setKept([]);
       void remove(ids, {});
-    }
-  }
-
-  async function addCity(form: HTMLFormElement) {
-    const data = new FormData(form);
-    const response = await fetch('/api/admin/cities', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: data.get('name'),
-        nameZh: data.get('nameZh'),
-        provinceId: Number(data.get('provinceId')),
-        lng: Number(data.get('lng')),
-        lat: Number(data.get('lat')),
-        major: data.get('major') === 'on',
-      }),
-    });
-    const result = (await response.json()) as { ok: boolean; error?: string; city?: AdminCity };
-    if (result.ok && result.city) {
-      setCities((current) => [...current, result.city!].sort((a, b) => a.name.localeCompare(b.name)));
-      setNotice(`${result.city.name} added`);
-      form.reset();
-    } else {
-      setNotice(message(result.error ?? ''));
     }
   }
 
@@ -409,37 +384,14 @@ export function AdminPhotos(props: Props) {
         </ul>
       </section>
 
-      <details className="border border-border p-6">
-        <summary className="cursor-pointer font-serif text-2xl">Add a City</summary>
-        <form
-          className="mt-4 flex flex-wrap items-end gap-3"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void addCity(event.currentTarget);
-          }}
-        >
-          <input name="name" required placeholder="Name" aria-label="Name" className={field} />
-          <input name="nameZh" required placeholder="中文名" aria-label="Chinese name" className={field} />
-          <select name="provinceId" required aria-label="Province" className={field} defaultValue="">
-            <option value="" disabled>
-              Province
-            </option>
-            {provinces.map((province) => (
-              <option key={province.id} value={province.id}>
-                {province.name}
-              </option>
-            ))}
-          </select>
-          <input name="lng" required type="number" step="any" placeholder="Longitude" aria-label="Longitude" className={field} />
-          <input name="lat" required type="number" step="any" placeholder="Latitude" aria-label="Latitude" className={field} />
-          <label className="flex items-center gap-2 text-sm">
-            <input name="major" type="checkbox" /> Major City
-          </label>
-          <button type="submit" className={button}>
-            Add City
-          </button>
-        </form>
-      </details>
+      <AddCityForm
+        provinces={provinces}
+        onAdded={(city) => {
+          setCities((current) => [...current, city].sort((a, b) => a.name.localeCompare(b.name)));
+          setNotice(`${city.name} added`);
+        }}
+        onError={setNotice}
+      />
     </div>
   );
 }
