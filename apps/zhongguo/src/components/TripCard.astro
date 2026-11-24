@@ -33,7 +33,7 @@ const hasMap = trip.regions.length > 0 || trip.route.stops.length > 0;
         <a href={trip.link} class="hover:text-primary transition-colors">{trip.title}</a>
       </h2>
       <p class="text-muted-foreground leading-relaxed">{trip.description}</p>
-      <a href={trip.link} class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit self-end">
+      <a href={trip.link} class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit self-end lg:mt-auto">
         <span lang="zh" aria-hidden="true" class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25">游记</span>
         <InkStroke class="absolute left-14 bottom-0 w-[calc(100%-3.5rem)] h-4 text-gold-ink transition-colors group-hover/link:text-primary" />
         <span class="relative transition-colors group-hover/link:text-primary">Explore<span class="sr-only"> {trip.title}</span></span>
