@@ -40,3 +40,16 @@ const jsonLd = {
   </div>
 </BaseLayout>
 
+<style is:global>
+  /* Snap to the header at the top, then to each journey, centred, as in the home Recent journeys section.
+     The footer snaps to the bottom so it stays reachable. */
+  html {
+    scroll-snap-type: y mandatory;
+  }
+  main > header {
+    scroll-snap-align: start;
+  }
+  footer {
+    scroll-snap-align: end;
+  }
+</style>
