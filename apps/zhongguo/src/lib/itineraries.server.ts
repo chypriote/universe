@@ -73,6 +73,7 @@ export type TripArchiveEntry = {
   link: string;
   durationDays: number | null;
   destination: string;
+  route: TripRoute;
 };
 
 export type GalleryPhoto = {
@@ -496,6 +497,12 @@ function formatAttraction(name: string): TripActivity {
   };
 }
 
+// Archive cards leave the day count out: the dates already give the length.
+function buildArchiveDescription(cities: string[]): string {
+  if (cities.length === 0) return 'Planned trip. Route and dates are not set yet.';
+  return `A journey across ${cities.join(', ')}.`;
+}
+
 function buildTripDescription(entry: ItineraryEntry, cities: string[]): string {
   if (cities.length === 0 || !entry.data.suggested_duration_days) {
     return 'Planned trip. Route and dates are not set yet.';
@@ -576,11 +583,12 @@ export async function buildTripArchiveEntry(
     title: data.title,
     regions: [...new Set(data.cities.map(city => city.region))],
     dates: formatTripDates(data.released_itinerary),
-    description: buildTripDescription(entry, orderedCities),
+    description: buildArchiveDescription(orderedCities),
     type: getTripType(entry),
     photos: await getTripPhotos(data.slug, data.released_itinerary.pictures),
     link: `/trips/${data.slug}`,
     durationDays: data.suggested_duration_days ?? null,
     destination: data.cities[0]?.country ?? 'China',
+    route: buildTripRoute(entry),
   };
 }
