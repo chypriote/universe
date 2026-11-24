@@ -11,7 +11,7 @@ interface Props {
 const { trips } = Astro.props;
 ---
 
-<!-- The header snaps to the top with the same padding above it as the other home sections; each trip is a short teaser (cover, dates, title, one line, Explore) that snaps to the centre; the full card with map and photo strip is on the Journeys page. -->
+<!-- The header snaps to the top with the same padding above it as the other home sections; each trip is a short teaser (cover, title, one line, Explore) that snaps to the centre; the full card with map and photo strip is on the Journeys page. -->
 <section id="completed-trips" class="pt-12 pb-24 lg:pt-10 lg:pb-32">
   <Container>
     <header class="snap-start scroll-mt-12 lg:scroll-mt-10 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 lg:mb-24 pb-8 bamboo-b after:right-auto after:left-[4%] after:-scale-x-100 reveal">
@@ -31,7 +31,6 @@ const { trips } = Astro.props;
               </a>
             )}
             <div class="lg:col-span-5 flex gap-6">
-              <span class="[writing-mode:vertical-rl] rotate-180 eyebrow text-gold-ink pt-2">{trip.dates}</span>
               <div class="flex flex-col gap-5">
                 <h3 class="font-script leading-[0.95] text-5xl lg:text-7xl">
                   <a href={trip.link} class="hover:text-primary transition-colors">{trip.title}</a>
