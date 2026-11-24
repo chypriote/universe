@@ -32,11 +32,11 @@ Photos: `docs/photos.md`.
 
 ## Admin
 
-`/admin` is behind the Owner login (`/admin/login`, same cookie as the other apps through `packages/owner`). The Journal holds the login and token check; `src/middleware.ts` refuses every `/admin` page and `/api/admin` request without a valid token (pages redirect to the login, the API answers 401). Admin pages render on request and are `noIndex`; no public page links to them. Trips, Photos and Home are placeholders until the next parts of the admin.
+`/admin` is behind the Owner login (`/admin/login`, same cookie as the other apps through `packages/owner`). The Journal holds the login and token check; `src/middleware.ts` refuses every `/admin` page and `/api/admin` request without a valid token (pages redirect to the login, the API answers 401). Admin pages render on request and are `noIndex`; no public page links to them. `/admin/photos` uploads, edits and deletes Photos and adds Cities (`docs/photos.md`); Trips and Home are placeholders until the next parts of the admin.
 
 ## Trips and Photos
 
-They live in the `zhongguo` D1 database (`migrations/0002_journal.sql`; `0003_journal_data.sql` holds the content moved from the old JSON files). After a deploy that adds a migration, run `npm run db:migrate:remote -w apps/zhongguo`. The Journal (`src/lib/journal`) is the only reader: pages hold no rules. Its tests seed their own rows (`src/lib/journal/seed.test-helper.ts`) and leave out the data migration.
+They live in the `zhongguo` D1 database (`migrations/0002_journal.sql`; `0003_journal_data.sql` holds the content moved from the old JSON files). After a deploy that adds a migration, run `npm run db:migrate:remote -w apps/zhongguo`. The Journal (`src/lib/journal`) is the only reader and writer: pages and API routes hold no rules. Its tests seed their own rows (`src/lib/journal/seed.test-helper.ts`) and leave out the data migration.
 
 ## Flight searches
 

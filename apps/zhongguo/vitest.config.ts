@@ -14,6 +14,7 @@ export default defineConfig(async () => {
         miniflare: {
           compatibilityDate: '2026-08-01',
           d1Databases: ['DB'],
+          r2Buckets: ['PHOTOS'],
           bindings: {
             TEST_MIGRATIONS: migrations,
             PHOTOS_URL: 'https://photos.test',
