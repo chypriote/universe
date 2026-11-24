@@ -45,8 +45,8 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
           <span className="eyebrow">
             Your dates
           </span>
-          <h2 className="text-h3 font-serif italic">Clone this loop onto a calendar</h2>
-          <p className="text-muted-foreground font-serif italic leading-relaxed">
+          <h2 className="text-h3 font-serif">Clone this loop onto a calendar</h2>
+          <p className="text-muted-foreground font-serif leading-relaxed">
             Pick a start date to see each city on the calendar. This is a booking preview only — the
             published journal below stays as written.
           </p>
@@ -76,7 +76,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
         return (
           <div key={month.key} className="border border-border bg-background">
             <div className="border-b border-border px-4 py-4 lg:px-6">
-              <h3 className="font-serif text-xl italic">{month.label}</h3>
+              <h3 className="font-serif text-xl">{month.label}</h3>
             </div>
 
             <div className="grid grid-cols-7 border-b border-border bg-surface/80">
@@ -120,7 +120,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
                         <p className="eyebrow">
                           Day {cell.day}
                         </p>
-                        <p className="text-sm font-serif italic leading-snug text-foreground">
+                        <p className="text-sm font-serif leading-snug text-foreground">
                           {cell.city}
                         </p>
                         {cell.cityZh && (

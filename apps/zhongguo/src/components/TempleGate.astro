@@ -1,0 +1,104 @@
+---
+// An ink-painted paifang (牌坊): three bays, four columns, roofs with upturned eaves, tile ends,
+// carved panels and braces, clasping drums at the feet.
+// Ink is currentColor; the feet fade into the mist. The plaque slot holds brush letters.
+// Paths come from a one-off script; edit them by hand.
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+// Filter and mask ids must be unique when the gate is on a page twice.
+const id = Math.random().toString(36).slice(2, 8);
+---
+
+<div class:list={['relative aspect-[1000/660]', className]}>
+  <svg viewBox="0 0 1000 660" class="absolute inset-0 w-full h-full" fill="currentColor" aria-hidden="true">
+    <defs>
+      <filter id={`gate-ink-${id}`} x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7" />
+        <feDisplacementMap in="SourceGraphic" scale="4" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+      <linearGradient id={`gate-fade-${id}`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0.6" stop-color="white" />
+        <stop offset="1" stop-color="white" stop-opacity="0.1" />
+      </linearGradient>
+      <mask id={`gate-mist-${id}`} maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="660">
+        <rect width="1000" height="660" fill={`url(#gate-fade-${id})`} />
+      </mask>
+    </defs>
+    <g filter={`url(#gate-ink-${id})`} mask={`url(#gate-mist-${id})`}>
+    <path d="M374,40 h252 v9 h-252Z"/>
+    <path d="M374,49 c-4,-6 -2,-16 6,-22 c-10,2 -16,10 -14,22Z"/>
+    <path d="M626,49 c4,-6 2,-16 -6,-22 c10,2 16,10 14,22Z"/>
+    <path d="M380,49 L620,49 Q652,120 750,122 Q764,121 776,100 L770,130 Q740,136 500,136 Q260,136 230,130 L224,100 Q236,121 250,122 Q348,120 380,49Z"/>
+    <path d="M380,52 L250,126 M389,52 L269,126 M398,52 L288,126 M408,52 L308,126 M417,52 L327,126 M426,52 L346,126 M435,52 L365,126 M445,52 L385,126 M454,52 L404,126 M463,52 L423,126 M472,52 L442,126 M482,52 L462,126 M491,52 L481,126 M500,52 L500,126 M509,52 L519,126 M518,52 L538,126 M528,52 L558,126 M537,52 L577,126 M546,52 L596,126 M555,52 L615,126 M565,52 L635,126 M574,52 L654,126 M583,52 L673,126 M592,52 L692,126 M602,52 L712,126 M611,52 L731,126 M620,52 L750,126" stroke="var(--color-background)" stroke-width="1.6" opacity="0.35" fill="none"/>
+    <path d="M262,133 a3.2,3.2 0 1 0 0.1,0 M274,133 a3.2,3.2 0 1 0 0.1,0 M286,133 a3.2,3.2 0 1 0 0.1,0 M299,133 a3.2,3.2 0 1 0 0.1,0 M311,133 a3.2,3.2 0 1 0 0.1,0 M323,133 a3.2,3.2 0 1 0 0.1,0 M335,133 a3.2,3.2 0 1 0 0.1,0 M347,133 a3.2,3.2 0 1 0 0.1,0 M360,133 a3.2,3.2 0 1 0 0.1,0 M372,133 a3.2,3.2 0 1 0 0.1,0 M384,133 a3.2,3.2 0 1 0 0.1,0 M396,133 a3.2,3.2 0 1 0 0.1,0 M408,133 a3.2,3.2 0 1 0 0.1,0 M421,133 a3.2,3.2 0 1 0 0.1,0 M433,133 a3.2,3.2 0 1 0 0.1,0 M445,133 a3.2,3.2 0 1 0 0.1,0 M457,133 a3.2,3.2 0 1 0 0.1,0 M469,133 a3.2,3.2 0 1 0 0.1,0 M482,133 a3.2,3.2 0 1 0 0.1,0 M494,133 a3.2,3.2 0 1 0 0.1,0 M506,133 a3.2,3.2 0 1 0 0.1,0 M518,133 a3.2,3.2 0 1 0 0.1,0 M531,133 a3.2,3.2 0 1 0 0.1,0 M543,133 a3.2,3.2 0 1 0 0.1,0 M555,133 a3.2,3.2 0 1 0 0.1,0 M567,133 a3.2,3.2 0 1 0 0.1,0 M579,133 a3.2,3.2 0 1 0 0.1,0 M592,133 a3.2,3.2 0 1 0 0.1,0 M604,133 a3.2,3.2 0 1 0 0.1,0 M616,133 a3.2,3.2 0 1 0 0.1,0 M628,133 a3.2,3.2 0 1 0 0.1,0 M640,133 a3.2,3.2 0 1 0 0.1,0 M653,133 a3.2,3.2 0 1 0 0.1,0 M665,133 a3.2,3.2 0 1 0 0.1,0 M677,133 a3.2,3.2 0 1 0 0.1,0 M689,133 a3.2,3.2 0 1 0 0.1,0 M701,133 a3.2,3.2 0 1 0 0.1,0 M714,133 a3.2,3.2 0 1 0 0.1,0 M726,133 a3.2,3.2 0 1 0 0.1,0 M738,133 a3.2,3.2 0 1 0 0.1,0" opacity="0.9"/>
+    <path d="M250,125 Q500,131 750,125" stroke="var(--color-background)" stroke-width="1.2" opacity="0.5" fill="none"/>
+    <path d="M266,138h12v14h-12Z M288,138h12v14h-12Z M310,138h12v14h-12Z M332,138h12v14h-12Z M354,138h12v14h-12Z M376,138h12v14h-12Z M398,138h12v14h-12Z M420,138h12v14h-12Z M442,138h12v14h-12Z M464,138h12v14h-12Z M486,138h12v14h-12Z M508,138h12v14h-12Z M530,138h12v14h-12Z M552,138h12v14h-12Z M574,138h12v14h-12Z M596,138h12v14h-12Z M618,138h12v14h-12Z M640,138h12v14h-12Z M662,138h12v14h-12Z M684,138h12v14h-12Z M706,138h12v14h-12Z M728,138h12v14h-12Z" opacity="0.85"/>
+    <path d="M250,152h500v16h-500Z" opacity="1"/>
+    <path d="M250,232h500v20h-500Z" opacity="1"/>
+    <path d="M136,206 h128 v9 h-128Z"/>
+    <path d="M136,215 c-4,-6 -2,-16 6,-22 c-10,2 -16,10 -14,22Z"/>
+    <path d="M264,215 c4,-6 2,-16 -6,-22 c10,2 16,10 14,22Z"/>
+    <path d="M142,215 L258,215 Q278,268 340,270 Q354,269 366,254 L360,278 Q330,284 200,284 Q70,284 40,278 L34,254 Q46,269 60,270 Q122,268 142,215Z"/>
+    <path d="M142,218 L60,274 M152,218 L83,274 M161,218 L107,274 M171,218 L130,274 M181,218 L153,274 M190,218 L177,274 M200,218 L200,274 M210,218 L223,274 M219,218 L247,274 M229,218 L270,274 M239,218 L293,274 M248,218 L317,274 M258,218 L340,274" stroke="var(--color-background)" stroke-width="1.6" opacity="0.35" fill="none"/>
+    <path d="M72,281 a3.2,3.2 0 1 0 0.1,0 M86,281 a3.2,3.2 0 1 0 0.1,0 M100,281 a3.2,3.2 0 1 0 0.1,0 M115,281 a3.2,3.2 0 1 0 0.1,0 M129,281 a3.2,3.2 0 1 0 0.1,0 M143,281 a3.2,3.2 0 1 0 0.1,0 M157,281 a3.2,3.2 0 1 0 0.1,0 M172,281 a3.2,3.2 0 1 0 0.1,0 M186,281 a3.2,3.2 0 1 0 0.1,0 M200,281 a3.2,3.2 0 1 0 0.1,0 M214,281 a3.2,3.2 0 1 0 0.1,0 M228,281 a3.2,3.2 0 1 0 0.1,0 M243,281 a3.2,3.2 0 1 0 0.1,0 M257,281 a3.2,3.2 0 1 0 0.1,0 M271,281 a3.2,3.2 0 1 0 0.1,0 M285,281 a3.2,3.2 0 1 0 0.1,0 M300,281 a3.2,3.2 0 1 0 0.1,0 M314,281 a3.2,3.2 0 1 0 0.1,0 M328,281 a3.2,3.2 0 1 0 0.1,0" opacity="0.9"/>
+    <path d="M60,273 Q200,279 340,273" stroke="var(--color-background)" stroke-width="1.2" opacity="0.5" fill="none"/>
+    <path d="M75,286h12v12h-12Z M97,286h12v12h-12Z M119,286h12v12h-12Z M141,286h12v12h-12Z M163,286h12v12h-12Z M185,286h12v12h-12Z M207,286h12v12h-12Z M229,286h12v12h-12Z M251,286h12v12h-12Z M273,286h12v12h-12Z M295,286h12v12h-12Z M317,286h12v12h-12Z" opacity="0.85"/>
+    <path d="M65,298h270v14h-270Z" opacity="1"/>
+    <path d="M736,206 h128 v9 h-128Z"/>
+    <path d="M736,215 c-4,-6 -2,-16 6,-22 c-10,2 -16,10 -14,22Z"/>
+    <path d="M864,215 c4,-6 2,-16 -6,-22 c10,2 16,10 14,22Z"/>
+    <path d="M742,215 L858,215 Q878,268 940,270 Q954,269 966,254 L960,278 Q930,284 800,284 Q670,284 640,278 L634,254 Q646,269 660,270 Q722,268 742,215Z"/>
+    <path d="M742,218 L660,274 M752,218 L683,274 M761,218 L707,274 M771,218 L730,274 M781,218 L753,274 M790,218 L777,274 M800,218 L800,274 M810,218 L823,274 M819,218 L847,274 M829,218 L870,274 M839,218 L893,274 M848,218 L917,274 M858,218 L940,274" stroke="var(--color-background)" stroke-width="1.6" opacity="0.35" fill="none"/>
+    <path d="M672,281 a3.2,3.2 0 1 0 0.1,0 M686,281 a3.2,3.2 0 1 0 0.1,0 M700,281 a3.2,3.2 0 1 0 0.1,0 M715,281 a3.2,3.2 0 1 0 0.1,0 M729,281 a3.2,3.2 0 1 0 0.1,0 M743,281 a3.2,3.2 0 1 0 0.1,0 M757,281 a3.2,3.2 0 1 0 0.1,0 M772,281 a3.2,3.2 0 1 0 0.1,0 M786,281 a3.2,3.2 0 1 0 0.1,0 M800,281 a3.2,3.2 0 1 0 0.1,0 M814,281 a3.2,3.2 0 1 0 0.1,0 M828,281 a3.2,3.2 0 1 0 0.1,0 M843,281 a3.2,3.2 0 1 0 0.1,0 M857,281 a3.2,3.2 0 1 0 0.1,0 M871,281 a3.2,3.2 0 1 0 0.1,0 M885,281 a3.2,3.2 0 1 0 0.1,0 M900,281 a3.2,3.2 0 1 0 0.1,0 M914,281 a3.2,3.2 0 1 0 0.1,0 M928,281 a3.2,3.2 0 1 0 0.1,0" opacity="0.9"/>
+    <path d="M660,273 Q800,279 940,273" stroke="var(--color-background)" stroke-width="1.2" opacity="0.5" fill="none"/>
+    <path d="M675,286h12v12h-12Z M697,286h12v12h-12Z M719,286h12v12h-12Z M741,286h12v12h-12Z M763,286h12v12h-12Z M785,286h12v12h-12Z M807,286h12v12h-12Z M829,286h12v12h-12Z M851,286h12v12h-12Z M873,286h12v12h-12Z M895,286h12v12h-12Z M917,286h12v12h-12Z" opacity="0.85"/>
+    <path d="M665,298h270v14h-270Z" opacity="1"/>
+    <path d="M500,8 l4,10 a9,9 0 1 1 -8,0Z"/>
+    <path d="M488,38 h24 v4 h-24Z"/>
+    <path d="M262,170 h140 v60 h-140Z" opacity="0.8"/>
+    <path d="M268,176 h128 M268,188 h128 M268,200 h128 M268,212 h128 M268,224 h128 M268,176 v48 M284,176 v48 M300,176 v48 M316,176 v48 M332,176 v48 M348,176 v48 M364,176 v48 M380,176 v48 M396,176 v48" stroke="var(--color-background)" stroke-width="1.3" opacity="0.4" fill="none"/>
+    <path d="M598,170 h140 v60 h-140Z" opacity="0.8"/>
+    <path d="M604,176 h128 M604,188 h128 M604,200 h128 M604,212 h128 M604,224 h128 M604,176 v48 M620,176 v48 M636,176 v48 M652,176 v48 M668,176 v48 M684,176 v48 M700,176 v48 M716,176 v48 M732,176 v48" stroke="var(--color-background)" stroke-width="1.3" opacity="0.4" fill="none"/>
+    <path d="M355,252 h70 Q376,260 355,294Z" opacity="0.9"/>
+    <path d="M645,252 h-70 Q624,260 645,294Z" opacity="0.9"/>
+    <path d="M125,312 h50 Q140,318 125,342Z" opacity="0.9"/>
+    <path d="M325,312 h-50 Q310,318 325,342Z" opacity="0.9"/>
+    <path d="M675,312 h50 Q690,318 675,342Z" opacity="0.9"/>
+    <path d="M875,312 h-50 Q860,318 875,342Z" opacity="0.9"/>
+    <path d="M325,152h30v470h-30Z" opacity="0.92"/>
+    <path d="M645,152h30v470h-30Z" opacity="0.92"/>
+    <path d="M95,286h30v336h-30Z" opacity="0.92"/>
+    <path d="M875,286h30v336h-30Z" opacity="0.92"/>
+    <path d="M85,622 h50 v10 q-25,8 -50,0Z" opacity="0.8"/>
+    <path d="M81,632h58v14h-58Z" opacity="0.75"/>
+    <circle cx="73" cy="606" r="15" opacity="0.7"/>
+    <path d="M59,618 h28 v14 h-28Z" opacity="0.7"/>
+    <circle cx="147" cy="606" r="15" opacity="0.7"/>
+    <path d="M133,618 h28 v14 h-28Z" opacity="0.7"/>
+    <path d="M315,622 h50 v10 q-25,8 -50,0Z" opacity="0.8"/>
+    <path d="M311,632h58v14h-58Z" opacity="0.75"/>
+    <circle cx="303" cy="606" r="15" opacity="0.7"/>
+    <path d="M289,618 h28 v14 h-28Z" opacity="0.7"/>
+    <circle cx="377" cy="606" r="15" opacity="0.7"/>
+    <path d="M363,618 h28 v14 h-28Z" opacity="0.7"/>
+    <path d="M635,622 h50 v10 q-25,8 -50,0Z" opacity="0.8"/>
+    <path d="M631,632h58v14h-58Z" opacity="0.75"/>
+    <circle cx="623" cy="606" r="15" opacity="0.7"/>
+    <path d="M609,618 h28 v14 h-28Z" opacity="0.7"/>
+    <circle cx="697" cy="606" r="15" opacity="0.7"/>
+    <path d="M683,618 h28 v14 h-28Z" opacity="0.7"/>
+    <path d="M865,622 h50 v10 q-25,8 -50,0Z" opacity="0.8"/>
+    <path d="M861,632h58v14h-58Z" opacity="0.75"/>
+    <circle cx="853" cy="606" r="15" opacity="0.7"/>
+    <path d="M839,618 h28 v14 h-28Z" opacity="0.7"/>
+    <circle cx="927" cy="606" r="15" opacity="0.7"/>
+    <path d="M913,618 h28 v14 h-28Z" opacity="0.7"/>
+    </g>
+  </svg>
+  <!-- plaque (匾额): jade panel, double frame, brush letters -->
+  <div class="absolute left-1/2 -translate-x-1/2 top-[25.5%] w-[18%] aspect-[3/1] bg-secondary border-2 border-current outline outline-1 outline-gold/70 -outline-offset-[5px] grid place-items-center">
+    <slot name="plaque" />
+  </div>
+</div>

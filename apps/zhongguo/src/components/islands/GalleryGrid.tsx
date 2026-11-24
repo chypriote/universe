@@ -13,7 +13,7 @@ export function GalleryGrid({ photos }: GalleryGridProps) {
 
   if (photos.length === 0) {
     return (
-      <p className="text-muted-foreground font-serif italic">
+      <p className="text-muted-foreground font-serif">
         No photographs for this place yet.
       </p>
     );

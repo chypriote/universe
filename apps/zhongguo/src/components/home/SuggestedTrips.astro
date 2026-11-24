@@ -9,16 +9,19 @@ interface Props {
 const { trips } = Astro.props;
 ---
 
-<section id="suggested-trips" class="py-24 lg:py-32 bg-surface">
+<section id="suggested-trips" class="py-24 lg:py-32 bamboo-t">
   <Container>
-    <header class="max-w-2xl mb-16 reveal">
-      <span class="eyebrow">Trip plans</span>
-      <h2 class="mt-4 text-h2 font-serif font-light">Next on the list</h2>
-      <p class="mt-4 text-muted-foreground text-lg">Routes I plan to take, with dates, cities and trains.</p>
+    <header class="flex items-start gap-6 lg:gap-8 max-w-2xl mb-16 reveal">
+      <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">行程</span>
+      <div>
+        <span class="eyebrow">Trip plans</span>
+        <h2 class="mt-4 text-h2 font-serif font-light">Next on the list</h2>
+        <p class="mt-4 text-muted-foreground text-lg">Routes I plan to take, with dates, cities and trains.</p>
+      </div>
     </header>
 
     {trips.length === 0 ? (
-      <p class="text-muted-foreground font-serif italic">No trip plans yet.</p>
+      <p class="text-muted-foreground font-serif">No trip plans yet.</p>
     ) : (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
         {trips.map((trip, index) => {

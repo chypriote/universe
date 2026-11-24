@@ -51,8 +51,8 @@ const jsonLd = {
 ---
 
 <BaseLayout title={trip.title} description={trip.description} jsonLd={jsonLd}>
-  <article class="bg-background">
-    <header class="pt-20 pb-16 lg:pt-28 lg:pb-24 border-b border-border">
+  <article>
+    <header class="pt-20 pb-16 lg:pt-28 lg:pb-24 bamboo-b">
       <Container>
         <div class="flex flex-wrap items-center gap-4 animate-fade-in">
           <span class="eyebrow">{trip.destination}</span>
@@ -96,7 +96,7 @@ const jsonLd = {
                 {/* Day Marker & Meta (Sticky-ish) */}
                 <div class="lg:col-span-3 lg:sticky lg:top-32 h-fit space-y-6">
                   <div class="space-y-2">
-                    <span class="block font-serif text-6xl font-light leading-none text-primary">{String(day.day).padStart(2, '0')}</span>
+                    <span class="block font-serif text-6xl font-light leading-none text-gold-ink">{String(day.day).padStart(2, '0')}</span>
                     <span class="eyebrow text-muted-foreground">Day {day.day}</span>
                     <h2 class="text-h3 font-serif">{day.title}</h2>
                   </div>
@@ -127,7 +127,7 @@ const jsonLd = {
                         <span class="eyebrow text-muted-foreground">Food</span>
                         <ul class="space-y-2">
                           {day.food.map(item => (
-                            <li class="text-sm font-serif italic text-foreground/80">{item}</li>
+                            <li class="text-sm font-serif text-foreground/80">{item}</li>
                           ))}
                         </ul>
                       </div>
@@ -175,7 +175,7 @@ const jsonLd = {
     </div>
 
     {trip.planDays.length > 0 && (
-      <section id="calendar" class="border-t border-border py-20 lg:py-32">
+      <section id="calendar" class="bamboo-t py-20 lg:py-32">
         <Container>
           <PlanCalendar client:load days={trip.planDays} startDate={trip.startDate} />
         </Container>
@@ -183,7 +183,7 @@ const jsonLd = {
     )}
 
     {/* Other Journeys */}
-    <section class="border-t border-border py-20 lg:py-28 bg-surface">
+    <section class="bamboo-t py-20 lg:py-28">
       <Container>
         {otherTrips.length > 0 && (
           <div class="space-y-12 mb-20 lg:mb-28">

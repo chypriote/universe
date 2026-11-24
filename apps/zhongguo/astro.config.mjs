@@ -195,19 +195,5 @@ export default defineConfig({
       styles: ['normal'],
       weights: ['300 700'],
     },
-    {
-      provider: fontProviders.fontsource(),
-      name: 'Fraunces',
-      cssVariable: '--font-fraunces',
-      styles: ['normal', 'italic'],
-      weights: ['300 700'],
-    },
-    {
-      provider: fontProviders.fontsource(),
-      name: 'DM Serif Display',
-      cssVariable: '--font-dm-serif-display',
-      styles: ['normal'],
-      weights: ['400'],
-    },
   ],
 });

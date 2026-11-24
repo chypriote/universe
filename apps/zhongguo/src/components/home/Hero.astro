@@ -1,36 +1,32 @@
 ---
-import { Image } from 'astro:assets';
-import Container from '@/components/Container.astro';
-import heroImage from '@/assets/hero.jpg';
+import InkWash from '@/components/InkWash.astro';
+import TempleGate from '@/components/TempleGate.astro';
 ---
 
-<section class="relative h-[88svh] min-h-[560px] overflow-hidden bg-dark-background text-white">
-  <Image
-    src={heroImage}
-    alt="A pyramid of prayer flags beside Qinghai Lake, with snow mountains behind"
-    widths={[900, 1400, 2000, 2800]}
-    sizes="100vw"
-    class="absolute inset-0 w-full h-full object-cover"
-    loading="eager"
-    fetchpriority="high"
-  />
-  <div class="absolute inset-0 bg-black/45"></div>
+<section class="h-[88svh] min-h-[600px] bamboo-b">
+  <div class="absolute inset-0 overflow-hidden">
+    <InkWash plum={false} birds={false} class="absolute inset-0 w-full h-full text-foreground opacity-60 md:opacity-100" />
+  </div>
+  <div class="absolute right-[9%] bottom-[16%] w-52 lg:w-80 text-foreground/70 hidden md:block" aria-hidden="true">
+    <TempleGate>
+      <span slot="plaque" lang="zh" class="font-brush text-gold text-[0.65rem] lg:text-sm leading-none whitespace-nowrap">游记</span>
+    </TempleGate>
+  </div>
 
-  <p
-    lang="zh"
-    class="absolute bottom-6 left-4 lg:bottom-auto lg:left-auto lg:right-10 lg:top-10 flex flex-row lg:flex-col items-center gap-2 lg:gap-3 bg-primary text-gold outline outline-1 -outline-offset-4 outline-gold/60 px-5 py-3.5 lg:px-5 lg:py-7 text-3xl lg:text-5xl font-bold leading-none hero-animate hero-animate-delay-3"
-    aria-hidden="true"
-  >
-    {[...'中国游记'].map((char) => <span>{char}</span>)}
-  </p>
-
-  <Container class="relative z-10 h-full flex flex-col items-center justify-center text-center">
-    <h1 class="max-w-4xl text-h1 font-display tracking-tight hero-animate hero-animate-delay-1">
-      China, trip by trip: photographs, itineraries and flight prices.
+  <div class="relative z-10 h-full flex flex-col items-center pt-[14vh] px-4 text-center">
+    <p class="eyebrow tracking-[0.6em] hero-animate">A journal of China</p>
+    <h1 class="mt-8 hero-animate hero-animate-delay-1">
+      <span class="relative inline-block">
+        <span lang="zh" class="block font-brush text-[clamp(4rem,2rem+9vw,10rem)] leading-none tracking-[0.05em]">中国游记</span>
+        <span lang="zh" class="seal absolute -right-6 lg:-right-12 -bottom-2 w-7 lg:w-10 text-xs lg:text-base" aria-hidden="true">中</span>
+      </span>
+      <span class="mt-6 block font-serif uppercase font-light tracking-[0.35em] text-sm lg:text-base text-gold-ink">China, trip by trip</span>
     </h1>
     <div class="mt-10 flex flex-wrap justify-center gap-4 hero-animate hero-animate-delay-2">
-      <a href="/trips" class="btn bg-white text-dark-background hover:bg-white/85">Read the journeys</a>
-      <a href="/planner" class="btn btn-outline text-white hover:!bg-white hover:!border-white hover:!text-dark-background">Flight planner</a>
+      <a href="/trips" class="btn bg-foreground text-background hover:bg-foreground/85">Read the journeys</a>
+      <a href="/planner" class="btn btn-outline">Flight planner</a>
     </div>
-  </Container>
+  </div>
+
+  <span class="absolute left-1/2 bottom-8 z-10 h-16 w-px bg-foreground/50 hero-animate hero-animate-delay-3" aria-hidden="true"></span>
 </section>

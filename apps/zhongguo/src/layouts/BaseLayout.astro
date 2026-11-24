@@ -4,6 +4,7 @@ import Navigation from '@/components/Navigation.astro';
 import Footer from '@/components/Footer.astro';
 import BackToTop from '@/components/BackToTop.astro';
 import SEOHead from '@/components/SEOHead.astro';
+import InkWash from '@/components/InkWash.astro';
 import { SITE } from '@/config/site';
 import { Font } from "astro:assets";
 
@@ -28,7 +29,6 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
     <link rel="preconnect" href="https://pagesmith-cdn.com" crossorigin />
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     <Font cssVariable="--font-inter" preload />
-    <Font cssVariable="--font-fraunces" preload />
     <SEOHead
       title={title}
       description={description}
@@ -42,6 +42,10 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
     <body data-ps="src/layouts/BaseLayout.astro:4vj8al">
+      <!-- Distant ink mountains behind every page. -->
+      <div class="pointer-events-none fixed inset-x-0 bottom-0 h-[65vh] -z-10 text-foreground opacity-20" aria-hidden="true">
+        <InkWash plum={false} birds={false} class="w-full h-full" />
+      </div>
       <Navigation />
       <main data-ps="src/layouts/BaseLayout.astro:yuyoow">
         <slot />

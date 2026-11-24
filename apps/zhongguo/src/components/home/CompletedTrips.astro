@@ -11,10 +11,13 @@ const { trips } = Astro.props;
 
 <section id="completed-trips" class="py-24 lg:py-32">
   <Container>
-    <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 lg:mb-24 pb-8 border-b border-border reveal">
-      <div>
-        <span class="eyebrow">Trip reports</span>
-        <h2 class="mt-4 text-h2 font-serif font-light">Recent journeys</h2>
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 lg:mb-24 pb-8 bamboo-b reveal">
+      <div class="flex items-end gap-6 lg:gap-8">
+        <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">游记</span>
+        <div>
+          <span class="eyebrow">Trip reports</span>
+          <h2 class="mt-4 text-h2 font-serif font-light">Recent journeys</h2>
+        </div>
       </div>
       <a href="/trips" class="eyebrow text-foreground hover:text-primary transition-colors">All journeys →</a>
     </header>
@@ -43,7 +46,7 @@ const { trips } = Astro.props;
             )}
             <div class:list={['lg:col-span-5 flex flex-col gap-5 reveal reveal-delay-1', !imageLeft && 'lg:order-1']}>
               <div class="flex items-baseline gap-4">
-                <span class="font-serif text-5xl font-light text-primary">{String(index + 1).padStart(2, '0')}</span>
+                <span class="font-serif text-5xl font-light text-gold-ink">{String(index + 1).padStart(2, '0')}</span>
                 <span class="eyebrow text-muted-foreground">{trip.dates}</span>
               </div>
               <h3 class="text-3xl lg:text-4xl font-serif font-normal">

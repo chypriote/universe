@@ -1,4 +1,5 @@
 ---
+import TempleHeader from '@/components/TempleHeader.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { GalleryArchive } from '@/components/islands/GalleryArchive';
@@ -22,19 +23,15 @@ const jsonLd = {
 ---
 
 <BaseLayout title="Photography" description="Photos from my trips in China, by region and city." jsonLd={jsonLd}>
-  <div class="py-20 lg:py-28">
+  <TempleHeader zh="影集" eyebrow="Photography" title="Photos">
+    Photos from every trip. Filter by region or city, then open a city to read that day of the journal.
+  </TempleHeader>
+  <div class="py-16 lg:py-24">
     <Container>
-      <header class="max-w-3xl mb-16 lg:mb-20">
-        <span class="eyebrow">Photography</span>
-        <h1 class="mt-4 text-h1 font-serif font-light">Photos</h1>
-        <p class="mt-6 text-lg text-muted-foreground leading-relaxed">
-          Photos from every trip. Filter by region or city, then open a city to read that day of the journal.
-        </p>
-      </header>
 
       <GalleryArchive client:load photos={archive.photos} regions={archive.regions} cities={archive.cities} />
 
-      <div class="mt-24 pt-16 border-t border-border flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="mt-24 pt-16 bamboo-t flex flex-col md:flex-row md:items-center justify-between gap-6">
         <p class="font-serif text-2xl font-light">Each trip has a day-by-day journal with the route and notes.</p>
         <a href="/trips" class="btn btn-outline shrink-0">All journeys</a>
       </div>
