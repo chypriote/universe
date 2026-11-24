@@ -1,5 +1,6 @@
 ---
 import Container from '@/components/Container.astro';
+import InkStroke from '@/components/InkStroke.astro';
 import Panda from '@/components/Panda.astro';
 import SectionHeader from '@/components/home/SectionHeader.astro';
 import type { TripArchiveEntry } from '@/lib/itineraries.server';
@@ -21,31 +22,35 @@ const { trips } = Astro.props;
     {trips.length === 0 ? (
       <p class="text-muted-foreground font-serif">No trip plans yet.</p>
     ) : (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
         {trips.map((trip, index) => {
           const cover = trip.photos[0];
 
           return (
-            <article class={`group flex flex-col reveal reveal-delay-${Math.min(index + 1, 5)}`}>
-              <a href={trip.link} class="block overflow-hidden mb-5" tabindex="-1" aria-hidden="true">
+            <article class={`snap-center group flex flex-col gap-5 reveal reveal-delay-${Math.min(index + 1, 5)}`}>
+              <a href={trip.link} tabindex="-1" aria-hidden="true" class:list={['block overflow-hidden', cover && 'mist-strip']}>
                 {cover ? (
                   <img
                     src={cover}
                     alt=""
-                    class="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    class="w-full aspect-[3/2] object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                     loading="lazy"
                   />
                 ) : (
-                  <div class="aspect-[4/3] bg-background border border-border grid place-items-center">
+                  <div class="aspect-[3/2] border border-border grid place-items-center">
                     <span class="seal w-16 text-3xl">中</span>
                   </div>
                 )}
               </a>
-              <span class="eyebrow text-muted-foreground">{trip.durationDays ? `${trip.durationDays} days · ` : ''}{trip.dates}</span>
-              <h3 class="mt-3 text-2xl font-serif">
+              <h3 class="font-script leading-[0.95] text-4xl sm:text-5xl">
                 <a href={trip.link} class="hover:text-primary transition-colors">{trip.title}</a>
               </h3>
-              <p class="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3">{trip.description}</p>
+              <p class="text-muted-foreground leading-relaxed line-clamp-3">{trip.description}</p>
+              <a href={trip.link} class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit self-end mt-auto">
+                <span lang="zh" aria-hidden="true" class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25">行程</span>
+                <InkStroke class="absolute left-14 bottom-0 w-[calc(100%-3.5rem)] h-4 text-gold-ink transition-colors group-hover/link:text-primary" />
+                <span class="relative transition-colors group-hover/link:text-primary">Explore<span class="sr-only"> {trip.title}</span></span>
+              </a>
             </article>
           );
         })}
