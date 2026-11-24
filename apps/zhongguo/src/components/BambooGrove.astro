@@ -3,9 +3,11 @@
 // Stalks and leaf sprays are SVG patterns, so they repeat for any page height. Colour is currentColor.
 interface Props {
   class?: string;
+  // Only extra leaf sprays on the grove's stalks, to make the grove fuller where it is drawn (the footer).
+  leavesOnly?: boolean;
 }
 
-const { class: className } = Astro.props;
+const { class: className, leavesOnly = false } = Astro.props;
 
 // x and width in px from the left of the 160px strip; node = distance between nodes;
 // top = where the stalk is cut, minus 60px, so the tops do not end on one line.
@@ -54,8 +56,23 @@ const sprays = stalks.flatMap((stalk, i) =>
     spray(stalk.x + stalk.width / 2, 120 + k * 420 + i * 105, (i + k) % 2 ? 1 : -1, i * 3 + k + 3),
   ),
 );
+
+const denseLeafPeriod = 520;
+const denseSprays = stalks.flatMap((stalk, i) =>
+  spray(stalk.x + 2 + stalk.width / 2, 60 + i * 130, i % 2 ? 1 : -1, i * 5 + 4),
+);
 ---
 
+{leavesOnly ? (
+  <svg xmlns="http://www.w3.org/2000/svg" width={width} height="100%" fill="currentColor" aria-hidden="true" class={className}>
+    <defs>
+      <pattern id="bamboo-leaves-dense" patternUnits="userSpaceOnUse" x="0" y="0" width={width} height={denseLeafPeriod}>
+        {denseSprays.map((l) => <path d={l.d} transform={l.transform} style={`fill:${l.fill}`} />)}
+      </pattern>
+    </defs>
+    <rect x="0" y="0" width={width} height="100%" fill="url(#bamboo-leaves-dense)" />
+  </svg>
+) : (
 <svg
   xmlns="http://www.w3.org/2000/svg"
   width={width}
@@ -89,3 +106,4 @@ const sprays = stalks.flatMap((stalk, i) =>
   <rect x="0" y="260" width={width} height="100%" fill="url(#bamboo-leaves)" />
   {crown.map((l) => <path d={l.d} transform={l.transform} style={`fill:${l.fill}`} />)}
 </svg>
+)}
