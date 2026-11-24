@@ -46,14 +46,13 @@ const jsonLd = {
 
 <BaseLayout title={trip.title} description={trip.description} jsonLd={jsonLd}>
   <article>
-    <header class="relative isolate flex min-h-[32rem] items-end justify-center overflow-hidden text-center lg:min-h-[44rem]">
+    <header class="relative isolate flex justify-center overflow-hidden text-center">
       {cover && <img src={cover} alt="" class="absolute inset-0 -z-10 h-full w-full object-cover" />}
       <div class="absolute inset-0 -z-10 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
-      <div class="flex flex-col items-center gap-5 px-4 pb-16 pt-32 lg:pb-24">
-        <span class="eyebrow text-foreground">{trip.destination}</span>
+      <div class="flex flex-col items-center gap-5 px-4 pt-14 pb-24 lg:pt-20 lg:pb-32">
         <h1 class="font-script text-6xl leading-[1.05] pb-2 lg:text-[9rem] animate-fade-in">{trip.title}</h1>
         <p class="max-w-lg font-serif text-lg text-foreground/80">{trip.description}</p>
-        <div class="mt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 border-t border-foreground/30 pt-5 eyebrow text-foreground">
+        <div class="mt-4 flex flex-col items-center gap-2 border-t border-foreground/30 pt-5 eyebrow text-foreground">
           <span>{trip.dates}</span>
           <span>{trip.days.length} days</span>
         </div>
@@ -193,3 +192,11 @@ const jsonLd = {
     </section>
   </article>
 </BaseLayout>
+
+<style is:global>
+  /* The bamboo tops end inside the cover, half in mist, as on the index pages. */
+  #bamboo-grove {
+    top: calc(var(--nav-height) + 6rem);
+    mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.3), black 360px);
+  }
+</style>
