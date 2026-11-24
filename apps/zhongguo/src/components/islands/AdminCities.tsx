@@ -173,48 +173,43 @@ export function AdminCities(props: Props) {
             Delete
           </button>
           {inUse > 0 && <p className="text-sm text-muted-foreground">Move its Photos and Days to another City first.</p>}
-        </section>
-      )}
-
-      <section aria-labelledby="move-title" className="flex flex-col gap-4 border border-border p-6">
-        <h2 id="move-title" className="font-serif text-2xl">{ids.length} selected</h2>
-        <div className="flex flex-wrap items-end gap-3">
-          <select className={field} aria-label="Move to City" value={target} onChange={(event) => setTarget(event.target.value)}>
-            <option value="">Move to City</option>
-            {cityOptions}
-          </select>
-          <button type="button" className={button} disabled={busy || ids.length === 0 || !target} onClick={() => void move({ cityId: Number(target) })}>
-            Move
-          </button>
-        </div>
-        <div className="flex flex-wrap items-end gap-3">
-          <select
-            className={field}
-            aria-label="Province of an On the way photo"
-            value={onTheWayProvince}
-            onChange={(event) => setOnTheWayProvince(event.target.value)}
-          >
-            <option value="">No Province</option>
-            {provinces.map((province) => (
-              <option key={province.id} value={province.id}>
-                {province.name}
-              </option>
-            ))}
-          </select>
-          <button
-            type="button"
-            className={button}
-            disabled={busy || ids.length === 0}
-            onClick={() => void move({ onTheWay: true, ...(onTheWayProvince && { provinceId: Number(onTheWayProvince) }) })}
-          >
-            Mark On the way
-          </button>
-        </div>
-      </section>
-
-      <section aria-labelledby="photos-title">
+      <details className="border-t border-border pt-4">
+        <summary className="cursor-pointer font-serif text-2xl">Photos</summary>
+        <div className="mt-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="photos-title" className="font-serif text-2xl">{photos.length} Photos</h2>
+          <h3 className="font-serif text-xl">{photos.length} Photos</h3>
+          {ids.length > 0 && (
+            <div className="flex flex-wrap items-center gap-3">
+              <select className={field} aria-label="Move to City" value={target} onChange={(event) => setTarget(event.target.value)}>
+                <option value="">Move to City</option>
+                {cityOptions}
+              </select>
+              <button type="button" className={button} disabled={busy || !target} onClick={() => void move({ cityId: Number(target) })}>
+                Move
+              </button>
+              <select
+                className={field}
+                aria-label="Province of an On the way photo"
+                value={onTheWayProvince}
+                onChange={(event) => setOnTheWayProvince(event.target.value)}
+              >
+                <option value="">No Province</option>
+                {provinces.map((province) => (
+                  <option key={province.id} value={province.id}>
+                    {province.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className={button}
+                disabled={busy}
+                onClick={() => void move({ onTheWay: true, ...(onTheWayProvince && { provinceId: Number(onTheWayProvince) }) })}
+              >
+                Mark On the way
+              </button>
+            </div>
+          )}
           <button
             type="button"
             className={button}
@@ -257,7 +252,11 @@ export function AdminCities(props: Props) {
             </li>
           ))}
         </ul>
-      </section>
+        </div>
+      </details>
+
+        </section>
+      )}
 
       <AddCityForm
         provinces={provinces}
