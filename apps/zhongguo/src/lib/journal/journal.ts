@@ -9,6 +9,7 @@ import type {
   Gallery,
   GalleryCity,
   GalleryPhoto,
+  FocalPoint,
   HomeProvince,
   Journal,
   LoginResult,
@@ -16,6 +17,7 @@ import type {
   Photo,
   Route,
   RouteStop,
+  SetProvinceCoverFocusResult,
   SetProvinceCoverResult,
   TripCard,
   TripDay,
@@ -450,12 +452,14 @@ export function buildJournal(env: JournalEnv): Journal {
 
   type CoverItem = ReturnType<typeof galleryPhotos>[number];
 
-  async function provinceCoverIds(): Promise<Map<string, number>> {
-    const rows = await all<{ province: string; photo_id: number }>(
-      `SELECT provinces.name AS province, province_covers.photo_id
+  type ProvinceCover = { photoId: number; focus: FocalPoint };
+
+  async function provinceCovers(): Promise<Map<string, ProvinceCover>> {
+    const rows = await all<{ province: string; photo_id: number; focus_x: number; focus_y: number }>(
+      `SELECT provinces.name AS province, province_covers.photo_id, province_covers.focus_x, province_covers.focus_y
        FROM province_covers JOIN provinces ON provinces.id = province_covers.province_id`,
     );
-    return new Map(rows.map((row) => [row.province, row.photo_id]));
+    return new Map(rows.map((row) => [row.province, { photoId: row.photo_id, focus: { x: row.focus_x, y: row.focus_y } }]));
   }
 
   /** The Photos that can cover a Province, in Gallery order: the first one is the fallback. */
@@ -464,7 +468,7 @@ export function buildJournal(env: JournalEnv): Journal {
 
   async function getHomeMap(): Promise<HomeProvince[]> {
     const trips = await loadTrips();
-    const covers = await provinceCoverIds();
+    const covers = await provinceCovers();
     const zh = await all<{ name: string; name_zh: string }>('SELECT name, name_zh FROM provinces');
     const items = galleryPhotos(trips);
     const reports = trips.filter((trip) => trip.type === 'report');
@@ -472,11 +476,13 @@ export function buildJournal(env: JournalEnv): Journal {
     return visitedProvinces(trips).map((name) => {
       const tripsThere = reports.filter((trip) => trip.days.some((day) => day.province === name));
       const candidates = candidatesOf(items, name);
-      const shown = candidates.find(({ photo }) => photo.id === covers.get(name)) ?? candidates[0];
+      const picked = candidates.find(({ photo }) => photo.id === covers.get(name)?.photoId);
+      const shown = picked ?? candidates[0];
       return {
         name,
         nameZh: zh.find((province) => province.name === name)?.name_zh ?? '',
         photo: shown ? thumbUrl(shown.trip.slug, shown.photo.name, shown.photo.version) : null,
+        ...(picked && { focus: covers.get(name)!.focus }),
         tripCount: tripsThere.length,
         href: `/trips/${tripsThere[0].slug}`,
       };
@@ -485,19 +491,20 @@ export function buildJournal(env: JournalEnv): Journal {
 
   async function listVisitedProvinces(): Promise<VisitedProvince[]> {
     const trips = await loadTrips();
-    const covers = await provinceCoverIds();
+    const covers = await provinceCovers();
     const zh = await all<{ name: string; name_zh: string }>('SELECT name, name_zh FROM provinces');
     const items = galleryPhotos(trips);
 
     return visitedProvinces(trips).map((name) => {
       const candidates = candidatesOf(items, name);
-      const picked = candidates.find(({ photo }) => photo.id === covers.get(name));
+      const picked = candidates.find(({ photo }) => photo.id === covers.get(name)?.photoId);
       const shown = picked ?? candidates[0];
       return {
         name,
         nameZh: zh.find((province) => province.name === name)?.name_zh ?? '',
         photo: shown ? thumbUrl(shown.trip.slug, shown.photo.name, shown.photo.version) : null,
         coverId: picked?.photo.id ?? null,
+        ...(picked && { focus: covers.get(name)!.focus }),
         fallback: !picked,
       };
     });
@@ -521,9 +528,23 @@ export function buildJournal(env: JournalEnv): Journal {
     await env.DB.prepare(
       `INSERT INTO province_covers (province_id, photo_id)
        SELECT id, ? FROM provinces WHERE name = ?
-       ON CONFLICT (province_id) DO UPDATE SET photo_id = excluded.photo_id`,
+       ON CONFLICT (province_id) DO UPDATE SET photo_id = excluded.photo_id, focus_x = 50, focus_y = 50`,
     )
       .bind(photoId, province)
+      .run();
+    return { ok: true };
+  }
+
+  async function setProvinceCoverFocus(province: string, x: number, y: number): Promise<SetProvinceCoverFocusResult> {
+    const inRange = (value: number) => Number.isFinite(value) && value >= 0 && value <= 100;
+    if (!inRange(x) || !inRange(y)) return { ok: false, error: 'invalid-focus' };
+    const cover = (await listVisitedProvinces()).find((row) => row.name === province);
+    if (!cover) return { ok: false, error: 'unknown-province' };
+    if (cover.fallback) return { ok: false, error: 'no-cover' };
+    await env.DB.prepare(
+      'UPDATE province_covers SET focus_x = ?, focus_y = ? WHERE province_id = (SELECT id FROM provinces WHERE name = ?)',
+    )
+      .bind(Math.round(x), Math.round(y), province)
       .run();
     return { ok: true };
   }
@@ -558,6 +579,7 @@ export function buildJournal(env: JournalEnv): Journal {
     listVisitedProvinces,
     listCoverCandidates,
     setProvinceCover,
+    setProvinceCoverFocus,
     clearProvinceCover,
     login,
     verifyToken,
