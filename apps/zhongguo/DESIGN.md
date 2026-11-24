@@ -106,7 +106,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Page header | Pattern | Ink wash + gate in the mist + vertical brush name, eyebrow, `h1`, lead (`TempleHeader.astro`). Index pages. | — |
 | Trip card | Component | Trip preview: photo, meta line, title, text, link | Portrait 3/4 (plans), wide 16/9 alternating split (reports) |
 | Navigation | Component | Sticky top bar: seal + name, 4 links with a gold underline on the current page, mobile menu | — |
-| Footer | Component | Paper, ink bamboo, 一路平安 in vertical brush, name + description, one link list with each Chinese title (游记, 指南, 机票, 影集), the koala before the copyright line | — |
+| Footer | Component | Paper, ink bamboo, 一路平安 in vertical brush, name + description, one link list, each over its Chinese title (游记, 指南, 机票, 影集) as a faint gold-ink brush watermark, the koala before the copyright line | — |
 | Hero | Pattern | Ink wash on paper (no plum, no birds) with the gate in the mist; centered: wide-tracked eyebrow, 中国游记 in ink brush with the 中 seal, English subtitle, ink button + outline button, a thin ink scroll line | — |
 | China map | Pattern | Clickable SVG map of China (`ChinaMap.tsx`). Hover or focus shows the name in English and Chinese, a photo if there is one, and a detail line. Used on Photos (click filters photos, dots are cities) and on the home Regions section (click opens a trip). Shapes: Natural Earth, public domain, built by `scripts/build-china-map.mjs` into `src/data/china-map.json`. | Light, dark |
 | Trip day section | Pattern | Large cinnabar day number, title, sticky activities and food (Chinese + pinyin), text, photos | — |
