@@ -22,4 +22,4 @@ Universe held only collection apps, all on the Showcase design system (SvelteKit
 ## Consequences
 
 - UI shared across families goes in `packages/universe`; UI shared by the collection apps goes in `packages/showcase`.
-- `packages/owner` depends on SvelteKit, so Zhongguo has no Owner login until it is made framework-agnostic.
+- `packages/owner` keeps its token and cookie code framework-free (`auth.ts`, `session.ts`) with one thin adapter per framework (`sveltekit`, `astro`), so Zhongguo shares the Owner login with the collection apps.
