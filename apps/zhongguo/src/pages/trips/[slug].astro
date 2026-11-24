@@ -18,12 +18,15 @@ export async function getStaticPaths() {
   return Promise.all(
     itineraries.filter(isPublishedItinerary).map(async (entry) => ({
       params: { slug: entry.data.slug },
-      props: { trip: await buildTripPage(entry) },
+      props: { trip: await buildTripPage(entry), card: await buildTripArchiveEntry(entry) },
     })),
   );
 }
 
-const { trip } = Astro.props;
+const { trip, card } = Astro.props;
+const cover = card.photos[0];
+
+const cityOfDay = (day: number) => trip.route.stops.find((stop) => stop.days.includes(day));
 const { slug } = Astro.params;
 
 const otherTrips = (
@@ -52,124 +55,89 @@ const jsonLd = {
 
 <BaseLayout title={trip.title} description={trip.description} jsonLd={jsonLd}>
   <article>
-    <header class="pt-20 pb-16 lg:pt-28 lg:pb-24 bamboo-b">
-      <Container>
-        <div class="flex flex-wrap items-center gap-4 animate-fade-in">
-          <span class="eyebrow">{trip.destination}</span>
-          <span class="w-10 h-px bg-border"></span>
-          <span class="eyebrow text-muted-foreground">{trip.dates}</span>
+    <header class="relative isolate flex min-h-[32rem] items-end justify-center overflow-hidden text-center lg:min-h-[44rem]">
+      {cover && <img src={cover} alt="" class="absolute inset-0 -z-10 h-full w-full object-cover" />}
+      <div class="absolute inset-0 -z-10 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+      <div class="flex flex-col items-center gap-5 px-4 pb-16 pt-32 lg:pb-24">
+        <span class="eyebrow text-foreground">{trip.destination}</span>
+        <h1 class="font-script text-6xl leading-[1.05] pb-2 lg:text-[9rem] animate-fade-in">{trip.title}</h1>
+        <p class="max-w-lg font-serif text-lg text-foreground/80">{trip.description}</p>
+        <div class="mt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 border-t border-foreground/30 pt-5 eyebrow text-foreground">
+          <span>{trip.dates}</span>
+          <span>{trip.days.length} days</span>
         </div>
-        <h1 class="mt-6 max-w-4xl text-h1 font-serif font-light animate-fade-in">{trip.title}</h1>
-
-        <div class="mt-12 lg:mt-16 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
-          <p class="lg:col-span-5 text-xl font-serif font-light leading-relaxed text-foreground/80">
-            {trip.description}
-          </p>
-          <div class="lg:col-span-7">
-            <span class="eyebrow text-muted-foreground">Cities</span>
-            <ul class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-4 border-t border-border pt-4">
-              {trip.cities.map((city) => (
-                <li>
-                  <p class="font-serif text-lg leading-tight">{city.name}</p>
-                  <p class="text-xs text-muted-foreground">
-                    <span lang="zh">{city.nameZh}</span>
-                    <span class="ml-1.5">{city.pinyin}</span>
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </Container>
+      </div>
     </header>
 
-    <TripRouteSection route={trip.route} />
+    <TripRouteSection route={trip.route} regions={card.regions} />
 
-    {/* Day-by-Day Journey */}
-    <div class="py-20 lg:py-32">
+    {/* Day by day: a timeline of the route */}
+    <div class="py-20 lg:py-28">
       <Container>
-        <div class="xl:grid xl:grid-cols-[minmax(0,1fr)_12rem] xl:gap-12">
-        <div class="max-w-5xl mx-auto w-full space-y-24 lg:space-y-40">
-          {trip.days.map((day, __psIdx) => (
-            <section class="scroll-mt-32" id={`day-${day.day}`}>
-              <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-                {/* Day Marker & Meta (Sticky-ish) */}
-                <div class="lg:col-span-3 lg:sticky lg:top-32 h-fit space-y-6">
-                  <div class="space-y-2">
-                    <span class="block font-serif text-6xl font-light leading-none text-gold-ink">{String(day.day).padStart(2, '0')}</span>
-                    <span class="eyebrow text-muted-foreground">Day {day.day}</span>
+        <div class="mx-auto max-w-6xl">
+          {trip.days.map((day, index) => {
+            const city = cityOfDay(day.day);
+            const newCity = city && cityOfDay(trip.days[index - 1]?.day ?? 0)?.name !== city.name;
+            return (
+              <section class="scroll-mt-32 lg:grid lg:grid-cols-[11rem_1fr]" id={`day-${day.day}`}>
+                <div class="hidden pr-10 pt-1 text-right lg:block">
+                  {newCity && (
+                    <>
+                      <span lang="zh" class="block text-5xl leading-none text-gold-ink/45">{city.nameZh}</span>
+                      <span class="eyebrow text-muted-foreground">{city.name}</span>
+                    </>
+                  )}
+                </div>
+                <div class="relative space-y-6 border-gold-ink/50 pb-20 lg:border-l lg:pl-14 lg:pb-24">
+                  <span class="absolute -left-[7px] top-3 hidden h-3.5 w-3.5 rounded-full bg-primary ring-4 ring-background lg:block" aria-hidden="true"></span>
+                  {city && <span class="eyebrow text-muted-foreground lg:hidden">{city.name} <span lang="zh">{city.nameZh}</span></span>}
+                  <div class="flex items-baseline gap-4">
+                    <span class="font-serif text-5xl text-gold-ink">{String(day.day).padStart(2, '0')}</span>
                     <h2 class="text-h3 font-serif">{day.title}</h2>
                   </div>
-                  
-                  <div class="pt-6 border-t border-border space-y-8">
-                    {day.activities.length > 0 && (
-                      <div class="space-y-3">
-                        <span class="eyebrow text-muted-foreground">Activities</span>
-                        <ul class="space-y-2">
-                          {day.activities.map(activity => (
-                            <li class="text-sm text-muted-foreground flex items-start gap-2">
-                              <span class="mt-2 w-1 h-1 bg-primary shrink-0"></span>
-                              <span class="space-y-0.5">
-                                <span class="block text-foreground">{activity.name}</span>
-                                <span class="block text-xs leading-snug">
-                                  <span lang="zh">{activity.nameZh}</span>
-                                  <span class="ml-1.5">{activity.pinyin}</span>
+                  <p class="max-w-2xl text-lg leading-relaxed text-foreground/85">{day.description}</p>
+
+                  {(day.activities.length > 0 || day.food.length > 0) && (
+                    <div class="grid gap-8 border-t border-border pt-5 sm:grid-cols-2">
+                      {day.activities.length > 0 && (
+                        <div class="space-y-3">
+                          <span class="eyebrow">Activities</span>
+                          <ul class="space-y-2.5">
+                            {day.activities.map((activity) => (
+                              <li class="flex items-start gap-2">
+                                <span class="mt-2.5 h-1 w-1 shrink-0 bg-primary" aria-hidden="true"></span>
+                                <span>
+                                  <span class="block font-serif text-lg leading-tight">{activity.name}</span>
+                                  <span class="block text-xs text-muted-foreground">
+                                    <span lang="zh">{activity.nameZh}</span>
+                                    <span class="ml-1.5">{activity.pinyin}</span>
+                                  </span>
                                 </span>
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {day.food.length > 0 && (
-                      <div class="space-y-3">
-                        <span class="eyebrow text-muted-foreground">Food</span>
-                        <ul class="space-y-2">
-                          {day.food.map(item => (
-                            <li class="text-sm font-serif text-foreground/80">{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Narrative & Gallery */}
-                <div class="lg:col-span-9 space-y-12">
-                  <div class="max-w-2xl text-lg leading-relaxed text-foreground/85">
-                    <p>{day.description}</p>
-                  </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {day.food.length > 0 && (
+                        <div class="space-y-3">
+                          <span class="eyebrow">Food</span>
+                          <ul class="space-y-2">
+                            {day.food.map((item) => (
+                              <li class="font-serif text-lg leading-tight text-foreground/80">{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {day.gallery.length > 0 && (
                     <TripDayGallery client:visible photos={day.gallery} day={day.day} tripTitle={trip.title} />
                   )}
                 </div>
-              </div>
-            </section>
-          ))}
-        </div>
-
-        {trip.days.length > 1 && (
-          <aside class="hidden xl:block">
-            <nav class="sticky top-28" aria-label="Days" data-day-nav>
-              <span class="eyebrow text-muted-foreground">Days</span>
-              <ol class="mt-4 border-t border-border">
-                {trip.days.map((day) => (
-                  <li class="border-b border-border">
-                    <a
-                      href={`#day-${day.day}`}
-                      class="flex gap-3 py-3 text-sm text-muted-foreground hover:text-primary transition-colors aria-[current=true]:text-primary"
-                    >
-                      <span class="font-serif tabular-nums">{String(day.day).padStart(2, '0')}</span>
-                      <span class="line-clamp-2">{day.title}</span>
-                    </a>
-                  </li>
-                ))}
-              </ol>
-            </nav>
-          </aside>
-        )}
+              </section>
+            );
+          })}
         </div>
       </Container>
     </div>
@@ -234,27 +202,3 @@ const jsonLd = {
     </section>
   </article>
 </BaseLayout>
-
-<script>
-  const nav = document.querySelector('[data-day-nav]');
-  if (nav) {
-    const links = new Map(
-      [...nav.querySelectorAll('a')].map((a) => [a.getAttribute('href')!.slice(1), a]),
-    );
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          links.forEach((a, id) =>
-            a.setAttribute('aria-current', String(id === entry.target.id)),
-          );
-        }
-      },
-      { rootMargin: '-30% 0px -60% 0px' },
-    );
-    links.forEach((_, id) => {
-      const section = document.getElementById(id);
-      if (section) observer.observe(section);
-    });
-  }
-</script>
