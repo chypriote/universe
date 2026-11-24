@@ -101,6 +101,8 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Tabs | Primitive | Toggle Trip reports / Trip plans (`aria-pressed`) | Active = ink text + 2px gold underline |
 | Section header | Component | Vertical brush characters + eyebrow + `h2` + lead | Left aligned, centered |
 | Bamboo | Decoration | Bamboo stalks and leaf sprays (`Bamboo.astro`, currentColor) | `flip` |
+| Bamboo grove | Decoration | Four gold stalks with leaf sprays on the right edge, from the top of the page to the footer, where the footer's own clump takes over (`BambooGrove.astro`, SVG patterns, in `BaseLayout.astro`). Only from 1400px, where it fits in the margin | — |
+| Panda | Decoration | Small ink panda climbing a grove stalk (`Panda.astro`). Two only: "Next on the list" and the footer. From 1400px | `dark` |
 | Temple gate | Decoration | Ink-painted paifang, three bays and four columns, feet fading into mist, jade plaque (`TempleGate.astro`, currentColor) | — |
 | Ink wash | Decoration | Misty ink hills, plum branch with cinnabar blossoms, birds (`InkWash.astro`) | — |
 | Page header | Pattern | Ink wash + gate in the mist + vertical brush name, eyebrow, `h1`, lead (`TempleHeader.astro`). Index pages. | — |

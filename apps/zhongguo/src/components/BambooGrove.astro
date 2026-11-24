@@ -9,9 +9,10 @@ const { class: className } = Astro.props;
 
 // x and width in px from the left of the 160px strip; node = distance between nodes.
 const stalks = [
-  { x: 70, width: 12, node: 118, offset: 30 },
-  { x: 96, width: 15, node: 134, offset: 0 },
-  { x: 124, width: 11, node: 110, offset: 60 },
+  { x: 62, width: 13, node: 124, offset: 30 },
+  { x: 86, width: 11, node: 108, offset: 0 },
+  { x: 106, width: 16, node: 136, offset: 70 },
+  { x: 132, width: 12, node: 116, offset: 15 },
 ];
 
 const width = 160;
@@ -28,17 +29,19 @@ function spray(cx: number, cy: number, dir: 1 | -1, seed: number) {
   const count = 4 + (seed % 2);
   for (let i = 0; i < count; i++) {
     const angle = dir === 1 ? 8 + i * 14 + (seed % 7) : 172 - i * 14 - (seed % 7);
-    const length = (dir === 1 ? 46 : 38) + ((seed * (i + 3)) % 18);
+    const length = (dir === 1 ? 54 : 46) + ((seed * (i + 3)) % 22);
     leaves.push({ d: leaf(length, 5 + (i % 2)), transform: `translate(${cx} ${cy}) rotate(${angle})`, fill: i % 2 ? dark : 'currentColor' });
   }
   return leaves;
 }
 
-const leafPeriod = 1300;
-const sprays = stalks.flatMap((stalk, i) => [
-  ...spray(stalk.x + stalk.width / 2, 260 + i * 170, i % 2 ? 1 : -1, i + 3),
-  ...spray(stalk.x + stalk.width / 2, 900 + i * 90, i % 2 ? -1 : 1, i + 5),
-]);
+const leafPeriod = 1400;
+// Three sprays per stalk in each period, staggered between stalks.
+const sprays = stalks.flatMap((stalk, i) =>
+  [0, 1, 2].flatMap((k) =>
+    spray(stalk.x + stalk.width / 2, 120 + k * 420 + i * 105, (i + k) % 2 ? 1 : -1, i * 3 + k + 3),
+  ),
+);
 ---
 
 <svg
