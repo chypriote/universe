@@ -42,3 +42,13 @@ const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
   <SuggestedTrips trips={suggestedTrips} />
   <RegionRecommendations trips={publishedTrips} photos={photos} />
 </BaseLayout>
+
+<style is:global>
+  /* Snap each home page section to the top. The footer snaps to the bottom so it stays reachable. */
+  html {
+    scroll-snap-type: y mandatory;
+  }
+  footer {
+    scroll-snap-align: end;
+  }
+</style>

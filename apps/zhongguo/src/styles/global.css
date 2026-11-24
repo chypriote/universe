@@ -78,6 +78,12 @@
   --color-dark-muted: var(--color-dark-muted-foreground);
 }
 
+/* A home page section that fills the screen below the header. The page snaps to its top. */
+@utility snap-section {
+  min-height: calc(100svh - var(--nav-height));
+  scroll-snap-align: start;
+}
+
 /* Small uppercase label above a heading. */
 @utility eyebrow {
   font-family: var(--font-sans);
