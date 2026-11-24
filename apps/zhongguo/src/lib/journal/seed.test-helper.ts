@@ -2,6 +2,7 @@
 import { env } from 'cloudflare:workers';
 
 const TABLES = [
+  'day_photos',
   'province_covers',
   'highlight_photos',
   'day_train_rides',
@@ -101,6 +102,14 @@ export async function addDay(
     visible: options.visible === false ? 0 : 1,
   };
   await insert('days', row);
+  // Photos already there for its date go on it, as the migration does.
+  await env.DB.prepare(
+    `INSERT INTO day_photos (day_id, position, photo_id)
+     SELECT ?1, ROW_NUMBER() OVER (ORDER BY name), id FROM photos
+     WHERE trip_id = ?2 AND date = ?3 AND id NOT IN (SELECT photo_id FROM day_photos)`,
+  )
+    .bind(row.id, tripId, date)
+    .run();
   return row.id;
 }
 
@@ -128,6 +137,14 @@ export async function addPhoto(
     province_id: options.provinceId ?? null,
   };
   await insert('photos', row);
+  // A Photo goes on the Day of its date, after the Photos already there.
+  await env.DB.prepare(
+    `INSERT INTO day_photos (day_id, position, photo_id)
+     SELECT days.id, COALESCE((SELECT MAX(position) FROM day_photos WHERE day_id = days.id), 0) + 1, ?1
+     FROM days WHERE trip_id = ?2 AND date = ?3`,
+  )
+    .bind(row.id, tripId, date)
+    .run();
   return row.id;
 }
 

@@ -1,0 +1,26 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { AdminTripEditor } from '@/components/islands/AdminTripEditor';
+import { journalFromEnv } from '@/lib/journal';
+
+export const prerender = false;
+
+const journal = journalFromEnv();
+const trip = await journal.getAdminTrip(Astro.params.slug ?? '');
+if (!trip) return Astro.redirect('/admin/trips');
+const cities = await journal.listCities();
+---
+
+<AdminLayout title={trip.title}>
+  <p class="eyebrow"><a href="/admin/trips" class="no-underline">Trips</a></p>
+  <h1 class="mt-3 font-serif text-h1">{trip.title}</h1>
+  {
+    trip.days.length > 0 ? (
+      <div class="mt-10">
+        <AdminTripEditor client:load trip={trip} cities={cities} />
+      </div>
+    ) : (
+      <p class="mt-6 text-muted-foreground">A plan has no Days. Switch it on or off from the Trips list.</p>
+    )
+  }
+</AdminLayout>

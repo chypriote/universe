@@ -5,14 +5,23 @@ import type {
   AdminCity,
   AdminPhoto,
   AdminProvince,
+  AdminDay,
   AdminTrip,
+  AdminTripDetail,
   CoverRef,
   DeletePhotosInput,
   DeletePhotosResult,
+  EditDayInput,
+  EditDayResult,
   EditPhotosInput,
   EditPhotosResult,
   Journal,
   KeptPhoto,
+  SetDayPhotosResult,
+  SetDayVisibleResult,
+  SetHighlightPhotosResult,
+  SetTripCoverResult,
+  SetTripVisibleResult,
   PhotoChoice,
   Orientation,
   UploadPhotoInput,
@@ -28,7 +37,21 @@ export type PhotoUrls = {
 
 type AdminMethods = Pick<
   Journal,
-  'listAdminTrips' | 'listAdminPhotos' | 'listCities' | 'listProvinces' | 'uploadPhoto' | 'editPhotos' | 'deletePhotos' | 'addCity'
+  | 'listAdminTrips'
+  | 'getAdminTrip'
+  | 'setTripVisible'
+  | 'setTripCover'
+  | 'setHighlightPhotos'
+  | 'setDayVisible'
+  | 'editDay'
+  | 'setDayPhotos'
+  | 'listAdminPhotos'
+  | 'listCities'
+  | 'listProvinces'
+  | 'uploadPhoto'
+  | 'editPhotos'
+  | 'deletePhotos'
+  | 'addCity'
 >;
 
 type PhotoRow = {
@@ -41,6 +64,7 @@ type PhotoRow = {
   date: string;
   title: string | null;
   version: number;
+  day_id: number | null;
   city_id: number | null;
   city: string | null;
   city_province: string | null;
@@ -87,16 +111,17 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
 
   /** The Photos of a Trip, with the number of the visible Day of each date. */
   async function loadPhotos(tripId: number, photoId?: number): Promise<AdminPhoto[]> {
-    const days = await all<{ date: string }>(
-      'SELECT date FROM days WHERE trip_id = ? AND visible = 1 ORDER BY position',
+    const days = await all<{ id: number }>(
+      'SELECT id FROM days WHERE trip_id = ? AND visible = 1 ORDER BY position',
       tripId,
     );
     const rows = await all<PhotoRow>(
       `SELECT photos.id, photos.name, trips.slug, photos.trip_id, photos.width, photos.height, photos.date,
-              photos.title, photos.version, cities.id AS city_id, cities.name AS city,
+              photos.title, photos.version, day_photos.day_id, cities.id AS city_id, cities.name AS city,
               city_provinces.name AS city_province, own_provinces.name AS on_the_way_province
        FROM photos
        JOIN trips ON trips.id = photos.trip_id
+       LEFT JOIN day_photos ON day_photos.photo_id = photos.id
        LEFT JOIN cities ON cities.id = photos.city_id
        LEFT JOIN provinces AS city_provinces ON city_provinces.id = cities.province_id
        LEFT JOIN provinces AS own_provinces ON own_provinces.id = photos.province_id
@@ -106,7 +131,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       ...(photoId === undefined ? [] : [photoId]),
     );
     return rows.map((row) => {
-      const day = days.findIndex((candidate) => candidate.date === row.date);
+      const day = days.findIndex((candidate) => candidate.id === row.day_id);
       return {
         id: row.id,
         name: row.name,
@@ -124,7 +149,164 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   }
 
   async function listAdminTrips(): Promise<AdminTrip[]> {
-    return all<AdminTrip>('SELECT slug, title FROM trips ORDER BY start_date IS NULL, start_date DESC, slug');
+    const rows = await all<{ slug: string; title: string; visible: number; days: number }>(
+      `SELECT slug, title, visible, (SELECT COUNT(*) FROM days WHERE days.trip_id = trips.id) AS days
+       FROM trips ORDER BY start_date IS NULL, start_date DESC, slug`,
+    );
+    return rows.map((row) => ({ slug: row.slug, title: row.title, visible: row.visible === 1, hasDays: row.days > 0 }));
+  }
+
+  async function tripBySlug(slug: string) {
+    return env.DB.prepare('SELECT id, slug, title, visible, cover_photo_id FROM trips WHERE slug = ?')
+      .bind(slug)
+      .first<{ id: number; slug: string; title: string; visible: number; cover_photo_id: number | null }>();
+  }
+
+  async function getAdminTrip(slug: string): Promise<AdminTripDetail | null> {
+    const trip = await tripBySlug(slug);
+    if (!trip) return null;
+    const rows = await all<{
+      id: number;
+      date: string;
+      visible: number;
+      title: string;
+      notes: string;
+      city_id: number;
+      city: string;
+      province: string;
+    }>(
+      `SELECT days.id, days.date, days.visible, days.title, days.notes, cities.id AS city_id, cities.name AS city,
+              provinces.name AS province
+       FROM days JOIN cities ON cities.id = days.city_id JOIN provinces ON provinces.id = cities.province_id
+       WHERE days.trip_id = ? ORDER BY days.position`,
+      trip.id,
+    );
+    const onDays = await all<{ day_id: number; photo_id: number }>(
+      `SELECT day_photos.day_id, day_photos.photo_id FROM day_photos JOIN days ON days.id = day_photos.day_id
+       WHERE days.trip_id = ? ORDER BY day_photos.day_id, day_photos.position`,
+      trip.id,
+    );
+    const highlights = await all<{ photo_id: number }>(
+      'SELECT photo_id FROM highlight_photos WHERE trip_id = ? ORDER BY position',
+      trip.id,
+    );
+    let number = 0;
+    const days: AdminDay[] = rows.map((row) => ({
+      id: row.id,
+      date: row.date,
+      number: row.visible === 1 ? ++number : null,
+      visible: row.visible === 1,
+      title: row.title,
+      notes: row.notes,
+      city: { id: row.city_id, name: row.city },
+      province: row.province,
+      photoIds: onDays.filter((entry) => entry.day_id === row.id).map((entry) => entry.photo_id),
+    }));
+    return {
+      slug: trip.slug,
+      title: trip.title,
+      visible: trip.visible === 1,
+      days,
+      photos: await loadPhotos(trip.id),
+      coverId: trip.cover_photo_id,
+      highlightIds: highlights.map((row) => row.photo_id),
+    };
+  }
+
+  async function setTripVisible(slug: string, visible: boolean): Promise<SetTripVisibleResult> {
+    const trip = await tripBySlug(slug);
+    if (!trip) return { ok: false, error: 'unknown-trip' };
+    await env.DB.prepare('UPDATE trips SET visible = ? WHERE id = ?').bind(visible ? 1 : 0, trip.id).run();
+    return { ok: true };
+  }
+
+  /** The Photos of a Trip among the given ids, with their size. */
+  async function photosOfTrip(tripId: number, ids: number[]) {
+    if (ids.length === 0) return [];
+    return all<{ id: number; width: number; height: number }>(
+      `SELECT id, width, height FROM photos WHERE trip_id = ? AND id IN (${ids.map(() => '?').join(',')})`,
+      tripId,
+      ...ids,
+    );
+  }
+
+  async function setTripCover(slug: string, photoId: number): Promise<SetTripCoverResult> {
+    const trip = await tripBySlug(slug);
+    if (!trip) return { ok: false, error: 'unknown-trip' };
+    const [photo] = await photosOfTrip(trip.id, [photoId]);
+    if (!photo) return { ok: false, error: 'unknown-photo' };
+    if (!fits('trip-cover', photo)) return { ok: false, error: 'not-landscape' };
+    await env.DB.prepare('UPDATE trips SET cover_photo_id = ? WHERE id = ?').bind(photoId, trip.id).run();
+    return { ok: true };
+  }
+
+  async function setHighlightPhotos(slug: string, photoIds: number[]): Promise<SetHighlightPhotosResult> {
+    const trip = await tripBySlug(slug);
+    if (!trip) return { ok: false, error: 'unknown-trip' };
+    if (photoIds.length !== 4) return { ok: false, error: 'wrong-count' };
+    if (new Set(photoIds).size !== photoIds.length) return { ok: false, error: 'duplicate-photo' };
+    const photos = await photosOfTrip(trip.id, photoIds);
+    if (photos.length !== photoIds.length) return { ok: false, error: 'unknown-photo' };
+    if (!photos.every((photo) => fits('highlight', photo))) return { ok: false, error: 'not-portrait' };
+    await env.DB.batch([
+      env.DB.prepare('DELETE FROM highlight_photos WHERE trip_id = ?').bind(trip.id),
+      ...photoIds.map((photoId, index) =>
+        env.DB.prepare('INSERT INTO highlight_photos (trip_id, position, photo_id) VALUES (?, ?, ?)').bind(trip.id, index + 1, photoId),
+      ),
+    ]);
+    return { ok: true };
+  }
+
+  async function setDayVisible(dayId: number, visible: boolean): Promise<SetDayVisibleResult> {
+    const day = await env.DB.prepare('SELECT id FROM days WHERE id = ?').bind(dayId).first();
+    if (!day) return { ok: false, error: 'unknown-day' };
+    await env.DB.prepare('UPDATE days SET visible = ? WHERE id = ?').bind(visible ? 1 : 0, dayId).run();
+    return { ok: true };
+  }
+
+  async function editDay(input: EditDayInput): Promise<EditDayResult> {
+    const day = await env.DB.prepare('SELECT id FROM days WHERE id = ?').bind(input.dayId).first();
+    if (!day) return { ok: false, error: 'unknown-day' };
+    const title = input.title?.trim();
+    if (title === '') return { ok: false, error: 'invalid-title' };
+    if (input.cityId !== undefined && !(await env.DB.prepare('SELECT id FROM cities WHERE id = ?').bind(input.cityId).first())) {
+      return { ok: false, error: 'unknown-city' };
+    }
+    const sets: string[] = [];
+    const params: (string | number)[] = [];
+    if (title !== undefined) {
+      sets.push('title = ?');
+      params.push(title);
+    }
+    if (input.notes !== undefined) {
+      sets.push('notes = ?');
+      params.push(input.notes);
+    }
+    if (input.cityId !== undefined) {
+      sets.push('city_id = ?');
+      params.push(input.cityId);
+    }
+    if (sets.length > 0) {
+      await env.DB.prepare(`UPDATE days SET ${sets.join(', ')} WHERE id = ?`).bind(...params, input.dayId).run();
+    }
+    return { ok: true };
+  }
+
+  async function setDayPhotos(dayId: number, photoIds: number[]): Promise<SetDayPhotosResult> {
+    const day = await env.DB.prepare('SELECT id, trip_id FROM days WHERE id = ?')
+      .bind(dayId)
+      .first<{ id: number; trip_id: number }>();
+    if (!day) return { ok: false, error: 'unknown-day' };
+    if (new Set(photoIds).size !== photoIds.length) return { ok: false, error: 'duplicate-photo' };
+    if ((await photosOfTrip(day.trip_id, photoIds)).length !== photoIds.length) return { ok: false, error: 'unknown-photo' };
+    await env.DB.batch([
+      env.DB.prepare('DELETE FROM day_photos WHERE day_id = ?').bind(dayId),
+      ...photoIds.map((photoId) => env.DB.prepare('DELETE FROM day_photos WHERE photo_id = ?').bind(photoId)),
+      ...photoIds.map((photoId, index) =>
+        env.DB.prepare('INSERT INTO day_photos (day_id, position, photo_id) VALUES (?, ?, ?)').bind(dayId, index + 1, photoId),
+      ),
+    ]);
+    return { ok: true };
   }
 
   async function listAdminPhotos(slug: string): Promise<AdminPhoto[] | null> {
@@ -202,6 +384,17 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     return covers;
   }
 
+  /** Puts a Photo at the end of the Day of a date; none when the Trip has no Day that date. */
+  function placeOnDayOfDate(photoId: number, tripId: number, date: string) {
+    return env.DB.prepare(
+      `INSERT INTO day_photos (day_id, position, photo_id)
+       SELECT days.id, COALESCE((SELECT MAX(position) FROM day_photos WHERE day_id = days.id), 0) + 1, ?
+       FROM days WHERE trip_id = ? AND date = ?`,
+    )
+      .bind(photoId, tripId, date)
+      .run();
+  }
+
   async function uploadPhoto(input: UploadPhotoInput): Promise<UploadPhotoResult> {
     const { name } = input;
     if (!name || name.includes('/')) return { ok: false, error: 'invalid-name' };
@@ -252,6 +445,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
         .bind(trip.id, name, file.width, file.height, date, input.title ?? null, input.cityId ?? null)
         .first<{ id: number }>();
       photoId = row!.id;
+      await placeOnDayOfDate(photoId, trip.id, date!);
     }
 
     const [photo] = await loadPhotos(trip.id, photoId);
@@ -289,6 +483,17 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     if (input.title !== undefined) {
       sets.push('title = ?');
       params.push(input.title.trim() || null);
+    }
+    if (input.date !== undefined) {
+      const moving = await all<{ id: number; trip_id: number }>(
+        `SELECT id, trip_id FROM photos WHERE date != ? AND id IN (${ids.map(() => '?').join(',')}) ORDER BY id`,
+        input.date,
+        ...ids,
+      );
+      for (const photo of moving) {
+        await env.DB.prepare('DELETE FROM day_photos WHERE photo_id = ?').bind(photo.id).run();
+        await placeOnDayOfDate(photo.id, photo.trip_id, input.date);
+      }
     }
     if (sets.length > 0) {
       await env.DB.prepare(`UPDATE photos SET ${sets.join(', ')} WHERE id IN (${ids.map(() => '?').join(',')})`)
@@ -380,6 +585,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
                   ).bind(id, cover.province),
           );
         });
+        statements.push(env.DB.prepare('DELETE FROM day_photos WHERE photo_id = ?').bind(photo.id));
         statements.push(env.DB.prepare('DELETE FROM photos WHERE id = ?').bind(photo.id));
         deleted.push(photo.id);
       } else {
@@ -423,5 +629,19 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     return { ok: true, city };
   }
 
-  return { addCity, editPhotos, deletePhotos, listAdminTrips, listAdminPhotos, listCities, listProvinces, uploadPhoto };
+  return {
+    addCity,
+    editPhotos,
+    deletePhotos,
+    editDay,
+    getAdminTrip,
+    setDayPhotos,
+    setDayVisible,
+    setHighlightPhotos,
+    setTripCover,
+    setTripVisible,
+    listAdminTrips, listAdminPhotos, listCities,
+    listProvinces,
+    uploadPhoto,
+  };
 }

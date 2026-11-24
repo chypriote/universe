@@ -32,7 +32,7 @@ Photos: `docs/photos.md`.
 
 ## Admin
 
-`/admin` is behind the Owner login (`/admin/login`, same cookie as the other apps through `packages/owner`). The Journal holds the login and token check; `src/middleware.ts` refuses every `/admin` page and `/api/admin` request without a valid token (pages redirect to the login, the API answers 401). Admin pages render on request and are `noIndex`; no public page links to them. `/admin/photos` uploads, edits and deletes Photos and adds Cities (`docs/photos.md`); Trips and Home are placeholders until the next parts of the admin.
+`/admin` is behind the Owner login (`/admin/login`, same cookie as the other apps through `packages/owner`). The Journal holds the login and token check; `src/middleware.ts` refuses every `/admin` page and `/api/admin` request without a valid token (pages redirect to the login, the API answers 401). Admin pages render on request and are `noIndex`; no public page links to them. `/admin/photos` uploads, edits and deletes Photos and adds Cities (`docs/photos.md`); `/admin/trips` lists every Trip with its on/off switch, and `/admin/trips/<slug>` edits a Trip with Days (Trip Cover, Highlight Photos, each Day's switch, title, notes, main City and Photos, placed by drag and drop with `@dnd-kit`); Home is a placeholder until the next part.
 
 ## Trips and Photos
 
