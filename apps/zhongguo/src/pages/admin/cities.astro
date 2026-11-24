@@ -1,0 +1,27 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { AdminCities } from '@/components/islands/AdminCities';
+import { journalFromEnv } from '@/lib/journal';
+
+export const prerender = false;
+
+const journal = journalFromEnv();
+const [cities, provinces] = await Promise.all([journal.listAdminCities(), journal.listProvinces()]);
+const requested = Number(Astro.url.searchParams.get('city'));
+const city = cities.find((candidate) => candidate.id === requested) ?? cities[0];
+const photos = city ? ((await journal.listCityPhotos(city.id)) ?? []) : [];
+---
+
+<AdminLayout title="Cities">
+  <p class="eyebrow">Admin</p>
+  <h1 class="mt-3 font-serif text-h1">Cities</h1>
+  {
+    city ? (
+      <div class="mt-10">
+        <AdminCities client:load cities={cities} cityId={city.id} photos={photos} provinces={provinces} />
+      </div>
+    ) : (
+      <p class="mt-6 text-muted-foreground">There is no City yet.</p>
+    )
+  }
+</AdminLayout>
