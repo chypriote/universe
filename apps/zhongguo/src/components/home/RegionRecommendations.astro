@@ -1,5 +1,6 @@
 ---
 import Container from '@/components/Container.astro';
+import SectionHeader from '@/components/home/SectionHeader.astro';
 import { ChinaMap, type ChinaMapRegion } from '@/components/islands/ChinaMap';
 import { getRegionZh } from '@/lib/china-map';
 import type { GalleryPhoto, TripArchiveEntry } from '@/lib/itineraries.server';
@@ -32,14 +33,7 @@ const regions = [...byRegion.values()];
 {regions.length > 0 && (
   <section id="region-recommendations" class="snap-section py-12 lg:py-10 bamboo-t">
     <Container>
-      <div class="flex items-start gap-6 lg:gap-8 max-w-3xl mb-6">
-        <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">山河</span>
-        <div>
-          <span class="eyebrow">By province</span>
-          <h2 class="mt-4 text-h2 font-serif font-light">Provinces</h2>
-          <p class="mt-4 text-muted-foreground text-lg">Every province from past journeys. Each links to a trip.</p>
-        </div>
-      </div>
+      <SectionHeader class="mb-6" zh="山河" eyebrow="Mountains and rivers" title="Provinces" lead="Every province I have visited, each linked to its trip." />
       <ChinaMap client:visible regions={regions} idleText="Hover a province" />
     </Container>
   </section>
