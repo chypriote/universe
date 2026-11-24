@@ -6,17 +6,12 @@ import Container from '@/components/Container.astro';
 
 export interface Props {
   title: string;
-  /** Shows the nav with Trips, Photos, Cities, Home and Log out. Off on the login page. */
+  /** Shows the sidebar with Trips, Photos, Cities and Home, and Log out. Off on the login page. */
   nav?: boolean;
 }
 
 const { title, nav = true } = Astro.props;
-const links = [
-  { href: '/admin/trips', label: 'Trips' },
-  { href: '/admin/photos', label: 'Photos' },
-  { href: '/admin/cities', label: 'Cities' },
-  { href: '/admin/home', label: 'Home' },
-];
+import { ADMIN_SECTIONS as links } from '@/lib/admin-sections';
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
@@ -35,26 +30,39 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
           <span class="font-serif text-xl tracking-tight">Admin</span>
         </a>
         {nav && (
-          <nav class="flex flex-wrap items-center gap-x-8 gap-y-2" aria-label="Admin">
-            {links.map((link) => (
-              <a
-                href={link.href}
-                aria-current={isCurrent(link.href) ? 'page' : undefined}
-                class="eyebrow text-foreground aria-[current=page]:text-gold-ink hover:text-primary no-underline"
-              >
-                {link.label}
-              </a>
-            ))}
-            <form method="post" action="/admin/logout">
-              <button type="submit" class="eyebrow text-muted-foreground hover:text-primary cursor-pointer">Log out</button>
-            </form>
-          </nav>
+          <form method="post" action="/admin/logout">
+            <button type="submit" class="eyebrow text-muted-foreground hover:text-primary cursor-pointer">Log out</button>
+          </form>
         )}
       </Container>
     </header>
     <main>
       <Container class="py-12 lg:py-16">
-        <slot />
+        {nav ? (
+          <div class="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
+            <nav aria-label="Admin" class="lg:sticky lg:top-8 lg:self-start">
+              <ul class="grid grid-cols-2 gap-px border border-border bg-border lg:grid-cols-1">
+                {links.map((link) => (
+                  <li class="bg-background">
+                    <a
+                      href={link.href}
+                      aria-current={isCurrent(link.href) ? 'page' : undefined}
+                      class="block h-full border-l-2 border-transparent p-4 no-underline text-foreground hover:text-primary aria-[current=page]:border-primary aria-[current=page]:bg-muted/40 lg:p-5"
+                    >
+                      <span class="font-serif text-xl">{link.label}</span>
+                      <span class="mt-1 hidden text-xs text-muted-foreground lg:block">{link.text}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <div class="mt-10 min-w-0 lg:mt-0">
+              <slot />
+            </div>
+          </div>
+        ) : (
+          <slot />
+        )}
       </Container>
     </main>
   </body>
