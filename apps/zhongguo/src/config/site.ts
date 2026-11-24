@@ -1,7 +1,7 @@
 export const SITE = {
   name: '中国',
   title: 'Nico to 中国',
-  description: 'Trip reports, trip plans, photography and flight prices from my travels in China.',
+  description: 'Trip journals, photographs and route plans from my travels across China.',
   lang: 'en',
   url:
     (typeof process !== 'undefined' && process.env.SITE_URL) ||
