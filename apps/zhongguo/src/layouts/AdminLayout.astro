@@ -6,7 +6,7 @@ import Container from '@/components/Container.astro';
 
 export interface Props {
   title: string;
-  /** Shows the nav with Trips, Photos, Home and Log out. Off on the login page. */
+  /** Shows the nav with Trips, Photos, Cities, Home and Log out. Off on the login page. */
   nav?: boolean;
 }
 
@@ -14,6 +14,7 @@ const { title, nav = true } = Astro.props;
 const links = [
   { href: '/admin/trips', label: 'Trips' },
   { href: '/admin/photos', label: 'Photos' },
+  { href: '/admin/cities', label: 'Cities' },
   { href: '/admin/home', label: 'Home' },
 ];
 const path = Astro.url.pathname;

@@ -210,6 +210,20 @@ export type AdminCity = { id: number; name: string; nameZh: string; province: st
 
 export type AdminProvince = { id: number; name: string };
 
+/** A City as the Cities admin edits it, with what uses it. */
+export type AdminCityDetail = AdminCity & {
+  provinceId: number;
+  lng: number;
+  lat: number;
+  photos: number;
+  days: number;
+  /** Hotels and restaurants. */
+  stays: number;
+};
+
+/** A Photo of a City, with its Trip. */
+export type CityPhoto = AdminPhoto & { trip: { slug: string; title: string } };
+
 /** What a Photo is a cover of: it cannot be deleted while it is one. */
 export type CoverRef = {
   /** Identifies the cover when a replacement is picked. */
@@ -293,6 +307,14 @@ export type AddCityResult =
   | { ok: true; city: AdminCity }
   | { ok: false; error: 'invalid-name' | 'name-taken' | 'unknown-province' | 'invalid-position' };
 
+export type EditCityInput = AddCityInput & { id: number };
+
+export type EditCityResult =
+  | { ok: true; city: AdminCityDetail; clearedCovers: string[] }
+  | { ok: false; error: 'unknown-city' | 'invalid-name' | 'name-taken' | 'unknown-province' | 'invalid-position' };
+
+export type DeleteCityResult = { ok: true } | { ok: false; error: 'unknown-city' | 'in-use' };
+
 export type SetTripVisibleResult = { ok: true } | { ok: false; error: 'unknown-trip' };
 
 export type SetTripCoverResult =
@@ -365,4 +387,12 @@ export type Journal = {
   /** Deletes the Photos that are not covers (or whose covers get a valid replacement). */
   deletePhotos(input: DeletePhotosInput): Promise<DeletePhotosResult>;
   addCity(input: AddCityInput): Promise<AddCityResult>;
+  /** Every City by name, with the number of Photos, Days, hotels and restaurants that use it. */
+  listAdminCities(): Promise<AdminCityDetail[]>;
+  /** The Photos of a City from every Trip, by date and name; null when the City does not exist. */
+  listCityPhotos(cityId: number): Promise<CityPhoto[] | null>;
+  /** A new Province clears the Province Cover of the old one when that cover is a Photo of the City: `clearedCovers` names those Provinces. */
+  editCity(input: EditCityInput): Promise<EditCityResult>;
+  /** Refused while a Photo, a Day, a hotel or a restaurant uses the City. */
+  deleteCity(cityId: number): Promise<DeleteCityResult>;
 };

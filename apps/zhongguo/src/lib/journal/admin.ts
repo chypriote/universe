@@ -3,14 +3,19 @@ import type {
   AddCityInput,
   AddCityResult,
   AdminCity,
+  AdminCityDetail,
   AdminPhoto,
   AdminProvince,
   AdminDay,
   AdminTrip,
   AdminTripDetail,
+  CityPhoto,
   CoverRef,
+  DeleteCityResult,
   DeletePhotosInput,
   DeletePhotosResult,
+  EditCityInput,
+  EditCityResult,
   EditDayInput,
   EditDayResult,
   EditPhotosInput,
@@ -52,6 +57,10 @@ type AdminMethods = Pick<
   | 'editPhotos'
   | 'deletePhotos'
   | 'addCity'
+  | 'listAdminCities'
+  | 'listCityPhotos'
+  | 'editCity'
+  | 'deleteCity'
 >;
 
 type PhotoRow = {
@@ -632,28 +641,142 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     return { deleted, kept };
   }
 
-  async function addCity(input: AddCityInput): Promise<AddCityResult> {
-    const name = input.name.trim();
-    const nameZh = input.nameZh.trim();
-    if (!name || !nameZh) return { ok: false, error: 'invalid-name' };
-    if (!(Math.abs(input.lng) <= 180) || !(Math.abs(input.lat) <= 90)) return { ok: false, error: 'invalid-position' };
+  type CityProblem = 'invalid-name' | 'name-taken' | 'unknown-province' | 'invalid-position';
+
+  /** What stops a City from being saved, with the name trimmed; `selfId` is the City being edited. */
+  async function cityProblem(input: AddCityInput, selfId = 0): Promise<CityProblem | null> {
+    if (!input.name.trim() || !input.nameZh.trim()) return 'invalid-name';
+    if (!(Math.abs(input.lng) <= 180) || !(Math.abs(input.lat) <= 90)) return 'invalid-position';
     if (!(await env.DB.prepare('SELECT id FROM provinces WHERE id = ?').bind(input.provinceId).first())) {
-      return { ok: false, error: 'unknown-province' };
+      return 'unknown-province';
     }
-    if (await env.DB.prepare('SELECT id FROM cities WHERE name = ?').bind(name).first()) {
-      return { ok: false, error: 'name-taken' };
+    if (await env.DB.prepare('SELECT id FROM cities WHERE name = ? AND id != ?').bind(input.name.trim(), selfId).first()) {
+      return 'name-taken';
     }
+    return null;
+  }
+
+  async function listAdminCities(): Promise<AdminCityDetail[]> {
+    const rows = await all<{
+      id: number;
+      name: string;
+      name_zh: string;
+      province_id: number;
+      province: string;
+      lng: number;
+      lat: number;
+      major: number;
+      photos: number;
+      days: number;
+      stays: number;
+    }>(
+      `SELECT cities.id, cities.name, cities.name_zh, cities.province_id, provinces.name AS province, cities.lng, cities.lat,
+              cities.major,
+              (SELECT COUNT(*) FROM photos WHERE photos.city_id = cities.id) AS photos,
+              (SELECT COUNT(*) FROM days WHERE days.city_id = cities.id) AS days,
+              (SELECT COUNT(*) FROM trip_hotels WHERE trip_hotels.city_id = cities.id)
+                + (SELECT COUNT(*) FROM trip_restaurants WHERE trip_restaurants.city_id = cities.id) AS stays
+       FROM cities JOIN provinces ON provinces.id = cities.province_id ORDER BY cities.name`,
+    );
+    return rows.map((row) => ({
+      id: row.id,
+      name: row.name,
+      nameZh: row.name_zh,
+      province: row.province,
+      major: row.major === 1,
+      provinceId: row.province_id,
+      lng: row.lng,
+      lat: row.lat,
+      photos: row.photos,
+      days: row.days,
+      stays: row.stays,
+    }));
+  }
+
+  async function listCityPhotos(cityId: number): Promise<CityPhoto[] | null> {
+    if (!(await env.DB.prepare('SELECT id FROM cities WHERE id = ?').bind(cityId).first())) return null;
+    const trips = await all<{ id: number; slug: string; title: string }>(
+      `SELECT DISTINCT trips.id, trips.slug, trips.title, trips.start_date FROM photos JOIN trips ON trips.id = photos.trip_id
+       WHERE photos.city_id = ? ORDER BY trips.start_date IS NULL, trips.start_date DESC, trips.slug`,
+      cityId,
+    );
+    const photos: CityPhoto[] = [];
+    for (const trip of trips) {
+      for (const photo of await loadPhotos(trip.id)) {
+        if (photo.city?.id === cityId) photos.push({ ...photo, trip: { slug: trip.slug, title: trip.title } });
+      }
+    }
+    return photos;
+  }
+
+  async function addCity(input: AddCityInput): Promise<AddCityResult> {
+    const problem = await cityProblem(input);
+    if (problem) return { ok: false, error: problem };
     const row = await env.DB.prepare(
       'INSERT INTO cities (name, name_zh, province_id, lng, lat, major) VALUES (?, ?, ?, ?, ?, ?) RETURNING id',
     )
-      .bind(name, nameZh, input.provinceId, input.lng, input.lat, input.major ? 1 : 0)
+      .bind(input.name.trim(), input.nameZh.trim(), input.provinceId, input.lng, input.lat, input.major ? 1 : 0)
       .first<{ id: number }>();
     const city = (await listCities()).find((candidate) => candidate.id === row!.id)!;
     return { ok: true, city };
   }
 
+  async function editCity(input: EditCityInput): Promise<EditCityResult> {
+    const current = await env.DB.prepare('SELECT province_id FROM cities WHERE id = ?')
+      .bind(input.id)
+      .first<{ province_id: number }>();
+    if (!current) return { ok: false, error: 'unknown-city' };
+    const problem = await cityProblem(input, input.id);
+    if (problem) return { ok: false, error: problem };
+
+    // A Province Cover must be a Photo of a City in its Province.
+    const covers =
+      current.province_id === input.provinceId
+        ? []
+        : await all<{ name: string }>(
+            `SELECT provinces.name FROM province_covers
+             JOIN photos ON photos.id = province_covers.photo_id
+             JOIN provinces ON provinces.id = province_covers.province_id
+             WHERE province_covers.province_id = ? AND photos.city_id = ?`,
+            current.province_id,
+            input.id,
+          );
+    await env.DB.batch([
+      env.DB.prepare('UPDATE cities SET name = ?, name_zh = ?, province_id = ?, lng = ?, lat = ?, major = ? WHERE id = ?').bind(
+        input.name.trim(),
+        input.nameZh.trim(),
+        input.provinceId,
+        input.lng,
+        input.lat,
+        input.major ? 1 : 0,
+        input.id,
+      ),
+      ...(covers.length === 0
+        ? []
+        : [
+            env.DB.prepare(
+              'DELETE FROM province_covers WHERE province_id = ? AND photo_id IN (SELECT id FROM photos WHERE city_id = ?)',
+            ).bind(current.province_id, input.id),
+          ]),
+    ]);
+    const city = (await listAdminCities()).find((candidate) => candidate.id === input.id)!;
+    return { ok: true, city, clearedCovers: covers.map((cover) => cover.name) };
+  }
+
+  async function deleteCity(cityId: number): Promise<DeleteCityResult> {
+    const city = (await listAdminCities()).find((candidate) => candidate.id === cityId);
+    if (!city) return { ok: false, error: 'unknown-city' };
+    if (city.photos + city.days + city.stays > 0) return { ok: false, error: 'in-use' };
+    await env.DB.prepare('DELETE FROM cities WHERE id = ?').bind(cityId).run();
+    return { ok: true };
+  }
+
   return {
     addCity,
+    deleteCity,
+    editCity,
+    listAdminCities,
+    listCityPhotos,
     editPhotos,
     deletePhotos,
     editDay,
