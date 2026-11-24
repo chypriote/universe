@@ -1,6 +1,8 @@
 ---
 import Koala from '@universe/universe/astro/Koala.astro';
 import Bamboo from '@/components/Bamboo.astro';
+import BambooGrove from '@/components/BambooGrove.astro';
+import Panda from '@/components/Panda.astro';
 import Container from '@/components/Container.astro';
 import { SITE } from '@/config/site';
 
@@ -14,8 +16,10 @@ const links = [
 
 <footer class="bamboo-t pt-20 pb-10 bg-dark-background text-dark-foreground">
   <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
-    <Bamboo class="absolute -right-12 -bottom-10 h-[130%] w-auto text-gold-ink hidden md:block" flip />
+    <Bamboo class="absolute -right-12 -bottom-10 h-[130%] w-auto text-gold-ink hidden md:max-[1399px]:block" flip />
+    <BambooGrove leavesOnly class="absolute right-0 top-0 h-full text-gold-ink hidden min-[1400px]:block" />
   </div>
+  <Panda dark class="absolute right-[26px] top-24 z-[1] w-20 hidden min-[1400px]:block" />
   <Container class="relative">
     <div class="flex flex-col md:flex-row md:items-center gap-12 pb-16 border-b border-dark-border">
       <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">一路平安</span>

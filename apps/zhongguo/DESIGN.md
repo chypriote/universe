@@ -12,7 +12,7 @@ Journal is the family for personal journal apps: Zhongguo today, maybe a food re
 
 **Art direction:**
 - Signature move: the square cinnabar seal (印章) with 中. It is the logo, the favicon and the main solid red block on a page.
-- Temple moves (2026-11-23): vertical brush calligraphy (`font-brush`) beside titles, ink bamboo, an ink-wash landscape (水墨: misty hills, plum branch, birds) with a paifang gate in the mist on the home hero and the index page headers. No red or dark bands: ink on paper. The footer is the one exception: it is inverted to ink.
+- Temple moves (2026-11-23): vertical brush calligraphy (`font-brush`) beside titles, ink bamboo, an ink-wash landscape (水墨: misty hills, plum branch, birds) with a paifang gate in the mist on the index page headers. No red or dark bands: ink on paper. The footer is the one exception: it is inverted to ink.
 - Second move: a sticky side panel (planner, day meta, guide navigation) that stays in view while the content scrolls.
 - Layout rhythm: wide white space, 12-column splits (7/5, 5/7), thin 1px rules between sections.
 - Imagery: own photographs from the trips (in R2, see `docs/photos.md`) and hand-drawn ink SVG (hills, bamboo, gate, plum). No stock or AI images.
@@ -101,13 +101,15 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Tabs | Primitive | Toggle Trip reports / Trip plans (`aria-pressed`) | Active = ink text + 2px gold underline |
 | Section header | Component | Vertical brush characters + eyebrow + `h2` + lead | Left aligned, centered |
 | Bamboo | Decoration | Bamboo stalks and leaf sprays (`Bamboo.astro`, currentColor) | `flip` |
+| Bamboo grove | Decoration | Four gold stalks with leaf sprays on the right edge, from the top of the page through the footer, which adds extra leaf sprays (`leavesOnly`) so it stays full (`BambooGrove.astro`, SVG patterns, in `BaseLayout.astro`). Below 1400px the footer shows its own clump (`Bamboo.astro`) instead. The tops are cut at a node; on the home page they sit in the hero, fading into mist. Only from 1400px, where it fits in the margin | — |
+| Panda | Decoration | Small round panda hugging a grove stalk (`Panda.astro`). Two only: "Next on the list" and the footer. From 1400px | `dark` |
 | Temple gate | Decoration | Ink-painted paifang, three bays and four columns, feet fading into mist, jade plaque (`TempleGate.astro`, currentColor) | — |
 | Ink wash | Decoration | Misty ink hills, plum branch with cinnabar blossoms, birds (`InkWash.astro`) | — |
 | Page header | Pattern | Ink wash + gate in the mist + vertical brush name, eyebrow, `h1`, lead (`TempleHeader.astro`). Index pages. | — |
 | Trip card | Component | Trip preview: photo, meta line, title, text, link | Portrait 3/4 (plans), wide 16/9 alternating split (reports) |
 | Navigation | Component | Sticky top bar: seal + name, 4 links with a gold underline on the current page, mobile menu | — |
 | Footer | Component | Inverted: `dark-background` with `dark-foreground` text, gold-ink bamboo, 一路平安 in vertical brush, seal + name + description, one link list, each over its Chinese title (游记, 指南, 机票, 影集) as a faint `gold` brush watermark; labels in tracked `font-serif` caps, gold on hover, the koala before the copyright line | — |
-| Hero | Pattern | Ink wash on paper (no plum, no birds) with the gate in the mist; centered: wide-tracked eyebrow, 中国游记 in ink brush with the 中 seal, English subtitle, ink button + outline button, a thin ink scroll line | — |
+| Hero | Pattern | Ink wash on paper (no plum, no birds), no gate; centered: wide-tracked eyebrow, 中国游记 in ink brush with the 中 seal, English subtitle, ink button + outline button, a thin ink scroll line | — |
 | China map | Pattern | Clickable SVG map of China (`ChinaMap.tsx`). Hover or focus shows the name in English and Chinese, a photo if there is one, and a detail line. Used on Photos (click filters photos, dots are cities) and on the home Regions section (click opens a trip). Shapes: Natural Earth, public domain, built by `scripts/build-china-map.mjs` into `src/data/china-map.json`. | Light, dark |
 | Trip day section | Pattern | Large cinnabar day number, title, sticky activities and food (Chinese + pinyin), text, photos | — |
 | Route map | Pattern | China map zoomed on the trip, with a line through the cities | — |

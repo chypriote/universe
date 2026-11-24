@@ -53,4 +53,9 @@ const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
   footer {
     scroll-snap-align: end;
   }
+  /* The bamboo tops end inside the hero, half in mist, so the page opens at the top of the grove. */
+  #bamboo-grove {
+    top: calc(var(--nav-height) + 12svh);
+    mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.3), black 360px);
+  }
 </style>
