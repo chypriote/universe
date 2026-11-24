@@ -121,6 +121,24 @@ export type HomeProvince = {
   href: string;
 };
 
+/** A Visited Province as the admin Home lists it. */
+export type VisitedProvince = {
+  name: string;
+  nameZh: string;
+  /** Thumbnail the home map shows: the Province Cover, else its first Photo; null without Photos. */
+  photo: string | null;
+  /** The picked Province Cover; null when the Province falls back to its first Photo. */
+  coverId: number | null;
+  fallback: boolean;
+};
+
+/** A Photo that can be the cover of a Province. */
+export type CoverCandidate = { id: number; name: string; thumb: string; tripTitle: string };
+
+export type SetProvinceCoverResult = { ok: true } | { ok: false; error: 'unknown-province' | 'unknown-photo' };
+
+export type ClearProvinceCoverResult = { ok: true } | { ok: false; error: 'unknown-province' };
+
 export type LoginResult = { ok: true; token: string } | { ok: false; error: 'wrong-password' };
 
 /** A Photo as the admin lists it. */
@@ -298,6 +316,14 @@ export type Journal = {
   getGallery(): Promise<Gallery>;
   /** The Visited Provinces of the home map. */
   getHomeMap(): Promise<HomeProvince[]>;
+  /** The Visited Provinces with their Province Cover, or the fallback when none is picked. */
+  listVisitedProvinces(): Promise<VisitedProvince[]>;
+  /** The Photos that can be the cover of a Visited Province; null when it is not one. */
+  listCoverCandidates(province: string): Promise<CoverCandidate[] | null>;
+  /** Only a candidate Photo can be picked. The row stays when the Province stops being visited. */
+  setProvinceCover(province: string, photoId: number): Promise<SetProvinceCoverResult>;
+  /** The Province falls back to its first Photo. */
+  clearProvinceCover(province: string): Promise<ClearProvinceCoverResult>;
   /** The Owner login: a signed token for the Owner password. */
   login(password: string): Promise<LoginResult>;
   /** Whether a token is signed by this app's secret and not expired. */

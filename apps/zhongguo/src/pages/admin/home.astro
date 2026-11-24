@@ -1,11 +1,20 @@
 ---
 import AdminLayout from '@/layouts/AdminLayout.astro';
+import { AdminHome } from '@/components/islands/AdminHome';
+import { journalFromEnv } from '@/lib/journal';
 
 export const prerender = false;
+
+const provinces = await journalFromEnv().listVisitedProvinces();
 ---
 
 <AdminLayout title="Home">
   <p class="eyebrow">Admin</p>
   <h1 class="mt-3 font-serif text-h1">Home</h1>
-  <p class="mt-6 text-muted-foreground">Coming soon.</p>
+  <p class="mt-4 max-w-2xl text-muted-foreground">
+    The photo of each Visited Province on the home map. Without a chosen cover, the Province shows its first Photo.
+  </p>
+  <div class="mt-10">
+    <AdminHome client:load provinces={provinces} />
+  </div>
 </AdminLayout>

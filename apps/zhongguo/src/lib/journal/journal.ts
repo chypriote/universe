@@ -4,6 +4,8 @@ import { formatDateRange } from '../plan-calendar';
 import { getPlaceName } from '../place-names';
 import type {
   Activity,
+  ClearProvinceCoverResult,
+  CoverCandidate,
   Gallery,
   GalleryCity,
   GalleryPhoto,
@@ -14,10 +16,12 @@ import type {
   Photo,
   Route,
   RouteStop,
+  SetProvinceCoverResult,
   TripCard,
   TripDay,
   TripPage,
   TripType,
+  VisitedProvince,
 } from './types';
 
 export type JournalEnv = {
@@ -444,22 +448,31 @@ export function buildJournal(env: JournalEnv): Journal {
     };
   }
 
-  async function getHomeMap(): Promise<HomeProvince[]> {
-    const trips = await loadTrips();
-    const covers = await all<{ province: string; photo_id: number }>(
+  type CoverItem = ReturnType<typeof galleryPhotos>[number];
+
+  async function provinceCoverIds(): Promise<Map<string, number>> {
+    const rows = await all<{ province: string; photo_id: number }>(
       `SELECT provinces.name AS province, province_covers.photo_id
        FROM province_covers JOIN provinces ON provinces.id = province_covers.province_id`,
     );
+    return new Map(rows.map((row) => [row.province, row.photo_id]));
+  }
+
+  /** The Photos that can cover a Province, in Gallery order: the first one is the fallback. */
+  const candidatesOf = (items: CoverItem[], province: string) =>
+    items.filter(({ photo }) => photo.city_province === province);
+
+  async function getHomeMap(): Promise<HomeProvince[]> {
+    const trips = await loadTrips();
+    const covers = await provinceCoverIds();
     const zh = await all<{ name: string; name_zh: string }>('SELECT name, name_zh FROM provinces');
     const items = galleryPhotos(trips);
     const reports = trips.filter((trip) => trip.type === 'report');
 
     return visitedProvinces(trips).map((name) => {
       const tripsThere = reports.filter((trip) => trip.days.some((day) => day.province === name));
-      const coverId = covers.find((cover) => cover.province === name)?.photo_id;
-      const shown =
-        items.find(({ photo }) => photo.id === coverId) ??
-        items.find(({ photo }) => photo.city_province === name);
+      const candidates = candidatesOf(items, name);
+      const shown = candidates.find(({ photo }) => photo.id === covers.get(name)) ?? candidates[0];
       return {
         name,
         nameZh: zh.find((province) => province.name === name)?.name_zh ?? '',
@@ -468,6 +481,59 @@ export function buildJournal(env: JournalEnv): Journal {
         href: `/trips/${tripsThere[0].slug}`,
       };
     });
+  }
+
+  async function listVisitedProvinces(): Promise<VisitedProvince[]> {
+    const trips = await loadTrips();
+    const covers = await provinceCoverIds();
+    const zh = await all<{ name: string; name_zh: string }>('SELECT name, name_zh FROM provinces');
+    const items = galleryPhotos(trips);
+
+    return visitedProvinces(trips).map((name) => {
+      const candidates = candidatesOf(items, name);
+      const picked = candidates.find(({ photo }) => photo.id === covers.get(name));
+      const shown = picked ?? candidates[0];
+      return {
+        name,
+        nameZh: zh.find((province) => province.name === name)?.name_zh ?? '',
+        photo: shown ? thumbUrl(shown.trip.slug, shown.photo.name, shown.photo.version) : null,
+        coverId: picked?.photo.id ?? null,
+        fallback: !picked,
+      };
+    });
+  }
+
+  async function listCoverCandidates(province: string): Promise<CoverCandidate[] | null> {
+    const trips = await loadTrips();
+    if (!visitedProvinces(trips).includes(province)) return null;
+    return candidatesOf(galleryPhotos(trips), province).map(({ trip, photo }) => ({
+      id: photo.id,
+      name: photo.name,
+      thumb: thumbUrl(trip.slug, photo.name, photo.version),
+      tripTitle: trip.title,
+    }));
+  }
+
+  async function setProvinceCover(province: string, photoId: number): Promise<SetProvinceCoverResult> {
+    const candidates = await listCoverCandidates(province);
+    if (!candidates) return { ok: false, error: 'unknown-province' };
+    if (!candidates.some((candidate) => candidate.id === photoId)) return { ok: false, error: 'unknown-photo' };
+    await env.DB.prepare(
+      `INSERT INTO province_covers (province_id, photo_id)
+       SELECT id, ? FROM provinces WHERE name = ?
+       ON CONFLICT (province_id) DO UPDATE SET photo_id = excluded.photo_id`,
+    )
+      .bind(photoId, province)
+      .run();
+    return { ok: true };
+  }
+
+  async function clearProvinceCover(province: string): Promise<ClearProvinceCoverResult> {
+    if (!visitedProvinces(await loadTrips()).includes(province)) return { ok: false, error: 'unknown-province' };
+    await env.DB.prepare('DELETE FROM province_covers WHERE province_id = (SELECT id FROM provinces WHERE name = ?)')
+      .bind(province)
+      .run();
+    return { ok: true };
   }
 
   async function login(password: string): Promise<LoginResult> {
@@ -484,5 +550,17 @@ export function buildJournal(env: JournalEnv): Journal {
 
   const verifyToken = async (token: string) => !!env.JWT_SECRET && (await tokenIsValid(token, env.JWT_SECRET));
 
-  return { listTripCards, getTrip, getGallery, getHomeMap, login, verifyToken, ...buildAdmin(env, { photoUrl, thumbUrl }) };
+  return {
+    listTripCards,
+    getTrip,
+    getGallery,
+    getHomeMap,
+    listVisitedProvinces,
+    listCoverCandidates,
+    setProvinceCover,
+    clearProvinceCover,
+    login,
+    verifyToken,
+    ...buildAdmin(env, { photoUrl, thumbUrl }),
+  };
 }
