@@ -17,6 +17,8 @@ export default defineConfig(async () => {
           bindings: {
             TEST_MIGRATIONS: migrations,
             PHOTOS_URL: 'https://photos.test',
+            OWNER_PASSWORD: 'test-password',
+            JWT_SECRET: 'test-jwt-secret',
           },
         },
       }),

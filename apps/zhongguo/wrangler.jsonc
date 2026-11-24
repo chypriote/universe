@@ -9,6 +9,8 @@
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
   },
+  // Parent domain shared by every Universe app: one Owner login for all of them. Empty: this app only.
+  "vars": { "OWNER_COOKIE_DOMAIN": "nicolastemeni.workers.dev" },
   // Trips, Days, Cities and Photos: the Journal reads them on each request (src/lib/journal).
   // Flight searches: the build reads them through the D1 REST API (scripts/d1.js).
   "d1_databases": [
@@ -26,8 +28,8 @@
       "bucket_name": "nico-zhongguo-photos"
     }
   ],
-  // Not in this file: set it with `wrangler secret put PHOTOS_URL` (public base URL of the photo bucket, no trailing slash).
+  // Not in this file: set them with `wrangler secret put` (see README). PHOTOS_URL is the public base URL of the photo bucket, no trailing slash.
   "secrets": {
-    "required": ["PHOTOS_URL"]
+    "required": ["PHOTOS_URL", "OWNER_PASSWORD", "JWT_SECRET"]
   }
 }
