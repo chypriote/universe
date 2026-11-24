@@ -24,10 +24,10 @@ _Avoid_: Region
 A Province where a visible Day of a visible Trip has its main City. Only Visited Provinces are coloured on the home map and filter the Gallery.
 
 **Photo**:
-A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip, and its date places it on a Day. Its date can be edited. Pictures that belong to no Trip are site images kept in the repo, not Photos.
+A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip, and its date places it on a Day. Its date can be edited. It can have a title typed by hand, which replaces its place in captions. Pictures that belong to no Trip are site images kept in the repo, not Photos.
 
 **On the way photo**:
-A Photo taken between two Cities, for example from a train. It has no City. It can name a Province and a place label typed by hand, which only its caption shows. It never makes a Province visited.
+A Photo taken between two Cities, for example from a train. It has no City. It can name a Province, which only its caption shows. It never makes a Province visited.
 
 **Hidden Trip**:
 A Trip switched off. It leaves every public page and counts for nothing, but stays editable in the admin.
@@ -36,7 +36,10 @@ A Trip switched off. It leaves every public page and counts for nothing, but sta
 A Day switched off. It leaves the Trip page and its Photos leave the Gallery. The visible Days are numbered again without it, and a City only it uses is no longer listed.
 
 **Trip Cover**:
-The one Photo of a Trip, picked from that Trip's Photos, that stands for the Trip on cards and lists.
+The one landscape Photo of a Trip, picked from that Trip's Photos, that stands for the Trip on cards and lists. It is the first Highlight Photo.
+
+**Highlight Photos**:
+The five Photos that show a Trip in the `/trips` list: the Trip Cover, then four portrait Photos, picked and ordered by hand.
 
 **Province Cover**:
 The one Photo the home map shows for a Province. It can come from any Trip, as long as its City is in that Province. Without one, the Province's first Photo is shown.
