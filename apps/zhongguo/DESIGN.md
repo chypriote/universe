@@ -102,7 +102,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Section header | Component | Vertical brush characters + eyebrow + `h2` + lead | Left aligned, centered |
 | Bamboo | Decoration | Bamboo stalks and leaf sprays (`Bamboo.astro`, currentColor) | `flip` |
 | Bamboo grove | Decoration | Four gold stalks with leaf sprays on the right edge, from the top of the page through the footer, which adds extra leaf sprays (`leavesOnly`) so it stays full (`BambooGrove.astro`, SVG patterns, in `BaseLayout.astro`). Below 1400px the footer shows its own clump (`Bamboo.astro`) instead. The tops are cut at a node; on the home page they sit in the hero, fading into mist. Only from 1400px, where it fits in the margin | — |
-| Panda | Decoration | Small round panda hugging a grove stalk (`Panda.astro`). Two only: "Next on the list" and the footer. From 1400px | `dark` |
+| Panda | Decoration | Waving panda holding a grove stalk with its raised paw (`Panda.astro`, see "Panda drawing"). Two only: "Next on the list" (paw on the left, middle of the section) and the footer (mirrored). From 1400px | `dark`, `mirror` |
 | Temple gate | Decoration | Ink-painted paifang, three bays and four columns, feet fading into mist, jade plaque (`TempleGate.astro`, currentColor) | — |
 | Ink wash | Decoration | Misty ink hills, plum branch with cinnabar blossoms, birds (`InkWash.astro`) | — |
 | Page header | Pattern | Ink wash + gate in the mist + vertical brush name, eyebrow, `h1`, lead (`TempleHeader.astro`). Index pages. | — |
@@ -116,6 +116,16 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Flight planner | Pattern | Flight table (1/3) + price calendar (2/3) | — |
 | Gallery | Pattern | Photo grid grouped by trip, lightbox | — |
 | Guide page | Template | Long text with sticky side navigation | — |
+
+### Panda drawing
+
+Reuse these rules for any new panda, in any pose:
+- Outline style: flat ink fills, paper whites, one thick ink outline. No gradients, no colors.
+- Head: one big paper oval with an ink outline, slightly tilted. Round ink ears. Ink eye patches, tilted, with a small paper highlight; small ink nose and a "w" mouth.
+- Arms, body and legs are separate shapes. Arms and legs are solid ink. Both arms have the same thickness.
+- Body: ink on top, a paper belly on the bottom half, with the ink outline around the body.
+- The head is about as wide as the body; not a chibi head.
+- On a dark ground the fur is a little darker than the ground and has no edge; only the paper head and belly keep the outline.
 
 ## 5. Layout
 

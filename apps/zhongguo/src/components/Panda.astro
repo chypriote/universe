@@ -1,42 +1,50 @@
 ---
-// A small round panda hugging a bamboo stalk. The stalk is not drawn:
-// place the panda so its paws (x = 62 in the viewBox) sit on a stalk.
+// A waving panda, drawn in black-and-white outline style. Keep to the shape
+// rules in DESIGN.md ("Panda drawing") when changing it.
+// The raised paw (x ≈ 10 of 80 when w-20, or 70 with `mirror`) holds a grove stalk.
 interface Props {
   class?: string;
   dark?: boolean;
+  mirror?: boolean;
 }
-const { class: className, dark } = Astro.props;
-// On a dark ground the black fur gets a thin paper edge so it stays visible.
-const fur = dark ? 'stroke:var(--color-background);stroke-width:1' : '';
+const { class: className, dark, mirror } = Astro.props;
+const body = 'M66,205 C52,250 58,322 112,331 C162,339 208,318 212,268 C215,228 200,196 176,188 C140,178 88,184 66,205Z';
+const clipId = dark ? 'panda-body-dark' : 'panda-body';
+const white = 'fill:var(--color-background)';
+const line = 'stroke:var(--color-foreground)';
 ---
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 100" aria-hidden="true" class:list={['text-foreground', className]}>
-  <g fill="currentColor" style={fur}>
-    <circle cx="14" cy="13" r="7.5" />
-    <circle cx="54" cy="12" r="7.5" />
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 318 360"
+  aria-hidden="true"
+  class:list={[dark ? 'text-[hsl(45_10%_3%)]' : 'text-foreground', className]}
+>
+  <defs><clipPath id={clipId}><path d={body} /></clipPath></defs>
+  <g transform={mirror ? 'translate(318 0) scale(-1 1)' : undefined}>
+    <g fill="currentColor">
+      <path d="M80,280 C72,320 76,352 102,354 C126,356 131,330 127,292Z" />
+      <path d="M156,292 C152,330 156,354 180,354 C204,354 206,326 200,284Z" />
+      <path d={body} />
+    </g>
+    <path d="M56,236 C96,206 170,226 214,300 L214,345 L50,345Z" style={white} clip-path={`url(#${clipId})`} />
+    <path d={body} fill="none" style={line} stroke-width="6" />
+    <g fill="currentColor">
+      <path d="M166,190 C210,196 248,230 260,274 C268,306 238,318 222,298 C208,278 194,260 170,246Z" />
+      <path d="M28,122 C18,102 36,86 54,96 C82,112 112,150 128,192 C118,222 84,224 66,206 C50,184 38,152 28,122Z" />
+      <circle cx="122" cy="44" r="30" />
+      <circle cx="262" cy="98" r="26" />
+    </g>
+    <ellipse cx="172" cy="122" rx="92" ry="78" transform="rotate(14 172 122)" style={`${white};${line}`} stroke-width="6" />
+    <g style="fill:var(--color-foreground)">
+      <ellipse cx="124" cy="110" rx="27" ry="18" transform="rotate(-22 124 110)" />
+      <ellipse cx="212" cy="142" rx="19" ry="27" transform="rotate(-28 212 142)" />
+      <path d="M150,130 Q160,124 170,130 Q168,140 160,141 Q152,140 150,130Z" />
+    </g>
+    <g style={white}>
+      <ellipse cx="128" cy="103" rx="7" ry="5" transform="rotate(-20 128 103)" />
+      <ellipse cx="215" cy="133" rx="5" ry="7" transform="rotate(-20 215 133)" />
+    </g>
+    <path d="M160,141 V148 M143,148 Q151,159 160,148 Q169,159 178,148" fill="none" style={line} stroke-width="4" stroke-linecap="round" />
   </g>
-  <ellipse cx="34" cy="70" rx="23" ry="22" fill="var(--color-background)" stroke="currentColor" stroke-width="2" />
-  <g fill="currentColor" style={fur}>
-    <ellipse cx="19" cy="88" rx="11" ry="8" transform="rotate(-10 19 88)" />
-    <ellipse cx="52" cy="86" rx="11" ry="7" transform="rotate(-25 52 86)" />
-  </g>
-  <g stroke="currentColor" stroke-linecap="round" fill="none">
-    <path d="M47 54 Q56 54 62 60" stroke-width="12" />
-    <path d="M20 58 Q36 72 62 70" stroke-width="11" />
-  </g>
-  <ellipse cx="34" cy="31" rx="24" ry="21" fill="var(--color-background)" stroke="currentColor" stroke-width="2" />
-  <g fill="currentColor">
-    <ellipse cx="24.5" cy="32" rx="5.6" ry="7.2" transform="rotate(30 24.5 32)" />
-    <ellipse cx="43.5" cy="32" rx="5.6" ry="7.2" transform="rotate(-30 43.5 32)" />
-    <ellipse cx="34" cy="39" rx="2.8" ry="2" />
-  </g>
-  <g fill="var(--color-background)">
-    <circle cx="25.5" cy="30.5" r="2.2" />
-    <circle cx="42.5" cy="30.5" r="2.2" />
-  </g>
-  <g fill="currentColor">
-    <circle cx="25.8" cy="30.8" r="1.1" />
-    <circle cx="42.2" cy="30.8" r="1.1" />
-  </g>
-  <path d="M30.5 42.5 Q34 46 37.5 42.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
 </svg>
