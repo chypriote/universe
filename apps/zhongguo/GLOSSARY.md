@@ -8,7 +8,7 @@ The summary of a Trip on the home page and `/trips`. It names only the Trip's Ma
 _Avoid_: Trip overview
 
 **Day**:
-One day of a Trip: its number, main City, title, notes, photos and train rides.
+One day of a Trip: its date, main City, title, notes, photos and train rides. Its number is its position among the visible Days, so it can change; its date does not.
 
 **City**:
 A place a Trip stays in or passes through, in one Province. Shown in English and Chinese. One City is shared by every Trip that visits it.
