@@ -119,13 +119,34 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 
 ### Panda drawing
 
-Reuse these rules for any new panda, in any pose:
-- Outline style: flat ink fills, paper whites, one thick ink outline. No gradients, no colors.
-- Head: one big paper oval with an ink outline, slightly tilted. Round ink ears. Ink eye patches, tilted, with a small paper highlight; small ink nose and a "w" mouth.
-- Arms, body and legs are separate shapes. Arms and legs are solid ink. Both arms have the same thickness.
-- Body: ink on top, a paper belly on the bottom half, with the ink outline around the body.
-- The head is about as wide as the body; not a chibi head.
-- On a dark ground the fur is a little darker than the ground and has no edge; only the paper head and belly keep the outline.
+The rules for every panda pose. They come from Nico's enamel keychains, redrawn in ink and paper. The waving `Panda.astro` is older and does not follow all of them yet. Measures are in a 200 × 228 box, sitting pose.
+
+Colors
+- Panda: ink (`foreground`) and paper (`background`) only. No red, no blush, no gradients.
+- Props (bamboo, shoot, hat, cup): `gold-ink` outline with a lighter fill (60% `gold-ink`, 40% `gold`), split into cells by thin paper lines, like enamel. No green.
+
+Head
+- A chubby bun, not a circle: wider than tall (≈ 136 × 104), soft top, full cheeks low and wide, flat bottom. Paper with a 4px ink outline.
+- About half the height of the figure. It sits right on the body: no neck.
+- Ears: two round ink circles (r ≈ 17) behind the top corners.
+
+Face
+- The mood is in the shape of the black eye patch: calm = wide, drooping at the outer end; curious = almost round; looking up = tall oval; happy = wide and flat; shy = drooping more.
+- Open eyes have one small paper highlight in the patch. Happy eyes have a paper arc (^). Shy or sleepy eyes have a paper lid curve.
+- Muzzle, always: a small rounded ink nose, a short stem, and a "w" mouth.
+
+Body
+- Chubby, wide sitting body with a 4px ink outline: ink chest on top, paper belly below. The belly edge is a rounded dome, never straight.
+- Legs: two ink ovals (≈ 60 × 36) at the bottom, feet forward.
+- Arms: one chubby ink stroke each (≈ 25 wide, round ends), both the same thickness. They start at the shoulders below the head and never cover it.
+- Arms and legs have a thin paper edge (≈ 2.5) so each one reads as its own shape.
+
+Drawing order
+- Body, legs, head, props, arms. Arms go over props so the paws hold them. A raised arm goes behind the head.
+
+New poses
+- Keep the head, body and legs. Change only the arms, the head turn or tilt, the eye mood and the prop.
+- Existing poses: `src/assets/pandas/` (sitting, hugging bamboo, drinking tea, holding a bamboo shoot, bamboo hat). Colors are token variables with fallbacks; inline the SVG so the theme applies.
 
 ## 5. Layout
 
