@@ -31,6 +31,8 @@ interface ChinaMapProps {
   onSelectCity?: (key: string) => void;
   tone?: 'light' | 'dark';
   idleText?: string;
+  /** The photo and name beside the map; off, the map takes the full width. */
+  preview?: boolean;
 }
 
 /** Label font size in map units; keep in step with the text-[…px] class on the label. */
@@ -75,6 +77,7 @@ export function ChinaMap({
   onSelectCity,
   tone = 'light',
   idleText = 'Hover a region',
+  preview = true,
 }: ChinaMapProps) {
   const [hoverRegion, setHoverRegion] = useState<string | null>(null);
   const [hoverCity, setHoverCity] = useState<string | null>(null);
@@ -164,7 +167,7 @@ export function ChinaMap({
       <svg
         viewBox={`0 0 ${CHINA_MAP.width} ${CHINA_MAP.height}`}
         ref={svgRef}
-        className="w-full h-auto lg:col-span-6"
+        className={`w-full h-auto ${preview ? 'lg:col-span-6' : 'lg:col-span-12'}`}
         role="group"
         aria-label="Map of China"
       >
@@ -261,6 +264,7 @@ export function ChinaMap({
                 }
               }}
             >
+              <title>{`${city.name} ${city.zh}`}</title>
               <circle cx={city.x} cy={city.y} r={16} className="fill-transparent" />
               <circle
                 cx={city.x}
@@ -273,6 +277,7 @@ export function ChinaMap({
         })}
       </svg>
 
+      {preview && (
       <div className="lg:col-span-6" aria-live="polite">
         {/* The frame and text block keep a fixed size, so changing the preview never moves the map or the page. */}
         <div className={`w-full aspect-[4/3] border ${t.border}`}>
@@ -310,6 +315,7 @@ export function ChinaMap({
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
