@@ -18,7 +18,7 @@ const { zh, eyebrow, title } = Astro.props;
   <div class="absolute inset-0 overflow-hidden">
     <InkWash class="absolute inset-0 w-full h-full text-foreground opacity-50 md:opacity-100" />
   </div>
-  <div class="absolute right-[10%] bottom-[20%] w-48 lg:w-64 text-foreground/70 hidden md:block">
+  <div class="absolute right-[10%] bottom-[20%] w-48 lg:w-64 text-foreground/70 hidden md:block" aria-hidden="true">
     <TempleGate>
       <span slot="plaque" lang="zh" class="font-brush text-gold text-[0.6rem] lg:text-xs leading-none whitespace-nowrap">{zh}</span>
     </TempleGate>
