@@ -86,7 +86,7 @@ const jsonLd = {
                     <span class="font-serif text-5xl text-gold-ink">{String(day.number).padStart(2, '0')}</span>
                     <h2 class="text-h3 font-serif">{day.title}</h2>
                   </div>
-                  <p class="max-w-2xl text-lg leading-relaxed text-foreground/85">{day.description}</p>
+                  <p class="max-w-2xl text-lg leading-relaxed text-foreground/85">{day.notes}</p>
 
                   {(day.activities.length > 0 || day.food.length > 0) && (
                     <div class="grid gap-8 border-t border-border pt-5 sm:grid-cols-2">
@@ -122,8 +122,8 @@ const jsonLd = {
                     </div>
                   )}
 
-                  {day.gallery.length > 0 && (
-                    <TripDayGallery client:visible photos={day.gallery} day={day.number} tripTitle={trip.title} />
+                  {day.photos.length > 0 && (
+                    <TripDayGallery client:visible photos={day.photos} day={day.number} tripTitle={trip.title} />
                   )}
                 </div>
               </section>
@@ -154,10 +154,10 @@ const jsonLd = {
             <div class={`grid gap-10 lg:gap-16 ${otherTrips.length === 1 ? 'max-w-xl mx-auto' : otherTrips.length === 2 ? 'md:grid-cols-2 max-w-4xl mx-auto' : 'md:grid-cols-3'}`}>
               {otherTrips.map((other) => (
                 <a href={other.link} class="group block space-y-4">
-                  {other.photos[0] && (
+                  {other.cover && (
                     <div class="relative overflow-hidden aspect-[4/3] bg-background">
                       <img
-                        src={other.photos[0]}
+                        src={other.cover}
                         alt={other.title}
                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                         loading="lazy"
