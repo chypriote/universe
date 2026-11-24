@@ -5,6 +5,7 @@ import Footer from '@/components/Footer.astro';
 import BackToTop from '@/components/BackToTop.astro';
 import SEOHead from '@/components/SEOHead.astro';
 import InkWash from '@/components/InkWash.astro';
+import BambooGrove from '@/components/BambooGrove.astro';
 import { SITE } from '@/config/site';
 import { Font } from "astro:assets";
 
@@ -41,7 +42,7 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
     <!-- Mark JS as enabled immediately -->
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
-    <body data-ps="src/layouts/BaseLayout.astro:4vj8al">
+    <body class="relative" data-ps="src/layouts/BaseLayout.astro:4vj8al">
       <!-- Distant ink mountains behind every page. -->
       <div class="pointer-events-none fixed inset-x-0 bottom-0 h-[65vh] -z-10 text-foreground opacity-20" aria-hidden="true">
         <InkWash plum={false} birds={false} class="w-full h-full" />
@@ -51,6 +52,9 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
         <slot />
       </main>
       <Footer />
+      <div class="pointer-events-none absolute inset-y-0 right-0 hidden min-[1400px]:block text-gold-ink" aria-hidden="true">
+        <BambooGrove class="h-full" />
+      </div>
       <BackToTop />
 
       <!-- Animation Styles -->
