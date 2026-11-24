@@ -222,7 +222,7 @@ export function AdminCities(props: Props) {
           {photos.map((photo) => (
             <li key={photo.id} className={`border p-2 ${selected.has(photo.id) ? 'border-primary' : 'border-border'}`}>
               <label className="flex cursor-pointer flex-col gap-2">
-                <img src={photo.thumb} alt="" loading="lazy" className="aspect-[4/3] w-full bg-surface object-cover" />
+                <img src={photo.thumb} alt="" loading="lazy" className={`aspect-[4/3] w-full bg-surface object-center ${photo.orientation === 'portrait' ? 'object-contain' : 'object-cover'}`} />
                 <span className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
