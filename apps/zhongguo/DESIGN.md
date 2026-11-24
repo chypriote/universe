@@ -113,8 +113,9 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Footer | Component | Inverted: `dark-background` with `dark-foreground` text, gold-ink bamboo, 中国游记 in vertical brush, seal + name + description, one link list, each over its Chinese title (游记, 指南, 机票, 影集) as a faint `gold` brush watermark; labels in tracked `font-serif` caps, gold on hover, the koala before the copyright line | — |
 | Hero | Pattern | Ink wash on paper (no plum, no birds), no gate; centered: wide-tracked eyebrow, 中国游记 in ink brush with the 中 seal, English subtitle, ink button + outline button, a thin ink scroll line | — |
 | China map | Pattern | Clickable SVG map of China (`ChinaMap.tsx`). Hover or focus shows the name in English and Chinese, a photo if there is one, and a detail line. Labels are hover and click targets too; Hong Kong and Macao labels sit offshore on a leader line. Used on Photos (click filters photos, dots are cities) and on the home Regions section (visited provinces only; click opens a trip). Shapes: Natural Earth, public domain, built by `scripts/build-china-map.mjs` into `src/data/china-map.json`. | Light, dark |
-| Trip day section | Pattern | Large cinnabar day number, title, sticky activities and food (Chinese + pinyin), text, photos | — |
-| Route map | Pattern | China map zoomed on the trip, with a line through the cities | — |
+| Trip header | Pattern | Cover photo fading into the paper, centred `font-script` title, description, dates and day count (`trips/[slug].astro`) | — |
+| Trip route | Pattern | Trip regions map beside the city list with its day labels, each a link to its day (`TripRouteSection.astro`) | — |
+| Trip day | Pattern | A timeline: the city in faint gold hanzi and caps on the left (shown when the city changes), a gold-ink line with a cinnabar dot, then gold day number, title, text, Activities (name, hanzi, pinyin), Food and the photo grid. On mobile the city is a line above the title | — |
 | Flight planner | Pattern | Flight table (1/3) + price calendar (2/3) | — |
 | Gallery | Pattern | Photo grid grouped by trip, lightbox | — |
 | Guide page | Template | Long text with sticky side navigation | — |
