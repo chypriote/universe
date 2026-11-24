@@ -36,8 +36,8 @@ const LABEL_SIZE = 22;
 
 const TONES = {
   light: {
-    land: 'fill-surface stroke-background',
-    visited: 'fill-foreground/25 stroke-background',
+    land: 'fill-foreground/10 stroke-background',
+    visited: 'fill-foreground/45 stroke-background',
     selected: 'fill-foreground stroke-background',
     dot: 'fill-foreground stroke-background',
     label: 'fill-foreground stroke-background stroke-[4]',
@@ -237,7 +237,17 @@ export function ChinaMap({
       <div className="lg:col-span-6" aria-live="polite">
         {/* The frame and text block keep a fixed size, so changing the preview never moves the map or the page. */}
         <div className={`w-full aspect-[4/3] border ${t.border}`}>
-          {shown?.photo && <img src={shown.photo} alt="" className="size-full object-cover" loading="lazy" />}
+          {shown?.photo ? (
+            <img src={shown.photo} alt="" className="size-full object-cover" loading="lazy" />
+          ) : (
+            <span
+              lang="zh"
+              aria-hidden="true"
+              className={`grid size-full place-items-center font-brush text-8xl opacity-40 ${t.muted}`}
+            >
+              中国
+            </span>
+          )}
         </div>
         <div className="mt-4 min-h-32">
           {shown ? (
