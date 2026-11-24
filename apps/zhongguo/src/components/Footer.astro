@@ -17,8 +17,7 @@ const links = [
     <Bamboo class="absolute -right-12 -bottom-10 h-[130%] w-auto text-gold-ink hidden md:block" flip />
   </div>
   <Container class="relative">
-    <div class="flex flex-col md:flex-row md:items-end gap-12 pb-16 border-b border-border">
-      <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">一路平安</span>
+    <div class="flex flex-col md:flex-row md:items-center gap-12 pb-16 border-b border-border">
       <div class="max-w-md">
         <p class="font-serif text-3xl md:text-4xl font-light leading-tight">
           Nico to <span lang="zh">中国</span>
@@ -26,15 +25,18 @@ const links = [
         <p class="mt-4 text-sm text-muted-foreground leading-relaxed">{SITE.description}</p>
       </div>
 
-      <ul class="md:ml-auto md:mr-40 list-none p-0 m-0 grid grid-cols-2 gap-x-12 gap-y-3">
-        {links.map((link) => (
-          <li>
-            <a href={link.href} class="text-sm text-foreground no-underline hover:text-primary transition-colors">
-              {link.label}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div class="md:ml-auto md:mr-40 flex items-center gap-12">
+        <ul class="list-none p-0 m-0 flex flex-col gap-3">
+          {links.map((link) => (
+            <li>
+              <a href={link.href} class="text-sm text-foreground no-underline hover:text-primary transition-colors">
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">一路平安</span>
+      </div>
     </div>
 
     <p class="pt-8 flex items-center gap-2 text-xs text-muted-foreground">
