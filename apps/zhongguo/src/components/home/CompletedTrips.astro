@@ -30,19 +30,16 @@ const { trips } = Astro.props;
         return (
           <article class="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
             {cover && (
-              <a
-                href={trip.link}
-                class:list={['lg:col-span-7 block overflow-hidden', imageLeft ? 'reveal-left' : 'lg:order-2 reveal-right']}
-                tabindex="-1"
-                aria-hidden="true"
-              >
-                <img
-                  src={cover}
-                  alt=""
-                  class="w-full aspect-[3/2] object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                  loading="lazy"
-                />
-              </a>
+              <div class:list={['lg:col-span-7 bamboo-frame', imageLeft ? 'reveal-left' : 'lg:order-2 reveal-right']}>
+                <a href={trip.link} class="block overflow-hidden" tabindex="-1" aria-hidden="true">
+                  <img
+                    src={cover}
+                    alt=""
+                    class="w-full aspect-[3/2] object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
+                </a>
+              </div>
             )}
             <div class:list={['lg:col-span-5 flex flex-col gap-5 reveal reveal-delay-1', !imageLeft && 'lg:order-1']}>
               <div class="flex items-baseline gap-4">

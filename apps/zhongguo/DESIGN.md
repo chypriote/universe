@@ -129,7 +129,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Inside a card | `gap-3` to `gap-6` |
 | Between list items | `gap-12 lg:gap-24` |
 
-**Section separation:** a bamboo divider (`bamboo-t` / `bamboo-b` utilities: an ink stalk with nodes and a leaf spray at the right end) between sections and under page headers. Thin 1px rules only inside lists and tab bars. No gradients except the ink-wash mist.
+**Section separation:** a bamboo divider (`bamboo-t` / `bamboo-b` utilities: an ink stalk with nodes and a leaf spray at the right end) between sections and under page headers. Journey photos on the home page sit in a `bamboo-frame` (the same ink stalks on four sides, the leaf spray on the top edge). Thin 1px rules only inside lists and tab bars. No gradients except the ink-wash mist.
 
 **Breakpoints:** Tailwind defaults. `md` (768px) and `lg` (1024px) are the ones in use.
 

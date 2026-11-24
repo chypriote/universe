@@ -21,6 +21,7 @@
   /* Rice-paper fibres: a faint noise on every paper surface. */
   --bamboo-stalk: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='12'%3E%3Cpath d='M1 2.6Q90 4.4 172 2.6V9.4Q90 7.6 1 9.4z'/%3E%3Cpath d='M174 1.2h3.2v9.6H174z'/%3E%3C/svg%3E");
   --bamboo-leaves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cpath d='M6 8Q20 4 34 8' stroke='black' stroke-width='2' fill='none'/%3E%3Cpath d='M30 8Q58 0 104 10Q62 14 30 8z'/%3E%3Cpath d='M30 8Q62 16 84 46Q52 28 30 8z'/%3E%3Cpath d='M30 8Q48 26 50 58Q34 34 30 8z'/%3E%3Cpath d='M30 8Q70 6 118 30Q66 20 30 8z'/%3E%3C/svg%3E");
+  --bamboo-stalk-v: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='180'%3E%3Cpath d='M2.6 1Q4.4 90 2.6 172H9.4Q7.6 90 9.4 1z'/%3E%3Cpath d='M1.2 174v3.2h9.6V174z'/%3E%3C/svg%3E");
   --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.35' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
 }
 
@@ -148,6 +149,37 @@
   &::after {
     right: 4%;
     bottom: -54px;
+    width: 120px;
+    height: 60px;
+    background-color: var(--color-gold-ink);
+    opacity: 0.85;
+    mask: var(--bamboo-leaves) center / contain no-repeat;
+  }
+}
+
+/* Bamboo frame: four ink stalks around a picture, a leaf spray on the top right corner. */
+@utility bamboo-frame {
+  position: relative;
+  padding: 18px;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+  }
+  &::before {
+    inset: 0;
+    background-color: var(--color-foreground);
+    opacity: 0.6;
+    mask:
+      var(--bamboo-stalk) left top / auto 12px repeat-x,
+      var(--bamboo-stalk) left bottom / auto 12px repeat-x,
+      var(--bamboo-stalk-v) left top / 12px auto repeat-y,
+      var(--bamboo-stalk-v) right top / 12px auto repeat-y;
+  }
+  &::after {
+    top: 0;
+    right: 4%;
     width: 120px;
     height: 60px;
     background-color: var(--color-gold-ink);
