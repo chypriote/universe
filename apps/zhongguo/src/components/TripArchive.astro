@@ -1,4 +1,5 @@
 ---
+import InkStroke from '@/components/InkStroke.astro';
 import type { TripArchiveEntry } from '@/lib/itineraries.server';
 
 interface Props {
@@ -6,12 +7,22 @@ interface Props {
 }
 
 const { trips } = Astro.props;
+// Brush characters behind each tab, as in the home section headers.
+const tabs = [
+  { view: 'report', zh: '游记', label: 'Trip reports' },
+  { view: 'plan', zh: '行程', label: 'Trip plans' },
+];
 ---
 
 <div class="space-y-12 lg:space-y-20" data-trip-archive data-view="report">
-  <div class="flex gap-10 border-b border-border" role="group" aria-label="Archive view">
-    <button type="button" data-view-button="report" aria-pressed="true" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-gold-ink">Trip reports</button>
-    <button type="button" data-view-button="plan" aria-pressed="false" class="-mb-px pb-3 border-b-2 border-transparent eyebrow text-muted-foreground hover:text-foreground transition-colors aria-pressed:text-foreground aria-pressed:border-gold-ink">Trip plans</button>
+  <div class="flex justify-center gap-6 sm:gap-16 lg:gap-32" role="group" aria-label="Archive view">
+    {tabs.map((tab) => (
+      <button type="button" data-view-button={tab.view} aria-pressed={tab.view === 'report' ? 'true' : 'false'} class="group relative px-2 sm:px-6 py-8 lg:py-10">
+        <span lang="zh" class="absolute inset-0 flex items-center justify-center whitespace-nowrap font-brush text-[4.5rem] sm:text-[6.5rem] lg:text-[8.5rem] leading-none pointer-events-none text-foreground/[0.07] group-aria-pressed:text-foreground/20 transition-colors" aria-hidden="true">{tab.zh}</span>
+        <span class="relative font-serif font-light text-2xl sm:text-3xl lg:text-5xl text-muted-foreground group-hover:text-foreground group-aria-pressed:text-foreground transition-colors">{tab.label}</span>
+        <InkStroke class="absolute left-1/2 -translate-x-1/2 bottom-1 lg:bottom-2 w-[90%] h-4 lg:h-5 text-gold-ink opacity-0 group-aria-pressed:opacity-100 transition-opacity" />
+      </button>
+    ))}
   </div>
 
   <div class="grid grid-cols-1 gap-12 lg:gap-24">
