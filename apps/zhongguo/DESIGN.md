@@ -13,6 +13,7 @@ Journal is the family for personal journal apps: Zhongguo today, maybe a food re
 **Art direction:**
 - Signature move: the square cinnabar seal (印章) with 中. It is the logo, the favicon and the main solid red block on a page.
 - Temple moves (2026-11-23): vertical brush calligraphy (`font-brush`) beside titles, ink bamboo, an ink-wash landscape (水墨: misty hills, plum branch, birds) behind the home hero and the index page headers. No red or dark bands: ink on paper. The footer is the one exception: it is inverted to ink.
+- Floating 汉字 (often): a faint brush (`font-brush`) Chinese word behind or beside the text it translates, in `gold-ink` at 20-25% opacity, `aria-hidden`, `lang="zh"`, large and allowed to overflow its box. Use it often: guide tiles, trip days, group headers, section headers. It is decoration only; the English text stays the heading and stays readable over it.
 - Second move: a sticky side panel (planner, day meta, guide navigation) that stays in view while the content scrolls.
 - Layout rhythm: wide white space, 12-column splits (7/5, 5/7), thin 1px rules between sections.
 - Imagery: own photographs from the trips (in R2, see `docs/photos.md`) and hand-drawn ink SVG (hills, bamboo, plum). No stock or AI images.
