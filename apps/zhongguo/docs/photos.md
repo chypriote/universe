@@ -15,3 +15,7 @@ The `photos` table in D1 lists every photo with its size, date, optional title a
 - A file with the name of a Photo already in the Trip is refused ("exists") until the upload is repeated with the overwrite flag. An overwrite replaces both objects and the size, keeps every field set by hand, and bumps `photos.version`: the Journal adds `?v=<version>` to the URLs of a version above 1, since the bucket serves objects as immutable. It is refused when the new orientation breaks the Trip Cover (landscape) or a Highlight Photo (portrait).
 - Delete: a Trip Cover, Highlight Photo or Province Cover is kept and listed with the Photos that could replace it. The delete goes on once a replacement is picked.
 - A City is added from the same page; it is usable at once.
+
+## Day Photos
+
+`day_photos` holds the ordered Photos of each Day (`migrations/0005_day_photos.sql` filled it from the date rule). A Photo is on at most one Day; one on no Day stays in the Gallery under its Trip. A new upload goes at the end of the Day of its date, an edited date moves a Photo to the Day of the new date (or to no Day), and a delete takes it off its Day. A Hidden Day keeps its Photos. `/admin/trips/<slug>` places them by drag and drop; each drop saves the Day lists it changed.
