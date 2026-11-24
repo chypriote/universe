@@ -64,12 +64,13 @@ for (const slug of (await readdir(photosDir, { withFileTypes: true }))
     const file = join(photosDir, slug, name);
     const { width, height, orientation = 1 } = await sharp(file).metadata();
     const swapped = orientation >= 5;
-    const city = previous[slug]?.find((photo) => photo.name === name)?.city;
+    const { city, cover } = previous[slug]?.find((photo) => photo.name === name) ?? {};
     manifest[slug].push({
       name,
       width: swapped ? height : width,
       height: swapped ? width : height,
       ...(city && { city }),
+      ...(cover && { cover }),
     });
     jobs.push({ slug, name, file });
   }

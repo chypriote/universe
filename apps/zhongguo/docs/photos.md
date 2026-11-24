@@ -6,11 +6,12 @@ Trip photos live in the R2 bucket `nico-zhongguo-photos`, not in git.
 - `thumbs/<slug>/<file>.webp`: the thumbnail shown in grids.
 
 `src/data/photos.json` lists every photo with its size. The build reads it. It does not read the bucket.
-A photo can have an optional `city`, for example `"city": "Zhangjiajie"`. The gallery then uses it instead of the city of the photo's date. The upload script keeps it.
+A photo can have an optional `city`, for example `"city": "Zhangjiajie"`. The gallery then uses it instead of the city of the photo's date.
+A photo can also have `"cover": true`. The home map then shows it for the photo's province. Without a cover, it shows the province's first photo. The upload script keeps both fields.
 
-## Set cities
+## Set cities and covers
 
-Put `PHOTOS_URL=<bucket url>` in `.env`. Run `node scripts/photo-admin.mjs` and open http://localhost:4322. Pick a city per photo, or click photos and set one city on all of them. Save, then commit `src/data/photos.json`.
+Put `PHOTOS_URL=<bucket url>` in `.env`. Run `node scripts/photo-admin.mjs` and open http://localhost:4322. Pick a city per photo, or click photos and set one city on all of them. Tick Cover on one photo per province. Save, then commit `src/data/photos.json`.
 The build needs `PHOTOS_URL`, the public base URL of the bucket, with no trailing slash. Locally, set it in `.env`; Astro reads it from there.
 
 ## Add photos
