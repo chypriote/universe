@@ -9,9 +9,10 @@ interface Props {
 const { trips } = Astro.props;
 ---
 
-<section id="completed-trips" class="snap-start py-24 lg:py-32">
+<!-- The header snaps to the top with the section padding above it; each trip then snaps to the centre. -->
+<section id="completed-trips" class="py-24 lg:py-32">
   <Container>
-    <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 lg:mb-24 pb-8 bamboo-b reveal">
+    <header class="snap-start scroll-mt-24 lg:scroll-mt-32 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 lg:mb-24 pb-8 bamboo-b reveal">
       <div class="flex items-end gap-6 lg:gap-8">
         <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">游记</span>
         <div>
@@ -28,7 +29,7 @@ const { trips } = Astro.props;
         const cover = trip.photos[0];
 
         return (
-          <article class="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+          <article class="snap-center group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
             {cover && (
               <div class:list={['lg:col-span-7 bamboo-frame', imageLeft ? 'reveal-left' : 'lg:order-2 reveal-right']}>
                 <a href={trip.link} class="block overflow-hidden" tabindex="-1" aria-hidden="true">
