@@ -19,6 +19,8 @@ let nextId = 1;
 const id = () => nextId++;
 
 export async function resetDatabase() {
+  const { objects } = await env.PHOTOS.list();
+  if (objects.length > 0) await env.PHOTOS.delete(objects.map((object) => object.key));
   await env.DB.batch([
     env.DB.prepare('UPDATE trips SET cover_photo_id = NULL'),
     ...TABLES.map((table) => env.DB.prepare(`DELETE FROM ${table}`)),

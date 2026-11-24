@@ -1,4 +1,5 @@
 import { issueToken, passwordMatches, tokenIsValid } from '@universe/owner/auth';
+import { buildAdmin } from './admin';
 import { formatDateRange } from '../plan-calendar';
 import { getPlaceName } from '../place-names';
 import type {
@@ -21,6 +22,8 @@ import type {
 
 export type JournalEnv = {
   DB: D1Database;
+  /** The photo bucket. */
+  PHOTOS: R2Bucket;
   /** Public base URL of the photo bucket. */
   PHOTOS_URL: string;
   /** The Owner password, the same in every Universe app. */
@@ -61,6 +64,7 @@ type PhotoRow = {
   height: number;
   date: string;
   title: string | null;
+  version: number;
   city_id: number | null;
   city: string | null;
   city_zh: string | null;
@@ -91,8 +95,11 @@ export function buildJournal(env: JournalEnv): Journal {
     throw new Error('PHOTOS_URL is not set. It is the public base URL of the photo bucket.');
   }
 
-  const photoUrl = (slug: string, name: string) => `${photosUrl}/trips/${slug}/${encodeURIComponent(name)}`;
-  const thumbUrl = (slug: string, name: string) => `${photosUrl}/thumbs/${slug}/${encodeURIComponent(name)}.webp`;
+  const versioned = (version: number) => (version > 1 ? `?v=${version}` : '');
+  const photoUrl = (slug: string, name: string, version = 1) =>
+    `${photosUrl}/trips/${slug}/${encodeURIComponent(name)}${versioned(version)}`;
+  const thumbUrl = (slug: string, name: string, version = 1) =>
+    `${photosUrl}/thumbs/${slug}/${encodeURIComponent(name)}.webp${versioned(version)}`;
 
   async function all<T>(sql: string, ...params: (string | number)[]): Promise<T[]> {
     const { results } = await env.DB.prepare(sql)
@@ -125,7 +132,7 @@ export function buildJournal(env: JournalEnv): Journal {
       ...scopeParams,
     );
     const photos = await all<PhotoRow>(
-      `SELECT photos.id, photos.trip_id, photos.name, photos.width, photos.height, photos.date, photos.title,
+      `SELECT photos.id, photos.trip_id, photos.name, photos.width, photos.height, photos.date, photos.title, photos.version,
               cities.id AS city_id, cities.name AS city, cities.name_zh AS city_zh,
               cities.lng AS city_lng, cities.lat AS city_lat, cities.major AS city_major,
               city_provinces.name AS city_province, own_provinces.name AS on_the_way_province
@@ -169,8 +176,8 @@ export function buildJournal(env: JournalEnv): Journal {
   function toPhoto(trip: LoadedTrip, photo: PhotoRow): Photo {
     const text = caption(photo);
     return {
-      url: photoUrl(trip.slug, photo.name),
-      thumb: thumbUrl(trip.slug, photo.name),
+      url: photoUrl(trip.slug, photo.name, photo.version),
+      thumb: thumbUrl(trip.slug, photo.name, photo.version),
       orientation: orientation(photo),
       caption: text,
       alt: `${text} — ${trip.title}`,
@@ -259,7 +266,7 @@ export function buildJournal(env: JournalEnv): Journal {
     return trips.map((trip) => {
       const thumb = (photoId: number | null) => {
         const photo = trip.photos.find((candidate) => candidate.id === photoId);
-        return photo ? thumbUrl(trip.slug, photo.name) : null;
+        return photo ? thumbUrl(trip.slug, photo.name, photo.version) : null;
       };
       const cities = majorCityNames(trip, majors);
       let description = 'Planned trip. Route and dates are not set yet.';
@@ -443,7 +450,7 @@ export function buildJournal(env: JournalEnv): Journal {
       return {
         name,
         nameZh: zh.find((province) => province.name === name)?.name_zh ?? '',
-        photo: shown ? thumbUrl(shown.trip.slug, shown.photo.name) : null,
+        photo: shown ? thumbUrl(shown.trip.slug, shown.photo.name, shown.photo.version) : null,
         tripCount: tripsThere.length,
         href: `/trips/${tripsThere[0].slug}`,
       };
@@ -464,5 +471,5 @@ export function buildJournal(env: JournalEnv): Journal {
 
   const verifyToken = async (token: string) => !!env.JWT_SECRET && (await tokenIsValid(token, env.JWT_SECRET));
 
-  return { listTripCards, getTrip, getGallery, getHomeMap, login, verifyToken };
+  return { listTripCards, getTrip, getGallery, getHomeMap, login, verifyToken, ...buildAdmin(env, { photoUrl, thumbUrl }) };
 }
