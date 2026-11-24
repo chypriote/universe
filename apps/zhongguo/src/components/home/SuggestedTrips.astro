@@ -1,6 +1,7 @@
 ---
 import Container from '@/components/Container.astro';
 import Panda from '@/components/Panda.astro';
+import SectionHeader from '@/components/home/SectionHeader.astro';
 import type { TripArchiveEntry } from '@/lib/itineraries.server';
 
 interface Props {
@@ -13,13 +14,8 @@ const { trips } = Astro.props;
 <section id="suggested-trips" class="snap-section py-12 lg:py-10 bamboo-t">
   <Panda class="absolute right-[22px] top-1/2 -translate-y-1/2 z-[1] w-20 hidden min-[1400px]:block" />
   <Container>
-    <header class="flex items-start gap-6 lg:gap-8 max-w-2xl mb-10 reveal">
-      <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">行程</span>
-      <div>
-        <span class="eyebrow">Trip plans</span>
-        <h2 class="mt-4 text-h2 font-serif font-light">Next on the list</h2>
-        <p class="mt-4 text-muted-foreground text-lg">Routes I plan to take, with dates, cities and trains.</p>
-      </div>
+    <header class="mb-10 reveal">
+      <SectionHeader zh="行程" eyebrow="Itineraries" title="Next on the list" lead="Where I'm heading next, and how I'll get there." />
     </header>
 
     {trips.length === 0 ? (

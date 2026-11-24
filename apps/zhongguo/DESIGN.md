@@ -99,7 +99,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Eyebrow label | Primitive | Small label above a title (`eyebrow` utility) | Primary, muted |
 | Tag | Primitive | Region or city label | 1px border, sharp |
 | Tabs | Primitive | Toggle Trip reports / Trip plans (`aria-pressed`) | Active = ink text + 2px gold underline |
-| Section header | Component | Vertical brush characters + eyebrow + `h2` + lead | Left aligned, centered |
+| Section header | Component | Home sections: vertical brush characters, an eyebrow that translates them, `h2`, lead (`home/SectionHeader.astro`). Same top padding in every home section | — |
 | Bamboo | Decoration | Bamboo stalks and leaf sprays (`Bamboo.astro`, currentColor) | `flip` |
 | Bamboo grove | Decoration | Four gold stalks with leaf sprays on the right edge, from the top of the page through the footer, which adds extra leaf sprays (`leavesOnly`) so it stays full (`BambooGrove.astro`, SVG patterns, in `BaseLayout.astro`). Below 1400px the footer shows its own clump (`Bamboo.astro`) instead. The tops are cut at a node; on the home page they sit in the hero, fading into mist. Only from 1400px, where it fits in the margin | — |
 | Panda | Decoration | Waving panda holding a grove stalk with its raised paw (`Panda.astro`, see "Panda drawing"). Two only: "Next on the list" (paw on the left, middle of the section) and the footer (mirrored). From 1400px | `dark`, `mirror` |
