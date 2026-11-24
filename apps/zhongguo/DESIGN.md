@@ -119,7 +119,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 
 ### Panda drawing
 
-The rules for every panda pose. They come from Nico's enamel keychains, redrawn in ink and paper. The waving `Panda.astro` is older and does not follow all of them yet. Measures are in a 200 × 228 box, sitting pose.
+The rules for every panda pose. They come from Nico's enamel keychains, redrawn in ink and paper. The waving `Panda.astro` is older and does not follow all of them yet. Measures are in a 200 × 236 box, sitting pose.
 
 Colors
 - Panda: ink (`foreground`) and paper (`background`) only. No red, no blush, no gradients.
@@ -136,10 +136,10 @@ Face
 - Muzzle, always: a small rounded ink nose, a short stem, and a "w" mouth.
 
 Body
-- Chubby, wide sitting body with a 4px ink outline: ink chest on top, paper belly below. The belly edge is a rounded dome, never straight.
-- Legs: two ink ovals (≈ 60 × 36) at the bottom, feet forward.
-- Arms: one chubby ink stroke each (≈ 25 wide, round ends), both the same thickness. They start at the shoulders below the head and never cover it.
-- Arms and legs have a thin paper edge (≈ 2.5) so each one reads as its own shape.
+- Chubby, wide sitting body with a 4px ink outline, round at the bottom: a narrow ink chest band under the head, paper belly below. The belly edge is a rounded dome, never straight.
+- Legs: two short, almost round ink ovals (≈ 44 × 38) at the bottom, set apart so they do not touch the paws.
+- Arms: one short, chubby ink stroke each (≈ 25 wide, round ends), both the same thickness. They start at the sides of the black chest, below the head, and never cover it.
+- Arms, paws and legs are plain ink with no paper edge.
 
 Drawing order
 - Body, legs, head, props, arms. Arms go over props so the paws hold them. A raised arm goes behind the head.
@@ -147,7 +147,7 @@ Drawing order
 Standing poses
 - Same head and face. The body is taller (box 200 × 270), round at the bottom, the black chest is a narrow band under the head, and the belly line curves.
 - Legs: two ink stumps under the body, longer than in the sitting poses and set well apart.
-- Arms: plain ink with no paper edge; they grow out of the black chest. A pose can show paws only (the backpack paws hold the straps).
+- Arms grow out of the black chest. A pose can show paws only (the backpack paws hold the straps).
 - Views: front or three quarters (the face turns to one side: the features shift that way).
 - Hanging on a stalk (the site's pose): body against the stalk, head tilted toward it, slanted belly line; the raised paw grips the stalk, the free arm leaves the body just under the head.
 
