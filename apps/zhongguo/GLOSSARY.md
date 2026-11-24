@@ -20,8 +20,20 @@ A City that gets a pin on the Gallery map, such as Xi'an, Xining or Chengdu. A m
 A Chinese province, autonomous region or direct-administered city (Beijing, Shanghai, Tianjin, Chongqing) on the China map. Clicking one filters the Gallery or opens a Trip. A Photo's Province follows from its City.
 _Avoid_: Region
 
+**Visited Province**:
+A Province where a visible Day of a visible Trip has its main City. Only Visited Provinces are coloured on the home map and filter the Gallery.
+
 **Photo**:
 A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip, and its date places it on a Day. Its date can be edited. Pictures that belong to no Trip are site images kept in the repo, not Photos.
+
+**On the way photo**:
+A Photo taken between two Cities, for example from a train. It has no City. It can name a Province and a place label typed by hand, which only its caption shows. It never makes a Province visited.
+
+**Hidden Trip**:
+A Trip switched off. It leaves every public page and counts for nothing, but stays editable in the admin.
+
+**Hidden Day**:
+A Day switched off. It leaves the Trip page and its Photos leave the Gallery. The visible Days are numbered again without it, and a City only it uses is no longer listed.
 
 **Trip Cover**:
 The one Photo of a Trip, picked from that Trip's Photos, that stands for the Trip on cards and lists.
