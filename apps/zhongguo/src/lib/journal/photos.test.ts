@@ -555,3 +555,32 @@ describe('Add City', () => {
     expect((await journal.listProvinces()).map((province) => province.name)).toEqual(['Qinghai', 'Sichuan']);
   });
 });
+
+describe('Photos: input the admin API passes through', () => {
+  it('refuses an upload whose form date is not a real date, and stores nothing', async () => {
+    await sichuanTrip();
+
+    for (const date of ['soon', '2025-13-40', '2025-02-30']) {
+      expect(await upload('market.jpg', landscape(), { date })).toEqual({ ok: false, error: 'invalid-date' });
+    }
+    expect(await bucketKeys()).toEqual([]);
+    expect(await journal.listAdminPhotos('sichuan')).toEqual([]);
+  });
+
+  it('edits and deletes a selection of more than 100 Photos', async () => {
+    const { trip } = await sichuanTrip();
+    const ids: number[] = [];
+    for (let i = 0; i < 120; i++) {
+      const name = `p${i}.jpg`;
+      ids.push(await addPhoto(trip, '2025-04-01', { name }));
+      await env.PHOTOS.put(`trips/sichuan/${name}`, 'file');
+    }
+
+    expect(await journal.editPhotos({ ids, title: 'All' })).toEqual({ ok: true, updated: 120 });
+    expect((await journal.listAdminPhotos('sichuan'))!.every((photo) => photo.title === 'All')).toBe(true);
+
+    const result = await journal.deletePhotos({ ids });
+    expect(result.deleted).toHaveLength(120);
+    expect(await journal.listAdminPhotos('sichuan')).toEqual([]);
+  });
+});

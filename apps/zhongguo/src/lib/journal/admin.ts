@@ -77,6 +77,7 @@ const IMAGE_TYPES: Record<string, string> = {
   png: 'image/png',
   webp: 'image/webp',
 };
+const ID_CHUNK = 90;
 const CACHE_CONTROL = 'public, max-age=31536000, immutable';
 
 type ChoiceRow = { id: number; name: string; slug: string; width: number; height: number; version: number };
@@ -107,6 +108,16 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       .bind(...params)
       .all<T>();
     return results;
+  }
+
+  /** Runs a query for ids in chunks: D1 allows 100 bound parameters per statement. */
+  async function inChunks<T>(ids: number[], query: (marks: string, chunk: number[]) => Promise<T[]>): Promise<T[]> {
+    const rows: T[] = [];
+    for (let start = 0; start < ids.length; start += ID_CHUNK) {
+      const chunk = ids.slice(start, start + ID_CHUNK);
+      rows.push(...(await query(chunk.map(() => '?').join(','), chunk)));
+    }
+    return rows;
   }
 
   /** The Photos of a Trip, with the number of the visible Day of each date. */
@@ -223,10 +234,12 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   /** The Photos of a Trip among the given ids, with their size. */
   async function photosOfTrip(tripId: number, ids: number[]) {
     if (ids.length === 0) return [];
-    return all<{ id: number; width: number; height: number }>(
-      `SELECT id, width, height FROM photos WHERE trip_id = ? AND id IN (${ids.map(() => '?').join(',')})`,
-      tripId,
-      ...ids,
+    return inChunks(ids, (marks, chunk) =>
+      all<{ id: number; width: number; height: number }>(
+        `SELECT id, width, height FROM photos WHERE trip_id = ? AND id IN (${marks})`,
+        tripId,
+        ...chunk,
+      ),
     );
   }
 
@@ -336,13 +349,11 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   async function coversOf(photoIds: number[]): Promise<Map<number, (CoverRef & { tripSlug?: string; province?: string; position?: number })[]>> {
     const covers = new Map<number, (CoverRef & { tripSlug?: string; province?: string; position?: number })[]>();
     if (photoIds.length === 0) return covers;
-    const marks = photoIds.map(() => '?').join(',');
     const add = (photoId: number, cover: CoverRef & { tripSlug?: string; province?: string; position?: number }) =>
       covers.set(photoId, [...(covers.get(photoId) ?? []), cover]);
 
-    for (const row of await all<CoverRow>(
-      `SELECT cover_photo_id AS photo_id, slug, title FROM trips WHERE cover_photo_id IN (${marks})`,
-      ...photoIds,
+    for (const row of await inChunks(photoIds, (marks, chunk) =>
+      all<CoverRow>(`SELECT cover_photo_id AS photo_id, slug, title FROM trips WHERE cover_photo_id IN (${marks})`, ...chunk),
     )) {
       add(row.photo_id, {
         key: `trip-cover:${row.slug}`,
@@ -352,11 +363,13 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
         tripSlug: row.slug,
       });
     }
-    for (const row of await all<CoverRow>(
-      `SELECT highlight_photos.photo_id, trips.slug, trips.title, highlight_photos.position
-       FROM highlight_photos JOIN trips ON trips.id = highlight_photos.trip_id
-       WHERE highlight_photos.photo_id IN (${marks}) ORDER BY trips.slug, highlight_photos.position`,
-      ...photoIds,
+    for (const row of await inChunks(photoIds, (marks, chunk) =>
+      all<CoverRow>(
+        `SELECT highlight_photos.photo_id, trips.slug, trips.title, highlight_photos.position
+         FROM highlight_photos JOIN trips ON trips.id = highlight_photos.trip_id
+         WHERE highlight_photos.photo_id IN (${marks}) ORDER BY trips.slug, highlight_photos.position`,
+        ...chunk,
+      ),
     )) {
       add(row.photo_id, {
         key: `highlight:${row.slug}:${row.position}`,
@@ -367,11 +380,13 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
         position: row.position,
       });
     }
-    for (const row of await all<CoverRow>(
-      `SELECT province_covers.photo_id, provinces.name AS province
-       FROM province_covers JOIN provinces ON provinces.id = province_covers.province_id
-       WHERE province_covers.photo_id IN (${marks}) ORDER BY provinces.name`,
-      ...photoIds,
+    for (const row of await inChunks(photoIds, (marks, chunk) =>
+      all<CoverRow>(
+        `SELECT province_covers.photo_id, provinces.name AS province
+         FROM province_covers JOIN provinces ON provinces.id = province_covers.province_id
+         WHERE province_covers.photo_id IN (${marks}) ORDER BY provinces.name`,
+        ...chunk,
+      ),
     )) {
       add(row.photo_id, {
         key: `province-cover:${row.province}`,
@@ -415,6 +430,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       .first<{ id: number }>();
     if (existing && !input.overwrite) return { ok: false, error: 'exists' };
 
+    if (input.date !== undefined && !isDate(input.date)) return { ok: false, error: 'invalid-date' };
     const file = readPhotoFile(input.file);
     if (!file) return { ok: false, error: 'unreadable' };
     const date = file.exifDate ?? fileNameDate(name) ?? input.date ?? null;
@@ -454,10 +470,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
 
   async function editPhotos(input: EditPhotosInput): Promise<EditPhotosResult> {
     const ids = [...new Set(input.ids)];
-    const known = await all<{ id: number }>(
-      `SELECT id FROM photos WHERE id IN (${ids.map(() => '?').join(',')})`,
-      ...ids,
-    );
+    const known = await inChunks(ids, (marks, chunk) => all<{ id: number }>(`SELECT id FROM photos WHERE id IN (${marks})`, ...chunk));
     if (ids.length === 0 || known.length !== ids.length) return { ok: false, error: 'unknown-photo' };
     if (input.date !== undefined && !isDate(input.date)) return { ok: false, error: 'invalid-date' };
 
@@ -485,10 +498,12 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       params.push(input.title.trim() || null);
     }
     if (input.date !== undefined) {
-      const moving = await all<{ id: number; trip_id: number }>(
-        `SELECT id, trip_id FROM photos WHERE date != ? AND id IN (${ids.map(() => '?').join(',')}) ORDER BY id`,
-        input.date,
-        ...ids,
+      const moving = await inChunks(ids, (marks, chunk) =>
+        all<{ id: number; trip_id: number }>(
+          `SELECT id, trip_id FROM photos WHERE date != ? AND id IN (${marks}) ORDER BY id`,
+          input.date!,
+          ...chunk,
+        ),
       );
       for (const photo of moving) {
         await env.DB.prepare('DELETE FROM day_photos WHERE photo_id = ?').bind(photo.id).run();
@@ -496,9 +511,15 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       }
     }
     if (sets.length > 0) {
-      await env.DB.prepare(`UPDATE photos SET ${sets.join(', ')} WHERE id IN (${ids.map(() => '?').join(',')})`)
-        .bind(...params, ...ids)
-        .run();
+      await env.DB.batch(
+        Array.from({ length: Math.ceil(ids.length / ID_CHUNK) }, (_, index) => {
+          const chunk = ids.slice(index * ID_CHUNK, (index + 1) * ID_CHUNK);
+          return env.DB.prepare(`UPDATE photos SET ${sets.join(', ')} WHERE id IN (${chunk.map(() => '?').join(',')})`).bind(
+            ...params,
+            ...chunk,
+          );
+        }),
+      );
     }
     return { ok: true, updated: ids.length };
   }
@@ -546,13 +567,15 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
 
   async function deletePhotos(input: DeletePhotosInput): Promise<DeletePhotosResult> {
     const requested = [...new Set(input.ids)];
-    const photos = requested.length
-      ? await all<{ id: number; name: string; slug: string }>(
+    const photos = (
+      await inChunks(requested, (marks, chunk) =>
+        all<{ id: number; name: string; slug: string }>(
           `SELECT photos.id, photos.name, trips.slug FROM photos JOIN trips ON trips.id = photos.trip_id
-           WHERE photos.id IN (${requested.map(() => '?').join(',')}) ORDER BY photos.id`,
-          ...requested,
-        )
-      : [];
+           WHERE photos.id IN (${marks})`,
+          ...chunk,
+        ),
+      )
+    ).sort((a, b) => a.id - b.id);
     const deleting = new Set(photos.map((photo) => photo.id));
     const covers = await coversOf([...deleting]);
 

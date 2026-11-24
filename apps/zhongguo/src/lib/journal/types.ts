@@ -238,7 +238,7 @@ export type UploadPhotoResult =
   | { ok: true; photo: AdminPhoto; replaced: boolean }
   | { ok: false; error: 'exists' }
   | { ok: false; error: 'breaks-cover'; covers: CoverRef[] }
-  | { ok: false; error: 'unknown-trip' | 'unknown-city' | 'invalid-name' | 'unsupported-type' | 'unreadable' | 'no-date' };
+  | { ok: false; error: 'unknown-trip' | 'unknown-city' | 'invalid-name' | 'unsupported-type' | 'unreadable' | 'no-date' | 'invalid-date' };
 
 /** Where a Photo was taken: a City, or on the way (with an optional Province). */
 export type PhotoPlace = { cityId: number } | { onTheWay: true; provinceId?: number };
