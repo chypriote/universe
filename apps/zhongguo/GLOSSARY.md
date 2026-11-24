@@ -21,7 +21,10 @@ A Chinese province, autonomous region or direct-administered city (Beijing, Shan
 _Avoid_: Region
 
 **Visited Province**:
-A Province where a visible Day of a visible Trip has its main City. Only Visited Provinces are coloured on the home map and filter the Gallery.
+A Province where a visible Day of a visible Trip has its main City. Only past Trips count: a plan with Days does not make a Province visited. Only Visited Provinces are coloured on the home map and filter the Gallery.
+
+**Owner**:
+Nico, the only person who logs in. The Owner login opens `/admin`, and every admin page and admin API refuses a request without it. It is the same login as in the other apps.
 
 **Photo**:
 A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip. A new Photo goes on the Day of its date; it can then be moved to another Day or taken off every Day, and still shows in the Gallery. Its date can be edited. It can have a title typed by hand, which replaces its place in captions. Pictures that belong to no Trip are site images kept in the repo, not Photos.
