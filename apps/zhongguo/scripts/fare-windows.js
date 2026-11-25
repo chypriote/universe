@@ -11,7 +11,7 @@ const LEEWAY = 0.2;
 
 /**
  * @typedef {{ code: string, directWeekdays: number }} Gateway  directWeekdays: bit 0 = Monday
- * @typedef {{ slug: string, seasons: number[], gateways: Gateway[] }} Plan  seasons: the Season bits (bit 0 = January) of each Day's Province, in Day order
+ * @typedef {{ slug: string, title?: string, zh?: string, seasons: number[], gateways: Gateway[] }} Plan  seasons: the Season bits (bit 0 = January) of each Day's Province, in Day order
  * @typedef {{ slug: string, airport: string, outbound: string, return: string }} FareWindow
  */
 
@@ -43,15 +43,19 @@ export function fitsPlan(/** @type {number[]} */ seasons, /** @type {string} */ 
   return outside <= seasons.length * LEEWAY;
 }
 
+/** The first and last start dates searched from this day (YYYY-MM-DD). */
+export function searchRange(/** @type {string} */ today) {
+  const soonest = addDays(today, 14);
+  return { first: soonest > FIRST_START ? soonest : FIRST_START, last: addMonths(today, MONTHS_AHEAD) };
+}
+
 /**
  * Every Fare window of the plans: one start per Gateway per week, on a direct-flight weekday when the Airport has
  * direct flights on some weekdays only, else on Friday. A plan with no Days or no Gateway has none.
  * @param {Plan[]} plans @param {string} today YYYY-MM-DD @returns {FareWindow[]}
  */
 export function fareWindows(plans, today) {
-  const soonest = addDays(today, 14);
-  const first = soonest > FIRST_START ? soonest : FIRST_START;
-  const last = addMonths(today, MONTHS_AHEAD);
+  const { first, last } = searchRange(today);
   const windows = [];
   for (const plan of plans) {
     if (plan.seasons.length === 0) continue;
