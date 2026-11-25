@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Camera } from 'lucide-react';
 import type {
   AdminCity,
   AdminPhoto,
@@ -181,9 +182,13 @@ export function AdminPhotos(props: Props) {
                 onClick={() => {
                   if (trip.slug !== tripSlug) window.location.search = `?trip=${encodeURIComponent(trip.slug)}`;
                 }}
-                className="cursor-pointer border border-border border-b-2 border-l-2 border-b-transparent border-l-transparent px-3 py-2 text-left text-sm hover:text-primary aria-[current=true]:border-b-primary aria-[current=true]:border-l-primary aria-[current=true]:bg-muted/40"
+                className={`${button} aria-[current=true]:!border-primary aria-[current=true]:text-primary`}
               >
-                {trip.title} · {trip.photos} {trip.photos === 1 ? 'Photo' : 'Photos'}
+                <span className="inline-flex items-center gap-2 leading-none">
+            {trip.title} ·
+            <Camera aria-hidden="true" className="relative -top-[1.5px] size-4 shrink-0" />
+            <span className="leading-none" aria-label={`${trip.photos} ${trip.photos === 1 ? 'Photo' : 'Photos'}`}>{trip.photos}</span>
+          </span>
               </button>
             ))}
           </div>
