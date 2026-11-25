@@ -8,7 +8,7 @@ The summary of a Trip on the home page and `/trips`. It names only the Trip's Ma
 _Avoid_: Trip overview
 
 **Day**:
-One day of a Trip: its date, main City, title, notes, photos and train rides. Its number is its position among the visible Days, so it can change; its date does not. The Owner adds a Day to any Trip, a plan included; a Trip has one Day per date, and its start and end dates follow its first and last Day.
+One day of a Trip: its date, main City, title, notes, photos and train rides. The main City is where the Day ends; a Day can also list the Cities it starts in or passes through before it, in order, and it counts for each of them in the route. Train rides show at the bottom of the Day. Its number is its position among the visible Days, so it can change; its date does not. The Owner adds a Day to any Trip, a plan included; a Trip has one Day per date, and its start and end dates follow its first and last Day.
 
 **City**:
 A place a Trip stays in or passes through, in one Province. Shown in English and Chinese. One City is shared by every Trip that visits it. A City exists on its own, with or without Photos; the Owner adds, edits and deletes it. A City cannot be deleted while a Photo, a Day, a hotel or a restaurant uses it.

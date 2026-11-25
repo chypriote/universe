@@ -234,13 +234,24 @@ function DayText({ day, cities, onChange, onNotice }: { day: AdminDay; cities: A
   const [title, setTitle] = useState(day.title);
   const [notes, setNotes] = useState(day.notes);
   const [cityId, setCityId] = useState(String(day.city.id));
-  const dirty = title !== day.title || notes !== day.notes || Number(cityId) !== day.city.id;
+  const [also, setAlso] = useState(day.alsoIn.map((city) => String(city.id)));
+  const dirty =
+    title !== day.title ||
+    notes !== day.notes ||
+    Number(cityId) !== day.city.id ||
+    also.join() !== day.alsoIn.map((city) => city.id).join();
 
   async function saveText() {
-    const result = await save('PATCH', `/api/admin/days/${day.id}`, { title, notes, cityId: Number(cityId) });
+    const result = await save('PATCH', `/api/admin/days/${day.id}`, { title, notes, cityId: Number(cityId), alsoCityIds: also.map(Number) });
     if (result.ok) {
       const city = cities.find((candidate) => candidate.id === Number(cityId))!;
-      onChange({ title: title.trim(), notes, city: { id: city.id, name: city.name }, province: city.province });
+      onChange({
+        title: title.trim(),
+        notes,
+        city: { id: city.id, name: city.name },
+        alsoIn: also.map((id) => ({ id: Number(id), name: cities.find((candidate) => candidate.id === Number(id))!.name })),
+        province: city.province,
+      });
     }
     onNotice(result.ok ? `Day of ${day.date} saved` : message(result.error));
   }
@@ -257,6 +268,28 @@ function DayText({ day, cities, onChange, onNotice }: { day: AdminDay; cities: A
           ))}
         </select>
       </div>
+      {also.map((id, index) => (
+        <div key={index} className="flex gap-3">
+          <select
+            className={field}
+            aria-label={`City ${index + 1} before the main City of ${day.date}`}
+            value={id}
+            onChange={(event) => setAlso(also.map((value, i) => (i === index ? event.target.value : value)))}
+          >
+            {cities.map((city) => (
+              <option key={city.id} value={city.id}>
+                {city.name} ({city.province})
+              </option>
+            ))}
+          </select>
+          <button type="button" className={button} onClick={() => setAlso(also.filter((_, i) => i !== index))}>
+            Remove
+          </button>
+        </div>
+      ))}
+      <button type="button" className={`${button} self-start`} onClick={() => setAlso([...also, String(cities[0].id)])}>
+        Add a City before the main City
+      </button>
       <textarea className={`${field} min-h-24`} aria-label={`Notes of ${day.date}`} value={notes} onChange={(event) => setNotes(event.target.value)} />
       <button type="button" className={`${button} self-start`} disabled={!dirty} onClick={() => void saveText()}>
         Save text
@@ -364,7 +397,7 @@ function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: Admin
           <article key={day.id} className="flex flex-col gap-4 border border-border p-6">
             <header className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="font-serif text-xl">
-                {day.number === null ? 'Hidden' : `Day ${day.number}`} · {day.date} · {day.city.name}, {day.province}
+                {day.number === null ? 'Hidden' : `Day ${day.number}`} · {day.date} · {[...day.alsoIn, day.city].map((city) => city.name).join(' → ')}, {day.province}
               </h3>
               <button type="button" role="switch" aria-checked={day.visible} aria-label={`Day of ${day.date} on`} className={button} onClick={() => void toggle(day)}>
                 {day.visible ? 'Switch off' : 'Switch on'}

@@ -204,6 +204,12 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
        WHERE days.trip_id = ? ORDER BY days.position`,
       trip.id,
     );
+    const earlier = await all<{ day_id: number; id: number; name: string }>(
+      `SELECT day_cities.day_id, cities.id, cities.name FROM day_cities
+       JOIN days ON days.id = day_cities.day_id JOIN cities ON cities.id = day_cities.city_id
+       WHERE days.trip_id = ? ORDER BY day_cities.day_id, day_cities.position`,
+      trip.id,
+    );
     const onDays = await all<{ day_id: number; photo_id: number }>(
       `SELECT day_photos.day_id, day_photos.photo_id FROM day_photos JOIN days ON days.id = day_photos.day_id
        WHERE days.trip_id = ? ORDER BY day_photos.day_id, day_photos.position`,
@@ -222,6 +228,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       title: row.title,
       notes: row.notes,
       city: { id: row.city_id, name: row.city },
+      alsoIn: earlier.filter((entry) => entry.day_id === row.id).map((entry) => ({ id: entry.id, name: entry.name })),
       province: row.province,
       photoIds: onDays.filter((entry) => entry.day_id === row.id).map((entry) => entry.photo_id),
     }));
@@ -297,6 +304,11 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     if (input.cityId !== undefined && !(await env.DB.prepare('SELECT id FROM cities WHERE id = ?').bind(input.cityId).first())) {
       return { ok: false, error: 'unknown-city' };
     }
+    const also = input.alsoCityIds;
+    if (also !== undefined) {
+      const known = await all<{ id: number }>(`SELECT id FROM cities WHERE id IN (${also.map(() => '?').join(',')})`, ...also);
+      if (also.some((cityId) => !known.some((city) => city.id === cityId))) return { ok: false, error: 'unknown-city' };
+    }
     const sets: string[] = [];
     const params: (string | number)[] = [];
     if (title !== undefined) {
@@ -313,6 +325,14 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     }
     if (sets.length > 0) {
       await env.DB.prepare(`UPDATE days SET ${sets.join(', ')} WHERE id = ?`).bind(...params, input.dayId).run();
+    }
+    if (also !== undefined) {
+      await env.DB.batch([
+        env.DB.prepare('DELETE FROM day_cities WHERE day_id = ?').bind(input.dayId),
+        ...also.map((cityId, index) =>
+          env.DB.prepare('INSERT INTO day_cities (day_id, position, city_id) VALUES (?, ?, ?)').bind(input.dayId, index + 1, cityId),
+        ),
+      ]);
     }
     return { ok: true };
   }
@@ -722,7 +742,8 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       `SELECT cities.id, cities.name, cities.name_zh, cities.province_id, provinces.name AS province, cities.lng, cities.lat,
               cities.major,
               (SELECT COUNT(*) FROM photos WHERE photos.city_id = cities.id) AS photos,
-              (SELECT COUNT(*) FROM days WHERE days.city_id = cities.id) AS days,
+              (SELECT COUNT(*) FROM days WHERE days.city_id = cities.id
+                 OR days.id IN (SELECT day_id FROM day_cities WHERE day_cities.city_id = cities.id)) AS days,
               (SELECT COUNT(*) FROM trip_hotels WHERE trip_hotels.city_id = cities.id)
                 + (SELECT COUNT(*) FROM trip_restaurants WHERE trip_restaurants.city_id = cities.id) AS stays
        FROM cities JOIN provinces ON provinces.id = cities.province_id ORDER BY cities.name`,

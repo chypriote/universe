@@ -83,7 +83,11 @@ type PhotoRow = {
   on_the_way_province: string | null;
 };
 
-type VisibleDay = DayRow & { number: number };
+/** A City a Day is spent in. */
+type DayStopRow = { id: number; name: string; nameZh: string; lng: number; lat: number; major: boolean };
+
+/** The Cities of the Day in order: those it starts in or passes through, then its main City. */
+type VisibleDay = DayRow & { number: number; stops: DayStopRow[] };
 
 /** A visible Trip with what pages need from it, numbered and ready. */
 type LoadedTrip = TripRow & {
@@ -139,6 +143,25 @@ export function buildJournal(env: JournalEnv): Journal {
        ORDER BY days.trip_id, days.position`,
       ...scopeParams,
     );
+    const earlier = await all<{
+      day_id: number;
+      id: number;
+      name: string;
+      name_zh: string;
+      lng: number;
+      lat: number;
+      major: number;
+    }>(
+      `SELECT day_cities.day_id, cities.id, cities.name, cities.name_zh, cities.lng, cities.lat, cities.major
+       FROM day_cities
+       JOIN days ON days.id = day_cities.day_id
+       JOIN trips ON trips.id = days.trip_id
+       JOIN cities ON cities.id = day_cities.city_id
+       WHERE trips.visible = 1 ${scope}
+       ORDER BY day_cities.day_id, day_cities.position`,
+      ...scopeParams,
+    );
+    const majors = await majorCityIds();
     const photos = await all<PhotoRow>(
       `SELECT photos.id, photos.trip_id, photos.name, photos.width, photos.height, photos.date, photos.title, photos.version,
               day_photos.day_id, cities.id AS city_id, cities.name AS city, cities.name_zh AS city_zh,
@@ -162,7 +185,18 @@ export function buildJournal(env: JournalEnv): Journal {
         return {
           ...trip,
           type: trip.end_date !== null && trip.end_date < today ? 'report' : 'plan',
-          days: tripDays.filter((day) => day.visible === 1).map((day, index) => ({ ...day, number: index + 1 })),
+          days: tripDays
+            .filter((day) => day.visible === 1)
+            .map((day, index) => ({
+              ...day,
+              number: index + 1,
+              stops: [
+                ...earlier
+                  .filter((row) => row.day_id === day.id)
+                  .map((row) => ({ id: row.id, name: row.name, nameZh: row.name_zh, lng: row.lng, lat: row.lat, major: row.major === 1 })),
+                { id: day.city_id, name: day.city, nameZh: day.city_zh, lng: day.lng, lat: day.lat, major: majors.has(day.city_id) },
+              ],
+            })),
           hiddenDayIds: new Set(tripDays.filter((day) => day.visible !== 1).map((day) => day.id)),
           photos: photos.filter((photo) => photo.trip_id === trip.id),
         };
@@ -216,21 +250,16 @@ export function buildJournal(env: JournalEnv): Journal {
     const stops: RouteStop[] = [];
     let lastCityId: number | null = null;
     for (const day of trip.days) {
-      const last = stops.at(-1);
-      if (last && lastCityId === day.city_id) {
-        last.days.push(day.number);
-        last.dayLabel = dayLabel(last.days);
-      } else {
-        stops.push({
-          name: day.city,
-          nameZh: day.city_zh,
-          lng: day.lng,
-          lat: day.lat,
-          days: [day.number],
-          dayLabel: String(day.number),
-        });
+      for (const city of day.stops) {
+        const last = stops.at(-1);
+        if (last && lastCityId === city.id) {
+          if (!last.days.includes(day.number)) last.days.push(day.number);
+          last.dayLabel = dayLabel(last.days);
+        } else {
+          stops.push({ name: city.name, nameZh: city.nameZh, lng: city.lng, lat: city.lat, days: [day.number], dayLabel: String(day.number) });
+        }
+        lastCityId = city.id;
       }
-      lastCityId = day.city_id;
     }
 
     const cities = new Map<string, RouteStop>();
@@ -240,7 +269,7 @@ export function buildJournal(env: JournalEnv): Journal {
         cities.set(stop.name, { ...stop, days: [...stop.days] });
         continue;
       }
-      known.days.push(...stop.days);
+      known.days.push(...stop.days.filter((number) => !known.days.includes(number)));
       known.dayLabel = dayLabel(known.days);
     }
     return { stops, cities: [...cities.values()] };
@@ -255,7 +284,9 @@ export function buildJournal(env: JournalEnv): Journal {
   function majorCityNames(trip: LoadedTrip, majorIds: Set<number>): string[] {
     const names: string[] = [];
     for (const day of trip.days) {
-      if (majorIds.has(day.city_id) && !names.includes(day.city)) names.push(day.city);
+      for (const city of day.stops) {
+        if (majorIds.has(city.id) && !names.includes(city.name)) names.push(city.name);
+      }
     }
     return names;
   }
@@ -348,22 +379,13 @@ export function buildJournal(env: JournalEnv): Journal {
       title: day.title,
       notes: day.notes,
       city: day.city,
-      activities: [
-        ...attractions.filter((row) => row.day_id === day.id).map((row) => placeActivity(row.name)),
-        ...rides
-          .filter((row) => row.day_id === day.id)
-          .map((ride) => {
-            const from = getPlaceName(ride.outgoing_city);
-            const to = getPlaceName(ride.destination_city);
-            return {
-              name: `${ride.outgoing_city} → ${ride.destination_city} (${ride.departure_time} – ${ride.arrival_time})`,
-              nameZh: `${from.zh} → ${to.zh}`,
-              pinyin: `${from.pinyin} → ${to.pinyin}`,
-            };
-          }),
-      ],
+      cities: day.stops.map((city) => ({ name: city.name, nameZh: city.nameZh, major: city.major })),
+      activities: attractions.filter((row) => row.day_id === day.id).map((row) => placeActivity(row.name)),
+      rides: rides
+        .filter((row) => row.day_id === day.id)
+        .map((ride) => `${ride.outgoing_city} → ${ride.destination_city} (${ride.departure_time} – ${ride.arrival_time})`),
       food: restaurants
-        .filter((row) => row.city_id === day.city_id)
+        .filter((row) => day.stops.some((city) => city.id === row.city_id))
         .flatMap((row) => JSON.parse(row.suggested_dishes) as string[]),
       photos: dayPhotos
         .filter((row) => row.day_id === day.id)
