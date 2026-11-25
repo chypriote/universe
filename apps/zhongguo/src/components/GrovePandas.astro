@@ -47,8 +47,8 @@ const data = { resting, hang: poses.hang, climbX, perches: leafPerches(10) };
       add(pose.src, perch.x - width / 2, perch.y - height * 0.96, width);
     }
 
-    // The hanging panda's stalk (centre at 177 of 200) lies over the grove's leftmost stalk.
-    const hangWidth = 100;
+    // The hanging panda's stalk (centre at 177 of 200) lies over the grove's second stalk.
+    const hangWidth = 70;
     const hangY = 500 + Math.random() * Math.max(0, limit - 800);
     if (limit > 800 && free(hangY + 80)) add(hang, climbX - (177 * hangWidth) / 200, hangY, hangWidth);
   })();

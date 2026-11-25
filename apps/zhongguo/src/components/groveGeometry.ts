@@ -50,12 +50,12 @@ export function leafPerches(periods: number) {
     for (const { cx, cy, dir, seed } of sprayAnchors) {
       if (dir !== -1) continue;
       const a = (angleOf(dir, 0, seed) * Math.PI) / 180;
-      const l = lengthOf(dir, 0, seed) * 0.6;
+      const l = lengthOf(dir, 0, seed) * 0.3;
       perches.push({ x: Math.round(cx + Math.cos(a) * l), y: Math.round(p * leafPeriod + cy + Math.sin(a) * l) });
     }
   }
   return perches;
 }
 
-// Centre of the leftmost stalk, where the hanging panda grips.
-export const climbX = stalks[0].x + 2 + stalks[0].width / 2;
+// Centre of the second stalk, a middle one, where the hanging panda grips.
+export const climbX = stalks[1].x + stalks[1].width / 2;
