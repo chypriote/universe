@@ -9,6 +9,7 @@ import type {
   KeptPhoto,
 } from '@/lib/journal';
 import { AddCityForm } from './AddCityForm';
+import { Toast } from './Toast';
 
 type Props = {
   trips: AdminTrip[];
@@ -254,11 +255,7 @@ export function AdminPhotos(props: Props) {
         )}
       </section>
 
-      {notice && (
-        <p role="status" className="text-sm">
-          {notice}
-        </p>
-      )}
+      <Toast text={notice} onDone={() => setNotice('')} />
 
       {kept.length > 0 && (
         <section aria-labelledby="kept-title" className="flex flex-col gap-4 border border-error p-6">
