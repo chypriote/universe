@@ -469,16 +469,20 @@ function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: Admin
           setActive(null);
         }}
       >
-        <div className="flex flex-col gap-2">
-          <h3 className="eyebrow text-muted-foreground">On no Day ({items[TRAY].length})</h3>
-          <PhotoList id={TRAY} photoIds={items[TRAY]} photos={photos} label="Photos on no Day" />
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_17rem]">
+          <div className="flex max-h-[calc(100vh-2rem)] flex-col gap-2 overflow-y-auto lg:sticky lg:top-4 lg:col-start-2 lg:row-start-1">
+            <h3 className="eyebrow text-muted-foreground">On no Day ({items[TRAY].length})</h3>
+            <PhotoList id={TRAY} photoIds={items[TRAY]} photos={photos} label="Photos on no Day" />
+          </div>
+          <div className="flex flex-col gap-6 lg:col-start-1 lg:row-start-1">
+            {days.map((day) => (
+              <article key={day.id} className={`flex flex-col gap-4 border border-border p-6 ${day.visible ? 'bg-background' : 'bg-surface'}`}>
+                <DayText day={day} cities={cities} onChange={(patch) => patchDay(day.id, patch)} onNotice={onNotice} onToggle={() => void toggle(day)} />
+                <PhotoList id={dayKey(day.id)} photoIds={items[dayKey(day.id)]} photos={photos} label={`Photos of ${day.date}`} onRemove={(photoId) => void takeOff(day, photoId)} />
+              </article>
+            ))}
+          </div>
         </div>
-        {days.map((day) => (
-          <article key={day.id} className={`flex flex-col gap-4 border border-border p-6 ${day.visible ? 'bg-background' : 'bg-surface'}`}>
-            <DayText day={day} cities={cities} onChange={(patch) => patchDay(day.id, patch)} onNotice={onNotice} onToggle={() => void toggle(day)} />
-            <PhotoList id={dayKey(day.id)} photoIds={items[dayKey(day.id)]} photos={photos} label={`Photos of ${day.date}`} onRemove={(photoId) => void takeOff(day, photoId)} />
-          </article>
-        ))}
         <DragOverlay>{active !== null && photos.get(active) ? <Thumb photo={photos.get(active)!} className={`h-24 ${SHAPE[photos.get(active)!.orientation]}`} /> : null}</DragOverlay>
       </DndContext>
     </section>
