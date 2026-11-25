@@ -58,8 +58,8 @@ export type TripDay = {
   title: string;
   notes: string;
   city: string;
-  /** Every City of the Day in order, its main City last. */
-  cities: { name: string; nameZh: string; major: boolean }[];
+  /** Every City of the Day in travel order, the last being where it ends. */
+  cities: { name: string; nameZh: string; major: boolean; main: boolean }[];
   activities: Activity[];
   /** Its train rides, shown after the rest of the Day. */
   rides: string[];
@@ -197,8 +197,8 @@ export type AdminDay = {
   title: string;
   notes: string;
   city: { id: number; name: string };
-  /** The Cities it starts in or passes through before its main City, in order. */
-  alsoIn: { id: number; name: string }[];
+  /** Every City of the Day in travel order, the last being where it ends; empty for a Day with one City. */
+  route: { id: number; name: string }[];
   province: string;
   /** Ids of its Photos, in order. */
   photoIds: number[];
@@ -342,13 +342,13 @@ export type EditDayInput = {
   dayId: number;
   title?: string;
   notes?: string;
-  /** The main City: the Day's Province follows. */
+  /** The main City, where most of the Day was spent: the Day's Province follows. */
   cityId?: number;
-  /** The Cities it starts in or passes through before its main City, in order; replaces the old list. */
-  alsoCityIds?: number[];
+  /** Every City of the Day in travel order, the main City among them; replaces the old list. One City or none means the main City alone. */
+  routeCityIds?: number[];
 };
 
-export type EditDayResult = { ok: true } | { ok: false; error: 'unknown-day' | 'unknown-city' | 'invalid-title' };
+export type EditDayResult = { ok: true } | { ok: false; error: 'unknown-day' | 'unknown-city' | 'invalid-title' | 'main-not-on-route' };
 
 export type AddDayInput = {
   /** A calendar date, YYYY-MM-DD; one Day per date and Trip. */

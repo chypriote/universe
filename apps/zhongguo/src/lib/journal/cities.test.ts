@@ -128,7 +128,7 @@ describe('Delete City', () => {
       .run();
 
     const passedThrough = await addCity('Passed', sichuan);
-    await setDayCities(await addDay(first, chengdu, '2024-03-03', { position: 2 }), [passedThrough]);
+    await setDayCities(await addDay(first, chengdu, '2024-03-03', { position: 2 }), [passedThrough, chengdu], chengdu);
 
     for (const id of [withPhoto, chengdu, withRestaurant, passedThrough]) {
       expect(await journal.deleteCity(id)).toEqual({ ok: false, error: 'in-use' });
