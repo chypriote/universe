@@ -18,6 +18,10 @@ export type ChinaMapCity = {
   zh: string;
   x: number;
   y: number;
+  /** Minor City: an outlined dot instead of a filled one. Defaults to major. */
+  major?: boolean;
+  /** Shown in the hover tooltip after the name. */
+  province?: string;
   photo?: string;
   detail?: string;
 };
@@ -53,6 +57,7 @@ const TONES = {
     dot: 'fill-foreground stroke-background',
     label: 'fill-foreground stroke-background stroke-[4]',
     leader: 'stroke-foreground',
+    minorStroke: 'stroke-foreground',
     muted: 'text-muted-foreground',
     border: 'border-border',
   },
@@ -63,6 +68,7 @@ const TONES = {
     dot: 'fill-dark-foreground stroke-dark-background',
     label: 'fill-dark-foreground stroke-dark-background stroke-[4]',
     leader: 'stroke-dark-foreground',
+    minorStroke: 'stroke-dark-foreground',
     muted: 'text-dark-muted-foreground',
     border: 'border-dark-border',
   },
@@ -121,6 +127,11 @@ export function ChinaMap({
     regionByName.get(hoverRegion ?? '') ??
     cityByKey.get(selectedCity ?? '') ??
     regionByName.get(selectedRegion ?? '');
+
+  const dotClass = (city: ChinaMapCity, active: boolean) => {
+    if (city.major === false) return active ? 'fill-transparent stroke-primary' : `fill-transparent ${t.minorStroke}`;
+    return active ? 'fill-primary stroke-background' : t.dot;
+  };
 
   const regionClass = (name: string) => {
     if (hoverRegion === name) return 'fill-primary stroke-background';
@@ -264,13 +275,13 @@ export function ChinaMap({
                 }
               }}
             >
-              <title>{`${city.name} ${city.zh}`}</title>
+              <title>{city.province ? `${city.name}, ${city.province}` : `${city.name} ${city.zh}`}</title>
               <circle cx={city.x} cy={city.y} r={16} className="fill-transparent" />
               <circle
                 cx={city.x}
                 cy={city.y}
                 r={active ? 9 : 7}
-                className={`${active ? 'fill-primary stroke-background' : t.dot} stroke-[2.5] transition-all`}
+                className={`${dotClass(city, active)} stroke-[2.5] transition-all`}
               />
             </g>
           );

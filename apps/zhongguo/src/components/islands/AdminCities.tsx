@@ -110,7 +110,7 @@ export function AdminCities(props: Props) {
   const selectCity = (id: string) => (window.location.search = `?city=${id}`);
   const mapCities: ChinaMapCity[] = cities.map((item) => {
     const [x, y] = projectLngLat(item.lng, item.lat);
-    return { key: String(item.id), name: item.name, zh: item.nameZh, x, y };
+    return { key: String(item.id), name: item.name, zh: item.nameZh, x, y, major: item.major, province: item.province };
   });
   const inUse = city ? city.photos + city.days + city.stays : 0;
 
