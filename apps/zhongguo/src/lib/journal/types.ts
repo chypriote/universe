@@ -42,6 +42,8 @@ export type TripCard = {
   route: Route;
   /** Thumbnail of the Trip Cover (landscape). */
   cover: string | null;
+  /** Focal point of the Trip Cover in percent, for `object-position`. */
+  coverFocus: FocalPoint;
   /** Thumbnails of the Highlight Photos after the Trip Cover, in order, up to 4 (portrait). */
   highlights: string[];
 };
@@ -213,6 +215,8 @@ export type AdminTripDetail = {
   /** Every Photo of the Trip, by date and name; those on no Day are in no Day's `photoIds`. */
   photos: AdminPhoto[];
   coverId: number | null;
+  /** Focal point of the Trip Cover in percent. */
+  coverFocus: FocalPoint;
   /** Ids of the 4 Highlight Photos, in order, or fewer while they are not all picked. */
   highlightIds: number[];
 };
@@ -332,6 +336,10 @@ export type SetTripCoverResult =
   | { ok: true }
   | { ok: false; error: 'unknown-trip' | 'unknown-photo' | 'not-landscape' };
 
+export type SetTripCoverFocusResult =
+  | { ok: true }
+  | { ok: false; error: 'unknown-trip' | 'no-cover' | 'invalid-focus' };
+
 export type SetHighlightPhotosResult =
   | { ok: true }
   | { ok: false; error: 'unknown-trip' | 'unknown-photo' | 'wrong-count' | 'duplicate-photo' | 'not-portrait' };
@@ -396,6 +404,8 @@ export type Journal = {
   setTripVisible(slug: string, visible: boolean): Promise<SetTripVisibleResult>;
   /** The Trip Cover: a landscape Photo of the Trip. */
   setTripCover(slug: string, photoId: number): Promise<SetTripCoverResult>;
+  /** The focal point of the Trip Cover, in percent (0 to 100); needs a chosen cover. */
+  setTripCoverFocus(slug: string, x: number, y: number): Promise<SetTripCoverFocusResult>;
   /** The 4 Highlight Photos in order: portrait Photos of the Trip. */
   setHighlightPhotos(slug: string, photoIds: number[]): Promise<SetHighlightPhotosResult>;
   /** A Hidden Day keeps its date and Photos; the visible Days are numbered again. */

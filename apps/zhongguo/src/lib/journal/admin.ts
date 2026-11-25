@@ -27,6 +27,7 @@ import type {
   SetDayPhotosResult,
   SetDayVisibleResult,
   SetHighlightPhotosResult,
+  SetTripCoverFocusResult,
   SetTripCoverResult,
   SetTripVisibleResult,
   PhotoChoice,
@@ -48,6 +49,7 @@ type AdminMethods = Pick<
   | 'getAdminTrip'
   | 'setTripVisible'
   | 'setTripCover'
+  | 'setTripCoverFocus'
   | 'setHighlightPhotos'
   | 'setDayVisible'
   | 'editDay'
@@ -189,9 +191,9 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   }
 
   async function tripBySlug(slug: string) {
-    return env.DB.prepare('SELECT id, slug, title, visible, cover_photo_id FROM trips WHERE slug = ?')
+    return env.DB.prepare('SELECT id, slug, title, visible, cover_photo_id, cover_focus_x, cover_focus_y FROM trips WHERE slug = ?')
       .bind(slug)
-      .first<{ id: number; slug: string; title: string; visible: number; cover_photo_id: number | null }>();
+      .first<{ id: number; slug: string; title: string; visible: number; cover_photo_id: number | null; cover_focus_x: number; cover_focus_y: number }>();
   }
 
   async function getAdminTrip(slug: string): Promise<AdminTripDetail | null> {
@@ -248,6 +250,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       days,
       photos: await loadPhotos(trip.id),
       coverId: trip.cover_photo_id,
+      coverFocus: { x: trip.cover_focus_x, y: trip.cover_focus_y },
       highlightIds: highlights.map((row) => row.photo_id),
     };
   }
@@ -277,7 +280,17 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     const [photo] = await photosOfTrip(trip.id, [photoId]);
     if (!photo) return { ok: false, error: 'unknown-photo' };
     if (!fits('trip-cover', photo)) return { ok: false, error: 'not-landscape' };
-    await env.DB.prepare('UPDATE trips SET cover_photo_id = ? WHERE id = ?').bind(photoId, trip.id).run();
+    await env.DB.prepare('UPDATE trips SET cover_photo_id = ?, cover_focus_x = 50, cover_focus_y = 50 WHERE id = ?').bind(photoId, trip.id).run();
+    return { ok: true };
+  }
+
+  async function setTripCoverFocus(slug: string, x: number, y: number): Promise<SetTripCoverFocusResult> {
+    const inRange = (value: number) => Number.isFinite(value) && value >= 0 && value <= 100;
+    if (!inRange(x) || !inRange(y)) return { ok: false, error: 'invalid-focus' };
+    const trip = await tripBySlug(slug);
+    if (!trip) return { ok: false, error: 'unknown-trip' };
+    if (trip.cover_photo_id === null) return { ok: false, error: 'no-cover' };
+    await env.DB.prepare('UPDATE trips SET cover_focus_x = ?, cover_focus_y = ? WHERE id = ?').bind(Math.round(x), Math.round(y), trip.id).run();
     return { ok: true };
   }
 
@@ -698,7 +711,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
           if (cover.kind === 'highlight') used.add(`${cover.tripSlug}:${id}`);
           statements.push(
             cover.kind === 'trip-cover'
-              ? env.DB.prepare('UPDATE trips SET cover_photo_id = ? WHERE slug = ?').bind(id, cover.tripSlug)
+              ? env.DB.prepare('UPDATE trips SET cover_photo_id = ?, cover_focus_x = 50, cover_focus_y = 50 WHERE slug = ?').bind(id, cover.tripSlug)
               : cover.kind === 'highlight'
                 ? env.DB.prepare(
                     'UPDATE highlight_photos SET photo_id = ? WHERE position = ? AND trip_id = (SELECT id FROM trips WHERE slug = ?)',
@@ -878,6 +891,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     setDayVisible,
     setHighlightPhotos,
     setTripCover,
+    setTripCoverFocus,
     setTripVisible,
     listAdminTrips, listAdminPhotos, listCities,
     listProvinces,

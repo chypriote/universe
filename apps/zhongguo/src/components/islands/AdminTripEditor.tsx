@@ -17,7 +17,8 @@ import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordi
 import { CSS } from '@dnd-kit/utilities';
 import { X } from 'lucide-react';
 import { useState } from 'react';
-import type { AdminCity, AdminDay, AdminPhoto, AdminTripDetail } from '@/lib/journal';
+import type { AdminCity, AdminDay, AdminPhoto, AdminTripDetail, FocalPoint } from '@/lib/journal';
+import { FocalFrame } from './FocalFrame';
 
 type Props = { trip: AdminTripDetail; cities: AdminCity[] };
 
@@ -27,6 +28,8 @@ const MESSAGES: Record<string, string> = {
   'wrong-count': 'There must be 4 Highlight Photos',
   'duplicate-photo': 'A Photo can be picked once only',
   'unknown-photo': 'A Photo is not in this Trip: reload the page',
+  'no-cover': 'The Trip has no Trip Cover: pick one first',
+  'invalid-focus': 'That position is not valid',
   'unknown-day': 'The Day no longer exists: reload the page',
   'unknown-city': 'Unknown City',
   'main-not-on-route': 'The main City must be one of the Cities of the Day',
@@ -163,17 +166,35 @@ function Highlights({ trip, onNotice }: { trip: AdminTripDetail; onNotice: (text
 
 function Cover({ trip, onNotice }: { trip: AdminTripDetail; onNotice: (text: string) => void }) {
   const [coverId, setCoverId] = useState(trip.coverId);
+  const [focus, setFocus] = useState<FocalPoint>(trip.coverFocus);
   const landscapes = trip.photos.filter((photo) => photo.orientation === 'landscape');
 
   async function pick(photoId: number) {
     const result = await save('PUT', `/api/admin/trips/${encodeURIComponent(trip.slug)}/cover`, { photoId });
-    if (result.ok) setCoverId(photoId);
+    if (result.ok) {
+      setCoverId(photoId);
+      setFocus({ x: 50, y: 50 });
+    }
     onNotice(result.ok ? 'Trip Cover saved' : message(result.error));
   }
+
+  async function reposition(next: FocalPoint) {
+    const result = await save('PUT', `/api/admin/trips/${encodeURIComponent(trip.slug)}/cover-focus`, next);
+    if (result.ok) setFocus(next);
+    onNotice(result.ok ? 'Trip Cover position saved' : message(result.error));
+  }
+
+  const cover = landscapes.find((photo) => photo.id === coverId);
 
   return (
     <section aria-labelledby="cover-title" className="flex flex-col gap-4">
       <h2 id="cover-title" className="font-serif text-2xl">Trip Cover</h2>
+      {cover && (
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">Drag the Photo to choose the part the Trip page shows.</p>
+          <FocalFrame className="aspect-[21/9] w-full max-w-3xl" photo={cover.thumb} focus={focus} onCommit={(next) => void reposition(next)} />
+        </div>
+      )}
       <ul className="flex max-h-72 flex-wrap gap-3 overflow-y-auto border border-border p-3">
         {landscapes.map((photo) => (
           <li key={photo.id} className="w-28">
