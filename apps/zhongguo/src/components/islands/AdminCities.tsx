@@ -116,7 +116,7 @@ export function AdminCities(props: Props) {
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[22rem_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[24rem_minmax(0,1fr)]">
         <div className="flex flex-col gap-6">
           <label className="flex flex-col gap-2">
             <span className="eyebrow text-muted-foreground">City</span>
@@ -153,8 +153,10 @@ export function AdminCities(props: Props) {
                   void save(event.currentTarget);
                 }}
               >
-                <input name="name" required defaultValue={city.name} aria-label="Name" className={field} />
-                <input name="nameZh" required defaultValue={city.nameZh} aria-label="Chinese name" className={field} />
+                <div className="grid grid-cols-2 gap-3">
+                  <input name="name" required defaultValue={city.name} aria-label="Name" className={field} />
+                  <input name="nameZh" required defaultValue={city.nameZh} aria-label="Chinese name" className={field} />
+                </div>
                 <select name="provinceId" required defaultValue={city.provinceId} aria-label="Province" className={field}>
                   {provinces.map((province) => (
                     <option key={province.id} value={province.id}>
@@ -162,8 +164,10 @@ export function AdminCities(props: Props) {
                     </option>
                   ))}
                 </select>
-                <input name="lng" required type="number" step="any" defaultValue={city.lng} aria-label="Longitude" className={field} />
-                <input name="lat" required type="number" step="any" defaultValue={city.lat} aria-label="Latitude" className={field} />
+                <div className="grid grid-cols-2 gap-3">
+                  <input name="lng" required type="number" step="any" defaultValue={city.lng} aria-label="Longitude" className={field} />
+                  <input name="lat" required type="number" step="any" defaultValue={city.lat} aria-label="Latitude" className={field} />
+                </div>
                 <label className="flex items-center gap-2 text-sm">
                   <input name="major" type="checkbox" defaultChecked={city.major} /> Major City
                 </label>
@@ -181,7 +185,7 @@ export function AdminCities(props: Props) {
             </section>
           )}
         </div>
-        <div className="w-full">
+        <div className="w-full min-w-0">
           <ChinaMap regions={[]} cities={mapCities} selectedCity={String(cityId)} onSelectCity={selectCity} preview={false} />
         </div>
       </div>
