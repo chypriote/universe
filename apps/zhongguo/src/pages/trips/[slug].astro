@@ -67,7 +67,7 @@ const jsonLd = {
             // The left column names the Cities of a Day when it moves on or spans several.
             const showCities = day.cities.length > 1 || trip.days[index - 1]?.cities.at(-1)?.name !== day.cities[0].name;
             return (
-              <section class="snap-start lg:grid lg:grid-cols-[14rem_1fr]" id={`day-${day.number}`}>
+              <section class="snap-start lg:grid lg:grid-cols-[14rem_minmax(0,1fr)]" id={`day-${day.number}`}>
                 <div class="hidden lg:block">
                   {showCities && (
                     <div class="space-y-2 pr-8">
