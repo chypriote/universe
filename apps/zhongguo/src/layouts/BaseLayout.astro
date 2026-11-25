@@ -6,6 +6,7 @@ import BackToTop from '@/components/BackToTop.astro';
 import SEOHead from '@/components/SEOHead.astro';
 import InkWash from '@/components/InkWash.astro';
 import BambooGrove from '@/components/BambooGrove.astro';
+import GrovePandas from '@/components/GrovePandas.astro';
 import { SITE } from '@/config/site';
 import { Font } from "astro:assets";
 
@@ -18,9 +19,11 @@ export interface Props {
   noIndex?: boolean;
   canonicalUrl?: string;
   lang?: string;
+  // Pandas on the grove's leaves (Guides and Trip pages).
+  pandas?: boolean;
 }
 
-const { title, description, image, type, jsonLd, noIndex, canonicalUrl, lang } = Astro.props;
+const { title, description, image, type, jsonLd, noIndex, canonicalUrl, lang, pandas } = Astro.props;
 const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
 ---
 
@@ -55,6 +58,7 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
       <!-- After the footer, so the stalks run on over the ink footer. -->
       <div id="bamboo-grove" class="pointer-events-none absolute inset-y-0 right-0 hidden min-[1400px]:block text-gold-ink" aria-hidden="true">
         <BambooGrove class="h-full" />
+        {pandas && <GrovePandas />}
       </div>
       <BackToTop />
 

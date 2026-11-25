@@ -42,7 +42,7 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title={trip.title} description={trip.description} jsonLd={jsonLd}>
+<BaseLayout title={trip.title} description={trip.description} jsonLd={jsonLd} pandas>
   <article>
     <header class="snap-start relative isolate flex justify-center overflow-hidden text-center">
       {cover && <img src={cover} alt="" class="absolute inset-0 -z-10 h-full w-full object-cover" style={`object-position: ${card.coverFocus.x}% ${card.coverFocus.y}%`} />}

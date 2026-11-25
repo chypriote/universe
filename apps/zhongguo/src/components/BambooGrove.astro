@@ -1,4 +1,5 @@
 ---
+import { stalks, spray, sprayAnchors, leafPeriod, dark } from './groveGeometry';
 // Gold bamboo stalks from the top of the page down to the footer, on the right edge. Their tops are cut at a node, as in ink paintings.
 // Stalks and leaf sprays are SVG patterns, so they repeat for any page height. Colour is currentColor.
 interface Props {
@@ -9,35 +10,10 @@ interface Props {
 
 const { class: className, leavesOnly = false } = Astro.props;
 
-// x and width in px from the left of the 160px strip; node = distance between nodes;
-// top = where the stalk is cut, minus 60px, so the tops do not end on one line.
-const stalks = [
-  { x: 62, width: 13, node: 124, offset: 30, top: 50 },
-  { x: 86, width: 11, node: 108, offset: 0, top: 0 },
-  { x: 106, width: 16, node: 136, offset: 70, top: 30 },
-  { x: 132, width: 12, node: 116, offset: 15, top: 80 },
-];
 const tip = 90;
 
 const width = 160;
-const dark = 'color-mix(in srgb, currentColor 72%, black)';
 const light = 'color-mix(in srgb, currentColor 80%, white)';
-
-// One leaf: a narrow blade from (0,0) along +x, length l, width w.
-const leaf = (l: number, w: number) =>
-  `M0,0 Q${l * 0.35},${-w} ${l},0 Q${l * 0.35},${w * 0.5} 0,0Z`;
-
-// A spray: leaves fanning from a node, pointing left or right and drooping.
-function spray(cx: number, cy: number, dir: 1 | -1, seed: number) {
-  const leaves = [];
-  const count = 4 + (seed % 2);
-  for (let i = 0; i < count; i++) {
-    const angle = dir === 1 ? 8 + i * 14 + (seed % 7) : 172 - i * 14 - (seed % 7);
-    const length = (dir === 1 ? 54 : 46) + ((seed * (i + 3)) % 22);
-    leaves.push({ d: leaf(length, 5 + (i % 2)), transform: `translate(${cx} ${cy}) rotate(${angle})`, fill: i % 2 ? dark : 'currentColor' });
-  }
-  return leaves;
-}
 
 // Crown: two full sprays below each cut top.
 const crown = stalks.flatMap((stalk, i) => {
@@ -49,13 +25,7 @@ const crown = stalks.flatMap((stalk, i) => {
   ];
 });
 
-const leafPeriod = 1400;
-// Three sprays per stalk in each period, staggered between stalks.
-const sprays = stalks.flatMap((stalk, i) =>
-  [0, 1, 2].flatMap((k) =>
-    spray(stalk.x + stalk.width / 2, 120 + k * 420 + i * 105, (i + k) % 2 ? 1 : -1, i * 3 + k + 3),
-  ),
-);
+const sprays = sprayAnchors.flatMap(({ cx, cy, dir, seed }) => spray(cx, cy, dir, seed));
 
 const denseLeafPeriod = 520;
 const denseSprays = stalks.flatMap((stalk, i) =>
