@@ -86,9 +86,9 @@ type PhotoRow = {
 };
 
 /** A City a Day is spent in. */
-type DayStopRow = { id: number; name: string; nameZh: string; lng: number; lat: number; major: boolean };
+type DayStopRow = { id: number; name: string; nameZh: string; lng: number; lat: number; major: boolean; main: boolean };
 
-/** The Cities of the Day in order: those it starts in or passes through, then its main City. */
+/** The Cities of the Day in travel order, the last being where it ends; just its main City for a Day with one. */
 type VisibleDay = DayRow & { number: number; stops: DayStopRow[] };
 
 /** A visible Trip with what pages need from it, numbered and ready. */
@@ -153,8 +153,9 @@ export function buildJournal(env: JournalEnv): Journal {
       lng: number;
       lat: number;
       major: number;
+      main: number;
     }>(
-      `SELECT day_cities.day_id, cities.id, cities.name, cities.name_zh, cities.lng, cities.lat, cities.major
+      `SELECT day_cities.day_id, cities.id, cities.name, cities.name_zh, cities.lng, cities.lat, cities.major, day_cities.main
        FROM day_cities
        JOIN days ON days.id = day_cities.day_id
        JOIN trips ON trips.id = days.trip_id
@@ -192,12 +193,13 @@ export function buildJournal(env: JournalEnv): Journal {
             .map((day, index) => ({
               ...day,
               number: index + 1,
-              stops: [
-                ...earlier
-                  .filter((row) => row.day_id === day.id)
-                  .map((row) => ({ id: row.id, name: row.name, nameZh: row.name_zh, lng: row.lng, lat: row.lat, major: row.major === 1 })),
-                { id: day.city_id, name: day.city, nameZh: day.city_zh, lng: day.lng, lat: day.lat, major: majors.has(day.city_id) },
-              ],
+              stops: (() => {
+                const route = earlier.filter((row) => row.day_id === day.id);
+                if (route.length === 0) {
+                  return [{ id: day.city_id, name: day.city, nameZh: day.city_zh, lng: day.lng, lat: day.lat, major: majors.has(day.city_id), main: true }];
+                }
+                return route.map((row) => ({ id: row.id, name: row.name, nameZh: row.name_zh, lng: row.lng, lat: row.lat, major: row.major === 1, main: row.main === 1 }));
+              })(),
             })),
           hiddenDayIds: new Set(tripDays.filter((day) => day.visible !== 1).map((day) => day.id)),
           photos: photos.filter((photo) => photo.trip_id === trip.id),
@@ -382,7 +384,7 @@ export function buildJournal(env: JournalEnv): Journal {
       title: day.title,
       notes: day.notes,
       city: day.city,
-      cities: day.stops.map((city) => ({ name: city.name, nameZh: city.nameZh, major: city.major })),
+      cities: day.stops.map((city) => ({ name: city.name, nameZh: city.nameZh, major: city.major, main: city.main })),
       activities: attractions.filter((row) => row.day_id === day.id).map((row) => placeActivity(row.name)),
       rides: rides
         .filter((row) => row.day_id === day.id)

@@ -339,16 +339,34 @@ describe('Edit Day', () => {
     expect((await journal.getAdminTrip('sichuan'))?.days[0]).toMatchObject({ city: { name: 'Lanzhou' }, province: 'Gansu' });
   });
 
-  it('sets the Cities the Day passes through before its main City, in order', async () => {
-    const { day1, lanzhou } = await sichuanTrip();
+  it('sets the Cities of the Day in travel order, one of them the main City', async () => {
+    const { day1, lanzhou, chengdu } = await sichuanTrip();
 
-    expect(await journal.editDay({ dayId: day1, alsoCityIds: [lanzhou] })).toEqual({ ok: true });
-    expect((await journal.getAdminTrip('sichuan'))?.days[0].alsoIn.map((city) => city.name)).toEqual(['Lanzhou']);
-    expect((await journal.getTrip('sichuan'))?.days[0].cities.map((city) => city.name)).toEqual(['Lanzhou', 'Chengdu']);
+    expect(await journal.editDay({ dayId: day1, cityId: chengdu, routeCityIds: [lanzhou, chengdu, lanzhou] })).toEqual({ ok: true });
+    expect((await journal.getAdminTrip('sichuan'))?.days[0].route.map((city) => city.name)).toEqual(['Lanzhou', 'Chengdu', 'Lanzhou']);
+    expect((await journal.getTrip('sichuan'))?.days[0].cities.map((city) => [city.name, city.main])).toEqual([
+      ['Lanzhou', false],
+      ['Chengdu', true],
+      ['Lanzhou', false],
+    ]);
 
-    await journal.editDay({ dayId: day1, alsoCityIds: [] });
-    expect((await journal.getAdminTrip('sichuan'))?.days[0].alsoIn).toEqual([]);
-    expect(await journal.editDay({ dayId: day1, alsoCityIds: [9999] })).toEqual({ ok: false, error: 'unknown-city' });
+    await journal.editDay({ dayId: day1, routeCityIds: [] });
+    expect((await journal.getAdminTrip('sichuan'))?.days[0].route).toEqual([]);
+    expect((await journal.getTrip('sichuan'))?.days[0].cities.map((city) => city.name)).toEqual(['Chengdu']);
+  });
+
+  it('moves the main City along a route, and refuses one that is not on it', async () => {
+    const { day1, lanzhou, chengdu } = await sichuanTrip();
+    await journal.editDay({ dayId: day1, cityId: chengdu, routeCityIds: [lanzhou, chengdu] });
+
+    expect(await journal.editDay({ dayId: day1, cityId: lanzhou })).toEqual({ ok: true });
+    expect((await journal.getTrip('sichuan'))?.days[0].cities.map((city) => [city.name, city.main])).toEqual([
+      ['Lanzhou', true],
+      ['Chengdu', false],
+    ]);
+
+    expect(await journal.editDay({ dayId: day1, routeCityIds: [chengdu, chengdu] })).toEqual({ ok: false, error: 'main-not-on-route' });
+    expect(await journal.editDay({ dayId: day1, routeCityIds: [9999, lanzhou] })).toEqual({ ok: false, error: 'unknown-city' });
   });
 
   it('refuses an unknown Day or City and a blank title, changing nothing', async () => {
