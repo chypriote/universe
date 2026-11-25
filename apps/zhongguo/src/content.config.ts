@@ -2,6 +2,7 @@ import { glob } from 'astro/loaders';
 import { defineCollection } from 'astro:content';
 import { z } from "astro/zod"
 import { d1Query } from '../scripts/d1.js';
+import { loadPlans } from '../scripts/plans.js';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
@@ -73,26 +74,40 @@ const docs = defineCollection({
   }),
 });
 
-const flights = defineCollection({
-  // From D1 at build time. Not the raw SerpApi response: only china.js's cache reads it.
+// The Flight prices page data, from D1 at build time. One entry; the page reads it with getEntry.
+const fares = defineCollection({
   loader: async () => {
-    const rows = await d1Query(
-      'SELECT airport, stops, price, outbound_date, return_date, searched_on, created_at FROM flight_searches'
-    );
-    return rows.map((row: Record<string, string | number | null>) => ({
-      id: `${row.airport}-${row.stops}-${row.outbound_date}-${row.return_date}`,
-      ...row,
-    }));
+    const [plans, searches, airports] = await Promise.all([
+      loadPlans(),
+      d1Query(
+        'SELECT airport, stops, price, outbound_date, return_date, searched_on, created_at FROM flight_searches WHERE price IS NOT NULL',
+      ),
+      d1Query('SELECT airports.code, cities.name FROM airports JOIN cities ON cities.id = airports.city_id'),
+    ]);
+    return [{ id: 'all', plans, searches, airports }];
   },
   schema: z.object({
-    id: z.string(),
-    airport: z.string(),
-    stops: z.enum(['stop', 'nostop']),
-    price: z.number().nullable(),
-    outbound_date: z.string(),
-    return_date: z.string(),
-    searched_on: z.string(),
-    created_at: z.string(),
+    plans: z.array(
+      z.object({
+        slug: z.string(),
+        title: z.string(),
+        zh: z.string(),
+        seasons: z.array(z.number()),
+        gateways: z.array(z.object({ code: z.string(), directWeekdays: z.number() })),
+      }),
+    ),
+    searches: z.array(
+      z.object({
+        airport: z.string(),
+        stops: z.enum(['stop', 'nostop']),
+        price: z.number(),
+        outbound_date: z.string(),
+        return_date: z.string(),
+        searched_on: z.string(),
+        created_at: z.string(),
+      }),
+    ),
+    airports: z.array(z.object({ code: z.string(), name: z.string() })),
   }),
 });
 
@@ -106,4 +121,4 @@ const guides = defineCollection({
   }),
 });
 
-export const collections = { blog, docs, flights, guides };
+export const collections = { blog, docs, fares, guides };

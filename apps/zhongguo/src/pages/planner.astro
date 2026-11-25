@@ -2,33 +2,145 @@
 import TempleHeader from '@/components/TempleHeader.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
-import { FlightPlanner } from '@/components/islands/FlightPlanner';
-import { getRecentFlightSearches } from '@/lib/flights.server';
+import { flightPrices } from '@/lib/flight-prices';
+import { getEntry } from 'astro:content';
 
-const flights = await getRecentFlightSearches();
+// Built from D1 at build time: rebuild after `npm run china`.
+const { plans, searches, airports } = (await getEntry('fares', 'all'))!.data;
+const today = new Date().toISOString().slice(0, 10);
+const { first, last, priced, unpriced } = flightPrices(
+  plans,
+  searches,
+  new Map(airports.map((airport) => [airport.code, airport.name])),
+  today,
+);
 
-const title = "Flight prices";
-const description = "The flight prices I track to China and nearby, as a table and a price calendar.";
+const utc = (date: string) => Date.parse(`${date}T00:00:00Z`);
+const start = utc(`${first.slice(0, 7)}-01`);
+const lastMonth = new Date(`${last.slice(0, 7)}-01T00:00:00Z`);
+const end = Date.UTC(lastMonth.getUTCFullYear(), lastMonth.getUTCMonth() + 1, 1);
+const x = (date: string) => ((utc(date) - start) / (end - start)) * 100;
+const months: { label: string; year: number }[] = [];
+for (let cursor = new Date(start); cursor.getTime() < end; cursor.setUTCMonth(cursor.getUTCMonth() + 1)) {
+  months.push({ label: cursor.toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' }), year: cursor.getUTCFullYear() });
+}
+const range = `${new Date(start).toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })} – ${lastMonth.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })}`;
+const day = (date: string, weekday = false) =>
+  new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { ...(weekday && { weekday: 'short' }), day: 'numeric', month: 'short', timeZone: 'UTC' });
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": title,
-  "description": description,
-  "url": Astro.url.href
-};
+const title = 'Flight prices';
+const description = 'When to leave for each trip I plan: the cheapest flights from Paris in the best months to go.';
+const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: Astro.url.href };
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
-  <TempleHeader zh="机票" title="Flight prices">
-    The fares I track to China and nearby. Recent searches on the left, a price calendar on the right.
-  </TempleHeader>
+  <TempleHeader zh="机票" title="Flight prices">{description}</TempleHeader>
   <div class="py-16 lg:py-24">
     <Container>
-
-      <FlightPlanner client:only="react" flights={flights}>
-        <p class="text-muted-foreground text-sm">Loading flight planner…</p>
-      </FlightPlanner>
+      {
+        priced.length === 0 ? (
+          <p class="text-muted-foreground">No prices yet.</p>
+        ) : (
+          <>
+            <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 mb-4">
+              <p class="eyebrow">{range}</p>
+              <p class="text-xs text-muted-foreground">
+                <span class="inline-block w-3 h-3 bg-gold/45 align-middle mr-1" /> good dates to leave ·{' '}
+                <span class="inline-block w-5 h-1.5 bg-primary align-middle mx-1" /> cheapest flights
+              </p>
+            </div>
+            <div class="grid lg:grid-cols-[13rem_1fr]">
+              <div class="hidden lg:block" />
+              <div class="grid border-b border-foreground" style={`grid-template-columns: repeat(${months.length}, minmax(0, 1fr))`}>
+                {months.map((month) => (
+                  <span class="eyebrow text-muted-foreground text-center py-2 !tracking-[0.12em]">
+                    <span class="sm:hidden">{month.label[0]}</span>
+                    <span class="hidden sm:inline">{month.label}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+            {priced.map((plan, index) => (
+              <button
+                type="button"
+                data-plan={plan.slug}
+                aria-pressed={index === 0 ? 'true' : 'false'}
+                aria-controls={`fares-${plan.slug}`}
+                class="group grid lg:grid-cols-[13rem_1fr] w-full text-left border-b border-border border-l-2 border-l-transparent aria-pressed:border-l-primary hover:bg-surface/50 aria-pressed:bg-surface/70 transition-colors"
+              >
+                <span class="relative overflow-hidden pt-4 pb-2 lg:py-4 pl-4 pr-3">
+                  {plan.zh && (
+                    <span lang="zh" aria-hidden="true" class="font-brush absolute right-1 -top-1 text-6xl leading-none text-gold-ink/[0.13]">
+                      {plan.zh}
+                    </span>
+                  )}
+                  <span class="relative block font-serif text-lg">{plan.title}</span>
+                  <span class="relative block text-xs text-muted-foreground">
+                    {plan.days} days · from €{plan.windows[0].price}
+                  </span>
+                </span>
+                <span class="relative block h-16 lg:h-auto opacity-60 group-aria-pressed:opacity-100 transition-opacity" aria-hidden="true">
+                  {plan.fits.map((fit) => (
+                    <span class="absolute inset-y-0 bg-gold/45" style={`left:${x(fit.from)}%;width:${x(fit.to) - x(fit.from) + (100 / ((end - start) / 864e5))}%`} />
+                  ))}
+                  {plan.windows.map((window, rank) => (
+                    <span class="absolute" style={`left:${x(window.outbound)}%;width:${x(window.return) - x(window.outbound)}%;top:${30 + rank * 18}%`}>
+                      <span class={`block h-1.5 ${rank === 0 ? 'bg-primary' : 'bg-primary/45'}`} />
+                      {rank === 0 && (
+                        <span class="absolute left-full ml-1.5 -top-1.5 text-xs font-semibold tabular-nums whitespace-nowrap">€{window.price}</span>
+                      )}
+                    </span>
+                  ))}
+                </span>
+              </button>
+            ))}
+            <div class="mt-10 grid lg:grid-cols-[13rem_1fr] gap-x-6 gap-y-3">
+              <p class="eyebrow">Cheapest dates</p>
+              <div aria-live="polite">
+                {priced.map((plan, index) => (
+                  <ol id={`fares-${plan.slug}`} data-fares={plan.slug} class:list={['divide-y divide-border/70 border-t border-border', index > 0 && 'hidden']}>
+                    {plan.windows.map((window, rank) => (
+                      <li class="py-3 grid grid-cols-[1fr_auto] items-baseline gap-x-6">
+                        <span>
+                          <span class="font-serif text-lg">
+                            {day(window.outbound, true)} – {day(window.return)}
+                          </span>
+                          <span class="block text-sm text-muted-foreground">
+                            {plan.title} · {window.city} {window.airport} · {window.direct ? 'direct' : '1 stop'} · price of {day(window.searchedOn)}
+                          </span>
+                        </span>
+                        <span class:list={['font-serif text-2xl tabular-nums', rank === 0 && 'text-secondary']}>€{window.price}</span>
+                      </li>
+                    ))}
+                  </ol>
+                ))}
+              </div>
+            </div>
+          </>
+        )
+      }
+      {
+        unpriced.length > 0 && (
+          <p class="mt-8 text-sm text-muted-foreground">
+            No prices yet: {unpriced.map((plan) => `${plan.title} (${plan.reason})`).join(', ')}.
+          </p>
+        )
+      }
     </Container>
   </div>
 </BaseLayout>
+
+<script>
+  // Hover, focus or tap a plan: its lane comes forward and its cheapest dates show below.
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-plan]');
+  const show = (slug: string) => {
+    buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.plan === slug)));
+    document.querySelectorAll<HTMLElement>('[data-fares]').forEach((list) => list.classList.toggle('hidden', list.dataset.fares !== slug));
+  };
+  buttons.forEach((button) => {
+    const slug = button.dataset.plan!;
+    button.addEventListener('mouseenter', () => show(slug));
+    button.addEventListener('focus', () => show(slug));
+    button.addEventListener('click', () => show(slug));
+  });
+</script>
