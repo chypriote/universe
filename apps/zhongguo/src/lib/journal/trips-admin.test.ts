@@ -135,9 +135,24 @@ describe('Trip on or off', () => {
     await addTrip({ slug: 'idea', start: null, end: null, visible: false });
 
     expect(await journal.listAdminTrips()).toEqual([
-      { slug: 'sichuan', title: 'sichuan', visible: true, hasDays: true },
-      { slug: 'idea', title: 'idea', visible: false, hasDays: false },
+      { slug: 'sichuan', title: 'sichuan', visible: true, hasDays: true, photos: 0 },
+      { slug: 'idea', title: 'idea', visible: false, hasDays: false, photos: 0 },
     ]);
+  });
+
+  it('counts every Photo of each Trip, on a hidden Day or a hidden Trip too', async () => {
+    const { trip, day2 } = await sichuanTrip();
+    await addPhoto(trip, '2025-03-01');
+    await addPhoto(trip, '2025-03-02');
+    await addPhoto(trip, '2025-03-02');
+    await journal.setDayVisible(day2, false);
+    const hidden = await addTrip({ slug: 'hidden', start: null, end: null, visible: false });
+    await addPhoto(hidden, '2025-04-01');
+    await addTrip({ slug: 'empty', start: null, end: null });
+
+    const photos = Object.fromEntries((await journal.listAdminTrips()).map((item) => [item.slug, item.photos]));
+
+    expect(photos).toEqual({ sichuan: 3, hidden: 1, empty: 0 });
   });
 
   it('changes every public read when switched off and on', async () => {

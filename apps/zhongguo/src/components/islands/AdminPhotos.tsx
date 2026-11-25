@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Camera } from 'lucide-react';
 import type {
   AdminCity,
   AdminPhoto,
@@ -170,20 +171,28 @@ export function AdminPhotos(props: Props) {
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-wrap items-end gap-4">
-        <label className="flex flex-col gap-2">
-          <span className="eyebrow text-muted-foreground">Trip</span>
-          <select
-            className={field}
-            value={tripSlug}
-            onChange={(event) => (window.location.search = `?trip=${encodeURIComponent(event.target.value)}`)}
-          >
+        <div className="flex flex-col gap-2">
+          <span id="trip-label" className="eyebrow text-muted-foreground">Trip</span>
+          <div role="group" aria-labelledby="trip-label" className="flex flex-wrap gap-2">
             {trips.map((trip) => (
-              <option key={trip.slug} value={trip.slug}>
-                {trip.title}
-              </option>
+              <button
+                key={trip.slug}
+                type="button"
+                aria-current={trip.slug === tripSlug ? 'true' : undefined}
+                onClick={() => {
+                  if (trip.slug !== tripSlug) window.location.search = `?trip=${encodeURIComponent(trip.slug)}`;
+                }}
+                className={`${button} aria-[current=true]:!border-primary aria-[current=true]:text-primary`}
+              >
+                <span className="inline-flex items-center gap-2 leading-none">
+            {trip.title} ·
+            <Camera aria-hidden="true" className="relative -top-[1.5px] size-4 shrink-0" />
+            <span className="leading-none" aria-label={`${trip.photos} ${trip.photos === 1 ? 'Photo' : 'Photos'}`}>{trip.photos}</span>
+          </span>
+              </button>
             ))}
-          </select>
-        </label>
+          </div>
+        </div>
       </div>
 
       <section aria-labelledby="upload-title" className="flex flex-col gap-4 border border-border p-6">

@@ -180,6 +180,8 @@ export type AdminTrip = {
   visible: boolean;
   /** A plan has no Days: it can only be switched on or off. */
   hasDays: boolean;
+  /** All Photos of the Trip, those on hidden Days included. */
+  photos: number;
 };
 
 /** A Day as the admin edits it. */

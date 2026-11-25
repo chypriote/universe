@@ -172,11 +172,12 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   }
 
   async function listAdminTrips(): Promise<AdminTrip[]> {
-    const rows = await all<{ slug: string; title: string; visible: number; days: number }>(
-      `SELECT slug, title, visible, (SELECT COUNT(*) FROM days WHERE days.trip_id = trips.id) AS days
+    const rows = await all<{ slug: string; title: string; visible: number; days: number; photos: number }>(
+      `SELECT slug, title, visible, (SELECT COUNT(*) FROM days WHERE days.trip_id = trips.id) AS days,
+         (SELECT COUNT(*) FROM photos WHERE photos.trip_id = trips.id) AS photos
        FROM trips ORDER BY start_date IS NULL, start_date DESC, slug`,
     );
-    return rows.map((row) => ({ slug: row.slug, title: row.title, visible: row.visible === 1, hasDays: row.days > 0 }));
+    return rows.map((row) => ({ slug: row.slug, title: row.title, visible: row.visible === 1, hasDays: row.days > 0, photos: row.photos }));
   }
 
   async function tripBySlug(slug: string) {
