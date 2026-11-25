@@ -135,7 +135,7 @@ const labels = [...visited]
     return (
       <g data-route-city={city.name} class="route-pin">
         <circle cx={x} cy={y} r={unit * 1.6} class="fill-transparent" />
-        <circle cx={x} cy={y} r={unit * (city.major ? 0.6 : 0.3)} class="route-dot fill-primary" />
+        <circle cx={x} cy={y} r={unit * (city.major ? 0.8 : 0.35)} class="route-dot fill-primary" />
         <text x={x} y={y - unit * 1.3} text-anchor="middle" font-size={unit * (compact ? 2.8 : 1.5)} class="route-name font-serif fill-foreground">{city.name}</text>
       </g>
     );
