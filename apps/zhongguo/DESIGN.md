@@ -13,6 +13,7 @@ Journal is the family for personal journal apps: Zhongguo today, maybe a food re
 **Art direction:**
 - Signature move: the square cinnabar seal (印章) with 中. It is the logo, the favicon and the main solid red block on a page.
 - Temple moves (2026-11-23): vertical brush calligraphy (`font-brush`) beside titles, ink bamboo, an ink-wash landscape (水墨: misty hills, plum branch, birds) behind the home hero and the index page headers. No red or dark bands: ink on paper. The footer is the one exception: it is inverted to ink.
+- Floating 汉字 (often): a faint brush (`font-brush`) Chinese word behind or beside the text it translates, in `gold-ink` at 20-25% opacity, `aria-hidden`, `lang="zh"`, large and allowed to overflow its box. Use it often: guide tiles, trip days, group headers, section headers. It is decoration only; the English text stays the heading and stays readable over it.
 - Second move: a sticky side panel (planner, day meta, guide navigation) that stays in view while the content scrolls.
 - Layout rhythm: wide white space, 12-column splits (7/5, 5/7), thin 1px rules between sections.
 - Imagery: own photographs from the trips (in R2, see `docs/photos.md`) and hand-drawn ink SVG (hills, bamboo, plum). No stock or AI images.
@@ -72,7 +73,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 - Titles (`font-serif`): Yuji Syuku (OFL), a brush-drawn serif. One weight, no italic: don't use `italic`, `font-semibold` or `font-bold` with it. Self-hosted in `public/fonts/yuji-syuku-latin.woff2`, subset to Latin (`pyftsubset YujiSyuku-Regular.ttf --unicodes="U+0020-007E,U+00A0-00FF,U+0152-0153,U+2010-2027,U+2030-203A,U+20AC,U+2122,U+2190-2193" --layout-features='*' --flavor=woff2`). Base letter spacing -0.03em.
 - Body and UI (`font-sans`): Inter.
 - Journey titles (`font-script`): Kaushan Script (OFL), self-hosted in `public/fonts/kaushan-script-latin.woff2` (Latin subset from `@fontsource/kaushan-script`). Only for the journey titles on the Journeys page, on one line from `lg`. Falls back to `font-serif`.
-- Brush calligraphy (`font-brush`): Ma Shan Zheng (OFL), self-hosted in `public/fonts/ma-shan-zheng-subset.woff2`. The file holds only the characters the site writes in it: 中国游记行程山河一路平安指南机票影集 plus every Chinese Province and City name in the Journal (`provinces` and `cities` tables). A City added later in the admin needs the file subset again, or its 汉字 falls back to the system serif. To add characters, subset again from the Google Fonts source with that text and the new characters, and replace the file:
+- Brush calligraphy (`font-brush`): Ma Shan Zheng (OFL), self-hosted in `public/fonts/ma-shan-zheng-subset.woff2`. The file holds only the characters the site writes in it: 中国游记行程山河一路平安指南机票影集 and the Guides page words (出发前旅途中遇险 and one word per guide) plus every Chinese Province and City name in the Journal (`provinces` and `cities` tables). A City added later in the admin needs the file subset again, or its 汉字 falls back to the system serif. To add characters, subset again from the Google Fonts source with that text and the new characters, and replace the file:
   `pyftsubset MaShanZheng-Regular.ttf --text="<characters>" --flavor=woff2 --output-file=public/fonts/ma-shan-zheng-subset.woff2`
   Use it for short decorative Chinese only (titles, plaques, province names on maps), with `lang="zh"`; vertical text uses the `vertical` utility.
 - Chinese (`font-cjk`): system serif (Noto Serif SC, Songti SC, SimSun). No webfont: a CJK font costs several MB. Mark Chinese text with `lang="zh"`; the base styles apply the font.
@@ -118,6 +119,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Trip day | Pattern | A timeline: the city name in caps on the left, over its 汉字 as a faint gold brush backdrop that may overflow to the left (shown when the city changes), a gold-ink line with a cinnabar dot, then gold day number, title, text, Activities (name, hanzi, pinyin), Food and the photo grid. On mobile the city is a line above the title | — |
 | Flight planner | Pattern | Flight table (1/3) + price calendar (2/3) | — |
 | Gallery | Pattern | Photo grid grouped by trip, lightbox | — |
+| Guide index | Pattern | The Guides page: guides in three groups by when you need them. Each group has a header (horizontal brush 汉字, a larger cinnabar eyebrow that translates it, a serif `text-h3` title; no lead, no numbers) over a grid of 1px-bordered tiles: title, description, "Read" link, and the guide's 汉字 faint at the top right behind the description (`text-gold-ink/[0.13]`, `/25` on hover). At most 3 columns (2×2, then 3, then one tile at one column's width, left-aligned). Guide tiles in `guides/index.astro` | — |
 | Guide page | Template | Long text with sticky side navigation | — |
 
 ### Panda drawing
