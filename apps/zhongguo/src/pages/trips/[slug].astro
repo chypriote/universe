@@ -73,8 +73,8 @@ const jsonLd = {
                     <div class="space-y-2 pr-8">
                       {day.cities.map((city) => (
                         <div class="relative isolate flex min-h-20 items-center justify-end">
-                          <span lang="zh" aria-hidden="true" class:list={['absolute right-0 top-1/2 -z-10 -translate-y-1/2 whitespace-nowrap font-brush leading-none text-gold-ink/25', city.main && city.major ? 'text-[4rem]' : 'text-[2.7rem]']}>{city.nameZh}</span>
-                          <span class:list={['eyebrow text-foreground', !(city.main && city.major) && 'text-[0.625rem]']}>{city.name}</span>
+                          <span lang="zh" aria-hidden="true" class:list={['absolute right-0 top-1/2 -z-10 -translate-y-1/2 whitespace-nowrap font-brush leading-none text-gold-ink/25', city.main ? 'text-[4rem]' : 'text-[2.7rem]']}>{city.nameZh}</span>
+                          <span class:list={['eyebrow text-foreground', !city.main && 'text-[0.625rem]']}>{city.name}</span>
                         </div>
                       ))}
                     </div>

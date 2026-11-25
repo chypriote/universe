@@ -384,7 +384,7 @@ export function buildJournal(env: JournalEnv): Journal {
       title: day.title,
       notes: day.notes,
       city: day.city,
-      cities: day.stops.map((city) => ({ name: city.name, nameZh: city.nameZh, major: city.major, main: city.main })),
+      cities: day.stops.map((city) => ({ name: city.name, nameZh: city.nameZh, main: city.main })),
       activities: attractions.filter((row) => row.day_id === day.id).map((row) => placeActivity(row.name)),
       rides: rides
         .filter((row) => row.day_id === day.id)
