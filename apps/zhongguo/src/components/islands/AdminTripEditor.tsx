@@ -15,6 +15,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { X } from 'lucide-react';
 import { useState } from 'react';
 import type { AdminCity, AdminDay, AdminPhoto, AdminTripDetail } from '@/lib/journal';
 
@@ -197,7 +198,7 @@ function Cover({ trip, onNotice }: { trip: AdminTripDetail; onNotice: (text: str
 const TRAY = 'tray';
 const dayKey = (id: number) => `day-${id}`;
 
-function SortablePhoto({ photo }: { photo: AdminPhoto }) {
+function SortablePhoto({ photo, onRemove }: { photo: AdminPhoto; onRemove?: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: photo.id });
   return (
     <li
@@ -205,14 +206,26 @@ function SortablePhoto({ photo }: { photo: AdminPhoto }) {
       style={{ transform: CSS.Transform.toString(transform), transition }}
       {...attributes}
       {...listeners}
-      className={`w-24 ${handle} ${isDragging ? 'opacity-40' : ''}`}
+      className={`relative w-24 ${handle} ${isDragging ? 'opacity-40' : ''}`}
     >
       <Thumb photo={photo} className="aspect-square w-full" />
+      {onRemove && (
+        <button
+          type="button"
+          aria-label={`Take ${photo.name} off the Day`}
+          className="absolute right-1 top-1 grid size-5 cursor-pointer place-items-center bg-background/90 text-foreground hover:text-primary"
+          onPointerDown={(event) => event.stopPropagation()}
+          onKeyDown={(event) => event.stopPropagation()}
+          onClick={onRemove}
+        >
+          <X aria-hidden="true" className="size-3.5" />
+        </button>
+      )}
     </li>
   );
 }
 
-function PhotoList({ id, photoIds, photos, label, dim = false }: { id: string; photoIds: number[]; photos: Map<number, AdminPhoto>; label: string; dim?: boolean }) {
+function PhotoList({ id, photoIds, photos, label, dim = false, onRemove }: { id: string; photoIds: number[]; photos: Map<number, AdminPhoto>; label: string; dim?: boolean; onRemove?: (photoId: number) => void }) {
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
     <SortableContext id={id} items={photoIds} strategy={rectSortingStrategy}>
@@ -222,7 +235,7 @@ function PhotoList({ id, photoIds, photos, label, dim = false }: { id: string; p
         className={`flex min-h-28 flex-wrap gap-3 border p-3 ${isOver ? 'border-primary' : 'border-border'} ${dim ? 'opacity-60' : ''}`}
       >
         {photoIds.map((photoId) => (
-          <SortablePhoto key={photoId} photo={photos.get(photoId)!} />
+          <SortablePhoto key={photoId} photo={photos.get(photoId)!} onRemove={onRemove && (() => onRemove(photoId))} />
         ))}
         {photoIds.length === 0 && <li className="self-center text-sm text-muted-foreground">Drop Photos here</li>}
       </ul>
@@ -356,6 +369,16 @@ function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: Admin
     if (changed.length > 0) onNotice('Photos saved');
   }
 
+  async function takeOff(day: AdminDay, photoId: number) {
+    const key = dayKey(day.id);
+    const next = { ...items, [key]: items[key].filter((id) => id !== photoId), [TRAY]: [...items[TRAY], photoId] };
+    const result = await save('PUT', `/api/admin/days/${day.id}/photos`, { photoIds: next[key] });
+    if (!result.ok) return onNotice(message(result.error));
+    setItems(next);
+    setBefore(next);
+    onNotice('Photo taken off the Day');
+  }
+
   async function toggle(day: AdminDay) {
     const result = await save('PATCH', `/api/admin/days/${day.id}`, { visible: !day.visible });
     if (!result.ok) return onNotice(message(result.error));
@@ -404,7 +427,7 @@ function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: Admin
               </button>
             </header>
             <DayText day={day} cities={cities} onChange={(patch) => patchDay(day.id, patch)} onNotice={onNotice} />
-            <PhotoList id={dayKey(day.id)} photoIds={items[dayKey(day.id)]} photos={photos} label={`Photos of ${day.date}`} dim={!day.visible} />
+            <PhotoList id={dayKey(day.id)} photoIds={items[dayKey(day.id)]} photos={photos} label={`Photos of ${day.date}`} dim={!day.visible} onRemove={(photoId) => void takeOff(day, photoId)} />
           </article>
         ))}
         <DragOverlay>{active !== null && photos.get(active) ? <Thumb photo={photos.get(active)!} className="aspect-square w-24" /> : null}</DragOverlay>
