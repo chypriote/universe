@@ -120,7 +120,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Flight planner | Pattern | Flight table (1/3) + price calendar (2/3) | — |
 | Gallery | Pattern | Photo grid grouped by trip, lightbox | — |
 | Guide index | Pattern | The Guides page: guides in three groups by when you need them. Each group has a header (horizontal brush 汉字, a larger cinnabar eyebrow that translates it, a serif `text-h3` title; no lead, no numbers) over a grid of 1px-bordered tiles: title, description, "Read" link, and the guide's 汉字 faint at the top right behind the description (`text-gold-ink/[0.13]`, `/25` on hover). At most 3 columns (2×2, then 3, then one tile at one column's width, left-aligned). Guide tiles in `guides/index.astro` | — |
-| Guide page | Template | Long text with sticky side navigation | — |
+| Guide page | Template | The page header (`TempleHeader`: brush 汉字, gold title, lead), then a sticky sidebar over the text. The sidebar lists all guides, each with its 汉字; the current one opens into its sections and sub-sections, and the section being read is cinnabar with its sub-sections open (mobile: sections only). Text (`.guide-prose` in `global.css`): a short gold bar above each section title, smaller sub-section titles, sharp 1px tables with gold caps headers, a callout with a cinnabar rule, gold hairline bullets; the remark TOC box is hidden. The end: the bamboo rule with the leaf on the left, then one plain "Next guide" link on the right over the next guide's faint 汉字 (no boxes, no Previous link) | — |
 
 ### Panda drawing
 

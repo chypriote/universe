@@ -317,6 +317,32 @@ body {
   --tw-prose-td-borders: var(--color-border);
 }
 
+/* Guide page text: gold bar over each section title, sharp tables, a callout with a cinnabar rule.
+   The remark TOC box is hidden because the sidebar lists the sections. */
+.guide-prose { color: var(--color-foreground); }
+.guide-prose > * + * { margin-top: 1.25em; }
+.guide-prose h2 { font-family: var(--font-serif); font-weight: 300; font-size: var(--text-h3); line-height: 1.25; margin-top: 4rem; scroll-margin-top: 7rem; }
+.guide-prose h2::before { content: ""; display: block; width: 2.5rem; height: 2px; background: var(--color-gold-ink); margin-bottom: 1.25rem; }
+.guide-prose p, .guide-prose li { font-size: 1.0625rem; line-height: 1.75; }
+.guide-prose a { color: var(--color-primary); text-underline-offset: 3px; }
+.guide-prose ul { list-style: none; padding: 0; }
+.guide-prose ul li { position: relative; padding-left: 1.5rem; margin-top: .6rem; }
+.guide-prose ul li::before { content: ""; position: absolute; left: 0; top: .8em; width: .5rem; height: 1px; background: var(--color-gold-ink); }
+.guide-prose .remark-toc { display: none; }
+.guide-prose table { display: table; border-collapse: collapse; width: 100%; border: 1px solid var(--color-border); font-size: .95rem; }
+.guide-prose th { text-align: left; font-weight: 400; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--color-gold-ink); background: var(--color-surface); padding: .8rem 1rem; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+.guide-prose td { padding: .8rem 1rem; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+.guide-prose tr:last-child td { border-bottom: 0; }
+.guide-prose td:first-child { font-family: var(--font-serif); font-size: 1.05rem; }
+@media (min-width: 640px) { .guide-prose td:first-child { white-space: nowrap; } }
+.guide-prose blockquote { position: relative; margin-left: 0; margin-right: 0; padding: 1.25rem 1.5rem 1.25rem 1.75rem; background: var(--color-surface); border-left: 2px solid var(--color-primary); font-style: normal; color: var(--color-foreground); }
+.guide-prose blockquote p { margin: 0; font-style: normal; font-weight: 400; }
+.guide-prose blockquote p::before, .guide-prose blockquote p::after { content: none; }
+.guide-prose strong { font-weight: 600; }
+@media (max-width: 639px) { .guide-prose table { display: block; overflow-x: auto; } }
+.guide-prose h3 { font-family: var(--font-serif); font-weight: 400; font-size: 1.375rem; line-height: 1.3; margin-top: 2.5rem; scroll-margin-top: 7rem; }
+.guide-prose h2 + p, .guide-prose h2 + h3 { margin-top: 1.25rem; }
+
 /* Prevent heading overflow on mobile and in flex containers */
 h1,
 h2,
