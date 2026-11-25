@@ -251,14 +251,14 @@ function SortablePhoto({ photo, onRemove }: { photo: AdminPhoto; onRemove?: () =
   );
 }
 
-function PhotoList({ id, photoIds, photos, label, dim = false, onRemove }: { id: string; photoIds: number[]; photos: Map<number, AdminPhoto>; label: string; dim?: boolean; onRemove?: (photoId: number) => void }) {
+function PhotoList({ id, photoIds, photos, label, onRemove }: { id: string; photoIds: number[]; photos: Map<number, AdminPhoto>; label: string; onRemove?: (photoId: number) => void }) {
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
     <SortableContext id={id} items={photoIds} strategy={rectSortingStrategy}>
       <ul
         ref={setNodeRef}
         aria-label={label}
-        className={`flex min-h-28 flex-wrap gap-3 border p-3 ${isOver ? 'border-primary' : 'border-border'} ${dim ? 'opacity-60' : ''}`}
+        className={`flex min-h-28 flex-wrap gap-3 border p-3 ${isOver ? 'border-primary' : 'border-border'}`}
       >
         {photoIds.map((photoId) => (
           <SortablePhoto key={photoId} photo={photos.get(photoId)!} onRemove={onRemove && (() => onRemove(photoId))} />
@@ -474,9 +474,9 @@ function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: Admin
           <PhotoList id={TRAY} photoIds={items[TRAY]} photos={photos} label="Photos on no Day" />
         </div>
         {days.map((day) => (
-          <article key={day.id} className="flex flex-col gap-4 border border-border p-6">
+          <article key={day.id} className={`flex flex-col gap-4 border border-border p-6 ${day.visible ? 'bg-background' : 'bg-surface'}`}>
             <DayText day={day} cities={cities} onChange={(patch) => patchDay(day.id, patch)} onNotice={onNotice} onToggle={() => void toggle(day)} />
-            <PhotoList id={dayKey(day.id)} photoIds={items[dayKey(day.id)]} photos={photos} label={`Photos of ${day.date}`} dim={!day.visible} onRemove={(photoId) => void takeOff(day, photoId)} />
+            <PhotoList id={dayKey(day.id)} photoIds={items[dayKey(day.id)]} photos={photos} label={`Photos of ${day.date}`} onRemove={(photoId) => void takeOff(day, photoId)} />
           </article>
         ))}
         <DragOverlay>{active !== null && photos.get(active) ? <Thumb photo={photos.get(active)!} className={`h-24 ${SHAPE[photos.get(active)!.orientation]}`} /> : null}</DragOverlay>
