@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { X } from 'lucide-react';
+import { Eye, EyeOff, X } from 'lucide-react';
 import { useState } from 'react';
 import type { AdminCity, AdminDay, AdminPhoto, AdminTripDetail, FocalPoint } from '@/lib/journal';
 import { FocalFrame } from './FocalFrame';
@@ -48,7 +48,7 @@ async function save(method: string, url: string, body: unknown): Promise<{ ok: b
 }
 
 const field = 'border border-border bg-surface px-3 py-2 text-sm text-foreground';
-const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
+const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:pointer-events-none disabled:opacity-40';
 // touch-action none keeps the page from scrolling while a Photo is dragged.
 const handle = 'cursor-grab touch-manipulation select-none';
 
@@ -313,8 +313,16 @@ function DayText({ day, cities, onChange, onNotice, onToggle }: { day: AdminDay;
           <button type="button" className={button} disabled={!dirty} onClick={() => void saveText()}>
             Save day
           </button>
-          <button type="button" role="switch" aria-checked={day.visible} aria-label={`Day of ${day.date} on`} className={button} onClick={onToggle}>
-            {day.visible ? 'Switch off' : 'Switch on'}
+          <button
+            type="button"
+            role="switch"
+            aria-checked={day.visible}
+            aria-label={`Day of ${day.date} on`}
+            title={day.visible ? 'Switch off' : 'Switch on'}
+            className={`${button} grid size-9 place-items-center !p-0`}
+            onClick={onToggle}
+          >
+            {day.visible ? <Eye aria-hidden="true" className="size-4" /> : <EyeOff aria-hidden="true" className="size-4" />}
           </button>
         </div>
       </header>
