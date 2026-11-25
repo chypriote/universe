@@ -178,6 +178,8 @@ export type AdminPhoto = {
 export type AdminTrip = {
   slug: string;
   title: string;
+  /** A report is a Trip that has ended; the rest are plans. */
+  type: TripType;
   visible: boolean;
   /** A plan has no Days: it can only be switched on or off. */
   hasDays: boolean;
