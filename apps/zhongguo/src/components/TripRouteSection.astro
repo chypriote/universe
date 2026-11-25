@@ -20,7 +20,7 @@ const { route, regions } = Astro.props;
           <span class="eyebrow">The route</span>
           <ol class="space-y-4 border-l border-gold-ink/50 pl-6">
             {route.stops.map((stop) => (
-              <li class="relative">
+              <li class="route-stop relative" data-route-city={stop.name}>
                 <span class="absolute -left-[1.85rem] top-2 h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true"></span>
                 <a href={`#day-${stop.days[0]}`} class="flex items-baseline gap-3 transition-colors hover:text-primary">
                   <span class="font-serif text-xl">{stop.name}</span>
@@ -35,3 +35,46 @@ const { route, regions } = Astro.props;
     </Container>
   </section>
 )}
+
+<script>
+  // Hovering a city in the list or its pin on the map lights up the other.
+  const sections = document.querySelectorAll('section:has([data-route-city])');
+  for (const section of sections) {
+    const items = section.querySelectorAll<HTMLElement>('[data-route-city]');
+    const light = (city: string | null) => {
+      for (const item of items) item.toggleAttribute('data-active', item.dataset.routeCity === city);
+    };
+    for (const item of items) {
+      item.addEventListener('mouseenter', () => light(item.dataset.routeCity ?? null));
+      item.addEventListener('mouseleave', () => light(null));
+    }
+  }
+</script>
+
+<style is:global>
+  .route-dot {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.15s;
+  }
+  .route-name {
+    opacity: 0;
+    transition: opacity 0.15s;
+    paint-order: stroke;
+    stroke: var(--color-background);
+    stroke-width: 3px;
+  }
+  .route-pin[data-active] .route-dot {
+    transform: scale(2.2);
+  }
+  .route-pin[data-active] .route-name {
+    opacity: 1;
+  }
+  .route-stop[data-active] {
+    color: var(--color-primary);
+  }
+  .route-stop[data-active] > a > span:first-of-type {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

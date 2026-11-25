@@ -24,8 +24,6 @@ const cards = await journal.listTripCards();
 const card = cards.find((entry) => entry.slug === slug)!;
 const cover = card.cover;
 
-const cityOfDay = (day: number) => trip.route.stops.find((stop) => stop.days.includes(day));
-
 const otherTrips = cards
   .filter((other) => other.slug !== slug)
   .sort(() => Math.random() - 0.5)
@@ -66,21 +64,27 @@ const jsonLd = {
       <Container>
         <div class="mx-auto max-w-6xl">
           {trip.days.map((day, index) => {
-            const city = cityOfDay(day.number);
-            const newCity = city && cityOfDay(trip.days[index - 1]?.number ?? 0)?.name !== city.name;
+            // The left column names the Cities of a Day when it moves on or spans several.
+            const showCities = day.cities.length > 1 || trip.days[index - 1]?.cities.at(-1)?.name !== day.cities[0].name;
             return (
               <section class="snap-start lg:grid lg:grid-cols-[14rem_1fr]" id={`day-${day.number}`}>
                 <div class="hidden lg:block">
-                  {newCity && (
-                    <div class="relative isolate flex min-h-20 items-center justify-end pr-8">
-                      <span lang="zh" aria-hidden="true" class="absolute right-6 top-1/2 -z-10 -translate-y-1/2 whitespace-nowrap font-brush text-[4rem] leading-none text-gold-ink/25">{city.nameZh}</span>
-                      <span class="eyebrow text-foreground">{city.name}</span>
+                  {showCities && (
+                    <div class="space-y-2 pr-8">
+                      {day.cities.map((city) => (
+                        <div class="relative isolate flex min-h-20 items-center justify-end">
+                          <span lang="zh" aria-hidden="true" class:list={['absolute right-0 top-1/2 -z-10 -translate-y-1/2 whitespace-nowrap font-brush leading-none text-gold-ink/25', city.major ? 'text-[4rem]' : 'text-[2.7rem]']}>{city.nameZh}</span>
+                          <span class:list={['eyebrow text-foreground', !city.major && 'text-[0.625rem]']}>{city.name}</span>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
                 <div class="relative space-y-6 border-gold-ink/50 pb-20 lg:border-l lg:pl-14 lg:pb-24">
                   <span class="absolute -left-[7px] top-3 hidden h-3.5 w-3.5 rounded-full bg-primary ring-4 ring-background lg:block" aria-hidden="true"></span>
-                  {city && <span class="eyebrow text-muted-foreground lg:hidden">{city.name} <span lang="zh">{city.nameZh}</span></span>}
+                  <span class="eyebrow text-muted-foreground lg:hidden">
+                    {day.cities.map((city, i) => <>{i > 0 && ' → '}{city.name} <span lang="zh">{city.nameZh}</span></>)}
+                  </span>
                   <div class="flex items-baseline gap-4">
                     <span class="font-serif text-5xl text-gold-ink">{String(day.number).padStart(2, '0')}</span>
                     <h2 class="text-h3 font-serif">{day.title}</h2>
@@ -124,6 +128,14 @@ const jsonLd = {
                   {day.photos.length > 0 && (
                     <TripDayGallery client:visible photos={day.photos} day={day.number} tripTitle={trip.title} />
                   )}
+
+                  {day.rides.map((ride) => (
+                    <div class="flex items-center gap-4">
+                      <span class="h-px flex-1 bg-gold-ink/40"></span>
+                      <span class="eyebrow text-primary">{ride}</span>
+                      <span class="h-px flex-1 bg-gold-ink/40"></span>
+                    </div>
+                  ))}
                 </div>
               </section>
             );

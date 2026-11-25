@@ -2,6 +2,7 @@
 import { env } from 'cloudflare:workers';
 
 const TABLES = [
+  'day_cities',
   'day_photos',
   'province_covers',
   'highlight_photos',
@@ -158,4 +159,11 @@ export async function setHighlight(tripId: number, position: number, photoId: nu
 
 export async function setProvinceCover(provinceId: number, photoId: number) {
   await insert('province_covers', { province_id: provinceId, photo_id: photoId });
+}
+
+/** The Cities a Day passes through before its main City, in order. */
+export async function setDayCities(dayId: number, cityIds: number[]) {
+  for (const [index, cityId] of cityIds.entries()) {
+    await insert('day_cities', { day_id: dayId, position: index + 1, city_id: cityId });
+  }
 }

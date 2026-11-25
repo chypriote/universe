@@ -1,7 +1,7 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
-import { addCity, addDay, addPhoto, addProvince, addTrip, resetDatabase, setProvinceCover } from './seed.test-helper';
+import { addCity, addDay, addPhoto, addProvince, addTrip, resetDatabase, setDayCities, setProvinceCover } from './seed.test-helper';
 
 const journal = createJournal(env);
 
@@ -118,7 +118,7 @@ describe('Delete City', () => {
 
   it('refuses a City with a Photo, a Day, a hotel or a restaurant, and an unknown City', async () => {
     const { sichuan, chengdu, first } = await world();
-    // Chengdu and Lanzhou, plus the two Cities made below.
+    // Chengdu and Lanzhou, plus the three Cities made below.
     const withPhoto = await addCity('Photo', sichuan);
     await addPhoto(first, '2024-03-01', { cityId: withPhoto });
     await addDay(first, chengdu, '2024-03-02', { position: 1 });
@@ -127,10 +127,13 @@ describe('Delete City', () => {
       .bind(first, withRestaurant)
       .run();
 
-    for (const id of [withPhoto, chengdu, withRestaurant]) {
+    const passedThrough = await addCity('Passed', sichuan);
+    await setDayCities(await addDay(first, chengdu, '2024-03-03', { position: 2 }), [passedThrough]);
+
+    for (const id of [withPhoto, chengdu, withRestaurant, passedThrough]) {
       expect(await journal.deleteCity(id)).toEqual({ ok: false, error: 'in-use' });
     }
     expect(await journal.deleteCity(9999)).toEqual({ ok: false, error: 'unknown-city' });
-    expect(await journal.listAdminCities()).toHaveLength(4);
+    expect(await journal.listAdminCities()).toHaveLength(5);
   });
 });
