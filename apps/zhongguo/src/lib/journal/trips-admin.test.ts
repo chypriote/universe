@@ -244,6 +244,36 @@ describe('Trip Cover', () => {
   });
 });
 
+describe('Trip Cover position', () => {
+  it('starts centred, is saved for the Trip page and resets when another Photo is picked', async () => {
+    const { trip } = await sichuanTrip();
+    const first = await addPhoto(trip, '2025-03-01', { name: 'a.jpg' });
+    const second = await addPhoto(trip, '2025-03-01', { name: 'b.jpg' });
+    await journal.setTripCover('sichuan', first);
+    expect((await journal.getAdminTrip('sichuan'))?.coverFocus).toEqual({ x: 50, y: 50 });
+
+    expect(await journal.setTripCoverFocus('sichuan', 20.4, 80)).toEqual({ ok: true });
+
+    expect((await journal.getAdminTrip('sichuan'))?.coverFocus).toEqual({ x: 20, y: 80 });
+    expect((await journal.listTripCards())[0].coverFocus).toEqual({ x: 20, y: 80 });
+
+    await journal.setTripCover('sichuan', second);
+    expect((await journal.getAdminTrip('sichuan'))?.coverFocus).toEqual({ x: 50, y: 50 });
+  });
+
+  it('refuses a position out of range, an unknown Trip and a Trip with no cover', async () => {
+    const { trip } = await sichuanTrip();
+    const photo = await addPhoto(trip, '2025-03-01');
+
+    expect(await journal.setTripCoverFocus('sichuan', 10, 10)).toEqual({ ok: false, error: 'no-cover' });
+    await journal.setTripCover('sichuan', photo);
+    expect(await journal.setTripCoverFocus('sichuan', -1, 10)).toEqual({ ok: false, error: 'invalid-focus' });
+    expect(await journal.setTripCoverFocus('sichuan', 10, 101)).toEqual({ ok: false, error: 'invalid-focus' });
+    expect(await journal.setTripCoverFocus('nope', 10, 10)).toEqual({ ok: false, error: 'unknown-trip' });
+    expect((await journal.getAdminTrip('sichuan'))?.coverFocus).toEqual({ x: 50, y: 50 });
+  });
+});
+
 describe('Highlight Photos', () => {
   async function portraits(count: number) {
     const { trip } = await sichuanTrip();

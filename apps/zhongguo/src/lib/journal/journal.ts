@@ -45,6 +45,8 @@ type TripRow = {
   start_date: string | null;
   end_date: string | null;
   cover_photo_id: number | null;
+  cover_focus_x: number;
+  cover_focus_y: number;
 };
 
 type DayRow = {
@@ -123,7 +125,7 @@ export function buildJournal(env: JournalEnv): Journal {
   /** The visible Trips (one of them when a slug is given), newest first. */
   async function loadTrips(slug?: string): Promise<LoadedTrip[]> {
     const trips = await all<TripRow>(
-      `SELECT id, slug, title, start_date, end_date, cover_photo_id FROM trips
+      `SELECT id, slug, title, start_date, end_date, cover_photo_id, cover_focus_x, cover_focus_y FROM trips
        WHERE visible = 1 ${slug === undefined ? '' : 'AND slug = ?'}`,
       ...(slug === undefined ? [] : [slug]),
     );
@@ -324,6 +326,7 @@ export function buildJournal(env: JournalEnv): Journal {
         provinces: [...new Set(trip.days.map((day) => day.province))],
         route: buildRoute(trip),
         cover: thumb(trip.cover_photo_id),
+        coverFocus: { x: trip.cover_focus_x, y: trip.cover_focus_y },
         highlights: highlights
           .filter((row) => row.trip_id === trip.id)
           .map((row) => thumb(row.photo_id))
