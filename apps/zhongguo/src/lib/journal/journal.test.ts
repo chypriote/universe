@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
 import {
   addCity,
+  setDayCities,
   setProvinceCover,
   setTripCover,
   setHighlight,
@@ -267,5 +268,53 @@ describe('Trip Card', () => {
       ['old', 'report'],
       ['idea', 'plan'],
     ]);
+  });
+});
+
+describe('A Day in several Cities', () => {
+  async function westTrip() {
+    const shaanxi = await addProvince('Shaanxi');
+    const qinghai = await addProvince('Qinghai');
+    const xian = await addCity('Xian', shaanxi, { major: true, nameZh: '西安', lng: 109, lat: 34 });
+    const xining = await addCity('Xining', qinghai, { major: true, nameZh: '西宁', lng: 102, lat: 37 });
+    const trip = await addTrip({ slug: 'west' });
+    await addDay(trip, xian, '2025-03-01', { position: 1 });
+    const travel = await addDay(trip, xining, '2025-03-02', { position: 2 });
+    await addDay(trip, xining, '2025-03-03', { position: 3 });
+    await setDayCities(travel, [xian]);
+    await env.DB.prepare(
+      "INSERT INTO day_train_rides (day_id, position, outgoing_city, destination_city, time_of_day, departure_time, arrival_time, duration_minutes) VALUES (?, 1, 'Xian', 'Xining', 'afternoon', '14:05', '19:50', 345)",
+    )
+      .bind(travel)
+      .run();
+  }
+
+  it('lists its Cities in order, the main City last', async () => {
+    await westTrip();
+
+    const page = await journal.getTrip('west');
+
+    expect(page!.days.map((day) => day.cities.map((city) => city.name))).toEqual([['Xian'], ['Xian', 'Xining'], ['Xining']]);
+    expect(page!.days[1].cities[1]).toEqual({ name: 'Xining', nameZh: '西宁', major: true });
+  });
+
+  it('counts for every one of its Cities in the route', async () => {
+    await westTrip();
+
+    const { route } = (await journal.getTrip('west'))!;
+
+    expect(route.stops.map((stop) => [stop.name, stop.dayLabel])).toEqual([
+      ['Xian', '1–2'],
+      ['Xining', '2–3'],
+    ]);
+  });
+
+  it('keeps its train rides out of the activities', async () => {
+    await westTrip();
+
+    const day = (await journal.getTrip('west'))!.days[1];
+
+    expect(day.activities).toEqual([]);
+    expect(day.rides).toEqual(['Xian → Xining (14:05 – 19:50)']);
   });
 });

@@ -57,7 +57,11 @@ export type TripDay = {
   title: string;
   notes: string;
   city: string;
+  /** Every City of the Day in order, its main City last. */
+  cities: { name: string; nameZh: string; major: boolean }[];
   activities: Activity[];
+  /** Its train rides, shown after the rest of the Day. */
+  rides: string[];
   food: string[];
   photos: Photo[];
 };
@@ -188,6 +192,8 @@ export type AdminDay = {
   title: string;
   notes: string;
   city: { id: number; name: string };
+  /** The Cities it starts in or passes through before its main City, in order. */
+  alsoIn: { id: number; name: string }[];
   province: string;
   /** Ids of its Photos, in order. */
   photoIds: number[];
@@ -333,6 +339,8 @@ export type EditDayInput = {
   notes?: string;
   /** The main City: the Day's Province follows. */
   cityId?: number;
+  /** The Cities it starts in or passes through before its main City, in order; replaces the old list. */
+  alsoCityIds?: number[];
 };
 
 export type EditDayResult = { ok: true } | { ok: false; error: 'unknown-day' | 'unknown-city' | 'invalid-title' };
