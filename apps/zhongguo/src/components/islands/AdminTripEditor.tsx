@@ -220,6 +220,9 @@ function Cover({ trip, onNotice }: { trip: AdminTripDetail; onNotice: (text: str
 const TRAY = 'tray';
 const dayKey = (id: number) => `day-${id}`;
 
+// Tiles share one height; the width follows the Photo shape.
+const SHAPE = { landscape: 'aspect-[4/3]', portrait: 'aspect-[3/4]', square: 'aspect-square' } as const;
+
 function SortablePhoto({ photo, onRemove }: { photo: AdminPhoto; onRemove?: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: photo.id });
   return (
@@ -228,9 +231,9 @@ function SortablePhoto({ photo, onRemove }: { photo: AdminPhoto; onRemove?: () =
       style={{ transform: CSS.Transform.toString(transform), transition }}
       {...attributes}
       {...listeners}
-      className={`relative w-24 ${handle} ${isDragging ? 'opacity-40' : ''}`}
+      className={`relative h-24 ${SHAPE[photo.orientation]} ${handle} ${isDragging ? 'opacity-40' : ''}`}
     >
-      <Thumb photo={photo} className="aspect-square w-full" />
+      <Thumb photo={photo} className="size-full" />
       {onRemove && (
         <button
           type="button"
@@ -463,7 +466,7 @@ function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: Admin
             <PhotoList id={dayKey(day.id)} photoIds={items[dayKey(day.id)]} photos={photos} label={`Photos of ${day.date}`} dim={!day.visible} onRemove={(photoId) => void takeOff(day, photoId)} />
           </article>
         ))}
-        <DragOverlay>{active !== null && photos.get(active) ? <Thumb photo={photos.get(active)!} className="aspect-square w-24" /> : null}</DragOverlay>
+        <DragOverlay>{active !== null && photos.get(active) ? <Thumb photo={photos.get(active)!} className={`h-24 ${SHAPE[photos.get(active)!.orientation]}`} /> : null}</DragOverlay>
       </DndContext>
     </section>
   );
