@@ -120,7 +120,10 @@ describe('Major Cities', () => {
 
     const page = await journal.getTrip('sichuan');
 
-    expect(page?.route.cities.map((city) => city.name)).toEqual(['Chengdu', 'Huanglong']);
+    expect(page?.route.cities.map((city) => [city.name, city.major])).toEqual([
+      ['Chengdu', true],
+      ['Huanglong', false],
+    ]);
     expect(page?.cities.map((city) => city.name)).toEqual(['Chengdu', 'Huanglong']);
   });
 });

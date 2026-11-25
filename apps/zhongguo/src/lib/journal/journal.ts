@@ -256,7 +256,7 @@ export function buildJournal(env: JournalEnv): Journal {
           if (!last.days.includes(day.number)) last.days.push(day.number);
           last.dayLabel = dayLabel(last.days);
         } else {
-          stops.push({ name: city.name, nameZh: city.nameZh, lng: city.lng, lat: city.lat, days: [day.number], dayLabel: String(day.number) });
+          stops.push({ name: city.name, nameZh: city.nameZh, lng: city.lng, lat: city.lat, major: city.major, days: [day.number], dayLabel: String(day.number) });
         }
         lastCityId = city.id;
       }
