@@ -2,20 +2,11 @@
 import TempleHeader from '@/components/TempleHeader.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
-import { flightPrices, type FlightSearch } from '@/lib/flight-prices';
-import { d1Query } from '../../scripts/d1.js';
-import { loadPlans } from '../../scripts/plans.js';
+import { flightPrices } from '@/lib/flight-prices';
+import { getEntry } from 'astro:content';
 
 // Built from D1 at build time: rebuild after `npm run china`.
-const [plans, searches, airports] = await Promise.all([
-  loadPlans(),
-  d1Query(
-    'SELECT airport, stops, price, outbound_date, return_date, searched_on, created_at FROM flight_searches WHERE price IS NOT NULL',
-  ) as Promise<FlightSearch[]>,
-  d1Query('SELECT airports.code, cities.name FROM airports JOIN cities ON cities.id = airports.city_id') as Promise<
-    { code: string; name: string }[]
-  >,
-]);
+const { plans, searches, airports } = (await getEntry('fares', 'all'))!.data;
 const today = new Date().toISOString().slice(0, 10);
 const { first, last, priced, unpriced } = flightPrices(
   plans,
