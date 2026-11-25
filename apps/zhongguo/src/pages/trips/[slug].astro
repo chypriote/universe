@@ -199,6 +199,10 @@ const jsonLd = {
     scroll-snap-type: y mandatory;
     scroll-padding-top: calc(var(--nav-height) + 7px);
   }
+  /* A fast scroll or a long wheel burst stops at each section instead of flying past it. */
+  .snap-start {
+    scroll-snap-stop: always;
+  }
   footer {
     scroll-snap-align: end;
   }
