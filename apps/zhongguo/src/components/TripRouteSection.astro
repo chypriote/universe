@@ -9,6 +9,7 @@ interface Props {
 }
 
 const { route, regions } = Astro.props;
+const listed = route.stops.filter((stop, i) => stop.major || i === 0 || i === route.stops.length - 1);
 ---
 
 {route.stops.length > 0 && (
@@ -19,7 +20,7 @@ const { route, regions } = Astro.props;
         <div class="space-y-6 lg:col-span-5 xl:pr-16">
           <span class="eyebrow">The route</span>
           <ol class="space-y-4 border-l border-gold-ink/50 pl-6">
-            {route.stops.map((stop) => (
+            {listed.map((stop) => (
               <li class="route-stop relative" data-route-city={stop.name}>
                 <span class="absolute -left-[1.85rem] top-2 h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true"></span>
                 <a href={`#day-${stop.days[0]}`} class="flex items-baseline gap-3 transition-colors hover:text-primary">
