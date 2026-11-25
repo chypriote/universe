@@ -17,7 +17,7 @@ const listed = route.stops.filter((stop, i) => stop.major || i === 0 || i === ro
     <Container>
       <div class="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
         <TripRegionsMap route={route} regions={regions} aspect={1.2} centered class="lg:col-span-7" />
-        <div class="space-y-6 lg:col-span-5 xl:pr-16">
+        <div class="space-y-6 lg:col-span-5 lg:self-start xl:pr-16">
           <span class="eyebrow">The route</span>
           <ol class="space-y-4 border-l border-gold-ink/50 pl-6">
             {listed.map((stop) => (
