@@ -313,6 +313,25 @@ describe('A Day in several Cities', () => {
     ]);
   });
 
+  it('lists the first and last stop and the Major Cities, joining a City that a Minor City split', async () => {
+    const yunnan = await addProvince('Yunnan');
+    const kunming = await addCity('Kunming', yunnan, { major: true });
+    const stop = await addCity('Stop', yunnan, { major: false });
+    const dali = await addCity('Dali', yunnan, { major: true });
+    const trip = await addTrip({ slug: 'south' });
+    await addDay(trip, kunming, '2025-03-01', { position: 1 });
+    await addDay(trip, stop, '2025-03-02', { position: 2 });
+    await addDay(trip, kunming, '2025-03-03', { position: 3 });
+    await addDay(trip, dali, '2025-03-04', { position: 4 });
+
+    const { route } = (await journal.getTrip('south'))!;
+
+    expect(route.listed.map((stop) => [stop.name, stop.dayLabel])).toEqual([
+      ['Kunming', '1, 3'],
+      ['Dali', '4'],
+    ]);
+  });
+
   it('keeps its train rides out of the activities', async () => {
     await westTrip();
 
