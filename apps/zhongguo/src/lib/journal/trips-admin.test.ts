@@ -135,8 +135,8 @@ describe('Trip on or off', () => {
     await addTrip({ slug: 'idea', start: null, end: null, visible: false });
 
     expect(await journal.listAdminTrips()).toEqual([
-      { slug: 'sichuan', title: 'sichuan', visible: true, hasDays: true, photos: 0 },
-      { slug: 'idea', title: 'idea', visible: false, hasDays: false, photos: 0 },
+      { slug: 'sichuan', title: 'sichuan', type: 'report', visible: true, hasDays: true, photos: 0 },
+      { slug: 'idea', title: 'idea', type: 'plan', visible: false, hasDays: false, photos: 0 },
     ]);
   });
 
