@@ -19,6 +19,7 @@ import { X } from 'lucide-react';
 import { useState } from 'react';
 import type { AdminCity, AdminDay, AdminPhoto, AdminTripDetail, FocalPoint } from '@/lib/journal';
 import { FocalFrame } from './FocalFrame';
+import { Toast } from './Toast';
 
 type Props = { trip: AdminTripDetail; cities: AdminCity[] };
 
@@ -476,11 +477,7 @@ export function AdminTripEditor({ trip, cities }: Props) {
   const [notice, setNotice] = useState('');
   return (
     <div className="flex flex-col gap-12">
-      {notice && (
-        <p role="status" className="sticky top-0 z-10 border border-border bg-background p-3 text-sm">
-          {notice}
-        </p>
-      )}
+      <Toast text={notice} onDone={() => setNotice('')} />
       <Cover trip={trip} onNotice={setNotice} />
       <Highlights trip={trip} onNotice={setNotice} />
       <Days trip={trip} cities={cities} onNotice={setNotice} />

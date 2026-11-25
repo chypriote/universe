@@ -3,6 +3,7 @@ import type { AdminCityDetail, AdminProvince, CityPhoto } from '@/lib/journal';
 import { ChinaMap, type ChinaMapCity } from './ChinaMap';
 import { projectLngLat } from '@/lib/china-map';
 import { AddCityForm, cityError, fieldClass as field } from './AddCityForm';
+import { Toast } from './Toast';
 
 type Props = {
   cities: AdminCityDetail[];
@@ -129,11 +130,7 @@ export function AdminCities(props: Props) {
             </select>
           </label>
 
-          {notice && (
-            <p role="status" className="text-sm">
-              {notice}
-            </p>
-          )}
+          <Toast text={notice} onDone={() => setNotice('')} />
           {warning && (
             <p role="alert" className="border border-error p-4 text-sm text-error">
               {warning}

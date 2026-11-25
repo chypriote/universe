@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { CoverCandidate, FocalPoint, VisitedProvince } from '@/lib/journal';
 import { FocalFrame } from './FocalFrame';
+import { Toast } from './Toast';
 
 const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
 
@@ -91,11 +92,7 @@ export function AdminHome(props: { provinces: VisitedProvince[] }) {
 
   return (
     <div>
-      {notice && (
-        <p role="status" className="mb-4 text-sm text-error">
-          {notice}
-        </p>
-      )}
+      <Toast text={notice} onDone={() => setNotice('')} />
       <ul className="divide-y divide-border border border-border">
         {provinces.map((province) => (
           <li key={province.name} className="p-4">
