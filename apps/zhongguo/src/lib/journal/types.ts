@@ -17,6 +17,7 @@ export type RouteStop = {
   nameZh: string;
   lng: number;
   lat: number;
+  major: boolean;
   /** Numbers of the visible Days spent there. */
   days: number[];
   dayLabel: string;
