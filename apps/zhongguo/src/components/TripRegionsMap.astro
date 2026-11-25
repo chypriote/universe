@@ -9,10 +9,12 @@ interface Props {
   aspect: number;
   // On a phone the map stands alone: no room kept for the title and photos, bigger labels.
   compact?: boolean;
+  // No title or photos over the map: frame the route in the middle.
+  centered?: boolean;
   class?: string;
 }
 
-const { route, regions, aspect, compact = false, class: className } = Astro.props;
+const { route, regions, aspect, compact = false, centered = false, class: className } = Astro.props;
 
 type Box = [number, number, number, number];
 const points = (d: string) => [...d.matchAll(/(-?[\d.]+)[ ,](-?[\d.]+)/g)].map((m) => [Number(m[1]), Number(m[2])]);
@@ -76,7 +78,7 @@ const minY = Math.min(...corners.map(([, y]) => y));
 const maxY = Math.max(...corners.map(([, y]) => y));
 // Extra room at the bottom and left: the photos and the title cover those edges of the map.
 const pad = 30;
-const [fx, fy] = compact ? [1, 1] : [0.75, 0.85];
+const [fx, fy] = compact || centered ? [1, 1] : [0.75, 0.85];
 const spanX = (maxX - minX + pad * 2) / fx;
 const spanY = (maxY - minY + pad * 2) / fy;
 const width = Math.max(spanX, spanY * aspect);
