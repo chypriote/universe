@@ -269,7 +269,7 @@ function PhotoList({ id, photoIds, photos, label, dim = false, onRemove }: { id:
   );
 }
 
-function DayText({ day, cities, onChange, onNotice }: { day: AdminDay; cities: AdminCity[]; onChange: (patch: Partial<AdminDay>) => void; onNotice: (text: string) => void }) {
+function DayText({ day, cities, onChange, onNotice, onToggle }: { day: AdminDay; cities: AdminCity[]; onChange: (patch: Partial<AdminDay>) => void; onNotice: (text: string) => void; onToggle: () => void }) {
   const [title, setTitle] = useState(day.title);
   const [notes, setNotes] = useState(day.notes);
   const initial = day.route.length > 0 ? day.route.map((city) => String(city.id)) : [String(day.city.id)];
@@ -304,6 +304,20 @@ function DayText({ day, cities, onChange, onNotice }: { day: AdminDay; cities: A
   }
 
   return (
+    <>
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <h3 className="font-serif text-xl">
+          {day.number === null ? 'Hidden' : `Day ${day.number}`} · {day.date} · {(day.route.length > 0 ? day.route : [day.city]).map((city) => city.name).join(' → ')}, {day.province}
+        </h3>
+        <div className="flex gap-3">
+          <button type="button" className={button} disabled={!dirty} onClick={() => void saveText()}>
+            Save day
+          </button>
+          <button type="button" role="switch" aria-checked={day.visible} aria-label={`Day of ${day.date} on`} className={button} onClick={onToggle}>
+            {day.visible ? 'Switch off' : 'Switch on'}
+          </button>
+        </div>
+      </header>
     <div className="flex flex-col gap-3">
       <input className={field} aria-label={`Title of ${day.date}`} value={title} onChange={(event) => setTitle(event.target.value)} />
       {rows.map((id, index) => (
@@ -341,10 +355,8 @@ function DayText({ day, cities, onChange, onNotice }: { day: AdminDay; cities: A
         Add a City
       </button>
       <textarea className={`${field} min-h-24`} aria-label={`Notes of ${day.date}`} value={notes} onChange={(event) => setNotes(event.target.value)} />
-      <button type="button" className={`${button} self-start`} disabled={!dirty} onClick={() => void saveText()}>
-        Save text
-      </button>
     </div>
+    </>
   );
 }
 
@@ -455,15 +467,7 @@ function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: Admin
         </div>
         {days.map((day) => (
           <article key={day.id} className="flex flex-col gap-4 border border-border p-6">
-            <header className="flex flex-wrap items-center justify-between gap-3">
-              <h3 className="font-serif text-xl">
-                {day.number === null ? 'Hidden' : `Day ${day.number}`} · {day.date} · {(day.route.length > 0 ? day.route : [day.city]).map((city) => city.name).join(' → ')}, {day.province}
-              </h3>
-              <button type="button" role="switch" aria-checked={day.visible} aria-label={`Day of ${day.date} on`} className={button} onClick={() => void toggle(day)}>
-                {day.visible ? 'Switch off' : 'Switch on'}
-              </button>
-            </header>
-            <DayText day={day} cities={cities} onChange={(patch) => patchDay(day.id, patch)} onNotice={onNotice} />
+            <DayText day={day} cities={cities} onChange={(patch) => patchDay(day.id, patch)} onNotice={onNotice} onToggle={() => void toggle(day)} />
             <PhotoList id={dayKey(day.id)} photoIds={items[dayKey(day.id)]} photos={photos} label={`Photos of ${day.date}`} dim={!day.visible} onRemove={(photoId) => void takeOff(day, photoId)} />
           </article>
         ))}
