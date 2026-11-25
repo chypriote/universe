@@ -61,7 +61,8 @@ export type TripDay = {
   notes: string;
   city: string;
   /** Every City of the Day in travel order, the last being where it ends. */
-  cities: { name: string; nameZh: string; major: boolean; main: boolean }[];
+  /** The main City is where most of the Day was spent: the page shows it larger. */
+  cities: { name: string; nameZh: string; main: boolean }[];
   activities: Activity[];
   /** Its train rides, shown after the rest of the Day. */
   rides: string[];

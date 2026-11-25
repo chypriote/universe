@@ -298,7 +298,7 @@ describe('A Day in several Cities', () => {
     const page = await journal.getTrip('west');
 
     expect(page!.days.map((day) => day.cities.map((city) => city.name))).toEqual([['Xian'], ['Xian', 'Xining'], ['Xining']]);
-    expect(page!.days[1].cities[1]).toEqual({ name: 'Xining', nameZh: '西宁', major: true, main: true });
+    expect(page!.days[1].cities[1]).toEqual({ name: 'Xining', nameZh: '西宁', main: true });
     expect(page!.days[1].cities[0].main).toBe(false);
   });
 
