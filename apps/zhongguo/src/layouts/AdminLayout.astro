@@ -28,6 +28,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
         <a href={nav ? '/admin' : '/admin/login'} class="flex items-center gap-3 no-underline text-foreground">
           <span class="seal w-8 text-base" aria-hidden="true">中</span>
           <span class="font-serif text-xl tracking-tight">Admin</span>
+          {title !== 'Admin' && <span class="font-serif text-xl tracking-tight text-muted-foreground">/ {title}</span>}
         </a>
         {nav && (
           <form method="post" action="/admin/logout">
@@ -37,7 +38,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
       </Container>
     </header>
     <main>
-      <Container class="py-12 lg:py-16">
+      <Container class="py-8 lg:py-10">
         {nav ? (
           <div class="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
             <nav aria-label="Admin" class="lg:sticky lg:top-8 lg:self-start">

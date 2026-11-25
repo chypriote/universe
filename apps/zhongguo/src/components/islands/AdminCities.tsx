@@ -110,78 +110,89 @@ export function AdminCities(props: Props) {
   const selectCity = (id: string) => (window.location.search = `?city=${id}`);
   const mapCities: ChinaMapCity[] = cities.map((item) => {
     const [x, y] = projectLngLat(item.lng, item.lat);
-    return { key: String(item.id), name: item.name, zh: item.nameZh, x, y };
+    return { key: String(item.id), name: item.name, zh: item.nameZh, x, y, major: item.major, province: item.province };
   });
   const inUse = city ? city.photos + city.days + city.stays : 0;
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-        <label className="flex flex-col gap-2 self-start">
-          <span className="eyebrow text-muted-foreground">City</span>
-          <select className={field} value={cityId} onChange={(event) => selectCity(event.target.value)}>
-            {cities.map((candidate) => (
-              <option key={candidate.id} value={candidate.id}>
-                {candidate.name} ({candidate.province}) · {candidate.photos} Photos
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="w-full max-w-xl">
+      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[24rem_minmax(0,1fr)]">
+        <div className="flex flex-col gap-6">
+          <label className="flex flex-col gap-2">
+            <span className="eyebrow text-muted-foreground">City</span>
+            <select className={field} value={cityId} onChange={(event) => selectCity(event.target.value)}>
+              {cities.map((candidate) => (
+                <option key={candidate.id} value={candidate.id}>
+                  {candidate.name} ({candidate.province}) · {candidate.photos} Photos
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {notice && (
+            <p role="status" className="text-sm">
+              {notice}
+            </p>
+          )}
+          {warning && (
+            <p role="alert" className="border border-error p-4 text-sm text-error">
+              {warning}
+            </p>
+          )}
+
+          {city && (
+            <section aria-labelledby="city-title" className="flex flex-col gap-4 border border-border p-6">
+              <h2 id="city-title" className="font-serif text-2xl">
+                {city.name} <span lang="zh">{city.nameZh}</span>
+              </h2>
+              <form
+                key={`${city.id}-${city.name}-${city.provinceId}`}
+                className="flex flex-col gap-3"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void save(event.currentTarget);
+                }}
+              >
+                <div className="grid grid-cols-2 gap-3">
+                  <input name="name" required defaultValue={city.name} aria-label="Name" className={field} />
+                  <input name="nameZh" required defaultValue={city.nameZh} aria-label="Chinese name" className={field} />
+                </div>
+                <select name="provinceId" required defaultValue={city.provinceId} aria-label="Province" className={field}>
+                  {provinces.map((province) => (
+                    <option key={province.id} value={province.id}>
+                      {province.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="grid grid-cols-2 gap-3">
+                  <input name="lng" required type="number" step="any" defaultValue={city.lng} aria-label="Longitude" className={field} />
+                  <input name="lat" required type="number" step="any" defaultValue={city.lat} aria-label="Latitude" className={field} />
+                </div>
+                <label className="flex items-center gap-2 text-sm">
+                  <input name="major" type="checkbox" defaultChecked={city.major} /> Major City
+                </label>
+                <button type="submit" className={`${button} self-start`} disabled={busy}>
+                  Save
+                </button>
+              </form>
+              <p className="text-sm text-muted-foreground">
+                Used by {city.photos} Photos, {city.days} Days, {city.stays} hotels and restaurants.
+              </p>
+              <button type="button" className={`${button} self-start text-error`} disabled={busy || inUse > 0} onClick={() => void remove()}>
+                Delete
+              </button>
+              {inUse > 0 && <p className="text-sm text-muted-foreground">Move its Photos and Days to another City first.</p>}
+            </section>
+          )}
+        </div>
+        <div className="w-full min-w-0">
           <ChinaMap regions={[]} cities={mapCities} selectedCity={String(cityId)} onSelectCity={selectCity} preview={false} />
         </div>
       </div>
 
-      {notice && (
-        <p role="status" className="text-sm">
-          {notice}
-        </p>
-      )}
-      {warning && (
-        <p role="alert" className="border border-error p-4 text-sm text-error">
-          {warning}
-        </p>
-      )}
-
       {city && (
-        <section aria-labelledby="city-title" className="flex flex-col gap-4 border border-border p-6">
-          <h2 id="city-title" className="font-serif text-2xl">
-            {city.name} <span lang="zh">{city.nameZh}</span>
-          </h2>
-          <form
-            key={`${city.id}-${city.name}-${city.provinceId}`}
-            className="flex flex-wrap items-end gap-3"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void save(event.currentTarget);
-            }}
-          >
-            <input name="name" required defaultValue={city.name} aria-label="Name" className={field} />
-            <input name="nameZh" required defaultValue={city.nameZh} aria-label="Chinese name" className={field} />
-            <select name="provinceId" required defaultValue={city.provinceId} aria-label="Province" className={field}>
-              {provinces.map((province) => (
-                <option key={province.id} value={province.id}>
-                  {province.name}
-                </option>
-              ))}
-            </select>
-            <input name="lng" required type="number" step="any" defaultValue={city.lng} aria-label="Longitude" className={field} />
-            <input name="lat" required type="number" step="any" defaultValue={city.lat} aria-label="Latitude" className={field} />
-            <label className="flex items-center gap-2 text-sm">
-              <input name="major" type="checkbox" defaultChecked={city.major} /> Major City
-            </label>
-            <button type="submit" className={button} disabled={busy}>
-              Save
-            </button>
-          </form>
-          <p className="text-sm text-muted-foreground">
-            Used by {city.photos} Photos, {city.days} Days, {city.stays} hotels and restaurants.
-          </p>
-          <button type="button" className={`${button} self-start text-error`} disabled={busy || inUse > 0} onClick={() => void remove()}>
-            Delete
-          </button>
-          {inUse > 0 && <p className="text-sm text-muted-foreground">Move its Photos and Days to another City first.</p>}
-      <details className="border-t border-border pt-4">
+        <section aria-label="Photos" className="border border-border p-6">
+      <details>
         <summary className="cursor-pointer font-serif text-2xl">Photos</summary>
         <div className="mt-4">
         <div className="flex flex-wrap items-center justify-between gap-3">

@@ -13,15 +13,13 @@ const [cities, provinces] = await Promise.all([journal.listCities(), journal.lis
 ---
 
 <AdminLayout title="Photos">
-  <p class="eyebrow">Admin</p>
-  <h1 class="mt-3 font-serif text-h1">Photos</h1>
   {
     tripSlug ? (
-      <div class="mt-10">
+      <div>
         <AdminPhotos client:load trips={trips} tripSlug={tripSlug} photos={photos} cities={cities} provinces={provinces} />
       </div>
     ) : (
-      <p class="mt-6 text-muted-foreground">There is no Trip yet.</p>
+      <p class="text-muted-foreground">There is no Trip yet.</p>
     )
   }
 </AdminLayout>
