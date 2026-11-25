@@ -276,7 +276,19 @@ export function buildJournal(env: JournalEnv): Journal {
       known.days.push(...stop.days.filter((number) => !known.days.includes(number)));
       known.dayLabel = dayLabel(known.days);
     }
-    return { stops, cities: [...cities.values()] };
+    // The route list: first, last and Major City stops, with a City that a Minor City split in two joined back.
+    const listed: RouteStop[] = [];
+    stops.forEach((stop, i) => {
+      if (!stop.major && i !== 0 && i !== stops.length - 1) return;
+      const before = listed.at(-1);
+      if (before?.name !== stop.name) {
+        listed.push({ ...stop, days: [...stop.days] });
+        return;
+      }
+      before.days.push(...stop.days.filter((number) => !before.days.includes(number)));
+      before.dayLabel = dayLabel(before.days);
+    });
+    return { stops, cities: [...cities.values()], listed };
   }
 
   function formatDates(trip: TripRow): string {

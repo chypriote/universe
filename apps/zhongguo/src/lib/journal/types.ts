@@ -28,6 +28,8 @@ export type Route = {
   stops: RouteStop[];
   /** Every City once, for the pins. */
   cities: RouteStop[];
+  /** The route list: the first and last stop and the Major Cities, a City split by a Minor City joined. */
+  listed: RouteStop[];
 };
 
 export type TripCard = {
