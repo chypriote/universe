@@ -1,0 +1,55 @@
+---
+// Pandas that rest on the grove's leaves (and one that climbs a stalk), picked at random in the browser on every visit.
+// Inside the grove's box, so the coordinates are the grove's: 160px strip, page height. Poses: src/assets/pandas.
+import { leafPerches, climbX } from './groveGeometry';
+
+const files = import.meta.glob<{ default: ImageMetadata }>('@/assets/pandas/*.svg', { eager: true });
+const poses: Record<string, string> = {};
+for (const [path, mod] of Object.entries(files)) poses[path.split('panda-')[1].replace('.svg', '')] = mod.default.src;
+
+// Standing poses are taller (viewBox 200 × 270) than sitting ones (200 × 236). The jump is left out: it does not rest.
+const resting = [
+  ['sit', 236], ['hug', 236], ['drink', 236], ['shoot', 236], ['hat', 236],
+  ['backpack', 270], ['binoculars', 270], ['staff', 270],
+].map(([name, height]) => ({ src: poses[name as string], height }));
+
+const data = { resting, hang: poses.hang, climbX, perches: leafPerches(10) };
+---
+
+<div id="grove-pandas" data-grove-pandas={JSON.stringify(data)} class="absolute inset-0"></div>
+<script is:inline>
+  (() => {
+    const box = document.getElementById('grove-pandas');
+    if (!box || getComputedStyle(box).display === 'none' || !box.offsetParent) return;
+    const { resting, hang, climbX, perches } = JSON.parse(box.dataset.grovePandas);
+    const footer = document.querySelector('footer');
+    const limit = (footer ? footer.offsetTop : document.body.scrollHeight) - 150;
+    const gap = 480;
+    const picked = [];
+    const free = (y) => picked.every((p) => Math.abs(p - y) >= gap);
+    const shuffle = (list) => list.map((v) => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map((e) => e[1]);
+
+    const add = (src, left, top, width) => {
+      const img = new Image();
+      img.alt = '';
+      img.src = src;
+      img.style.cssText = `position:absolute;left:${left}px;top:${top}px;width:${width}px;max-width:none`;
+      box.appendChild(img);
+    };
+
+    const width = 58;
+    for (const perch of shuffle(perches.filter((p) => p.y > 420 && p.y < limit))) {
+      if (picked.length >= 4) break;
+      if (!free(perch.y)) continue;
+      picked.push(perch.y);
+      const pose = resting[Math.floor(Math.random() * resting.length)];
+      const height = (width * pose.height) / 200;
+      add(pose.src, perch.x - width / 2, perch.y - height * 0.96, width);
+    }
+
+    // The hanging panda's stalk (centre at 177 of 200) lies over the grove's leftmost stalk.
+    const hangWidth = 100;
+    const hangY = 500 + Math.random() * Math.max(0, limit - 800);
+    if (limit > 800 && free(hangY + 80)) add(hang, climbX - (177 * hangWidth) / 200, hangY, hangWidth);
+  })();
+</script>
