@@ -297,105 +297,107 @@ export function AdminPhotos(props: Props) {
         </section>
       )}
 
-      <section aria-labelledby="edit-title" className="flex flex-col gap-4 border border-border p-6">
-        <h2 id="edit-title" className="font-serif text-2xl">{ids.length} selected</h2>
-        <div className="flex flex-wrap items-end gap-3">
-          <select className={field} aria-label="City" value={editCity} onChange={(event) => setEditCity(event.target.value)}>
-            <option value="">City</option>
-            {cityOptions}
-          </select>
-          <button type="button" className={button} disabled={busy || ids.length === 0 || !editCity} onClick={() => void edit({ place: { cityId: Number(editCity) } })}>
-            Set City
+      <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-6">
+        <section aria-labelledby="edit-title" className="flex max-h-[calc(100vh-2rem)] flex-col gap-4 overflow-y-auto border border-border p-6 lg:sticky lg:top-4 lg:col-start-2 lg:row-start-1">
+          <h2 id="edit-title" className="font-serif text-2xl">{ids.length} selected</h2>
+          <div className="flex flex-wrap items-end gap-3">
+            <select className={field} aria-label="City" value={editCity} onChange={(event) => setEditCity(event.target.value)}>
+              <option value="">City</option>
+              {cityOptions}
+            </select>
+            <button type="button" className={button} disabled={busy || ids.length === 0 || !editCity} onClick={() => void edit({ place: { cityId: Number(editCity) } })}>
+              Set City
+            </button>
+          </div>
+          <div className="flex flex-wrap items-end gap-3">
+            <select className={field} aria-label="Province of an On the way photo" value={editProvince} onChange={(event) => setEditProvince(event.target.value)}>
+              <option value="">No Province</option>
+              {provinces.map((province) => (
+                <option key={province.id} value={province.id}>
+                  {province.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className={button}
+              disabled={busy || ids.length === 0}
+              onClick={() => void edit({ place: { onTheWay: true, ...(editProvince && { provinceId: Number(editProvince) }) } })}
+            >
+              Mark On the way
+            </button>
+          </div>
+          <div className="flex flex-wrap items-end gap-3">
+            <input type="date" className={field} aria-label="Date" value={editDate} onChange={(event) => setEditDate(event.target.value)} />
+            <button type="button" className={button} disabled={busy || ids.length === 0 || !editDate} onClick={() => void edit({ date: editDate })}>
+              Set date
+            </button>
+          </div>
+          <div className="flex flex-wrap items-end gap-3">
+            <input
+              className={field}
+              aria-label="Title"
+              placeholder={single?.title ?? 'Title'}
+              value={editTitle}
+              disabled={!single}
+              onChange={(event) => setEditTitle(event.target.value)}
+            />
+            <button type="button" className={button} disabled={busy || !single} onClick={() => void edit({ title: editTitle })}>
+              Save title (empty clears)
+            </button>
+          </div>
+          <button type="button" className={`${button} self-start text-error`} disabled={busy || ids.length === 0} onClick={confirmDelete}>
+            Delete
           </button>
-        </div>
-        <div className="flex flex-wrap items-end gap-3">
-          <select className={field} aria-label="Province of an On the way photo" value={editProvince} onChange={(event) => setEditProvince(event.target.value)}>
-            <option value="">No Province</option>
-            {provinces.map((province) => (
-              <option key={province.id} value={province.id}>
-                {province.name}
-              </option>
-            ))}
-          </select>
-          <button
-            type="button"
-            className={button}
-            disabled={busy || ids.length === 0}
-            onClick={() => void edit({ place: { onTheWay: true, ...(editProvince && { provinceId: Number(editProvince) }) } })}
-          >
-            Mark On the way
-          </button>
-        </div>
-        <div className="flex flex-wrap items-end gap-3">
-          <input type="date" className={field} aria-label="Date" value={editDate} onChange={(event) => setEditDate(event.target.value)} />
-          <button type="button" className={button} disabled={busy || ids.length === 0 || !editDate} onClick={() => void edit({ date: editDate })}>
-            Set date
-          </button>
-        </div>
-        <div className="flex flex-wrap items-end gap-3">
-          <input
-            className={field}
-            aria-label="Title"
-            placeholder={single?.title ?? 'Title'}
-            value={editTitle}
-            disabled={!single}
-            onChange={(event) => setEditTitle(event.target.value)}
-          />
-          <button type="button" className={button} disabled={busy || !single} onClick={() => void edit({ title: editTitle })}>
-            Save title (empty clears)
-          </button>
-        </div>
-        <button type="button" className={`${button} self-start text-error`} disabled={busy || ids.length === 0} onClick={confirmDelete}>
-          Delete
-        </button>
-      </section>
+        </section>
 
-      <section aria-labelledby="photos-title">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="photos-title" className="font-serif text-2xl">{photos.length} Photos</h2>
-          <button
-            type="button"
-            className={button}
-            onClick={() => setSelected(selected.size === photos.length ? new Set() : new Set(photos.map((photo) => photo.id)))}
-          >
-            {selected.size === photos.length && photos.length > 0 ? 'Select none' : 'Select all'}
-          </button>
-        </div>
-        <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {photos.map((photo) => (
-            <li key={photo.id} className={`border p-2 ${selected.has(photo.id) ? 'border-primary' : 'border-border'}`}>
-              <label className="flex cursor-pointer flex-col gap-2">
-                <img src={photo.thumb} alt="" loading="lazy" className="aspect-[4/3] w-full bg-surface object-cover" />
-                <span className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={selected.has(photo.id)}
-                    aria-label={`Select ${photo.name}`}
-                    onChange={() =>
-                      setSelected((current) => {
-                        const next = new Set(current);
-                        if (!next.delete(photo.id)) next.add(photo.id);
-                        return next;
-                      })
-                    }
-                  />
-                  <span className="truncate font-medium">{photo.name}</span>
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {photo.date} · {photo.day === null ? 'no Day' : `Day ${photo.day}`}
-                  <br />
-                  {photo.onTheWay ? `On the way${photo.province ? `, ${photo.province}` : ''}` : `${photo.city?.name}, ${photo.province}`}
-                  {photo.title && (
-                    <>
-                      <br />“{photo.title}”
-                    </>
-                  )}
-                </span>
-              </label>
-            </li>
-          ))}
-        </ul>
-      </section>
+        <section aria-labelledby="photos-title" className="lg:col-start-1 lg:row-start-1">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 id="photos-title" className="font-serif text-2xl">{photos.length} Photos</h2>
+            <button
+              type="button"
+              className={button}
+              onClick={() => setSelected(selected.size === photos.length ? new Set() : new Set(photos.map((photo) => photo.id)))}
+            >
+              {selected.size === photos.length && photos.length > 0 ? 'Select none' : 'Select all'}
+            </button>
+          </div>
+          <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {photos.map((photo) => (
+              <li key={photo.id} className={`border p-2 ${selected.has(photo.id) ? 'border-primary' : 'border-border'}`}>
+                <label className="flex cursor-pointer flex-col gap-2">
+                  <img src={photo.thumb} alt="" loading="lazy" className="aspect-[4/3] w-full bg-surface object-cover" />
+                  <span className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={selected.has(photo.id)}
+                      aria-label={`Select ${photo.name}`}
+                      onChange={() =>
+                        setSelected((current) => {
+                          const next = new Set(current);
+                          if (!next.delete(photo.id)) next.add(photo.id);
+                          return next;
+                        })
+                      }
+                    />
+                    <span className="truncate font-medium">{photo.name}</span>
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {photo.date} · {photo.day === null ? 'no Day' : `Day ${photo.day}`}
+                    <br />
+                    {photo.onTheWay ? `On the way${photo.province ? `, ${photo.province}` : ''}` : `${photo.city?.name}, ${photo.province}`}
+                    {photo.title && (
+                      <>
+                        <br />“{photo.title}”
+                      </>
+                    )}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
 
       <AddCityForm
         provinces={provinces}
