@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { AdminCity, AdminProvince } from '@/lib/journal';
 
 const ERRORS: Record<string, string> = {
@@ -22,6 +23,31 @@ type Props = {
 
 /** The "Add a City" form, on the Photos and Cities pages. */
 export function AddCityForm({ provinces, onAdded, onError }: Props) {
+  const [looking, setLooking] = useState(false);
+
+  /** Fills latitude and longitude from OpenStreetMap Nominatim (free, one request per click). */
+  async function lookUp(form: HTMLFormElement) {
+    const name = String(new FormData(form).get('name') ?? '').trim();
+    const provinceId = Number(new FormData(form).get('provinceId'));
+    const province = provinces.find((p) => p.id === provinceId)?.name;
+    if (!name) return onError('Enter the City name first');
+    setLooking(true);
+    try {
+      const query = [name, province, 'China'].filter(Boolean).join(', ');
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`,
+      );
+      const [place] = (await response.json()) as { lat: string; lon: string }[];
+      if (!place) return onError('No place found for this City');
+      (form.elements.namedItem('lat') as HTMLInputElement).value = Number(place.lat).toFixed(4);
+      (form.elements.namedItem('lng') as HTMLInputElement).value = Number(place.lon).toFixed(4);
+    } catch {
+      onError('Coordinate lookup failed');
+    } finally {
+      setLooking(false);
+    }
+  }
+
   async function add(form: HTMLFormElement) {
     const data = new FormData(form);
     const response = await fetch('/api/admin/cities', {
@@ -49,32 +75,41 @@ export function AddCityForm({ provinces, onAdded, onError }: Props) {
     <details className="border border-border p-6">
       <summary className="cursor-pointer font-serif text-2xl">Add a City</summary>
       <form
-        className="mt-4 flex flex-wrap items-end gap-3"
+        className="mt-4 flex flex-col gap-3"
         onSubmit={(event) => {
           event.preventDefault();
           void add(event.currentTarget);
         }}
       >
-        <input name="name" required placeholder="Name" aria-label="Name" className={fieldClass} />
-        <input name="nameZh" required placeholder="中文名" aria-label="Chinese name" className={fieldClass} />
-        <select name="provinceId" required aria-label="Province" className={fieldClass} defaultValue="">
-          <option value="" disabled>
-            Province
-          </option>
-          {provinces.map((province) => (
-            <option key={province.id} value={province.id}>
-              {province.name}
+        <div className="flex flex-wrap gap-3">
+          <input name="name" required placeholder="Name" aria-label="Name" className={fieldClass} />
+          <input name="nameZh" required placeholder="中文名" aria-label="Chinese name" className={fieldClass} />
+          <select name="provinceId" required aria-label="Province" className={fieldClass} defaultValue="">
+            <option value="" disabled>
+              Province
             </option>
-          ))}
-        </select>
-        <input name="lng" required type="number" step="any" placeholder="Longitude" aria-label="Longitude" className={fieldClass} />
-        <input name="lat" required type="number" step="any" placeholder="Latitude" aria-label="Latitude" className={fieldClass} />
-        <label className="flex items-center gap-2 text-sm">
-          <input name="major" type="checkbox" /> Major City
-        </label>
-        <button type="submit" className={button}>
-          Add City
-        </button>
+            {provinces.map((province) => (
+              <option key={province.id} value={province.id}>
+                {province.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <input name="lat" required type="number" step="any" placeholder="Latitude" aria-label="Latitude" className={fieldClass} />
+          <input name="lng" required type="number" step="any" placeholder="Longitude" aria-label="Longitude" className={fieldClass} />
+          <button type="button" disabled={looking} className={button} onClick={(event) => void lookUp(event.currentTarget.form!)}>
+            {looking ? 'Looking up…' : 'Look up'}
+          </button>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="flex items-center gap-2 text-sm">
+            <input name="major" type="checkbox" /> Major City
+          </label>
+          <button type="submit" className={button}>
+            Add City
+          </button>
+        </div>
       </form>
     </details>
   );
