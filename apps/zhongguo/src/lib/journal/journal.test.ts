@@ -284,7 +284,7 @@ describe('A Day in several Cities', () => {
     await addDay(trip, xian, '2025-03-01', { position: 1 });
     const travel = await addDay(trip, xining, '2025-03-02', { position: 2 });
     await addDay(trip, xining, '2025-03-03', { position: 3 });
-    await setDayCities(travel, [xian]);
+    await setDayCities(travel, [xian, xining], xining);
     await env.DB.prepare(
       "INSERT INTO day_train_rides (day_id, position, outgoing_city, destination_city, time_of_day, departure_time, arrival_time, duration_minutes) VALUES (?, 1, 'Xian', 'Xining', 'afternoon', '14:05', '19:50', 345)",
     )
@@ -292,13 +292,14 @@ describe('A Day in several Cities', () => {
       .run();
   }
 
-  it('lists its Cities in order, the main City last', async () => {
+  it('lists its Cities in travel order and flags the main one', async () => {
     await westTrip();
 
     const page = await journal.getTrip('west');
 
     expect(page!.days.map((day) => day.cities.map((city) => city.name))).toEqual([['Xian'], ['Xian', 'Xining'], ['Xining']]);
-    expect(page!.days[1].cities[1]).toEqual({ name: 'Xining', nameZh: '西宁', major: true });
+    expect(page!.days[1].cities[1]).toEqual({ name: 'Xining', nameZh: '西宁', major: true, main: true });
+    expect(page!.days[1].cities[0].main).toBe(false);
   });
 
   it('counts for every one of its Cities in the route', async () => {
