@@ -122,6 +122,8 @@ export function ChinaMap({
   const regionByName = new Map(regions.map((region) => [region.name, region]));
   const cityByKey = new Map(cities.map((city) => [city.key, city]));
 
+  const hoverCityData = cityByKey.get(hoverCity ?? '');
+
   const shown =
     cityByKey.get(hoverCity ?? '') ??
     regionByName.get(hoverRegion ?? '') ??
@@ -175,10 +177,11 @@ export function ChinaMap({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+      <div className={`relative ${preview ? 'lg:col-span-6' : 'lg:col-span-12'}`}>
       <svg
         viewBox={`0 0 ${CHINA_MAP.width} ${CHINA_MAP.height}`}
         ref={svgRef}
-        className={`w-full h-auto ${preview ? 'lg:col-span-6' : 'lg:col-span-12'}`}
+        className="w-full h-auto"
         role="group"
         aria-label="Map of China"
       >
@@ -275,7 +278,6 @@ export function ChinaMap({
                 }
               }}
             >
-              <title>{city.province ? `${city.name}, ${city.province}` : `${city.name} ${city.zh}`}</title>
               <circle cx={city.x} cy={city.y} r={16} className="fill-transparent" />
               <circle
                 cx={city.x}
@@ -287,6 +289,19 @@ export function ChinaMap({
           );
         })}
       </svg>
+      {hoverCityData && (
+        <div
+          role="tooltip"
+          className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+          style={{
+            left: `${(hoverCityData.x / CHINA_MAP.width) * 100}%`,
+            top: `calc(${(hoverCityData.y / CHINA_MAP.height) * 100}% - 14px)`,
+          }}
+        >
+          {hoverCityData.province ? `${hoverCityData.name}, ${hoverCityData.province}` : `${hoverCityData.name} ${hoverCityData.zh}`}
+        </div>
+      )}
+      </div>
 
       {preview && (
       <div className="lg:col-span-6" aria-live="polite">
