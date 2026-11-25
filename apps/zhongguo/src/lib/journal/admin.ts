@@ -8,6 +8,11 @@ import type {
   AdminCityDetail,
   AdminPhoto,
   AdminProvince,
+  AdminProvinceDetail,
+  DeleteAirportResult,
+  SetAirportInput,
+  SetAirportResult,
+  SetProvinceSeasonResult,
   AdminDay,
   AdminTrip,
   AdminTripDetail,
@@ -66,7 +71,27 @@ type AdminMethods = Pick<
   | 'listCityPhotos'
   | 'editCity'
   | 'deleteCity'
+  | 'listAdminProvinces'
+  | 'setProvinceSeason'
+  | 'setAirport'
+  | 'deleteAirport'
 >;
+
+/** The numbers 1…size whose bit (number − 1) is set. */
+function fromBits(bits: number, size: number): number[] {
+  return Array.from({ length: size }, (_, index) => index + 1).filter((number) => bits & (1 << (number - 1)));
+}
+
+/** The bits of a list of numbers from 1 to size; null when one is out of range or not whole. */
+function toBits(numbers: unknown, size: number): number | null {
+  if (!Array.isArray(numbers)) return null;
+  let bits = 0;
+  for (const number of numbers) {
+    if (!Number.isInteger(number) || number < 1 || number > size) return null;
+    bits |= 1 << (number - 1);
+  }
+  return bits;
+}
 
 type PhotoRow = {
   id: number;
@@ -872,13 +897,74 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     const city = (await listAdminCities()).find((candidate) => candidate.id === cityId);
     if (!city) return { ok: false, error: 'unknown-city' };
     if (city.photos + city.days + city.stays > 0) return { ok: false, error: 'in-use' };
-    await env.DB.prepare('DELETE FROM cities WHERE id = ?').bind(cityId).run();
+    await env.DB.batch([
+      env.DB.prepare('DELETE FROM airports WHERE city_id = ?').bind(cityId),
+      env.DB.prepare('DELETE FROM cities WHERE id = ?').bind(cityId),
+    ]);
     return { ok: true };
+  }
+
+  async function listAdminProvinces(): Promise<AdminProvinceDetail[]> {
+    const [provinces, cities, airports] = await Promise.all([
+      all<{ id: number; name: string; name_zh: string; season: number }>('SELECT id, name, name_zh, season FROM provinces ORDER BY name'),
+      all<{ id: number; name: string; name_zh: string; province_id: number }>('SELECT id, name, name_zh, province_id FROM cities ORDER BY name'),
+      all<{ code: string; city_id: number; direct_weekdays: number }>('SELECT code, city_id, direct_weekdays FROM airports ORDER BY code'),
+    ]);
+    return provinces.map((province) => ({
+      id: province.id,
+      name: province.name,
+      nameZh: province.name_zh,
+      season: fromBits(province.season, 12),
+      cities: cities
+        .filter((city) => city.province_id === province.id)
+        .map((city) => ({
+          id: city.id,
+          name: city.name,
+          nameZh: city.name_zh,
+          airports: airports
+            .filter((airport) => airport.city_id === city.id)
+            .map((airport) => ({ code: airport.code, directWeekdays: fromBits(airport.direct_weekdays, 7) })),
+        })),
+    }));
+  }
+
+  async function setProvinceSeason(provinceId: number, months: number[]): Promise<SetProvinceSeasonResult> {
+    const season = toBits(months, 12);
+    if (season === null) return { ok: false, error: 'invalid-months' };
+    const result = await env.DB.prepare('UPDATE provinces SET season = ? WHERE id = ?').bind(season, provinceId).run();
+    return result.meta.changes === 0 ? { ok: false, error: 'unknown-province' } : { ok: true };
+  }
+
+  async function setAirport(input: SetAirportInput): Promise<SetAirportResult> {
+    const code = typeof input.code === 'string' ? input.code.trim().toUpperCase() : '';
+    if (!/^[A-Z]{3}$/.test(code)) return { ok: false, error: 'invalid-code' };
+    const weekdays = toBits(input.directWeekdays, 7);
+    if (weekdays === null) return { ok: false, error: 'invalid-weekdays' };
+    if (!(await env.DB.prepare('SELECT id FROM cities WHERE id = ?').bind(input.cityId).first())) {
+      return { ok: false, error: 'unknown-city' };
+    }
+    const owner = await env.DB.prepare('SELECT city_id FROM airports WHERE code = ?').bind(code).first<{ city_id: number }>();
+    if (owner && owner.city_id !== input.cityId) return { ok: false, error: 'code-taken' };
+    await env.DB.prepare(
+      'INSERT INTO airports (code, city_id, direct_weekdays) VALUES (?, ?, ?) ON CONFLICT (code) DO UPDATE SET direct_weekdays = excluded.direct_weekdays',
+    )
+      .bind(code, input.cityId, weekdays)
+      .run();
+    return { ok: true, airport: { code, directWeekdays: fromBits(weekdays, 7) } };
+  }
+
+  async function deleteAirport(code: string): Promise<DeleteAirportResult> {
+    const result = await env.DB.prepare('DELETE FROM airports WHERE code = ?').bind(code.toUpperCase()).run();
+    return result.meta.changes === 0 ? { ok: false, error: 'unknown-airport' } : { ok: true };
   }
 
   return {
     addCity,
     deleteCity,
+    listAdminProvinces,
+    setProvinceSeason,
+    setAirport,
+    deleteAirport,
     editCity,
     listAdminCities,
     listCityPhotos,

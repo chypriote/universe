@@ -2,6 +2,7 @@
 import { env } from 'cloudflare:workers';
 
 const TABLES = [
+  'airports',
   'day_cities',
   'day_photos',
   'province_covers',

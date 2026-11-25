@@ -53,8 +53,26 @@ A practical article (visa, payments, apps, transport) at `/guides/<slug>`.
 **Gallery**:
 Every trip photo, grouped by Trip, at `/gallery`. Photos live in R2 (`docs/photos.md`).
 
+**Flight prices**:
+The page at `/planner` that recommends when to leave for each visible plan with Days: its 3 cheapest Fare windows that fit the plan, built from the stored Flight searches.
+
+**Fits the plan**:
+A start date fits a plan when at most 20% of the plan's Days, counted from that date, fall outside the Season of their main City's Province.
+
 **Planner**:
-The flight table and price calendar at `/planner`, built from the stored Flight searches.
+Reserved for a later tool to design a Trip (Cities, Days, trains). Not built yet. Not the Flight prices page.
+
+**Season**:
+The whole months in which a Province is good to visit. Each Province has its own Season.
+
+**Airport**:
+An airport of a City that has flights from Paris, named by its code (Beijing: PEK and PKX). It knows the weekdays with a direct flight from Paris, if any.
+
+**Gateway**:
+An Airport of one of a plan's Cities, where the plan can start and end: a round trip from Paris to that Airport and back.
+
+**Fare window**:
+One Gateway, an outbound date and a return date, with the cheapest price found for it (one stop or fewer) and whether that flight is direct.
 
 **Flight search**:
-One stored price for an airport, outbound and return dates, with or without stops, made by `npm run china` and kept in D1.
+One stored price for one Fare window, made by `npm run china` and kept in D1.

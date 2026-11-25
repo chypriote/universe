@@ -17,12 +17,14 @@ const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-a
 
 type Props = {
   provinces: AdminProvince[];
+  /** The Province picked when the form opens. */
+  provinceId?: number;
   onAdded: (city: AdminCity) => void;
   onError: (message: string) => void;
 };
 
-/** The "Add a City" form, on the Photos and Cities pages. */
-export function AddCityForm({ provinces, onAdded, onError }: Props) {
+/** The "Add a City" form, on the Photos, Cities and Provinces pages. */
+export function AddCityForm({ provinces, provinceId, onAdded, onError }: Props) {
   const [looking, setLooking] = useState(false);
 
   /** Fills latitude and longitude from OpenStreetMap Nominatim (free, one request per click). */
@@ -84,7 +86,7 @@ export function AddCityForm({ provinces, onAdded, onError }: Props) {
         <div className="flex flex-wrap gap-3">
           <input name="name" required placeholder="Name" aria-label="Name" className={fieldClass} />
           <input name="nameZh" required placeholder="中文名" aria-label="Chinese name" className={fieldClass} />
-          <select name="provinceId" required aria-label="Province" className={fieldClass} defaultValue="">
+          <select name="provinceId" required aria-label="Province" className={fieldClass} defaultValue={provinceId ?? ''}>
             <option value="" disabled>
               Province
             </option>
