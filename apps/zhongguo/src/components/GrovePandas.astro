@@ -38,11 +38,19 @@ const data = { resting, hang: poses.hang, climbX, perches: leafPerches(10) };
     };
 
     const width = 58;
+    const chosen = [];
     for (const perch of shuffle(perches.filter((p) => p.y > 420 && p.y < limit))) {
-      if (picked.length >= 4) break;
+      if (chosen.length >= 4) break;
       if (!free(perch.y)) continue;
       picked.push(perch.y);
-      const pose = resting[Math.floor(Math.random() * resting.length)];
+      chosen.push(perch);
+    }
+
+    // Top to bottom, no pose twice in a row.
+    let previous;
+    for (const perch of chosen.sort((a, b) => a.y - b.y)) {
+      const pose = shuffle(resting.filter((r) => r !== previous))[0];
+      previous = pose;
       const height = (width * pose.height) / 200;
       add(pose.src, perch.x - width / 2, perch.y - height * 0.96, width);
     }
