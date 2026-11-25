@@ -1,13 +1,12 @@
 import { d1Query } from './d1.js';
 
-async function getFreshFlightSearch(airport, stops, outboundDate, returnDate, maxAgeDays) {
-  const [row] = await d1Query(
-    `SELECT response FROM flight_searches
-     WHERE airport = ? AND stops = ? AND outbound_date = ? AND return_date = ?
-       AND datetime(created_at) > datetime('now', ?)`,
-    [airport, stops, outboundDate, returnDate, `-${maxAgeDays} days`]
+/** The created_at of the newest search of each Fare window, by `windowKey`. */
+async function lastSearches() {
+  const rows = await d1Query(
+    `SELECT airport, outbound_date, return_date, MAX(created_at) AS created_at FROM flight_searches
+     GROUP BY airport, outbound_date, return_date`
   );
-  return row ? JSON.parse(row.response) : null;
+  return new Map(rows.map((row) => [`${row.airport}|${row.outbound_date}|${row.return_date}`, row.created_at]));
 }
 
 async function insertFlightSearch(airport, stops, price, outboundDate, returnDate, response, searchedOn, createdAt) {
@@ -21,4 +20,4 @@ async function insertFlightSearch(airport, stops, price, outboundDate, returnDat
   );
 }
 
-export { getFreshFlightSearch, insertFlightSearch };
+export { insertFlightSearch, lastSearches };

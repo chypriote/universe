@@ -16,7 +16,7 @@ Run from the repo root with `-w apps/zhongguo`, or from this folder.
 | `npm run types`  | Regenerate `worker-configuration.d.ts` after changing `wrangler.jsonc` |
 | `npm run db:migrate:local` / `db:migrate:remote` | Apply `migrations/` to the local or the remote `zhongguo` D1 |
 | `npm run deploy` | Build and `wrangler deploy`                      |
-| `npm run china`  | Search flight prices (`china.js`, SerpApi) into D1 |
+| `npm run china`  | Search the plans' Fare windows (`china.js`, SerpApi) into D1 |
 
 ## Environment
 
@@ -32,7 +32,7 @@ Photos: `docs/photos.md`.
 
 ## Admin
 
-`/admin` is behind the Owner login (`/admin/login`, same cookie as the other apps through `packages/owner`). The Journal holds the login and token check; `src/middleware.ts` refuses every `/admin` page and `/api/admin` request without a valid token (pages redirect to the login, the API answers 401). Admin pages render on request and are `noIndex`; no public page links to them. `/admin/photos` uploads, edits and deletes Photos and adds Cities (`docs/photos.md`); `/admin/cities` picks a City and edits it, moves its Photos to another City and deletes it when nothing uses it (changing its Province clears the Province Cover of the old Province when that cover is one of its Photos); `/admin/trips` lists every Trip with its on/off switch, and `/admin/trips/<slug>` adds a Day to any Trip, a plan included (date, main City, title, notes; one Day per date; Days stay in date order; the Trip dates become the first and last Day date; Photos of that date on no Day join it; no migration) and edits a Trip with Days (Trip Cover, Highlight Photos, each Day's switch, title, notes, main City and Photos, placed by drag and drop with `@dnd-kit`); `/admin/home` lists the Visited Provinces and picks or clears each Province Cover from the Photos of its Cities and, by dragging the cover in the home map frame (mouse or touch), sets its focal point (saved on release, applied as `object-position`; a new cover resets it to the centre; a cover shows on the home map at once; a Province that stops being visited leaves the list and keeps its cover).
+`/admin` is behind the Owner login (`/admin/login`, same cookie as the other apps through `packages/owner`). The Journal holds the login and token check; `src/middleware.ts` refuses every `/admin` page and `/api/admin` request without a valid token (pages redirect to the login, the API answers 401). Admin pages render on request and are `noIndex`; no public page links to them. `/admin/photos` uploads, edits and deletes Photos and adds Cities (`docs/photos.md`); `/admin/cities` picks a City and edits it, moves its Photos to another City and deletes it when nothing uses it (changing its Province clears the Province Cover of the old Province when that cover is one of its Photos); `/admin/trips` lists every Trip with its on/off switch, and `/admin/trips/<slug>` adds a Day to any Trip, a plan included (date, main City, title, notes; one Day per date; Days stay in date order; the Trip dates become the first and last Day date; Photos of that date on no Day join it; no migration) and edits a Trip with Days (Trip Cover, Highlight Photos, each Day's switch, title, notes, main City and Photos, placed by drag and drop with `@dnd-kit`); `/admin/provinces` sets each Province's Season, adds Cities to it and edits the Airports of its Cities with their direct-flight weekdays; `/admin/home` lists the Visited Provinces and picks or clears each Province Cover from the Photos of its Cities and, by dragging the cover in the home map frame (mouse or touch), sets its focal point (saved on release, applied as `object-position`; a new cover resets it to the centre; a cover shows on the home map at once; a Province that stops being visited leaves the list and keeps its cover).
 
 ## Trips and Photos
 
@@ -40,4 +40,4 @@ They live in the `zhongguo` D1 database (`migrations/0002_journal.sql`; `0003_jo
 
 ## Flight searches
 
-They live in the `zhongguo` D1 database (`wrangler.jsonc`), table `flight_searches` (`migrations/`). `npm run china` reuses a search younger than 3 days and stores new ones; the Planner shows what is there at build time, so rebuild after a search.
+They live in the `zhongguo` D1 database (`wrangler.jsonc`), table `flight_searches` (`migrations/`). `npm run china` reads the visible plans, their Days' Seasons and Gateways from D1, lists their Fare windows (`scripts/fare-windows.js`, rules in `docs/adr/0002-fare-windows-from-plans.md`) and searches them never-searched first, then oldest first, until the SerpApi account has no searches left. A window with no flight is stored without a price. The Planner shows what is there at build time, so rebuild after a search.
