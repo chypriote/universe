@@ -1,0 +1,21 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { AdminProvinces } from '@/components/islands/AdminProvinces';
+import { journalFromEnv } from '@/lib/journal';
+
+export const prerender = false;
+
+const provinces = await journalFromEnv().listAdminProvinces();
+const requested = Number(Astro.url.searchParams.get('province'));
+const province = provinces.find((candidate) => candidate.id === requested) ?? provinces[0];
+---
+
+<AdminLayout title="Provinces">
+  {
+    province ? (
+      <AdminProvinces client:load provinces={provinces} provinceId={province.id} />
+    ) : (
+      <p class="text-muted-foreground">There is no Province yet.</p>
+    )
+  }
+</AdminLayout>

@@ -228,6 +228,27 @@ export type AdminCity = { id: number; name: string; nameZh: string; province: st
 
 export type AdminProvince = { id: number; name: string };
 
+/** An Airport of a City, with the weekdays of a direct flight from Paris (1 = Monday … 7 = Sunday). */
+export type Airport = { code: string; directWeekdays: number[] };
+
+/** A Province as the Provinces admin edits it: its Season and its Cities with their Airports. */
+export type AdminProvinceDetail = AdminProvince & {
+  nameZh: string;
+  /** The months of its Season, 1 = January … 12 = December. */
+  season: number[];
+  cities: { id: number; name: string; nameZh: string; airports: Airport[] }[];
+};
+
+export type SetProvinceSeasonResult = { ok: true } | { ok: false; error: 'unknown-province' | 'invalid-months' };
+
+export type SetAirportInput = Airport & { cityId: number };
+
+export type SetAirportResult =
+  | { ok: true; airport: Airport }
+  | { ok: false; error: 'invalid-code' | 'unknown-city' | 'code-taken' | 'invalid-weekdays' };
+
+export type DeleteAirportResult = { ok: true } | { ok: false; error: 'unknown-airport' };
+
 /** A City as the Cities admin edits it, with what uses it. */
 export type AdminCityDetail = AdminCity & {
   provinceId: number;
@@ -437,6 +458,13 @@ export type Journal = {
   listCityPhotos(cityId: number): Promise<CityPhoto[] | null>;
   /** A new Province clears the Province Cover of the old one when that cover is a Photo of the City: `clearedCovers` names those Provinces. */
   editCity(input: EditCityInput): Promise<EditCityResult>;
-  /** Refused while a Photo, a Day, a hotel or a restaurant uses the City. */
+  /** Refused while a Photo, a Day, a hotel or a restaurant uses the City. Its Airports go with it. */
   deleteCity(cityId: number): Promise<DeleteCityResult>;
+  /** Every Province by name, with its Season and its Cities by name with their Airports. */
+  listAdminProvinces(): Promise<AdminProvinceDetail[]>;
+  /** Replaces the Season: any set of months, none included. */
+  setProvinceSeason(provinceId: number, months: number[]): Promise<SetProvinceSeasonResult>;
+  /** Adds the Airport to the City, or saves its direct weekdays. A code belongs to one City. */
+  setAirport(input: SetAirportInput): Promise<SetAirportResult>;
+  deleteAirport(code: string): Promise<DeleteAirportResult>;
 };
