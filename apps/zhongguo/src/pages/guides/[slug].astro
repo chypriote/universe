@@ -1,7 +1,9 @@
 ---
+import TempleHeader from '@/components/TempleHeader.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { SITE } from '@/config/site';
+import { guideZh } from '@/data/guide-zh';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -9,13 +11,24 @@ export async function getStaticPaths() {
 
   return guides.map((guide, index) => ({
     params: { slug: guide.id },
-    props: { guide, previous: guides[index - 1], next: guides[index + 1] },
+    props: { guide, guides, next: guides[index + 1] },
   }));
 }
 
-const { guide, previous, next } = Astro.props;
+const { guide, guides, next } = Astro.props;
 const { Content, headings } = await render(guide);
-const sections = headings.filter((heading) => heading.depth === 2);
+
+// Sidebar: each section (h2) with its sub-sections (h3). The remark TOC box has its own h2.
+const sections = headings
+  .map((heading, index) => ({ heading, index }))
+  .filter(({ heading }) => heading.depth === 2 && heading.slug !== 'table-of-contents')
+  .map(({ heading, index }) => {
+    const children = [];
+    for (let i = index + 1; i < headings.length && headings[i].depth > 2; i++) {
+      if (headings[i].depth === 3) children.push(headings[i]);
+    }
+    return { ...heading, children };
+  });
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -27,60 +40,62 @@ const jsonLd = {
 ---
 
 <BaseLayout title={guide.data.title} description={guide.data.description} jsonLd={jsonLd}>
-  <article class="py-20 lg:py-32">
+  <TempleHeader zh={guideZh[guide.id]} title={guide.data.title}>{guide.data.description}</TempleHeader>
+  <article class="py-12 lg:py-20">
     <Container>
-      <nav class="mb-12">
-        <a href="/guides" class="eyebrow text-muted-foreground hover:text-primary transition-colors">
-          ← All guides
-        </a>
-      </nav>
-
-      <header class="max-w-3xl mb-16">
-        <span class="eyebrow mb-4 inline-block">Guide {String(guide.data.order).padStart(2, '0')} · Updated {guide.data.updated}</span>
-        <h1 class="text-h1 font-serif font-light mb-8">{guide.data.title}</h1>
-        <p class="text-xl text-muted-foreground leading-relaxed">{guide.data.description}</p>
-      </header>
-
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
         <aside class="lg:col-span-3">
-          <nav class="lg:sticky lg:top-28" aria-label="On this page">
-            <span class="eyebrow text-muted-foreground">On this page</span>
-            <ol class="mt-4 border-t border-border">
-              {sections.map((section) => (
-                <li class="border-b border-border">
-                  <a href={`#${section.slug}`} class="block py-3 text-sm hover:text-primary transition-colors">{section.text}</a>
+          <nav id="guide-nav" class="lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto" aria-label="Guides">
+            <a href="/guides" class="eyebrow hover:text-primary-hover hidden lg:inline">Guides</a>
+            <span class="eyebrow lg:hidden">On this page</span>
+            <ol class="mt-4 lg:border-t border-border">
+              {guides.map((g) => g.id === guide.id ? (
+                <li class="lg:border-b border-border">
+                  <span class="hidden lg:flex items-baseline gap-3 py-3 font-serif text-lg text-primary">
+                    <span lang="zh" aria-hidden="true" class="font-brush text-gold-ink">{guideZh[g.id]}</span>{g.data.title}
+                  </span>
+                  <ol class="lg:mb-3 ml-1 border-l border-gold-ink/40">
+                    {sections.map((section) => (
+                      <li data-section={section.slug}>
+                        <a href={`#${section.slug}`} class="block -ml-px border-l border-transparent pl-4 py-2 text-sm hover:border-primary hover:text-primary transition-colors">{section.text}</a>
+                        {section.children.length > 0 && (
+                          <ol class="sub hidden pb-1">
+                            {section.children.map((child) => (
+                              <li><a href={`#${child.slug}`} class="block -ml-px border-l border-transparent pl-8 py-1 text-[0.8125rem] text-muted-foreground hover:border-primary hover:text-primary transition-colors" set:html={child.text} /></li>
+                            ))}
+                          </ol>
+                        )}
+                      </li>
+                    ))}
+                  </ol>
+                </li>
+              ) : (
+                <li class="hidden lg:block border-b border-border">
+                  <a href={`/guides/${g.id}`} class="flex items-baseline gap-3 py-3 text-sm text-muted-foreground hover:text-primary transition-colors">
+                    <span lang="zh" aria-hidden="true" class="font-brush text-gold-ink/60">{guideZh[g.id]}</span>{g.data.title}
+                  </a>
                 </li>
               ))}
             </ol>
-            <div class="mt-8 flex flex-col gap-6">
-              {next && (
-                <div class="flex flex-col">
-                  <span class="eyebrow text-muted-foreground mb-2">Next guide</span>
-                  <a href={`/guides/${next.id}`} class="font-serif text-lg whitespace-nowrap hover:text-primary transition-colors">{next.data.title} →</a>
-                </div>
-              )}
-              <a href="/guides" class="eyebrow text-muted-foreground hover:text-primary transition-colors">← All guides</a>
-            </div>
           </nav>
         </aside>
 
         <div class="lg:col-span-9 min-w-0">
-          <div class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:font-normal prose-h2:mt-16 prose-table:block prose-table:overflow-x-auto">
+          <p class="eyebrow !text-muted-foreground mb-8">Updated {guide.data.updated}</p>
+          <div class="guide-prose max-w-3xl">
             <Content />
           </div>
 
-          <footer class="mt-16 pt-16 bamboo-t flex flex-col sm:flex-row sm:justify-between items-start gap-8">
-            {previous ? (
-              <div class="flex flex-col">
-                <span class="eyebrow text-muted-foreground mb-2">Previous</span>
-                <a href={`/guides/${previous.id}`} class="text-lg font-serif whitespace-nowrap hover:text-primary transition-colors">← {previous.data.title}</a>
-              </div>
-            ) : <div />}
-            {next && (
-              <div class="flex flex-col sm:text-right sm:items-end">
-                <span class="eyebrow text-muted-foreground mb-2">Next</span>
-                <a href={`/guides/${next.id}`} class="text-lg font-serif whitespace-nowrap hover:text-primary transition-colors">{next.data.title} →</a>
-              </div>
+          <footer class="mt-24 max-w-3xl">
+            <div class="bamboo-t mb-20 after:right-auto after:left-[4%] after:-scale-x-100"></div>
+            {next ? (
+              <a href={`/guides/${next.id}`} class="group relative ml-auto block w-fit pl-24 text-right">
+                <span lang="zh" aria-hidden="true" class="absolute top-6 right-0 font-brush text-[3.5rem] leading-none whitespace-nowrap text-gold-ink/[0.18] transition-colors group-hover:text-gold-ink/30">{guideZh[next.id]}</span>
+                <span class="relative eyebrow !text-muted-foreground block mb-2 pt-3">Next guide</span>
+                <span class="relative font-serif text-3xl transition-colors group-hover:text-primary">{next.data.title} →</span>
+              </a>
+            ) : (
+              <a href="/guides" class="ml-auto block w-fit font-serif text-2xl transition-colors hover:text-primary">← All guides</a>
             )}
           </footer>
         </div>
@@ -88,3 +103,25 @@ const jsonLd = {
     </Container>
   </article>
 </BaseLayout>
+
+<script>
+  // Open the sub-sections of the section being read and mark it. Without script they all stay shut.
+  const items = [...document.querySelectorAll<HTMLElement>('#guide-nav li[data-section]')];
+  const headings = items.map((li) => document.getElementById(li.dataset.section!)).filter((h): h is HTMLElement => !!h);
+
+  function update() {
+    let current = headings[0];
+    for (const heading of headings) if (heading.getBoundingClientRect().top < 160) current = heading;
+    for (const li of items) {
+      const on = li.dataset.section === current?.id;
+      const link = li.querySelector(':scope > a');
+      link?.classList.toggle('!border-primary', on);
+      link?.classList.toggle('text-primary', on);
+      const sub = li.querySelector(':scope > .sub');
+      sub?.classList.toggle('lg:block', on);
+    }
+  }
+
+  addEventListener('scroll', update, { passive: true });
+  update();
+</script>
