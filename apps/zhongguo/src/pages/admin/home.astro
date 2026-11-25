@@ -9,12 +9,10 @@ const provinces = await journalFromEnv().listVisitedProvinces();
 ---
 
 <AdminLayout title="Home">
-  <p class="eyebrow">Admin</p>
-  <h1 class="mt-3 font-serif text-h1">Home</h1>
-  <p class="mt-4 max-w-2xl text-muted-foreground">
+  <p class="max-w-2xl text-muted-foreground">
     The photo of each Visited Province on the home map. Without a chosen cover, the Province shows its first Photo.
   </p>
-  <div class="mt-10">
+  <div class="mt-6">
     <AdminHome client:load provinces={provinces} />
   </div>
 </AdminLayout>
