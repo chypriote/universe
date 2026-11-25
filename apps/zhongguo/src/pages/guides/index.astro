@@ -8,13 +8,32 @@ import { getCollection } from 'astro:content';
 const title = "Guides";
 const description = "What to know before a trip to China: visa, internet, apps, payment, transport, food, etiquette and emergencies.";
 
+// The 汉字 behind each guide. Add new characters to the brush font subset (DESIGN.md).
+const guideZh: Record<string, string> = {
+  'visa-policy': '签证',
+  'internet-vpn': '网络',
+  'essential-apps': '应用',
+  'payment-setup': '支付',
+  'getting-around': '出行',
+  'food-dining': '美食',
+  'culture-etiquette': '礼仪',
+  'emergency-calls': '急救',
+};
+
 const guides = (await getCollection('guides'))
   .sort((a, b) => a.data.order - b.data.order)
   .map((guide) => ({
     title: guide.data.title,
     description: guide.data.description,
     href: `/guides/${guide.id}`,
+    zh: guideZh[guide.id],
   }));
+
+const groups = [
+  { zh: '出发前', eyebrow: 'Before you fly', title: 'Sort it out at home', guides: guides.slice(0, 4), columns: 'md:grid-cols-2' },
+  { zh: '旅途中', eyebrow: 'On the ground', title: 'Day to day', guides: guides.slice(4, 7), columns: 'md:grid-cols-3' },
+  { zh: '遇险', eyebrow: 'If it goes wrong', title: 'Save these first', guides: guides.slice(7), columns: 'md:w-1/2 lg:w-1/3' },
+];
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -29,21 +48,31 @@ const jsonLd = {
   <TempleHeader zh="指南" title="Guides">
     What to know before the trip, in eight steps: visa, internet, apps, payment, transport, food, etiquette and emergencies.
   </TempleHeader>
-  <div class="py-16 lg:py-24">
+  <div class="py-8 lg:py-16">
     <Container>
-
-      <ol class="border-t border-border">
-        {guides.map((guide, index) => (
-          <li class="border-b border-border">
-            <a href={guide.href} class="group grid grid-cols-[3rem_1fr_auto] md:grid-cols-[5rem_1fr_2fr_auto] items-baseline gap-x-6 gap-y-2 py-8">
-              <span class="font-serif text-3xl font-light text-gold-ink">{String(index + 1).padStart(2, '0')}</span>
-              <h2 class="text-2xl md:text-3xl font-serif group-hover:text-primary transition-colors">{guide.title}</h2>
-              <p class="col-start-2 md:col-start-auto text-muted-foreground leading-relaxed">{guide.description}</p>
-              <span class="row-start-1 col-start-3 md:col-start-4 text-xl transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
-            </a>
-          </li>
-        ))}
-      </ol>
+      {groups.map((group) => (
+        <section class="py-8 lg:py-10">
+          <div class="mb-8 flex items-center gap-6">
+            <span lang="zh" class="font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">{group.zh}</span>
+            <div>
+              <span class="eyebrow !text-base !tracking-[0.2em]">{group.eyebrow}</span>
+              <h2 class="mt-2 text-h3 font-serif font-light">{group.title}</h2>
+            </div>
+          </div>
+          <ol class={`grid gap-px bg-border border border-border ${group.columns}`}>
+            {group.guides.map((guide) => (
+              <li class="bg-background">
+                <a href={guide.href} class="group relative flex h-full min-h-56 flex-col gap-4 overflow-hidden p-8 transition-colors hover:bg-surface">
+                  <span lang="zh" aria-hidden="true" class="absolute top-14 right-6 font-brush text-[4rem] leading-none whitespace-nowrap text-gold-ink/[0.13] transition-colors group-hover:text-gold-ink/25">{guide.zh}</span>
+                  <h3 class="relative font-serif text-2xl transition-colors group-hover:text-primary">{guide.title}</h3>
+                  <p class="relative text-muted-foreground leading-relaxed">{guide.description}</p>
+                  <span class="relative mt-auto eyebrow inline-flex items-center gap-2 pt-4">Read <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span></span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
     </Container>
   </div>
 </BaseLayout>
