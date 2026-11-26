@@ -1,4 +1,6 @@
+import type { AdminEnv, PhotoUrls } from './admin';
 import { editDayRows, PLAN_DAY_TABLES } from './day-edit';
+import { loadPlanPhotos } from './plan-photos';
 import type {
   AddPlanDayInput,
   AddPlanDayResult,
@@ -26,7 +28,7 @@ type PlanAdminMethods = Pick<
 >;
 
 /** The admin of Trip plans (ADR 0003): the plans, their switches and their numbered Days. */
-export function buildPlanAdmin(env: { DB: D1Database }): PlanAdminMethods {
+export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods {
   async function all<T>(sql: string, ...params: (string | number)[]): Promise<T[]> {
     return (await env.DB.prepare(sql).bind(...params).all<T>()).results;
   }
@@ -49,9 +51,20 @@ export function buildPlanAdmin(env: { DB: D1Database }): PlanAdminMethods {
   }
 
   async function getAdminPlan(slug: string): Promise<AdminPlanDetail | null> {
-    const plan = await env.DB.prepare('SELECT id, slug, title, visible, search_flights FROM plans WHERE slug = ?')
+    const plan = await env.DB.prepare(
+      'SELECT id, slug, title, visible, search_flights, cover_photo_id, cover_focus_x, cover_focus_y FROM plans WHERE slug = ?',
+    )
       .bind(slug)
-      .first<{ id: number; slug: string; title: string; visible: number; search_flights: number }>();
+      .first<{
+        id: number;
+        slug: string;
+        title: string;
+        visible: number;
+        search_flights: number;
+        cover_photo_id: number | null;
+        cover_focus_x: number;
+        cover_focus_y: number;
+      }>();
     if (!plan) return null;
     const rows = await all<{ id: number; position: number; title: string; notes: string; city_id: number; city: string; province: string; season: number }>(
       `SELECT plan_days.id, plan_days.position, plan_days.title, plan_days.notes, cities.id AS city_id, cities.name AS city,
@@ -66,11 +79,25 @@ export function buildPlanAdmin(env: { DB: D1Database }): PlanAdminMethods {
        WHERE plan_days.plan_id = ? ORDER BY plan_day_cities.day_id, plan_day_cities.position`,
       plan.id,
     );
+    const onDays = await all<{ day_id: number; photo_id: number }>(
+      `SELECT plan_day_photos.day_id, plan_day_photos.photo_id FROM plan_day_photos
+       JOIN plan_days ON plan_days.id = plan_day_photos.day_id
+       WHERE plan_days.plan_id = ? ORDER BY plan_day_photos.day_id, plan_day_photos.position`,
+      plan.id,
+    );
+    const highlights = await all<{ photo_id: number }>(
+      'SELECT photo_id FROM plan_highlight_photos WHERE plan_id = ? ORDER BY position',
+      plan.id,
+    );
     return {
       slug: plan.slug,
       title: plan.title,
       visible: plan.visible === 1,
       searchFlights: plan.search_flights === 1,
+      photos: await loadPlanPhotos(env, urls, plan.id),
+      coverId: plan.cover_photo_id,
+      coverFocus: { x: plan.cover_focus_x, y: plan.cover_focus_y },
+      highlightIds: highlights.map((row) => row.photo_id),
       days: rows.map((row, index) => ({
         id: row.id,
         number: index + 1,
@@ -79,6 +106,7 @@ export function buildPlanAdmin(env: { DB: D1Database }): PlanAdminMethods {
         city: { id: row.city_id, name: row.city },
         route: route.filter((entry) => entry.day_id === row.id).map((entry) => ({ id: entry.id, name: entry.name })),
         province: row.province,
+        photoIds: onDays.filter((entry) => entry.day_id === row.id).map((entry) => entry.photo_id),
       })),
       seasons: rows.map((row) => row.season),
     };
