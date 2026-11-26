@@ -12,7 +12,7 @@ _Avoid_: Planned trip, suggested trip, suggested itinerary (the home section tit
 One numbered Day of a Trip plan: main City, Cities in travel order, title, notes, attractions and train rides. No date, no hotels, no restaurants.
 
 **Copy from a plan**:
-Creating a Trip: the Owner gives a title and a start date, then ticks the Plan Days to copy. They become dated Days in order from the start date, without Photos. No link to the plan stays.
+Creating a Trip: the Owner gives a title and a start date, then ticks the Plan Days to copy. They become dated Days in order from the start date, without Photos. No link to the plan stays. The new Trip is off until the Owner switches it on.
 
 **Trip Card**:
 The summary of a Trip or Trip plan on `/trips` and the home page. It names only the Trip's Major Cities. The Trip page itself lists every City.

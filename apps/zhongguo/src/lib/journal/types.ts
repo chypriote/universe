@@ -435,6 +435,18 @@ export type EditCityResult =
   | { ok: true; city: AdminCityDetail; clearedCovers: string[] }
   | { ok: false; error: 'unknown-city' | 'invalid-name' | 'name-taken' | 'unknown-province' | 'invalid-position' };
 
+export type CreateTripInput = {
+  title: string;
+  /** The date of the first copied Day, YYYY-MM-DD. */
+  startDate: string;
+  /** Plan Days to copy, in any order: they become Days of the Trip in plan order, one date after the other. */
+  planDayIds: number[];
+};
+
+export type CreateTripResult =
+  | { ok: true; slug: string }
+  | { ok: false; error: 'invalid-title' | 'invalid-date' | 'slug-taken' | 'unknown-plan-day' };
+
 export type DeleteCityResult = { ok: true } | { ok: false; error: 'unknown-city' | 'in-use' };
 
 export type SetTripVisibleResult = { ok: true } | { ok: false; error: 'unknown-trip' };
@@ -529,6 +541,11 @@ export type Journal = {
   deletePlanDay(dayId: number): Promise<PlanDayResult>;
   /** Swaps the Day with its neighbour; the first Day cannot go up, nor the last down (nothing happens). */
   movePlanDay(dayId: number, direction: 'up' | 'down'): Promise<PlanDayResult>;
+  /**
+   * A new Trip, off until the Owner switches it on. The chosen Plan Days become its Days (title, notes, Cities,
+   * attractions and train rides; no Photos, no link to the plan), dated from the start date.
+   */
+  createTrip(input: CreateTripInput): Promise<CreateTripResult>;
   /** The plan cover: a landscape Photo of the plan. */
   setPlanCover(slug: string, photoId: number): Promise<SetPlanCoverResult>;
   /** The focal point of the plan cover, in percent (0 to 100); needs a chosen cover. */
