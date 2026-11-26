@@ -4,11 +4,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { flightPrices } from '@/lib/flight-prices';
 import { getEntry } from 'astro:content';
+import { journalFromEnv } from '@/lib/journal';
 
-// Built from D1 at build time: rebuild after `npm run china`.
+export const prerender = false;
+
+// Prices come from D1 at build time (rebuild after `npm run china`); covers are read on request.
+const covers = new Map((await journalFromEnv().listTripCards()).map((card) => [card.slug, card]));
 const { plans, searches, airports } = (await getEntry('fares', 'all'))!.data;
 const today = new Date().toISOString().slice(0, 10);
-const { first, last, plans: lanes, noDays } = flightPrices(
+const { first, last, plans: lanes } = flightPrices(
   plans,
   searches,
   new Map(airports.map((airport) => [airport.code, airport.name])),
@@ -27,6 +31,8 @@ for (let cursor = new Date(start); cursor.getTime() < end; cursor.setUTCMonth(cu
 const range = `${new Date(start).toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })} – ${lastMonth.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })}`;
 const day = (date: string, weekday = false) =>
   new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { ...(weekday && { weekday: 'short' }), day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+const run = (fit: { from: string; to: string }) => (fit.from === fit.to ? day(fit.from) : `${day(fit.from)} – ${day(fit.to)}`);
 
 const title = 'Plan';
 const description = 'When to leave for each trip, planned or done: the cheapest flights from Paris in the best months to go.';
@@ -81,10 +87,10 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                 </span>
                 <span class="relative block h-16 lg:h-auto opacity-60 group-aria-pressed:opacity-100 transition-opacity" aria-hidden="true">
                   {plan.fits.map((fit) => (
-                    <span class="absolute inset-y-0 bg-gold/45" style={`left:${x(fit.from)}%;width:${x(fit.to) - x(fit.from) + (100 / ((end - start) / 864e5))}%`} />
+                    <span class="absolute inset-y-0 bg-gold/45" title={`Good dates to leave: ${run(fit)}`} style={`left:${x(fit.from)}%;width:${x(fit.to) - x(fit.from) + (100 / ((end - start) / 864e5))}%`} />
                   ))}
                   {plan.windows.map((window, rank) => (
-                    <span class="absolute" style={`left:${x(window.outbound)}%;width:${x(window.return) - x(window.outbound)}%;top:${30 + rank * 18}%`}>
+                    <span class="absolute" title={`${day(window.outbound, true)} – ${day(window.return)} · €${window.price}`} style={`left:${x(window.outbound)}%;width:${x(window.return) - x(window.outbound)}%;top:${30 + rank * 18}%`}>
                       <span class={`block h-1.5 ${rank === 0 ? 'bg-primary' : 'bg-primary/45'}`} />
                       {rank === 0 && (
                         <span class="absolute left-full ml-1.5 -top-1.5 text-xs font-semibold tabular-nums whitespace-nowrap">€{window.price}</span>
@@ -97,34 +103,45 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
             <div class="mt-10 grid lg:grid-cols-[13rem_1fr] gap-x-6 gap-y-3">
               <p class="eyebrow">Cheapest dates</p>
               <div aria-live="polite">
-                {lanes.map((plan, index) => (
-                  <ol id={`fares-${plan.slug}`} data-fares={plan.slug} class:list={['divide-y divide-border/70 border-t border-border', index > 0 && 'hidden']}>
-                    {plan.note && <li class="py-3 text-sm text-muted-foreground">{plan.title}: no prices yet ({plan.note}).</li>}
-                    {plan.windows.map((window, rank) => (
-                      <li class="py-3 grid grid-cols-[1fr_auto] items-baseline gap-x-6">
-                        <span>
-                          <span class="font-serif text-lg">
-                            {day(window.outbound, true)} – {day(window.return)}
-                          </span>
-                          <span class="block text-sm text-muted-foreground">
-                            {plan.title} · {window.city} {window.airport} · {window.direct ? 'direct' : 'with stops'} · price of {day(window.searchedOn)}
-                          </span>
-                        </span>
-                        <span class:list={['font-serif text-2xl tabular-nums', rank === 0 && 'text-secondary']}>€{window.price}</span>
-                      </li>
-                    ))}
-                  </ol>
-                ))}
+                {lanes.map((plan, index) => {
+                  const card = covers.get(plan.slug);
+                  return (
+                    <div id={`fares-${plan.slug}`} data-fares={plan.slug} class:list={[index > 0 && 'hidden']}>
+                      <h3 class="pb-1 font-serif text-xl">{plan.title}</h3>
+                      {plan.fits.length > 0 && (
+                        <p class="pb-3 text-sm text-muted-foreground">Good dates to leave: {plan.fits.map(run).join(', ')}.</p>
+                      )}
+                      <ol class="divide-y divide-border/70 border-t border-border">
+                        {plan.note && <li class="py-3 text-sm text-muted-foreground">No prices yet ({plan.note}).</li>}
+                        {plan.windows.map((window, rank) => (
+                          <li class="py-3 grid grid-cols-[1fr_auto] items-baseline gap-x-6">
+                            <span>
+                              <span class="font-serif text-lg">
+                                {day(window.outbound, true)} – {day(window.return)}
+                              </span>
+                              <span class="block text-sm text-muted-foreground">
+                                {window.city} {window.airport} · {window.direct ? 'direct' : 'with stops'} · price of {day(window.searchedOn)}
+                              </span>
+                            </span>
+                            <span class:list={['font-serif text-2xl tabular-nums', rank === 0 && 'text-secondary']}>€{window.price}</span>
+                          </li>
+                        ))}
+                      </ol>
+                      {card?.cover && (
+                        <img
+                          src={card.cover}
+                          alt=""
+                          loading="lazy"
+                          class="mt-6 h-40 w-full object-cover lg:h-56"
+                          style={`object-position:${card.coverFocus.x}% ${card.coverFocus.y}%`}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </>
-        )
-      }
-      {
-        noDays.length > 0 && (
-          <p class="mt-8 text-sm text-muted-foreground">
-            No Days yet: {noDays.join(', ')}.
-          </p>
         )
       }
     </Container>

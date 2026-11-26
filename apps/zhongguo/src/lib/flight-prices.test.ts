@@ -86,7 +86,7 @@ describe('Plan page', () => {
     expect(result.plans[0].fits).toEqual([{ from: '2027-03-31', to: '2027-04-27' }]);
   });
 
-  it('show the Season runs of a plan with no price, and say why it has none', () => {
+  it('show the Season runs of a plan with no price and say why, and leave out a plan with no Days', () => {
     const result = flightPrices(
       [
         plan({ title: 'Empty', seasons: [] }),
@@ -99,7 +99,6 @@ describe('Plan page', () => {
       TODAY,
     );
 
-    expect(result.noDays).toEqual(['Empty']);
     expect(result.plans.map((item) => [item.title, item.note, item.fits.length > 0])).toEqual([
       ['Never', 'no start date in season', false],
       ['Nowhere', 'no Airport in its Cities', true],
