@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import TripRouteSection from '@/components/TripRouteSection.astro';
 import { TripDayGallery } from '@/components/islands/TripDayGallery';
+import { ActivityRow } from '@/components/islands/ActivityRow';
 import { PlanCalendar } from '@/components/islands/PlanCalendar';
 import { SITE } from '@/config/site';
 import type { TripCard, TripPage } from '@/lib/journal';
@@ -90,7 +91,17 @@ const jsonLd = {
 
                   {(day.activities.length > 0 || day.food.length > 0) && (
                     <div class="grid gap-8 border-t border-border pt-5 sm:grid-cols-2">
-                      {day.activities.length > 0 && (
+                      {day.activities.length > 0 && plan && (
+                        <div class="space-y-1 sm:col-span-2">
+                          <span class="eyebrow">Activities</span>
+                          <div class="divide-y divide-border border-t border-border">
+                            {day.activities.map((activity) => (
+                              <ActivityRow client:visible activity={activity} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {day.activities.length > 0 && !plan && (
                         <div class="space-y-3">
                           <span class="eyebrow">Activities</span>
                           <ul class="space-y-2.5">

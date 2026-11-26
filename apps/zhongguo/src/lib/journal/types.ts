@@ -56,6 +56,15 @@ export type Activity = {
   name: string;
   nameZh: string;
   pinyin: string;
+  kind: ActivityKind;
+  rating: ActivityRating | null;
+  description: string;
+  /** Yuan per person: null is unknown, 0 is free. */
+  price: number | null;
+  address: string;
+  addressZh: string;
+  /** Thumbnail of its main picture, if it has one. */
+  picture: string | null;
 };
 
 export type TripDay = {
@@ -459,13 +468,36 @@ export type ActivityInput = {
   price: number | null;
 };
 
+/** A picture of an Activity, as the admin shows it. */
+export type ActivityPicture = { id: number; name: string; url: string; thumb: string };
+
 export type AdminActivity = ActivityInput & {
   id: number;
   city: string;
   province: string;
   /** Days and Plan Days that list it. */
   days: number;
+  /** Its own pictures in order; the first is the main one. */
+  pictures: ActivityPicture[];
 };
+
+export type UploadActivityPictureInput = {
+  activityId: number;
+  /** File name with its extension: .jpg, .jpeg, .png or .webp. */
+  name: string;
+  file: ArrayBuffer;
+  thumb: ArrayBuffer;
+  /** Replace the picture with this name instead of refusing it. */
+  overwrite?: boolean;
+};
+
+export type UploadActivityPictureResult =
+  | { ok: true; activity: AdminActivity; replaced: boolean }
+  | { ok: false; error: 'unknown-activity' | 'invalid-name' | 'unsupported-type' | 'exists' | 'unreadable' };
+
+export type ActivityPicturesResult =
+  | { ok: true; activity: AdminActivity }
+  | { ok: false; error: 'unknown-activity' | 'unknown-picture' | 'duplicate-picture' };
 
 export type ActivityProblem =
   | 'invalid-name'
@@ -658,6 +690,12 @@ export type Journal = {
   setDayActivities(dayId: number, activityIds: number[]): Promise<SetDayActivitiesResult>;
   /** The same for a Plan Day. */
   setPlanDayActivities(dayId: number, activityIds: number[]): Promise<SetDayActivitiesResult>;
+  /** The picture goes last. A name already used by the Activity is refused until `overwrite`. */
+  uploadActivityPicture(input: UploadActivityPictureInput): Promise<UploadActivityPictureResult>;
+  /** The pictures in order, the first being the main one: exactly the Activity's pictures, each once. */
+  setActivityPictures(activityId: number, pictureIds: number[]): Promise<ActivityPicturesResult>;
+  /** Deletes the picture and its files. */
+  deleteActivityPicture(pictureId: number): Promise<ActivityPicturesResult>;
   /** Every Province by name, with its Season and its Cities by name with their Airports. */
   listAdminProvinces(): Promise<AdminProvinceDetail[]>;
   /** Replaces the Season: any set of months, none included. */

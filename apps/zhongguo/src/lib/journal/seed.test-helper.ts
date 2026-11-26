@@ -17,6 +17,7 @@ const TABLES = [
   'highlight_photos',
   'day_train_rides',
   'day_activities',
+  'activity_pictures',
   'activities',
   'trip_hotels',
   'trip_restaurants',

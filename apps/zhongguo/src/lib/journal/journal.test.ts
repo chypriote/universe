@@ -350,7 +350,7 @@ describe('A Day in several Cities', () => {
 
     const days = (await journal.getTrip('sichuan'))!.days;
 
-    expect(days[0].activities).toEqual([
+    expect(days[0].activities.map(({ name, nameZh, pinyin }) => ({ name, nameZh, pinyin }))).toEqual([
       { name: 'Pandas', nameZh: '熊猫基地', pinyin: 'Xióngmāo Jīdì' },
       { name: 'Leshan Grand Buddha', nameZh: '乐山大佛', pinyin: 'Lèshān Dàfó' },
     ]);
@@ -371,7 +371,7 @@ describe('A Day in several Cities', () => {
     const fromPlan = (await journal.getPlan('sichuan-plan'))!.days[0].activities;
     const fromTrip = (await journal.getTrip('sichuan'))!.days[0].activities;
 
-    expect(fromPlan).toEqual([{ name: 'Pandas', nameZh: '熊猫基地', pinyin: 'Xióngmāo Jīdì' }]);
+    expect(fromPlan.map((activity) => activity.name)).toEqual(['Pandas']);
     expect(fromTrip).toEqual(fromPlan);
   });
 
