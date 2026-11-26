@@ -12,7 +12,7 @@ const MESSAGES: Record<string, string> = {
 const field = 'border border-border bg-surface px-3 py-2 text-sm text-foreground';
 const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
 
-/** Adds a Day to a Trip, a plan included. The page reloads on success: dates, numbers and Photos may all move. */
+/** Adds a Day to a Trip. The page reloads on success: dates, numbers and Photos may all move. */
 export function AddDayForm({ slug, cities }: { slug: string; cities: AdminCity[] }) {
   const [date, setDate] = useState('');
   const [cityId, setCityId] = useState('');

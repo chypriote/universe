@@ -211,8 +211,6 @@ export type AdminTripDetail = {
   title: string;
   visible: boolean;
   days: AdminDay[];
-  /** The Season bits (bit 0 = January) of each visible Day's Province, in Day order. */
-  seasons: number[];
   /** Every Photo of the Trip, by date and name; those on no Day are in no Day's `photoIds`. */
   photos: AdminPhoto[];
   coverId: number | null;
@@ -221,6 +219,50 @@ export type AdminTripDetail = {
   /** Ids of the 4 Highlight Photos, in order, or fewer while they are not all picked. */
   highlightIds: number[];
 };
+
+/** A Trip plan as the admin lists it. */
+export type AdminPlan = {
+  slug: string;
+  title: string;
+  visible: boolean;
+  /** Whether `npm run china` searches the plan and the Plan page shows prices. */
+  searchFlights: boolean;
+  days: number;
+};
+
+/** A Day of a Trip plan, as the admin edits it. */
+export type AdminPlanDay = {
+  id: number;
+  number: number;
+  title: string;
+  notes: string;
+  city: { id: number; name: string };
+  /** Every City of the Day in travel order, the last being where it ends; empty for a Day with one City. */
+  route: { id: number; name: string }[];
+  province: string;
+};
+
+export type AdminPlanDetail = {
+  slug: string;
+  title: string;
+  visible: boolean;
+  searchFlights: boolean;
+  days: AdminPlanDay[];
+  /** The Season bits (bit 0 = January) of each Day's Province, in Day order. */
+  seasons: number[];
+};
+
+export type CreatePlanResult = { ok: true; slug: string } | { ok: false; error: 'invalid-title' | 'slug-taken' };
+
+export type SetPlanResult = { ok: true } | { ok: false; error: 'unknown-plan' };
+
+export type AddPlanDayInput = { cityId: number; title: string; notes?: string };
+
+export type AddPlanDayResult =
+  | { ok: true; dayId: number }
+  | { ok: false; error: 'unknown-plan' | 'unknown-city' | 'invalid-title' };
+
+export type PlanDayResult = { ok: true } | { ok: false; error: 'unknown-day' };
 
 export type AdminCity = { id: number; name: string; nameZh: string; province: string; major: boolean };
 
@@ -428,6 +470,22 @@ export type Journal = {
   /** A Trip with its Days and Photos, hidden or not; null when it does not exist. */
   getAdminTrip(slug: string): Promise<AdminTripDetail | null>;
   setTripVisible(slug: string, visible: boolean): Promise<SetTripVisibleResult>;
+  /** Every Trip plan, hidden ones too, by title. */
+  listAdminPlans(): Promise<AdminPlan[]>;
+  /** A plan with its numbered Days; null when it does not exist. */
+  getAdminPlan(slug: string): Promise<AdminPlanDetail | null>;
+  /** A new empty plan. Its slug comes from the title and is unique across Trips and plans. */
+  createPlan(title: string): Promise<CreatePlanResult>;
+  setPlanVisible(slug: string, visible: boolean): Promise<SetPlanResult>;
+  setPlanSearchFlights(slug: string, searchFlights: boolean): Promise<SetPlanResult>;
+  /** A new Day at the end of the plan. */
+  addPlanDay(slug: string, input: AddPlanDayInput): Promise<AddPlanDayResult>;
+  /** The same edit as a Trip Day: title, notes, main City and route. */
+  editPlanDay(input: EditDayInput): Promise<EditDayResult>;
+  /** The Days after it are numbered again. */
+  deletePlanDay(dayId: number): Promise<PlanDayResult>;
+  /** Swaps the Day with its neighbour; the first Day cannot go up, nor the last down (nothing happens). */
+  movePlanDay(dayId: number, direction: 'up' | 'down'): Promise<PlanDayResult>;
   /** The Trip Cover: a landscape Photo of the Trip. */
   setTripCover(slug: string, photoId: number): Promise<SetTripCoverResult>;
   /** The focal point of the Trip Cover, in percent (0 to 100); needs a chosen cover. */
@@ -438,7 +496,7 @@ export type Journal = {
   setDayVisible(dayId: number, visible: boolean): Promise<SetDayVisibleResult>;
   editDay(input: EditDayInput): Promise<EditDayResult>;
   /**
-   * A new Day on a Trip, plans included. Days stay in date order, the Trip dates become the first and last
+   * A new Day on a Trip. Days stay in date order, the Trip dates become the first and last
    * Day dates, and the Photos of the Trip with that date and no Day join it.
    */
   addDay(tripSlug: string, input: AddDayInput): Promise<AddDayResult>;

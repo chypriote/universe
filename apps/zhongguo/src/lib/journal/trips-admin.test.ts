@@ -398,16 +398,3 @@ describe('Admin Trip', () => {
     expect(await journal.getAdminTrip('nope')).toBeNull();
   });
 });
-
-
-describe('Trip Seasons', () => {
-  it('give the Season of each visible Day, from its Province, in Day order', async () => {
-    const { trip, lanzhou, day2 } = await sichuanTrip();
-    await addDay(trip, lanzhou, '2025-03-03', { position: 3 });
-    const sichuan = (await journal.listAdminProvinces()).find((province) => province.name === 'Sichuan')!;
-    await journal.setProvinceSeason(sichuan.id, [4]);
-    await journal.setDayVisible(day2, false);
-
-    expect((await journal.getAdminTrip('sichuan'))!.seasons).toEqual([1 << 3, 0]);
-  });
-});

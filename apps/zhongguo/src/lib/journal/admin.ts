@@ -1,3 +1,4 @@
+import { editDayRows, TRIP_DAY_TABLES } from './day-edit';
 import { fileNameDate, isDate, readPhotoFile } from './photo-file';
 import type {
   AddCityInput,
@@ -225,10 +226,9 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       city_id: number;
       city: string;
       province: string;
-      season: number;
     }>(
       `SELECT days.id, days.date, days.visible, days.title, days.notes, cities.id AS city_id, cities.name AS city,
-              provinces.name AS province, provinces.season
+              provinces.name AS province
        FROM days JOIN cities ON cities.id = days.city_id JOIN provinces ON provinces.id = cities.province_id
        WHERE days.trip_id = ? ORDER BY days.position`,
       trip.id,
@@ -266,7 +266,6 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       title: trip.title,
       visible: trip.visible === 1,
       days,
-      seasons: rows.filter((row) => row.visible === 1).map((row) => row.season),
       photos: await loadPhotos(trip.id),
       coverId: trip.cover_photo_id,
       coverFocus: { x: trip.cover_focus_x, y: trip.cover_focus_y },
@@ -338,57 +337,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   }
 
   async function editDay(input: EditDayInput): Promise<EditDayResult> {
-    const day = await env.DB.prepare('SELECT id FROM days WHERE id = ?').bind(input.dayId).first();
-    if (!day) return { ok: false, error: 'unknown-day' };
-    const title = input.title?.trim();
-    if (title === '') return { ok: false, error: 'invalid-title' };
-    if (input.cityId !== undefined && !(await env.DB.prepare('SELECT id FROM cities WHERE id = ?').bind(input.cityId).first())) {
-      return { ok: false, error: 'unknown-city' };
-    }
-    const current = (await env.DB.prepare('SELECT city_id FROM days WHERE id = ?').bind(input.dayId).first<{ city_id: number }>())!.city_id;
-    const main = input.cityId ?? current;
-    let route = input.routeCityIds;
-    if (route !== undefined) {
-      const known = await all<{ id: number }>(`SELECT id FROM cities WHERE id IN (${route.map(() => '?').join(',')})`, ...route);
-      if (route.some((cityId) => !known.some((city) => city.id === cityId))) return { ok: false, error: 'unknown-city' };
-    } else if (input.cityId !== undefined) {
-      // A new main City on a Day with a route moves the flag: it has to be on the route.
-      const rows = await all<{ city_id: number }>('SELECT city_id FROM day_cities WHERE day_id = ? ORDER BY position', input.dayId);
-      if (rows.length > 0) route = rows.map((row) => row.city_id);
-    }
-    if (route !== undefined && route.length > 0 && !route.includes(main)) return { ok: false, error: 'main-not-on-route' };
-    const sets: string[] = [];
-    const params: (string | number)[] = [];
-    if (title !== undefined) {
-      sets.push('title = ?');
-      params.push(title);
-    }
-    if (input.notes !== undefined) {
-      sets.push('notes = ?');
-      params.push(input.notes);
-    }
-    if (input.cityId !== undefined) {
-      sets.push('city_id = ?');
-      params.push(input.cityId);
-    }
-    if (sets.length > 0) {
-      await env.DB.prepare(`UPDATE days SET ${sets.join(', ')} WHERE id = ?`).bind(...params, input.dayId).run();
-    }
-    if (route !== undefined) {
-      const mainAt = route.indexOf(main);
-      await env.DB.batch([
-        env.DB.prepare('DELETE FROM day_cities WHERE day_id = ?').bind(input.dayId),
-        ...(route.length > 1 ? route : []).map((cityId, index) =>
-          env.DB.prepare('INSERT INTO day_cities (day_id, position, city_id, main) VALUES (?, ?, ?, ?)').bind(
-            input.dayId,
-            index + 1,
-            cityId,
-            index === mainAt ? 1 : 0,
-          ),
-        ),
-      ]);
-    }
-    return { ok: true };
+    return editDayRows(env, TRIP_DAY_TABLES, input);
   }
 
   async function addDay(tripSlug: string, input: AddDayInput): Promise<AddDayResult> {
@@ -795,9 +744,12 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     }>(
       `SELECT cities.id, cities.name, cities.name_zh, cities.province_id, provinces.name AS province, cities.lng, cities.lat,
               cities.major,
-              (SELECT COUNT(*) FROM photos WHERE photos.city_id = cities.id) AS photos,
+              (SELECT COUNT(*) FROM photos WHERE photos.city_id = cities.id)
+                + (SELECT COUNT(*) FROM plan_photos WHERE plan_photos.city_id = cities.id) AS photos,
               (SELECT COUNT(*) FROM days WHERE days.city_id = cities.id
-                 OR days.id IN (SELECT day_id FROM day_cities WHERE day_cities.city_id = cities.id)) AS days,
+                 OR days.id IN (SELECT day_id FROM day_cities WHERE day_cities.city_id = cities.id))
+                + (SELECT COUNT(*) FROM plan_days WHERE plan_days.city_id = cities.id
+                 OR plan_days.id IN (SELECT day_id FROM plan_day_cities WHERE plan_day_cities.city_id = cities.id)) AS days,
               (SELECT COUNT(*) FROM trip_hotels WHERE trip_hotels.city_id = cities.id)
                 + (SELECT COUNT(*) FROM trip_restaurants WHERE trip_restaurants.city_id = cities.id) AS stays
        FROM cities JOIN provinces ON provinces.id = cities.province_id ORDER BY cities.name`,
