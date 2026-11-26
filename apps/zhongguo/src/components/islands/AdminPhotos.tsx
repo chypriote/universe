@@ -9,6 +9,7 @@ import type {
   KeptPhoto,
 } from '@/lib/journal';
 import { AddCityForm } from './AddCityForm';
+import { makeThumb } from './admin-form';
 import { Toast } from './Toast';
 
 type Props = {
@@ -35,20 +36,6 @@ const MESSAGES: Record<string, string> = {
   'invalid-date': 'Invalid date',
 };
 const message = (error: string) => MESSAGES[error] ?? error;
-
-/** A .webp thumbnail: 960 px wide for a landscape Photo, 480 px otherwise, never enlarged. */
-async function makeThumb(file: File): Promise<Blob> {
-  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-  const width = Math.min(bitmap.width, bitmap.width > bitmap.height ? 960 : 480);
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = Math.round((bitmap.height * width) / bitmap.width);
-  canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  bitmap.close();
-  return new Promise((resolve, reject) =>
-    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('The browser cannot make a thumbnail'))), 'image/webp', 0.8),
-  );
-}
 
 async function request<T>(method: string, body: unknown): Promise<T> {
   const response = await fetch('/api/admin/photos', {

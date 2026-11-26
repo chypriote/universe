@@ -240,7 +240,12 @@ export type AdminPlanDay = {
   /** Every City of the Day in travel order, the last being where it ends; empty for a Day with one City. */
   route: { id: number; name: string }[];
   province: string;
+  /** Ids of its Photos, in order. */
+  photoIds: number[];
 };
+
+/** A Photo of a Trip plan: no date, and on a Day only by choice. */
+export type AdminPlanPhoto = Pick<AdminPhoto, 'id' | 'name' | 'url' | 'thumb' | 'orientation' | 'city'>;
 
 export type AdminPlanDetail = {
   slug: string;
@@ -248,6 +253,12 @@ export type AdminPlanDetail = {
   visible: boolean;
   searchFlights: boolean;
   days: AdminPlanDay[];
+  photos: AdminPlanPhoto[];
+  coverId: number | null;
+  /** Focal point of the plan cover in percent. */
+  coverFocus: FocalPoint;
+  /** Ids of the 4 Highlight Photos, in order, or fewer while they are not all picked. */
+  highlightIds: number[];
   /** The Season bits (bit 0 = January) of each Day's Province, in Day order. */
   seasons: number[];
 };
@@ -255,6 +266,38 @@ export type AdminPlanDetail = {
 export type CreatePlanResult = { ok: true; slug: string } | { ok: false; error: 'invalid-title' | 'slug-taken' };
 
 export type SetPlanResult = { ok: true } | { ok: false; error: 'unknown-plan' };
+
+export type SetPlanCoverResult = { ok: true } | { ok: false; error: 'unknown-plan' | 'unknown-photo' | 'not-landscape' };
+
+export type SetPlanCoverFocusResult = { ok: true } | { ok: false; error: 'unknown-plan' | 'no-cover' | 'invalid-focus' };
+
+export type SetPlanHighlightPhotosResult =
+  | { ok: true }
+  | { ok: false; error: 'unknown-plan' | 'unknown-photo' | 'wrong-count' | 'duplicate-photo' | 'not-portrait' };
+
+export type SetPlanDayPhotosResult = { ok: true } | { ok: false; error: 'unknown-day' | 'unknown-photo' | 'duplicate-photo' };
+
+export type UploadPlanPhotoInput = {
+  /** Slug of the plan. */
+  plan: string;
+  /** File name, kept as it is. */
+  name: string;
+  file: ArrayBuffer;
+  /** The .webp thumbnail made by the browser. */
+  thumb: ArrayBuffer;
+  /** Replace the Photo with this name in the plan. */
+  overwrite?: boolean;
+};
+
+export type UploadPlanPhotoResult =
+  | { ok: true; photo: AdminPlanPhoto; replaced: boolean }
+  | { ok: false; error: 'unknown-plan' | 'invalid-name' | 'unsupported-type' | 'unreadable' | 'exists' | 'breaks-cover' };
+
+/** The City of a plan Photo; null means no City. */
+export type SetPlanPhotoCityResult = { ok: true } | { ok: false; error: 'unknown-photo' | 'unknown-city' };
+
+/** A Photo that is the plan cover or a Highlight Photo cannot be deleted: pick another one first. */
+export type DeletePlanPhotoResult = { ok: true } | { ok: false; error: 'unknown-photo' | 'in-use' };
 
 export type AddPlanDayInput = { cityId: number; title: string; notes?: string };
 
@@ -486,6 +529,18 @@ export type Journal = {
   deletePlanDay(dayId: number): Promise<PlanDayResult>;
   /** Swaps the Day with its neighbour; the first Day cannot go up, nor the last down (nothing happens). */
   movePlanDay(dayId: number, direction: 'up' | 'down'): Promise<PlanDayResult>;
+  /** The plan cover: a landscape Photo of the plan. */
+  setPlanCover(slug: string, photoId: number): Promise<SetPlanCoverResult>;
+  /** The focal point of the plan cover, in percent (0 to 100); needs a chosen cover. */
+  setPlanCoverFocus(slug: string, x: number, y: number): Promise<SetPlanCoverFocusResult>;
+  /** The 4 Highlight Photos of a plan in order: portrait Photos of the plan. */
+  setPlanHighlightPhotos(slug: string, photoIds: number[]): Promise<SetPlanHighlightPhotosResult>;
+  /** The Photos of a plan Day in order. A Photo on another Day leaves it. */
+  setPlanDayPhotos(dayId: number, photoIds: number[]): Promise<SetPlanDayPhotosResult>;
+  /** Stores a plan Photo and its thumbnail in the bucket and its row in D1. */
+  uploadPlanPhoto(input: UploadPlanPhotoInput): Promise<UploadPlanPhotoResult>;
+  setPlanPhotoCity(photoId: number, cityId: number | null): Promise<SetPlanPhotoCityResult>;
+  deletePlanPhoto(photoId: number): Promise<DeletePlanPhotoResult>;
   /** The Trip Cover: a landscape Photo of the Trip. */
   setTripCover(slug: string, photoId: number): Promise<SetTripCoverResult>;
   /** The focal point of the Trip Cover, in percent (0 to 100); needs a chosen cover. */
