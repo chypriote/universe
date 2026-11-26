@@ -104,7 +104,6 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
               <p class="eyebrow">Cheapest dates</p>
               <div aria-live="polite">
                 {lanes.map((plan, index) => {
-                  const card = covers.get(plan.slug);
                   return (
                     <div id={`fares-${plan.slug}`} data-fares={plan.slug} class:list={[index > 0 && 'hidden']}>
                       <h3 class="pb-1 font-serif text-xl">{plan.title}</h3>
@@ -127,15 +126,6 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                           </li>
                         ))}
                       </ol>
-                      {card?.cover && (
-                        <img
-                          src={card.cover}
-                          alt=""
-                          loading="lazy"
-                          class="mt-6 h-40 w-full object-cover lg:h-56"
-                          style={`object-position:${card.coverFocus.x}% ${card.coverFocus.y}%`}
-                        />
-                      )}
                     </div>
                   );
                 })}
@@ -145,15 +135,38 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
         )
       }
     </Container>
+    <div class="mt-12">
+      {
+        lanes.map((plan, index) => {
+          const card = covers.get(plan.slug);
+          return (
+            card?.cover && (
+              <div data-cover={plan.slug} class:list={['relative isolate h-[30rem] overflow-hidden lg:h-[33rem]', index > 0 && 'hidden']}>
+                <img
+                  src={card.cover}
+                  alt=""
+                  loading="lazy"
+                  class="absolute inset-0 -z-10 h-full w-full object-cover"
+                  style={`object-position: ${card.coverFocus.x}% ${card.coverFocus.y}%`}
+                />
+                <div class="absolute inset-0 -z-10 bg-gradient-to-t from-background via-background/40 to-transparent" />
+              </div>
+            )
+          );
+        })
+      }
+    </div>
   </div>
 </BaseLayout>
 
 <script>
-  // Hover, focus or tap a plan: its lane comes forward and its cheapest dates show below.
+  // Hover, focus or tap a plan: its lane comes forward, and its cheapest dates and cover show below.
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-plan]');
   const show = (slug: string) => {
     buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.plan === slug)));
-    document.querySelectorAll<HTMLElement>('[data-fares]').forEach((list) => list.classList.toggle('hidden', list.dataset.fares !== slug));
+    document
+      .querySelectorAll<HTMLElement>('[data-fares], [data-cover]')
+      .forEach((item) => item.classList.toggle('hidden', (item.dataset.fares ?? item.dataset.cover) !== slug));
   };
   buttons.forEach((button) => {
     const slug = button.dataset.plan!;
