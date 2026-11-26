@@ -53,14 +53,14 @@ A practical article (visa, payments, apps, transport) at `/guides/<slug>`.
 **Gallery**:
 Every trip photo, grouped by Trip, at `/gallery`. Photos live in R2 (`docs/photos.md`).
 
-**Flight prices**:
-The page at `/planner` that recommends when to leave for each visible Trip with Days, planned or done: its 3 cheapest Fare windows that fit the plan, built from the stored Flight searches.
+**Plan page**:
+The page at `/planner` (nav "Plan") that recommends when to leave for each visible Trip with Days, planned or done: the start dates that fit it, and its 3 cheapest Fare windows once searched, built from the stored Flight searches.
 
 **Fits the plan**:
 A start date fits a plan when at most 20% of the plan's Days, counted from that date, fall outside the Season of their main City's Province.
 
 **Planner**:
-Reserved for a later tool to design a Trip (Cities, Days, trains). Not built yet. Not the Flight prices page.
+Reserved for a later tool to design a Trip (Cities, Days, trains). Not built yet. Not the Plan page.
 
 **Season**:
 The whole months in which a Province is good to visit. Each Province has its own Season.

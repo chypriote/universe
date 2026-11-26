@@ -1,5 +1,5 @@
 // Which Fare windows to search for the plans (docs/adr/0002-fare-windows-from-plans.md).
-// Plain JS: `npm run china` runs it with node, the Flight prices page and the tests import it.
+// Plain JS: `npm run china` runs it with node, the Plan page and the tests import it.
 
 /** Start dates begin on this date, or two weeks from today when that is later. */
 export const FIRST_START = '2027-03-27';

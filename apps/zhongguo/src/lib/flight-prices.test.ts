@@ -24,7 +24,7 @@ const search = (outbound: string, price: number | null, overrides: Partial<Fligh
   ...overrides,
 });
 
-describe('Flight prices', () => {
+describe('Plan page', () => {
   it('show the 3 cheapest Fare windows of a plan, cheapest first', () => {
     const result = flightPrices(
       [plan()],
@@ -33,12 +33,12 @@ describe('Flight prices', () => {
       TODAY,
     );
 
-    expect(result.priced[0].windows).toEqual([
+    expect(result.plans[0].windows).toEqual([
       { airport: 'PEK', city: 'Beijing', outbound: '2027-04-09', return: '2027-04-16', price: 500, direct: true, searchedOn: '2027-01-05' },
       expect.objectContaining({ outbound: '2027-04-16', price: 600, direct: false }),
       expect.objectContaining({ outbound: '2027-04-23', price: 650 }),
     ]);
-    expect(result.priced[0]).toMatchObject({ slug: 'north', title: 'North', zh: '北京', days: 7 });
+    expect(result.plans[0]).toMatchObject({ slug: 'north', title: 'North', zh: '北京', days: 7 });
   });
 
   it('use the newest search of a window, and skip searches with no price or of no window', () => {
@@ -54,20 +54,27 @@ describe('Flight prices', () => {
       TODAY,
     );
 
-    expect(result.priced[0].windows.map((window) => [window.outbound, window.price])).toEqual([['2027-04-02', 800]]);
+    expect(result.plans[0].windows.map((window) => [window.outbound, window.price])).toEqual([['2027-04-02', 800]]);
   });
 
-  it('order the plans by their cheapest window', () => {
+  it('order the plans by their cheapest window, plans with no price last by title', () => {
     const result = flightPrices(
-      [plan({ slug: 'a', title: 'A' }), plan({ slug: 'b', title: 'B', gateways: [{ code: 'XIY', directWeekdays: 0 }] })],
+      [
+        plan({ slug: 'c', title: 'C' }),
+        plan({ slug: 'a', title: 'A' }),
+        plan({ slug: 'b', title: 'B', gateways: [{ code: 'XIY', directWeekdays: 0 }] }),
+        plan({ slug: 'z', title: 'Z', gateways: [{ code: 'LXA', directWeekdays: 0 }] }),
+      ],
       [search('2027-04-02', 700), search('2027-04-02', 500, { airport: 'XIY' })],
       cities,
       TODAY,
     );
 
-    expect(result.priced.map((item) => [item.title, item.windows[0].city])).toEqual([
+    expect(result.plans.map((item) => [item.title, item.windows[0]?.city])).toEqual([
       ['B', 'XIY'],
       ['A', 'Beijing'],
+      ['C', 'Beijing'],
+      ['Z', undefined],
     ]);
   });
 
@@ -76,10 +83,10 @@ describe('Flight prices', () => {
     const result = flightPrices([plan({ seasons: Array(5).fill(APRIL) })], [search('2027-04-02', 500, { return_date: '2027-04-07' })], cities, TODAY);
 
     expect(result).toMatchObject({ first: '2027-03-27', last: '2027-11-10' });
-    expect(result.priced[0].fits).toEqual([{ from: '2027-03-31', to: '2027-04-27' }]);
+    expect(result.plans[0].fits).toEqual([{ from: '2027-03-31', to: '2027-04-27' }]);
   });
 
-  it('say why a plan has no price', () => {
+  it('show the Season runs of a plan with no price, and say why it has none', () => {
     const result = flightPrices(
       [
         plan({ title: 'Empty', seasons: [] }),
@@ -92,11 +99,11 @@ describe('Flight prices', () => {
       TODAY,
     );
 
-    expect(result.unpriced).toEqual([
-      { title: 'Empty', reason: 'no Days yet' },
-      { title: 'Nowhere', reason: 'no Airport in its Cities' },
-      { title: 'Never', reason: 'no start date in season' },
-      { title: 'Waiting', reason: 'not searched yet' },
+    expect(result.noDays).toEqual(['Empty']);
+    expect(result.plans.map((item) => [item.title, item.note, item.fits.length > 0])).toEqual([
+      ['Never', 'no start date in season', false],
+      ['Nowhere', 'no Airport in its Cities', true],
+      ['Waiting', 'not searched yet', true],
     ]);
   });
 });
