@@ -8,9 +8,7 @@ type Props = {
   url: string;
   /** Names the Day in labels. */
   label: string;
-  /** The Province of the Day's main City. */
-  province: string;
-  /** The Cities of the Day: their Activities come first in the list. */
+  /** The Cities of the Day: only their Activities can be added. */
   cityIds: number[];
   activityIds: number[];
   /** Every Activity. */
@@ -20,13 +18,11 @@ type Props = {
 };
 
 /** The Activities of a Day or a Plan Day: visit order, add and remove. Each change is saved at once. */
-export function DayActivities({ url, label, province, cityIds, activityIds, activities, onChange, onNotice }: Props) {
+export function DayActivities({ url, label, cityIds, activityIds, activities, onChange, onNotice }: Props) {
   const [pick, setPick] = useState('');
   const [busy, setBusy] = useState(false);
   const listed = activityIds.flatMap((id) => activities.find((activity) => activity.id === id) ?? []);
-  const free = activities.filter((activity) => !activityIds.includes(activity.id));
-  const here = free.filter((activity) => cityIds.includes(activity.cityId));
-  const elsewhere = free.filter((activity) => !cityIds.includes(activity.cityId));
+  const free = activities.filter((activity) => !activityIds.includes(activity.id) && cityIds.includes(activity.cityId));
 
   async function change(next: number[], notice: string) {
     setBusy(true);
@@ -40,7 +36,6 @@ export function DayActivities({ url, label, province, cityIds, activityIds, acti
   function add() {
     const activity = activities.find((candidate) => String(candidate.id) === pick);
     if (!activity) return;
-    if (activity.province !== province && !window.confirm(`${activity.name} is in ${activity.province}, but the main City of ${label} is in ${province}. Add it anyway?`)) return;
     setPick('');
     void change([...activityIds, activity.id], `${activity.name} added to ${label}`);
   }
@@ -50,13 +45,6 @@ export function DayActivities({ url, label, province, cityIds, activityIds, acti
     [next[index], next[index + by]] = [next[index + by], next[index]];
     void change(next, `Activities of ${label} saved`);
   }
-
-  const options = (list: AdminActivity[]) =>
-    list.map((activity) => (
-      <option key={activity.id} value={activity.id}>
-        {activity.name} · {activity.city}
-      </option>
-    ));
 
   return (
     <section aria-label={`Activities of ${label}`} className="flex flex-col gap-3">
@@ -89,8 +77,11 @@ export function DayActivities({ url, label, province, cityIds, activityIds, acti
       <div className="flex flex-wrap items-center gap-3">
         <select className={`${field} min-w-48 flex-1`} aria-label={`Add an Activity to ${label}`} value={pick} onChange={(event) => setPick(event.target.value)}>
           <option value="">Add an Activity</option>
-          {here.length > 0 && <optgroup label="Cities of this Day">{options(here)}</optgroup>}
-          {elsewhere.length > 0 && <optgroup label="Other Cities">{options(elsewhere)}</optgroup>}
+          {free.map((activity) => (
+            <option key={activity.id} value={activity.id}>
+              {activity.name} · {activity.city}
+            </option>
+          ))}
         </select>
         <button type="button" className={button} disabled={busy || !pick} onClick={add}>
           Add
