@@ -1,15 +1,19 @@
 ---
 import AdminLayout from '@/layouts/AdminLayout.astro';
+import { NewTripForm } from '@/components/islands/NewTripForm';
 import { AdminTrips } from '@/components/islands/AdminTrips';
 import { journalFromEnv } from '@/lib/journal';
 
 export const prerender = false;
 
-const trips = await journalFromEnv().listAdminTrips();
+const journal = journalFromEnv();
+const trips = await journal.listAdminTrips();
+const plans = (await Promise.all((await journal.listAdminPlans()).map((plan) => journal.getAdminPlan(plan.slug)))).filter((plan) => plan !== null);
 ---
 
 <AdminLayout title="Trips">
-  <div>
+  <div class="flex flex-col gap-12">
+    <NewTripForm client:load plans={plans} />
     <AdminTrips client:load trips={trips} />
   </div>
 </AdminLayout>

@@ -1,6 +1,7 @@
 import type { AdminEnv, PhotoUrls } from './admin';
 import { editDayRows, PLAN_DAY_TABLES } from './day-edit';
 import { loadPlanPhotos } from './plan-photos';
+import { slugOf, slugTaken } from './slug';
 import type {
   AddPlanDayInput,
   AddPlanDayResult,
@@ -114,17 +115,9 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
 
   async function createPlan(title: string): Promise<CreatePlanResult> {
     const name = title.trim();
-    const slug = name
-      .toLowerCase()
-      .normalize('NFKD')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
+    const slug = slugOf(name);
     if (!name || !slug) return { ok: false, error: 'invalid-title' };
-    // Photo files sit under trips/<slug>/ for Trips and plans alike, so a slug is unique across both.
-    const taken = await env.DB.prepare('SELECT slug FROM trips WHERE slug = ? UNION SELECT slug FROM plans WHERE slug = ?')
-      .bind(slug, slug)
-      .first();
-    if (taken) return { ok: false, error: 'slug-taken' };
+    if (await slugTaken(env.DB, slug)) return { ok: false, error: 'slug-taken' };
     await env.DB.prepare('INSERT INTO plans (slug, title) VALUES (?, ?)').bind(slug, name).run();
     return { ok: true, slug };
   }
