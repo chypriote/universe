@@ -226,6 +226,42 @@ describe('Activity pictures', () => {
     expect(await journal.deleteActivityPicture(a)).toEqual({ ok: false, error: 'unknown-picture' });
   });
 
+  it('moves a picture to another Activity with its files, last there, and closes the gap', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+    const temple = await addActivity('Temple', chengdu);
+    await upload(pandas, 'a.jpg');
+    const second = await upload(pandas, 'b.jpg');
+    await upload(temple, 'c.jpg');
+    const [a] = second.ok ? second.activity.pictures.map((picture) => picture.id) : [];
+
+    const result = await journal.moveActivityPicture(a, temple);
+
+    expect(result.ok && result.from.pictures.map((picture) => picture.name)).toEqual(['b.jpg']);
+    expect(result.ok && result.to.pictures.map((picture) => picture.name)).toEqual(['c.jpg', 'a.jpg']);
+    expect(await keys()).toEqual([
+      `activities/${pandas}/b.jpg`,
+      `activities/${temple}/a.jpg`,
+      `activities/${temple}/c.jpg`,
+      `thumbs/activities/${pandas}/b.jpg.webp`,
+      `thumbs/activities/${temple}/a.jpg.webp`,
+      `thumbs/activities/${temple}/c.jpg.webp`,
+    ]);
+  });
+
+  it('refuses to move a picture onto a name the other Activity has, or to an unknown Activity or picture', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+    const temple = await addActivity('Temple', chengdu);
+    const first = await upload(pandas, 'a.jpg');
+    await upload(temple, 'a.jpg');
+    const [a] = first.ok ? first.activity.pictures.map((picture) => picture.id) : [];
+
+    expect(await journal.moveActivityPicture(a, temple)).toEqual({ ok: false, error: 'exists' });
+    expect(await journal.moveActivityPicture(a, 9999)).toEqual({ ok: false, error: 'unknown-activity' });
+    expect(await journal.moveActivityPicture(9999, temple)).toEqual({ ok: false, error: 'unknown-picture' });
+  });
+
   it('removes the pictures and their files when the Activity is deleted', async () => {
     const { chengdu } = await world();
     const pandas = await addActivity('Pandas', chengdu);

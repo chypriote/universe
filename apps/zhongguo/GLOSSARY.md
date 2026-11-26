@@ -72,7 +72,7 @@ A practical article (visa, payments, apps, transport) at `/guides/<slug>`.
 Every trip photo, grouped by Trip, at `/gallery`. Photos live in R2 (`docs/photos.md`).
 
 **Gallery workspace**:
-The admin tab at `/admin/gallery` where the Owner uploads Photos and sets what each one is: place, date, Photo time, title. Not the public Gallery. Days and order are set in the Journal workspace.
+The admin tab at `/admin/gallery` where the Owner uploads Photos and sets what each one is (place, date, Photo time, title), and manages Activity pictures by Province. Not the public Gallery. Days and order are set in the Journal workspace.
 
 **Plan page**:
 The page at `/planner` (nav "Plan") that recommends when to leave for each visible Trip plan with Days: the start dates that fit it, and its 3 cheapest Fare windows once searched, built from the stored Flight searches.

@@ -1,26 +1,43 @@
 ---
 import AdminLayout from '@/layouts/AdminLayout.astro';
+import { GalleryActivities } from '@/components/islands/GalleryActivities';
 import { GalleryPlan } from '@/components/islands/GalleryPlan';
+import { GalleryProvinceMap } from '@/components/islands/GalleryProvinceMap';
 import { GalleryTrip } from '@/components/islands/GalleryTrip';
 import { journalFromEnv } from '@/lib/journal';
 
 export const prerender = false;
 
 const journal = journalFromEnv();
-const [trips, plans, cities] = await Promise.all([journal.listAdminTrips(), journal.listAdminPlans(), journal.listAdminCities()]);
+const [trips, plans, cities, activities] = await Promise.all([
+  journal.listAdminTrips(),
+  journal.listAdminPlans(),
+  journal.listAdminCities(),
+  journal.listAdminActivities(),
+]);
 const params = Astro.url.searchParams;
-const plan = params.has('plan') ? await journal.getAdminPlan(params.get('plan') ?? '') : null;
-const trip = plan ? undefined : (trips.find((item) => item.slug === params.get('trip')) ?? trips[0]);
+
+// Activity pictures, by Province: the Provinces with Activities and their picture counts.
+const activityProvinces = [...new Set(activities.map((activity) => activity.province))].sort((a, b) => a.localeCompare(b));
+const picturesIn = (province: string) =>
+  activities.filter((activity) => activity.province === province).reduce((sum, activity) => sum + activity.pictures.length, 0);
+const activityProvince = params.has('activities') ? (activityProvinces.find((name) => name === params.get('activities')) ?? activityProvinces[0] ?? '') : null;
+
+const plan = activityProvince === null && params.has('plan') ? await journal.getAdminPlan(params.get('plan') ?? '') : null;
+const trip = activityProvince !== null || plan ? undefined : (trips.find((item) => item.slug === params.get('trip')) ?? trips[0]);
 const [photos, provinces] = await Promise.all([trip ? journal.listAdminPhotos(trip.slug) : null, journal.listProvinces()]);
 const groups = [
   { label: 'Trips', items: trips.map((item) => ({ key: `trip=${item.slug}`, title: item.title, count: item.photos, current: item.slug === trip?.slug })) },
   { label: 'Plans', items: plans.map((item) => ({ key: `plan=${item.slug}`, title: item.title, count: item.photos, current: item.slug === plan?.slug })) },
 ];
+const allPictures = activities.reduce((sum, activity) => sum + activity.pictures.length, 0);
+const row =
+  'flex items-center justify-between gap-3 border-l-2 border-transparent px-3 py-2 no-underline text-foreground hover:text-primary aria-[current=page]:border-primary aria-[current=page]:bg-muted/40';
 ---
 
 <AdminLayout title="Gallery" heading={false}>
   <div class="lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
-    <nav aria-label="Trips and plans" class="mb-10 flex flex-col gap-6 lg:sticky lg:top-8 lg:mb-0 lg:self-start">
+    <nav aria-label="Trips, plans and Activity pictures" class="mb-10 flex flex-col gap-6 lg:sticky lg:top-8 lg:mb-0 lg:self-start">
       {
         groups.map((group) => (
           <div class="flex flex-col gap-2">
@@ -29,11 +46,7 @@ const groups = [
               {group.items.length === 0 && <li class="px-3 py-2 text-muted-foreground">None yet</li>}
               {group.items.map((item) => (
                 <li>
-                  <a
-                    href={`/admin/gallery?${item.key}`}
-                    aria-current={item.current ? 'page' : undefined}
-                    class="flex items-center justify-between gap-3 border-l-2 border-transparent px-3 py-2 no-underline text-foreground hover:text-primary aria-[current=page]:border-primary aria-[current=page]:bg-muted/40"
-                  >
+                  <a href={`/admin/gallery?${item.key}`} aria-current={item.current ? 'page' : undefined} class={row}>
                     <span class="truncate">{item.title}</span>
                     <span class="text-xs text-muted-foreground">{item.count}</span>
                   </a>
@@ -43,15 +56,49 @@ const groups = [
           </div>
         ))
       }
+      <div class="flex flex-col gap-2">
+        <p class="eyebrow text-muted-foreground">Activity pictures</p>
+        {
+          activityProvince === null ? (
+            <ul class="border border-border text-sm">
+              <li>
+                <a href="/admin/gallery?activities" class={row}>
+                  <span>By Province</span>
+                  <span class="text-xs text-muted-foreground">{allPictures}</span>
+                </a>
+              </li>
+            </ul>
+          ) : (
+            <>
+              <GalleryProvinceMap client:load provinces={activityProvinces} current={activityProvince} />
+              <ul class="max-h-80 divide-y divide-border overflow-y-auto border border-border text-sm">
+                {activityProvinces.map((name) => (
+                  <li>
+                    <a href={`/admin/gallery?activities=${encodeURIComponent(name)}`} aria-current={name === activityProvince ? 'page' : undefined} class={row}>
+                      <span class="truncate">{name}</span>
+                      <span class="text-xs text-muted-foreground">{picturesIn(name)}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+      </div>
     </nav>
     <div class="min-w-0">
+      {
+        activityProvince !== null && (
+          <GalleryActivities client:load province={activityProvince} activities={activities.filter((activity) => activity.province === activityProvince)} />
+        )
+      }
       {plan && <GalleryPlan client:load plan={{ slug: plan.slug, title: plan.title }} photos={plan.photos} cities={cities} />}
       {
         trip && photos && (
           <GalleryTrip client:load trip={{ slug: trip.slug, title: trip.title }} photos={photos} cities={cities} provinces={provinces} />
         )
       }
-      {!plan && !trip && <p class="text-muted-foreground">There is no Trip yet.</p>}
+      {activityProvince === null && !plan && !trip && <p class="text-muted-foreground">There is no Trip yet.</p>}
     </div>
   </div>
 </AdminLayout>
