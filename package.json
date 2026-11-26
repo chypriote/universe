@@ -18,6 +18,14 @@
 		"zod": "^4.6.6",
 		"@esbuild-kit/core-utils": {
 			"esbuild": "^0.28.2"
-		}
+		},
+		"postcss-selector-parser": "^6.1.5",
+		"encoding-sniffer": "^1.0.2",
+		"node-domexception": "npm:@nolyfill/domexception@^1.0.28"
+	},
+	"allowScripts": {
+		"esbuild": true,
+		"workerd": true,
+		"exifreader": false
 	}
 }
