@@ -9,9 +9,13 @@ import type {
   EditActivityInput,
   EditActivityResult,
   Journal,
+  SetDayActivitiesResult,
 } from './types';
 
-type ActivityMethods = Pick<Journal, 'listAdminActivities' | 'addActivity' | 'editActivity' | 'deleteActivity'>;
+type ActivityMethods = Pick<
+  Journal,
+  'listAdminActivities' | 'addActivity' | 'editActivity' | 'deleteActivity' | 'setDayActivities' | 'setPlanDayActivities'
+>;
 
 type ActivityRow = {
   id: number;
@@ -139,5 +143,28 @@ export function buildActivities(env: AdminEnv): ActivityMethods {
     return { ok: true };
   }
 
-  return { listAdminActivities, addActivity, editActivity, deleteActivity };
+  async function setActivities(days: string, listed: string, dayId: number, activityIds: number[]): Promise<SetDayActivitiesResult> {
+    if (!(await env.DB.prepare(`SELECT id FROM ${days} WHERE id = ?`).bind(dayId).first())) return { ok: false, error: 'unknown-day' };
+    if (new Set(activityIds).size !== activityIds.length) return { ok: false, error: 'duplicate-activity' };
+    const known = activityIds.length
+      ? await all<{ id: number }>(`SELECT id FROM activities WHERE id IN (${activityIds.map(() => '?').join(',')})`, ...activityIds)
+      : [];
+    if (known.length !== activityIds.length) return { ok: false, error: 'unknown-activity' };
+    await env.DB.batch([
+      env.DB.prepare(`DELETE FROM ${listed} WHERE day_id = ?`).bind(dayId),
+      ...activityIds.map((activityId, index) =>
+        env.DB.prepare(`INSERT INTO ${listed} (day_id, position, activity_id) VALUES (?, ?, ?)`).bind(dayId, index + 1, activityId),
+      ),
+    ]);
+    return { ok: true };
+  }
+
+  return {
+    listAdminActivities,
+    addActivity,
+    editActivity,
+    deleteActivity,
+    setDayActivities: (dayId, activityIds) => setActivities('days', 'day_activities', dayId, activityIds),
+    setPlanDayActivities: (dayId, activityIds) => setActivities('plan_days', 'plan_day_activities', dayId, activityIds),
+  };
 }

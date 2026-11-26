@@ -244,6 +244,11 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
        WHERE days.trip_id = ? ORDER BY day_photos.day_id, day_photos.position`,
       trip.id,
     );
+    const activities = await all<{ day_id: number; activity_id: number }>(
+      `SELECT day_activities.day_id, day_activities.activity_id FROM day_activities JOIN days ON days.id = day_activities.day_id
+       WHERE days.trip_id = ? ORDER BY day_activities.day_id, day_activities.position`,
+      trip.id,
+    );
     const highlights = await all<{ photo_id: number }>(
       'SELECT photo_id FROM highlight_photos WHERE trip_id = ? ORDER BY position',
       trip.id,
@@ -260,6 +265,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       route: earlier.filter((entry) => entry.day_id === row.id).map((entry) => ({ id: entry.id, name: entry.name })),
       province: row.province,
       photoIds: onDays.filter((entry) => entry.day_id === row.id).map((entry) => entry.photo_id),
+      activityIds: activities.filter((entry) => entry.day_id === row.id).map((entry) => entry.activity_id),
     }));
     return {
       slug: trip.slug,

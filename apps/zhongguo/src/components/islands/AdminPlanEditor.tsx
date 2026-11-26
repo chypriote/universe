@@ -1,12 +1,13 @@
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react';
 import { useState, type SyntheticEvent } from 'react';
-import type { AdminCity, AdminPlanDay, AdminPlanDetail, AdminPlanPhoto } from '@/lib/journal';
+import type { AdminActivity, AdminCity, AdminPlanDay, AdminPlanDetail, AdminPlanPhoto } from '@/lib/journal';
+import { DayActivities } from './DayActivities';
 import { DayText } from './DayText';
 import { Cover, Highlights, PhotoBoard } from './PhotoPicks';
 import { button, field, makeThumb, message, save } from './admin-form';
 import { Toast } from './Toast';
 
-type Props = { plan: AdminPlanDetail; cities: AdminCity[] };
+type Props = { plan: AdminPlanDetail; cities: AdminCity[]; activities: AdminActivity[] };
 
 /** The Photos of the plan: upload, City of each, delete. The page reloads after an upload or a delete. */
 function Photos({ plan, cities, onNotice }: { plan: AdminPlanDetail; cities: AdminCity[]; onNotice: (text: string) => void }) {
@@ -107,7 +108,7 @@ function Photos({ plan, cities, onNotice }: { plan: AdminPlanDetail; cities: Adm
 }
 
 /** The numbered Days of a plan: edit, move, delete, and add one at the end. The page reloads after a change of order. */
-export function AdminPlanEditor({ plan, cities }: Props) {
+export function AdminPlanEditor({ plan, cities, activities }: Props) {
   const [days, setDays] = useState(plan.days);
   const [notice, setNotice] = useState('');
   const [cityId, setCityId] = useState('');
@@ -204,6 +205,16 @@ export function AdminPlanEditor({ plan, cities }: Props) {
                         </button>
                       </>
                     }
+                  />
+                  <DayActivities
+                    url={`/api/admin/plan-days/${day.id}/activities`}
+                    label={`Day ${day.number}`}
+                    province={day.province}
+                    cityIds={(day.route.length > 0 ? day.route : [day.city]).map((city) => city.id)}
+                    activityIds={day.activityIds}
+                    activities={activities}
+                    onChange={(activityIds) => patchDay(day.id, { activityIds })}
+                    onNotice={setNotice}
                   />
                   {list(day.id, `Photos of Day ${day.number}`)}
                 </article>

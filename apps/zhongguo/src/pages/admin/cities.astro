@@ -6,7 +6,7 @@ import { journalFromEnv } from '@/lib/journal';
 export const prerender = false;
 
 const journal = journalFromEnv();
-const [cities, provinces] = await Promise.all([journal.listAdminCities(), journal.listProvinces()]);
+const [cities, provinces, activities] = await Promise.all([journal.listAdminCities(), journal.listProvinces(), journal.listAdminActivities()]);
 const requested = Number(Astro.url.searchParams.get('city'));
 const city = cities.find((candidate) => candidate.id === requested) ?? cities[0];
 const photos = city ? ((await journal.listCityPhotos(city.id)) ?? []) : [];
@@ -16,7 +16,7 @@ const photos = city ? ((await journal.listCityPhotos(city.id)) ?? []) : [];
   {
     city ? (
       <div>
-        <AdminCities client:load cities={cities} cityId={city.id} photos={photos} provinces={provinces} />
+        <AdminCities client:load cities={cities} cityId={city.id} photos={photos} provinces={provinces} activities={activities} />
       </div>
     ) : (
       <p class="text-muted-foreground">There is no City yet.</p>

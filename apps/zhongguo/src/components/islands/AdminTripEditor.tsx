@@ -1,16 +1,17 @@
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-import type { AdminCity, AdminDay, AdminTripDetail } from '@/lib/journal';
+import type { AdminActivity, AdminCity, AdminDay, AdminTripDetail } from '@/lib/journal';
+import { DayActivities } from './DayActivities';
 import { DayText } from './DayText';
 import { Cover, Highlights, PhotoBoard } from './PhotoPicks';
 import { button, message, save } from './admin-form';
 import { Toast } from './Toast';
 
-type Props = { trip: AdminTripDetail; cities: AdminCity[] };
+type Props = { trip: AdminTripDetail; cities: AdminCity[]; activities: AdminActivity[] };
 
 /* Days: each one has its text, a switch and its Photos. */
 
-function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: AdminCity[]; onNotice: (text: string) => void }) {
+function Days({ trip, cities, activities, onNotice }: { trip: AdminTripDetail; cities: AdminCity[]; activities: AdminActivity[]; onNotice: (text: string) => void }) {
   const [days, setDays] = useState(trip.days);
 
   async function toggle(day: AdminDay) {
@@ -58,6 +59,16 @@ function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: Admin
                   </button>
                 }
               />
+              <DayActivities
+                url={`/api/admin/days/${day.id}/activities`}
+                label={`Day of ${day.date}`}
+                province={day.province}
+                cityIds={(day.route.length > 0 ? day.route : [day.city]).map((city) => city.id)}
+                activityIds={day.activityIds}
+                activities={activities}
+                onChange={(activityIds) => patchDay(day.id, { activityIds })}
+                onNotice={onNotice}
+              />
               {list(day.id, `Photos of ${day.date}`)}
             </article>
           ))
@@ -67,7 +78,7 @@ function Days({ trip, cities, onNotice }: { trip: AdminTripDetail; cities: Admin
   );
 }
 
-export function AdminTripEditor({ trip, cities }: Props) {
+export function AdminTripEditor({ trip, cities, activities }: Props) {
   const [notice, setNotice] = useState('');
   const base = `/api/admin/trips/${encodeURIComponent(trip.slug)}`;
   return (
@@ -75,7 +86,7 @@ export function AdminTripEditor({ trip, cities }: Props) {
       <Toast text={notice} onDone={() => setNotice('')} />
       <Cover base={base} label="Trip Cover" photos={trip.photos} coverId={trip.coverId} coverFocus={trip.coverFocus} onNotice={setNotice} />
       <Highlights base={base} photos={trip.photos} highlightIds={trip.highlightIds} onNotice={setNotice} />
-      <Days trip={trip} cities={cities} onNotice={setNotice} />
+      <Days trip={trip} cities={cities} activities={activities} onNotice={setNotice} />
     </div>
   );
 }

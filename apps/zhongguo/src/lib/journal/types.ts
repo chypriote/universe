@@ -205,6 +205,8 @@ export type AdminDay = {
   province: string;
   /** Ids of its Photos, in order. */
   photoIds: number[];
+  /** Ids of its Activities, in visit order. */
+  activityIds: number[];
 };
 
 /** A Trip with its Days, as the admin edits it. */
@@ -244,6 +246,8 @@ export type AdminPlanDay = {
   province: string;
   /** Ids of its Photos, in order. */
   photoIds: number[];
+  /** Ids of its Activities, in visit order. */
+  activityIds: number[];
 };
 
 /** A Photo of a Trip plan: no date, and on a Day only by choice. */
@@ -541,6 +545,10 @@ export type SetDayPhotosResult =
   | { ok: true }
   | { ok: false; error: 'unknown-day' | 'unknown-photo' | 'duplicate-photo' };
 
+export type SetDayActivitiesResult =
+  | { ok: true }
+  | { ok: false; error: 'unknown-day' | 'unknown-activity' | 'duplicate-activity' };
+
 export type Journal = {
   /** The visible Trips, newest first. */
   listTripCards(): Promise<TripCard[]>;
@@ -646,6 +654,10 @@ export type Journal = {
   editActivity(input: EditActivityInput): Promise<EditActivityResult>;
   /** Refused while a Day or a Plan Day lists it. */
   deleteActivity(id: number): Promise<DeleteActivityResult>;
+  /** The Activities of a Day in visit order, each once; replaces the old list. Any City: a day trip is allowed. */
+  setDayActivities(dayId: number, activityIds: number[]): Promise<SetDayActivitiesResult>;
+  /** The same for a Plan Day. */
+  setPlanDayActivities(dayId: number, activityIds: number[]): Promise<SetDayActivitiesResult>;
   /** Every Province by name, with its Season and its Cities by name with their Airports. */
   listAdminProvinces(): Promise<AdminProvinceDetail[]>;
   /** Replaces the Season: any set of months, none included. */

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import type { AdminProvinceDetail, Airport } from '@/lib/journal';
+import type { AdminActivity, AdminCity, AdminProvinceDetail, Airport } from '@/lib/journal';
 import { projectLngLat } from '@/lib/china-map';
+import { ActivitiesPanel } from './ActivitiesPanel';
 import { AddCityForm, fieldClass as field } from './AddCityForm';
 import { ChinaMap, type ChinaMapCity } from './ChinaMap';
 import { Toast } from './Toast';
@@ -8,6 +9,9 @@ import { Toast } from './Toast';
 type Props = {
   provinces: AdminProvinceDetail[];
   provinceId: number;
+  /** Every Activity and every City, for the Activities of the Province. */
+  activities: AdminActivity[];
+  cities: AdminCity[];
 };
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -242,6 +246,21 @@ export function AdminProvinces(props: Props) {
             );
           })}
         </ul>
+      </section>
+
+      <section aria-labelledby="activities-title" className="flex flex-col gap-4 border border-border p-6">
+        <h2 id="activities-title" className="font-serif text-2xl">
+          Activities
+        </h2>
+        <ActivitiesPanel
+          key={province.id}
+          activities={props.activities}
+          cities={props.cities}
+          inScope={(activity) => activity.province === province.name}
+          cityId={province.cities[0]?.id}
+          groupByCity
+          onNotice={setNotice}
+        />
       </section>
 
       <AddCityForm

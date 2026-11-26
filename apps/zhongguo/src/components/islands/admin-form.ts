@@ -21,6 +21,8 @@ export const MESSAGES: Record<string, string> = {
   'unknown-plan': 'The plan no longer exists: reload the page',
   'invalid-date': 'Pick a valid start date',
   'unknown-plan-day': 'A Plan Day no longer exists: reload the page',
+  'unknown-activity': 'An Activity no longer exists: reload the page',
+  'duplicate-activity': 'A Day lists an Activity once only',
   'slug-taken': 'A Trip or plan already has that name',
 };
 
