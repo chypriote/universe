@@ -11,7 +11,7 @@ const LEEWAY = 0.2;
 
 /**
  * @typedef {{ code: string, directWeekdays: number }} Gateway  directWeekdays: bit 0 = Monday
- * @typedef {{ slug: string, title?: string, zh?: string, seasons: number[], gateways: Gateway[] }} Plan  seasons: the Season bits (bit 0 = January) of each Day's Province, in Day order
+ * @typedef {{ slug: string, title?: string, zh?: string, search?: boolean, seasons: number[], gateways: Gateway[] }} Plan  search: whether its Fare windows are searched (default yes); seasons: the Season bits (bit 0 = January) of each Day's Province, in Day order
  * @typedef {{ slug: string, airport: string, outbound: string, return: string }} FareWindow
  */
 

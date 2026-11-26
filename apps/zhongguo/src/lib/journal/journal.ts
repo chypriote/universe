@@ -93,6 +93,7 @@ type VisibleDay = DayRow & { number: number; stops: DayStopRow[] };
 
 /** A visible Trip with what pages need from it, numbered and ready. */
 type LoadedTrip = TripRow & {
+  source: Source;
   type: TripType;
   /** The visible Days, numbered from 1. */
   days: VisibleDay[];
@@ -102,6 +103,69 @@ type LoadedTrip = TripRow & {
 };
 
 const PHOTOGRAPHER = 'Nico';
+
+/**
+ * Where a kind of Trip lives in D1. A Trip plan has the same shape as a Trip (Days, Cities, Photos) in tables of its own
+ * (ADR 0003): no dates, no hidden Days, no food, so those columns are constants.
+ */
+type Source = {
+  type: TripType;
+  trips: string;
+  /** The Trip id column of the other tables. */
+  fk: string;
+  days: string;
+  dayCities: string;
+  dayPhotos: string;
+  photos: string;
+  highlights: string;
+  attractions: string;
+  rides: string;
+  /** SQL for the columns plans do not have. */
+  startDate: string;
+  endDate: string;
+  dayDate: string;
+  dayVisible: string;
+  photoDate: string;
+  base: string;
+};
+
+const TRIPS: Source = {
+  type: 'report',
+  trips: 'trips',
+  fk: 'trip_id',
+  days: 'days',
+  dayCities: 'day_cities',
+  dayPhotos: 'day_photos',
+  photos: 'photos',
+  highlights: 'highlight_photos',
+  attractions: 'day_attractions',
+  rides: 'day_train_rides',
+  startDate: 'trips.start_date',
+  endDate: 'trips.end_date',
+  dayDate: 'days.date',
+  dayVisible: 'days.visible',
+  photoDate: 'photos.date',
+  base: '/trips',
+};
+
+const PLANS: Source = {
+  type: 'plan',
+  trips: 'plans',
+  fk: 'plan_id',
+  days: 'plan_days',
+  dayCities: 'plan_day_cities',
+  dayPhotos: 'plan_day_photos',
+  photos: 'plan_photos',
+  highlights: 'plan_highlight_photos',
+  attractions: 'plan_day_attractions',
+  rides: 'plan_day_train_rides',
+  startDate: 'NULL',
+  endDate: 'NULL',
+  dayDate: "''",
+  dayVisible: '1',
+  photoDate: "''",
+  base: '/plans',
+};
 
 export function buildJournal(env: JournalEnv): Journal {
   const photosUrl = (env.PHOTOS_URL ?? '').replace(/\/$/, '');
@@ -122,27 +186,28 @@ export function buildJournal(env: JournalEnv): Journal {
     return results;
   }
 
-  /** The visible Trips (one of them when a slug is given), newest first. */
-  async function loadTrips(slug?: string): Promise<LoadedTrip[]> {
+  /** The visible Trips or plans (one of them when a slug is given), newest first. */
+  async function loadTrips(slug?: string, source: Source = TRIPS): Promise<LoadedTrip[]> {
+    const S = source;
     const trips = await all<TripRow>(
-      `SELECT id, slug, title, start_date, end_date, cover_photo_id, cover_focus_x, cover_focus_y FROM trips
-       WHERE visible = 1 ${slug === undefined ? '' : 'AND slug = ?'}`,
+      `SELECT id, slug, title, ${S.startDate} AS start_date, ${S.endDate} AS end_date, cover_photo_id, cover_focus_x, cover_focus_y
+       FROM ${S.trips} WHERE visible = 1 ${slug === undefined ? '' : 'AND slug = ?'}`,
       ...(slug === undefined ? [] : [slug]),
     );
     if (trips.length === 0) return [];
 
-    const scope = slug === undefined ? '' : 'AND trips.slug = ?';
+    const scope = slug === undefined ? '' : `AND ${S.trips}.slug = ?`;
     const scopeParams = slug === undefined ? [] : [slug];
     const days = await all<DayRow>(
-      `SELECT days.id, days.trip_id, days.date, days.title, days.notes, days.visible,
+      `SELECT ${S.days}.id, ${S.days}.${S.fk} AS trip_id, ${S.dayDate} AS date, ${S.days}.title, ${S.days}.notes, ${S.dayVisible} AS visible,
               cities.id AS city_id, cities.name AS city, cities.name_zh AS city_zh,
               cities.lng, cities.lat, provinces.name AS province
-       FROM days
-       JOIN trips ON trips.id = days.trip_id
-       JOIN cities ON cities.id = days.city_id
+       FROM ${S.days}
+       JOIN ${S.trips} ON ${S.trips}.id = ${S.days}.${S.fk}
+       JOIN cities ON cities.id = ${S.days}.city_id
        JOIN provinces ON provinces.id = cities.province_id
-       WHERE trips.visible = 1 ${scope}
-       ORDER BY days.trip_id, days.position`,
+       WHERE ${S.trips}.visible = 1 ${scope}
+       ORDER BY ${S.days}.${S.fk}, ${S.days}.position`,
       ...scopeParams,
     );
     const earlier = await all<{
@@ -155,39 +220,40 @@ export function buildJournal(env: JournalEnv): Journal {
       major: number;
       main: number;
     }>(
-      `SELECT day_cities.day_id, cities.id, cities.name, cities.name_zh, cities.lng, cities.lat, cities.major, day_cities.main
-       FROM day_cities
-       JOIN days ON days.id = day_cities.day_id
-       JOIN trips ON trips.id = days.trip_id
-       JOIN cities ON cities.id = day_cities.city_id
-       WHERE trips.visible = 1 ${scope}
-       ORDER BY day_cities.day_id, day_cities.position`,
+      `SELECT ${S.dayCities}.day_id, cities.id, cities.name, cities.name_zh, cities.lng, cities.lat, cities.major, ${S.dayCities}.main
+       FROM ${S.dayCities}
+       JOIN ${S.days} ON ${S.days}.id = ${S.dayCities}.day_id
+       JOIN ${S.trips} ON ${S.trips}.id = ${S.days}.${S.fk}
+       JOIN cities ON cities.id = ${S.dayCities}.city_id
+       WHERE ${S.trips}.visible = 1 ${scope}
+       ORDER BY ${S.dayCities}.day_id, ${S.dayCities}.position`,
       ...scopeParams,
     );
     const majors = await majorCityIds();
     const photos = await all<PhotoRow>(
-      `SELECT photos.id, photos.trip_id, photos.name, photos.width, photos.height, photos.date, photos.title, photos.version,
-              day_photos.day_id, cities.id AS city_id, cities.name AS city, cities.name_zh AS city_zh,
+      `SELECT ${S.photos}.id, ${S.photos}.${S.fk} AS trip_id, ${S.photos}.name, ${S.photos}.width, ${S.photos}.height,
+              ${S.photoDate} AS date, ${S.photos}.title, ${S.photos}.version,
+              ${S.dayPhotos}.day_id, cities.id AS city_id, cities.name AS city, cities.name_zh AS city_zh,
               cities.lng AS city_lng, cities.lat AS city_lat, cities.major AS city_major,
               city_provinces.name AS city_province, own_provinces.name AS on_the_way_province
-       FROM photos
-       JOIN trips ON trips.id = photos.trip_id
-       LEFT JOIN day_photos ON day_photos.photo_id = photos.id
-       LEFT JOIN cities ON cities.id = photos.city_id
+       FROM ${S.photos}
+       JOIN ${S.trips} ON ${S.trips}.id = ${S.photos}.${S.fk}
+       LEFT JOIN ${S.dayPhotos} ON ${S.dayPhotos}.photo_id = ${S.photos}.id
+       LEFT JOIN cities ON cities.id = ${S.photos}.city_id
        LEFT JOIN provinces AS city_provinces ON city_provinces.id = cities.province_id
-       LEFT JOIN provinces AS own_provinces ON own_provinces.id = photos.province_id
-       WHERE trips.visible = 1 ${scope}
-       ORDER BY photos.date, photos.name`,
+       LEFT JOIN provinces AS own_provinces ON own_provinces.id = ${S.photos}.province_id
+       WHERE ${S.trips}.visible = 1 ${scope}
+       ORDER BY ${S.photoDate}, ${S.photos}.name`,
       ...scopeParams,
     );
 
-    const today = new Date().toISOString().slice(0, 10);
     return trips
       .map((trip): LoadedTrip => {
         const tripDays = days.filter((day) => day.trip_id === trip.id);
         return {
           ...trip,
-          type: trip.end_date !== null && trip.end_date < today ? 'report' : 'plan',
+          source: S,
+          type: S.type,
           days: tripDays
             .filter((day) => day.visible === 1)
             .map((day, index) => ({
@@ -312,11 +378,11 @@ export function buildJournal(env: JournalEnv): Journal {
     return new Set(rows.map((row) => row.id));
   }
 
-  async function listTripCards(): Promise<TripCard[]> {
-    const trips = await loadTrips();
+  async function cardsOf(source: Source): Promise<TripCard[]> {
+    const trips = await loadTrips(undefined, source);
     const majors = await majorCityIds();
     const highlights = await all<{ trip_id: number; position: number; photo_id: number }>(
-      'SELECT trip_id, position, photo_id FROM highlight_photos ORDER BY trip_id, position',
+      `SELECT ${source.fk} AS trip_id, position, photo_id FROM ${source.highlights} ORDER BY ${source.fk}, position`,
     );
 
     return trips.map((trip) => {
@@ -325,18 +391,20 @@ export function buildJournal(env: JournalEnv): Journal {
         return photo ? thumbUrl(trip.slug, photo.name, photo.version) : null;
       };
       const cities = majorCityNames(trip, majors);
-      let description = 'Planned trip. Route and dates are not set yet.';
+      const plan = source.type === 'plan';
+      let description = plan ? 'Itinerary to come.' : 'Planned trip. Route and dates are not set yet.';
       if (trip.days.length > 0) {
-        description =
-          cities.length > 0 ? `A journey across ${cities.join(', ')}.` : `A ${trip.days.length}-day journey.`;
+        const where = cities.length > 0 ? ` across ${cities.join(', ')}` : '';
+        description = plan ? `A ${trip.days.length}-day itinerary${where}.` : `A journey${where}.`;
+        if (!plan && cities.length === 0) description = `A ${trip.days.length}-day journey.`;
       }
       return {
         slug: trip.slug,
         title: trip.title,
-        dates: formatDates(trip),
+        dates: plan ? `${trip.days.length} days` : formatDates(trip),
         description,
         type: trip.type,
-        link: `/trips/${trip.slug}`,
+        link: `${source.base}/${trip.slug}`,
         provinces: [...new Set(trip.days.map((day) => day.province))],
         route: buildRoute(trip),
         cover: thumb(trip.cover_photo_id),
@@ -354,15 +422,16 @@ export function buildJournal(env: JournalEnv): Journal {
     return { name, nameZh: place.zh, pinyin: place.pinyin };
   }
 
-  async function getTrip(slug: string): Promise<TripPage | null> {
-    const [trip] = await loadTrips(slug);
+  async function pageOf(slug: string, source: Source): Promise<TripPage | null> {
+    const S = source;
+    const [trip] = await loadTrips(slug, S);
     if (!trip) return null;
 
     const majors = await majorCityIds();
     const dayIds = trip.days.map((day) => day.id);
     const attractions = dayIds.length
       ? await all<{ day_id: number; name: string }>(
-          `SELECT day_id, name FROM day_attractions WHERE day_id IN (${dayIds.map(() => '?').join(',')}) ORDER BY day_id, position`,
+          `SELECT day_id, name FROM ${S.attractions} WHERE day_id IN (${dayIds.map(() => '?').join(',')}) ORDER BY day_id, position`,
           ...dayIds,
         )
       : [];
@@ -374,21 +443,24 @@ export function buildJournal(env: JournalEnv): Journal {
           departure_time: string;
           arrival_time: string;
         }>(
-          `SELECT day_id, outgoing_city, destination_city, departure_time, arrival_time FROM day_train_rides
+          `SELECT day_id, outgoing_city, destination_city, departure_time, arrival_time FROM ${S.rides}
            WHERE day_id IN (${dayIds.map(() => '?').join(',')}) ORDER BY day_id, position`,
           ...dayIds,
         )
       : [];
     const dayPhotos = dayIds.length
       ? await all<{ day_id: number; photo_id: number }>(
-          `SELECT day_id, photo_id FROM day_photos WHERE day_id IN (${dayIds.map(() => '?').join(',')}) ORDER BY day_id, position`,
+          `SELECT day_id, photo_id FROM ${S.dayPhotos} WHERE day_id IN (${dayIds.map(() => '?').join(',')}) ORDER BY day_id, position`,
           ...dayIds,
         )
       : [];
-    const restaurants = await all<{ city_id: number; suggested_dishes: string }>(
-      'SELECT city_id, suggested_dishes FROM trip_restaurants WHERE trip_id = ? ORDER BY city_id, position',
-      trip.id,
-    );
+    const restaurants =
+      S.type === 'plan'
+        ? []
+        : await all<{ city_id: number; suggested_dishes: string }>(
+            'SELECT city_id, suggested_dishes FROM trip_restaurants WHERE trip_id = ? ORDER BY city_id, position',
+            trip.id,
+          );
 
     const days: TripDay[] = trip.days.map((day) => ({
       number: day.number,
@@ -413,18 +485,20 @@ export function buildJournal(env: JournalEnv): Journal {
 
     const route = buildRoute(trip);
     const names = majorCityNames(trip, majors);
-    let description = 'Planned trip. Route and dates are not set yet.';
+    const plan = S.type === 'plan';
+    let description = plan ? 'Itinerary to come.' : 'Planned trip. Route and dates are not set yet.';
     if (trip.days.length > 0) {
+      const what = plan ? 'itinerary' : 'journey';
       description =
         names.length > 0
-          ? `A ${trip.days.length}-day journey across ${names.join(', ')}.`
-          : `A ${trip.days.length}-day journey.`;
+          ? `A ${trip.days.length}-day ${what} across ${names.join(', ')}.`
+          : `A ${trip.days.length}-day ${what}.`;
     }
 
     return {
       slug: trip.slug,
       title: trip.title,
-      dates: formatDates(trip),
+      dates: plan ? '' : formatDates(trip),
       startDate: trip.start_date ?? '',
       destination: 'China',
       description,
@@ -435,6 +509,11 @@ export function buildJournal(env: JournalEnv): Journal {
     };
   }
 
+  const listTripCards = () => cardsOf(TRIPS);
+  const listPlanCards = () => cardsOf(PLANS);
+  const getTrip = (slug: string) => pageOf(slug, TRIPS);
+  const getPlan = (slug: string) => pageOf(slug, PLANS);
+
   /** The Photos of the Gallery, newest Trip first: none of a Hidden Day. */
   function galleryPhotos(trips: LoadedTrip[]) {
     return trips.flatMap((trip) =>
@@ -444,11 +523,9 @@ export function buildJournal(env: JournalEnv): Journal {
     );
   }
 
-  /** A Province counts as visited once a visible Day of a past Trip has its main City there. */
+  /** A Province counts as visited once a visible Day of a Trip has its main City there. */
   function visitedProvinces(trips: LoadedTrip[]): string[] {
-    return [
-      ...new Set(trips.filter((trip) => trip.type === 'report').flatMap((trip) => trip.days.map((day) => day.province))),
-    ].sort((a, b) => a.localeCompare(b));
+    return [...new Set(trips.flatMap((trip) => trip.days.map((day) => day.province)))].sort((a, b) => a.localeCompare(b));
   }
 
   async function getGallery(): Promise<Gallery> {
@@ -510,10 +587,9 @@ export function buildJournal(env: JournalEnv): Journal {
     const covers = await provinceCovers();
     const zh = await all<{ name: string; name_zh: string }>('SELECT name, name_zh FROM provinces');
     const items = galleryPhotos(trips);
-    const reports = trips.filter((trip) => trip.type === 'report');
 
     return visitedProvinces(trips).map((name) => {
-      const tripsThere = reports.filter((trip) => trip.days.some((day) => day.province === name));
+      const tripsThere = trips.filter((trip) => trip.days.some((day) => day.province === name));
       const candidates = candidatesOf(items, name);
       const picked = candidates.find(({ photo }) => photo.id === covers.get(name)?.photoId);
       const shown = picked ?? candidates[0];
@@ -612,7 +688,9 @@ export function buildJournal(env: JournalEnv): Journal {
 
   return {
     listTripCards,
+    listPlanCards,
     getTrip,
+    getPlan,
     getGallery,
     getHomeMap,
     listVisitedProvinces,

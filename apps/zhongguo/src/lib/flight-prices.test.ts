@@ -41,6 +41,14 @@ describe('Plan page', () => {
     expect(result.plans[0]).toMatchObject({ slug: 'north', title: 'North', zh: '北京', days: 7 });
   });
 
+  it('show a plan with Search flights off without prices, even when prices are stored', () => {
+    const result = flightPrices([plan({ search: false })], [search('2027-04-09', 500)], cities, TODAY);
+
+    expect(result.plans[0].windows).toEqual([]);
+    expect(result.plans[0].note).toBe('flight search off');
+    expect(result.plans[0].fits.length).toBeGreaterThan(0);
+  });
+
   it('use the newest search of a window, and skip searches with no price or of no window', () => {
     const result = flightPrices(
       [plan()],

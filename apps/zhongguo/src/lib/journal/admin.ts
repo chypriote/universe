@@ -53,7 +53,6 @@ type AdminMethods = Pick<
   | 'listAdminTrips'
   | 'getAdminTrip'
   | 'setTripVisible'
-  | 'setTripOnPlan'
   | 'setTripCover'
   | 'setTripCoverFocus'
   | 'setHighlightPhotos'
@@ -200,20 +199,12 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   }
 
   async function listAdminTrips(): Promise<AdminTrip[]> {
-    const today = new Date().toISOString().slice(0, 10);
-    const rows = await all<{ slug: string; title: string; visible: number; on_plan: number; end_date: string | null; photos: number }>(
-      `SELECT slug, title, visible, on_plan, end_date,
+    const rows = await all<{ slug: string; title: string; visible: number; photos: number }>(
+      `SELECT slug, title, visible,
          (SELECT COUNT(*) FROM photos WHERE photos.trip_id = trips.id) AS photos
        FROM trips ORDER BY start_date IS NULL, start_date DESC, slug`,
     );
-    return rows.map((row) => ({
-      slug: row.slug,
-      title: row.title,
-      type: row.end_date !== null && row.end_date < today ? 'report' : 'plan',
-      visible: row.visible === 1,
-      onPlan: row.on_plan === 1,
-      photos: row.photos,
-    }));
+    return rows.map((row) => ({ slug: row.slug, title: row.title, visible: row.visible === 1, photos: row.photos }));
   }
 
   async function tripBySlug(slug: string) {
@@ -287,13 +278,6 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     const trip = await tripBySlug(slug);
     if (!trip) return { ok: false, error: 'unknown-trip' };
     await env.DB.prepare('UPDATE trips SET visible = ? WHERE id = ?').bind(visible ? 1 : 0, trip.id).run();
-    return { ok: true };
-  }
-
-  async function setTripOnPlan(slug: string, onPlan: boolean): Promise<SetTripVisibleResult> {
-    const trip = await tripBySlug(slug);
-    if (!trip) return { ok: false, error: 'unknown-trip' };
-    await env.DB.prepare('UPDATE trips SET on_plan = ? WHERE id = ?').bind(onPlan ? 1 : 0, trip.id).run();
     return { ok: true };
   }
 
@@ -991,7 +975,6 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     setTripCover,
     setTripCoverFocus,
     setTripVisible,
-    setTripOnPlan,
     listAdminTrips, listAdminPhotos, listCities,
     listProvinces,
     uploadPhoto,

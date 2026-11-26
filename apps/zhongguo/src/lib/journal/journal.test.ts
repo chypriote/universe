@@ -9,6 +9,8 @@ import {
   setHighlight,
   addDay,
   addPhoto,
+  addPlan,
+  addPlanDay,
   addProvince,
   addTrip,
   resetDatabase,
@@ -77,8 +79,8 @@ describe('Visited Province', () => {
   it('is not made by a plan', async () => {
     const sichuan = await addProvince('Sichuan');
     const chengdu = await addCity('Chengdu', sichuan);
-    const plan = await addTrip({ start: '2999-03-01', end: '2999-03-31' });
-    await addDay(plan, chengdu, '2999-03-01', { position: 1 });
+    const plan = await addPlan();
+    await addPlanDay(plan, chengdu, 1);
 
     expect((await journal.getGallery()).provinces).toEqual([]);
     expect(await journal.getHomeMap()).toEqual([]);
@@ -257,19 +259,19 @@ describe('Trip Card', () => {
     ]);
   });
 
-  it('lists Trips newest first and tells a report from a plan', async () => {
+  it('lists Trips newest first, all of them reports whatever their dates', async () => {
     await addTrip({ slug: 'old', start: '2024-05-01', end: '2024-05-10' });
     await addTrip({ slug: 'next', start: '2999-01-01', end: '2999-01-10' });
     await addTrip({ slug: 'recent', start: '2025-05-01', end: '2025-05-10' });
-    await addTrip({ slug: 'idea', start: null, end: null });
+    await addTrip({ slug: 'undated', start: null, end: null });
 
     const cards = await journal.listTripCards();
 
     expect(cards.map((card) => [card.slug, card.type])).toEqual([
-      ['next', 'plan'],
+      ['next', 'report'],
       ['recent', 'report'],
       ['old', 'report'],
-      ['idea', 'plan'],
+      ['undated', 'report'],
     ]);
   });
 });

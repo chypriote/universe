@@ -10,10 +10,9 @@ import { journalFromEnv } from '@/lib/journal';
 export const prerender = false;
 
 const journal = journalFromEnv();
-const publishedTrips = await journal.listTripCards();
+const completedTrips = await journal.listTripCards();
+const suggestedTrips = await journal.listPlanCards();
 const provinces = await journal.getHomeMap();
-const completedTrips = publishedTrips.filter((trip) => trip.type === 'report');
-const suggestedTrips = publishedTrips.filter((trip) => trip.type === 'plan');
 ---
 
 <BaseLayout
