@@ -1,11 +1,11 @@
-// The visible plans with their Days' Seasons and their Gateways, read from D1 for `fareWindows`.
+// The visible Trips, plans and past trips alike, with their Days' Seasons and their Gateways, read from D1 for `fareWindows`.
 // `zh` is the Chinese name of the Province where the plan spends the most Days.
 import { d1Query } from './d1.js';
 
 /** @returns {Promise<import('./fare-windows.js').Plan[]>} */
 export async function loadPlans() {
   const [trips, days, airports] = await Promise.all([
-    d1Query(`SELECT id, slug, title FROM trips WHERE visible = 1 AND (end_date IS NULL OR end_date >= date('now')) ORDER BY id`),
+    d1Query(`SELECT id, slug, title FROM trips WHERE visible = 1 ORDER BY id`),
     d1Query(
       `SELECT days.trip_id, provinces.season, provinces.name_zh FROM days
        JOIN cities ON cities.id = days.city_id JOIN provinces ON provinces.id = cities.province_id

@@ -29,7 +29,7 @@ const day = (date: string, weekday = false) =>
   new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { ...(weekday && { weekday: 'short' }), day: 'numeric', month: 'short', timeZone: 'UTC' });
 
 const title = 'Flight prices';
-const description = 'When to leave for each trip I plan: the cheapest flights from Paris in the best months to go.';
+const description = 'When to leave for each trip, planned or done: the cheapest flights from Paris in the best months to go.';
 const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: Astro.url.href };
 ---
 
