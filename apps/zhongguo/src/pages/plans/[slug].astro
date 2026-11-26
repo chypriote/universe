@@ -1,0 +1,21 @@
+---
+import { env } from 'cloudflare:workers';
+import TripView from '@/components/TripView.astro';
+import { journalFromEnv } from '@/lib/journal';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const journal = journalFromEnv();
+const trip = slug ? await journal.getPlan(slug) : null;
+if (!trip) {
+  // A missing or Hidden plan: the site's 404 page, with the 404 status.
+  const { ASSETS } = env as unknown as { ASSETS: Fetcher };
+  const notFound = await ASSETS.fetch(new URL('/404', Astro.url));
+  return new Response(notFound.body, { status: 404, headers: notFound.headers });
+}
+
+const cards = await journal.listPlanCards();
+---
+
+<TripView trip={trip} card={cards.find((entry) => entry.slug === slug)!} others={cards} base="/plans" />

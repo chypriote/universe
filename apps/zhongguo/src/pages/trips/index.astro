@@ -8,7 +8,8 @@ import { journalFromEnv } from '@/lib/journal';
 
 export const prerender = false;
 
-const trips = await journalFromEnv().listTripCards();
+const journal = journalFromEnv();
+const trips = [...(await journal.listTripCards()), ...(await journal.listPlanCards())];
 
 const jsonLd = {
   "@context": "https://schema.org",

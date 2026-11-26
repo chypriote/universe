@@ -130,13 +130,13 @@ describe('Day Photos', () => {
 });
 
 describe('Trip on or off', () => {
-  it('lists every Trip, hidden and plans included, with its state', async () => {
+  it('lists every Trip, hidden ones included, with its state', async () => {
     await sichuanTrip();
     await addTrip({ slug: 'idea', start: null, end: null, visible: false });
 
     expect(await journal.listAdminTrips()).toEqual([
-      { slug: 'sichuan', title: 'sichuan', type: 'report', visible: true, onPlan: true, photos: 0 },
-      { slug: 'idea', title: 'idea', type: 'plan', visible: false, onPlan: true, photos: 0 },
+      { slug: 'sichuan', title: 'sichuan', visible: true, photos: 0 },
+      { slug: 'idea', title: 'idea', visible: false, photos: 0 },
     ]);
   });
 
@@ -409,29 +409,5 @@ describe('Trip Seasons', () => {
     await journal.setDayVisible(day2, false);
 
     expect((await journal.getAdminTrip('sichuan'))!.seasons).toEqual([1 << 3, 0]);
-  });
-});
-
-describe('Trip on the Plan page', () => {
-  it('is on by default, and switched off and on', async () => {
-    await sichuanTrip();
-    const onPlan = async () => (await journal.listAdminTrips()).map((item) => [item.slug, item.onPlan]);
-
-    expect(await onPlan()).toEqual([['sichuan', true]]);
-    expect(await journal.setTripOnPlan('sichuan', false)).toEqual({ ok: true });
-    expect(await onPlan()).toEqual([['sichuan', false]]);
-    expect(await journal.setTripOnPlan('sichuan', true)).toEqual({ ok: true });
-    expect(await onPlan()).toEqual([['sichuan', true]]);
-  });
-
-  it('leaves the Trip itself on the site', async () => {
-    await sichuanTrip();
-    await journal.setTripOnPlan('sichuan', false);
-
-    expect(await journal.listTripCards()).toHaveLength(1);
-  });
-
-  it('refuses an unknown Trip', async () => {
-    expect(await journal.setTripOnPlan('nope', false)).toEqual({ ok: false, error: 'unknown-trip' });
   });
 });

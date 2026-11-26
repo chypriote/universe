@@ -3,6 +3,14 @@ import { env } from 'cloudflare:workers';
 
 const TABLES = [
   'airports',
+  'plan_day_cities',
+  'plan_day_photos',
+  'plan_highlight_photos',
+  'plan_day_train_rides',
+  'plan_day_attractions',
+  'plan_days',
+  'plan_photos',
+  'plans',
   'day_cities',
   'day_photos',
   'province_covers',
@@ -26,6 +34,7 @@ export async function resetDatabase() {
   if (objects.length > 0) await env.PHOTOS.delete(objects.map((object) => object.key));
   await env.DB.batch([
     env.DB.prepare('UPDATE trips SET cover_photo_id = NULL'),
+    env.DB.prepare('UPDATE plans SET cover_photo_id = NULL'),
     ...TABLES.map((table) => env.DB.prepare(`DELETE FROM ${table}`)),
   ]);
 }
@@ -167,4 +176,38 @@ export async function setDayCities(dayId: number, cityIds: number[], mainId: num
   for (const [index, cityId] of cityIds.entries()) {
     await insert('day_cities', { day_id: dayId, position: index + 1, city_id: cityId, main: cityId === mainId ? 1 : 0 });
   }
+}
+
+/** A Trip plan: numbered Days and no dates. */
+export async function addPlan(options: { slug?: string; title?: string; visible?: boolean; searchFlights?: boolean } = {}) {
+  const slug = options.slug ?? `plan-${nextId}`;
+  const row = {
+    id: id(),
+    slug,
+    title: options.title ?? slug,
+    visible: options.visible === false ? 0 : 1,
+    search_flights: options.searchFlights === false ? 0 : 1,
+  };
+  await insert('plans', row);
+  return row.id;
+}
+
+export async function addPlanDay(planId: number, cityId: number, position: number, options: { title?: string; notes?: string } = {}) {
+  const row = {
+    id: id(),
+    plan_id: planId,
+    position,
+    city_id: cityId,
+    title: options.title ?? `Day ${position}`,
+    notes: options.notes ?? '',
+  };
+  await insert('plan_days', row);
+  return row.id;
+}
+
+export async function addPlanPhoto(planId: number, dayId: number | null, name: string, cityId: number | null = null) {
+  const row = { id: id(), plan_id: planId, name, width: 4000, height: 3000, title: null, city_id: cityId, province_id: null };
+  await insert('plan_photos', row);
+  if (dayId !== null) await insert('plan_day_photos', { day_id: dayId, position: 1, photo_id: row.id });
+  return row.id;
 }

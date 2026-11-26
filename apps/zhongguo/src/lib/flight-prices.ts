@@ -32,7 +32,7 @@ export type PlanLane = {
   /** Its 3 cheapest Fare windows, cheapest first; none until searched. */
   windows: PricedWindow[];
   /** Why it has no window yet. */
-  note?: 'no Airport in its Cities' | 'no start date in season' | 'not searched yet';
+  note?: 'no Airport in its Cities' | 'no start date in season' | 'not searched yet' | 'flight search off';
 };
 
 export type FlightPrices = {
@@ -61,7 +61,7 @@ export function flightPrices(trips: Plan[], searches: FlightSearch[], cities: Ma
     const title = plan.title ?? plan.slug;
     if (plan.seasons.length === 0) continue;
     const windows = fareWindows([plan], today);
-    const found = windows
+    const found = plan.search === false ? [] : windows
       .map((window) => latest.get(windowKey(window)))
       .filter((search): search is FlightSearch & { price: number } => search?.price != null)
       .sort((a, b) => a.price - b.price || a.outbound_date.localeCompare(b.outbound_date))
@@ -84,7 +84,13 @@ export function flightPrices(trips: Plan[], searches: FlightSearch[], cities: Ma
     };
     if (found.length === 0) {
       lane.note =
-        plan.gateways.length === 0 ? 'no Airport in its Cities' : windows.length === 0 ? 'no start date in season' : 'not searched yet';
+        plan.search === false
+          ? 'flight search off'
+          : plan.gateways.length === 0
+            ? 'no Airport in its Cities'
+            : windows.length === 0
+              ? 'no start date in season'
+              : 'not searched yet';
     }
     plans.push(lane);
   }

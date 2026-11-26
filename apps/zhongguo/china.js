@@ -60,7 +60,7 @@ function formatSqliteDatetime(date = new Date()) {
 
 async function run() {
   const today = new Date().toISOString().slice(0, 10)
-  const windows = searchOrder(fareWindows(await loadPlans(), today), await lastSearches())
+  const windows = searchOrder(fareWindows((await loadPlans()).filter((plan) => plan.search), today), await lastSearches())
   const account = await getAccount({ api_key: process.env.API_KEY })
   const left = account.total_searches_left ?? account.plan_searches_left ?? 0
   const batch = windows.slice(0, left)

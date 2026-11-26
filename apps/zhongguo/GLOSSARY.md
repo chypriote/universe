@@ -1,10 +1,21 @@
 # Zhongguo glossary
 
 **Trip**:
-One journey, shown at `/trips/<slug>`. It has days, cities and optional start and end dates.
+A journey Nico made, shown at `/trips/<slug>`. It has dated Days, Cities and Photos. Also called a Trip report. A Trip that is not made yet does not exist: it is a Trip plan.
+_Avoid_: Report (alone), journey (that is the page name)
+
+**Trip plan**:
+A journey Nico recommends, shown at `/plans/<slug>`. It lives in its own table, apart from every Trip. It has numbered Days with Cities and no dates, and its own Photos (uploaded in the admin). It is not derived from a Trip and is never a Visited Province. Its good periods come from the Seasons of the Provinces of its Cities. It has two switches: Visible (off = on no page) and Search flights (off = on the Plan page, no prices, never searched).
+_Avoid_: Planned trip, suggested trip, suggested itinerary (the home section title only)
+
+**Plan Day**:
+One numbered Day of a Trip plan: main City, Cities in travel order, title, notes, attractions and train rides. No date, no hotels, no restaurants.
+
+**Copy from a plan**:
+Creating a Trip: the Owner gives a title and a start date, then ticks the Plan Days to copy. They become dated Days in order from the start date, without Photos. No link to the plan stays.
 
 **Trip Card**:
-The summary of a Trip on the home page and `/trips`. It names only the Trip's Major Cities. The Trip page itself lists every City.
+The summary of a Trip or Trip plan on `/trips` and the home page. It names only the Trip's Major Cities. The Trip page itself lists every City.
 _Avoid_: Trip overview
 
 **Day**:
@@ -21,7 +32,7 @@ A Chinese province, autonomous region or direct-administered city (Beijing, Shan
 _Avoid_: Region
 
 **Visited Province**:
-A Province where a visible Day of a visible Trip has its main City. Only past Trips count: a plan with Days does not make a Province visited. Only Visited Provinces are coloured on the home map and filter the Gallery.
+A Province where a visible Day of a visible Trip has its main City. Trip plans never count. Only Visited Provinces are coloured on the home map and filter the Gallery.
 
 **Owner**:
 Nico, the only person who logs in. The Owner login opens `/admin`, and every admin page and admin API refuses a request without it. It is the same login as in the other apps.
@@ -54,10 +65,10 @@ A practical article (visa, payments, apps, transport) at `/guides/<slug>`.
 Every trip photo, grouped by Trip, at `/gallery`. Photos live in R2 (`docs/photos.md`).
 
 **Plan page**:
-The page at `/planner` (nav "Plan") that recommends when to leave for each visible Trip with Days, planned or done: the start dates that fit it, and its 3 cheapest Fare windows once searched, built from the stored Flight searches.
+The page at `/planner` (nav "Plan") that recommends when to leave for each visible Trip plan with Days: the start dates that fit it, and its 3 cheapest Fare windows once searched, built from the stored Flight searches.
 
 **Fits the plan**:
-A start date fits a plan when at most 20% of the plan's Days, counted from that date, fall outside the Season of their main City's Province.
+A start date fits a Trip plan when at most 20% of its Days, counted from that date, fall outside the Season of their main City's Province.
 
 **Planner**:
 Reserved for a later tool to design a Trip (Cities, Days, trains). Not built yet. Not the Plan page.
