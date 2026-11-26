@@ -17,10 +17,6 @@ const { title, nav = true, heading = true } = Astro.props;
 const path = Astro.url.pathname;
 const within = (href: string) => path === href || path.startsWith(`${href}/`);
 const workspace = ADMIN_WORKSPACES.find((item) => item.paths.some(within));
-const journalLinks = [
-  { href: '/admin/trips', label: 'Trips' },
-  { href: '/admin/plans', label: 'Plans' },
-];
 ---
 
 <!DOCTYPE html>
@@ -58,15 +54,6 @@ const journalLinks = [
     </header>
     <main>
       <Container class="py-8 lg:py-10">
-        {workspace?.label === 'Journal' && (
-          <nav aria-label="Journal" class="mb-8 flex gap-6 text-sm">
-            {journalLinks.map((link) => (
-              <a href={link.href} aria-current={within(link.href) ? 'page' : undefined} class="eyebrow no-underline text-muted-foreground hover:text-primary aria-[current=page]:text-primary">
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        )}
         {heading && title !== 'Admin' && <h1 class="mb-8 font-serif text-3xl">{title}</h1>}
         <slot />
       </Container>

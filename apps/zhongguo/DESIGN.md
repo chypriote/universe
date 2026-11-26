@@ -128,10 +128,11 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 ### Admin
 
 The admin (`/admin`, owner only) is plain: sharp corners, 1px borders, no brush calligraphy.
-- Top bar: seal and "Admin", then the three workspaces as serif tabs (Journal, Atlas, Photos; the current one has a cinnabar underline), with Log out on the right. Journal holds Trips and Plans, linked as eyebrow tabs above the page. A page shows its title as a serif heading unless it has its own.
+- Top bar: seal and "Admin", then the three workspaces as serif tabs (Journal, Atlas, Photos; the current one has a cinnabar underline), with Log out on the right. A page shows its title as a serif heading unless it has its own.
+- Journal (`/admin/trips`, `/admin/plans` and their editors): a 14rem column on the left with + Trip and + Plan (they open the New Trip and New plan forms) and the Trips and Plans, each with a dot (filled = visible, hollow = hidden); the current one has a cinnabar left rule. On the right the title, the switches (Visible; Search flights for a plan; pressed = ink fill), then tabs: Days (an Add a Day box, then the Days), Photos (plans only) and Cover & highlights. The Day under the pointer or the focus has a cinnabar border.
 - Atlas (`/admin/atlas?province=<name>` or `?city=<id>`): a 24rem column on the left with search (Provinces, Cities and Activities by name, hanzi or pinyin), the China map and the tree of the Province: its Cities with Photo and Activity counts, and the Activities of the City shown under it; then an Add a City form, the Province preset. Visited Provinces are darker on the map; a click on a Province or a City opens it. A City zooms the map to its Province and writes the City names. A Minor City is a paper-filled dot with an outline, a Major City a filled one; hovering a dot shows "City, Province" in a bordered box. On the right, tabs: a Province has Overview (Season as 12 month toggles, pressed = ink fill; the home cover with its focal point, for a Visited Province; its Cities with their Airports and 7 weekday toggles) and Activities; a City has Photos (filter by Trip, move, mark On the way, set as home cover), Activities and Details (name, Province, position, Major, Delete). Stacked under `lg`.
 - Photos: the Trip is picked with one button per Trip, "Title · camera icon · Photo count"; the current Trip has a cinnabar border and text.
-- Trip editor: a Photo in a Day has an X in its top right corner that takes it off the Day and back to the "On no Day" tray.
+- Trip and plan editor: a Photo in a Day has an X in its top right corner that takes it off the Day and back to the "On no Day" tray. Above the tray, the route map: the China map zoomed to the Provinces of the route ("All China" shows the whole map), a dashed gold-ink line through the Cities in Day order, the Cities of the Day being edited in cinnabar; a click on a City or a Province opens it in the Atlas in a new tab.
 
 ### Panda drawing
 
@@ -199,7 +200,7 @@ New poses
 - Nav links collapse into a full-width menu under `md`.
 - Plan page: under `lg` each plan name sits above its own full-width lane; from `lg` name and lane share one row. Month letters under `sm`.
 - Sticky panels are sticky only from `lg`.
-- Admin: the Photos selection box (20rem) and the Trip editor's "On no Day" tray (17rem) are sticky side panels on the right from `lg`: `top-4`, at most the viewport height minus 2rem, scrolling inside. Under `lg` they come first in the column.
+- Admin: the Photos selection box (20rem) and the editors' route map and "On no Day" tray (20rem) are sticky side panels on the right from `lg`: `top-4`, at most the viewport height minus 2rem, scrolling inside. Under `lg` they come first in the column.
 - Footer: 中国游记 is one horizontal line under `md` and vertical from `md`; top padding `pt-10 md:pt-20`.
 - Journey card: the Trip regions map moves after the photos under `lg`, and the photo strip becomes a full-width landscape over a row of four portraits.
 

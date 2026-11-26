@@ -41,9 +41,7 @@ export function AddDayForm({ slug, cities }: { slug: string; cities: AdminCity[]
   }
 
   return (
-    <section aria-labelledby="add-day-title" className="flex flex-col gap-4">
-      <h2 id="add-day-title" className="font-serif text-2xl">Add Day</h2>
-      <form onSubmit={(event) => void submit(event)} className="flex flex-col gap-3 border border-border p-6">
+      <form onSubmit={(event) => void submit(event)} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1 text-sm">
           Date
           <input type="date" required value={date} onChange={(event) => setDate(event.target.value)} className={field} />
@@ -78,6 +76,5 @@ export function AddDayForm({ slug, cities }: { slug: string; cities: AdminCity[]
           </button>
         </div>
       </form>
-    </section>
   );
 }

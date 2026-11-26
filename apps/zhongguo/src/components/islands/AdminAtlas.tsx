@@ -6,6 +6,7 @@ import { AddCityForm, fieldClass as field } from './AddCityForm';
 import { CityDetails, CityPhotos } from './AtlasCity';
 import { ProvinceOverview } from './AtlasProvince';
 import { ChinaMap, type ChinaMapCity } from './ChinaMap';
+import { Tabs } from './Tabs';
 import { Toast } from './Toast';
 
 export type AtlasTab = 'overview' | 'photos' | 'activities' | 'details';
@@ -53,25 +54,6 @@ function Results({ query, provinces, cities, activities }: { query: string; prov
         </li>
       ))}
     </ul>
-  );
-}
-
-function Tabs({ tabs, current, onChange }: { tabs: { id: AtlasTab; label: string }[]; current: AtlasTab; onChange: (tab: AtlasTab) => void }) {
-  return (
-    <div role="tablist" className="flex flex-wrap gap-6 border-b border-border">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          type="button"
-          role="tab"
-          aria-selected={current === tab.id}
-          className="-mb-px cursor-pointer border-b-2 border-transparent py-2 text-muted-foreground aria-selected:border-primary aria-selected:text-foreground"
-          onClick={() => onChange(tab.id)}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
   );
 }
 

@@ -1,15 +1,10 @@
 ---
-import AdminLayout from '@/layouts/AdminLayout.astro';
-import { AdminPlans } from '@/components/islands/AdminPlans';
-import { journalFromEnv } from '@/lib/journal';
+import JournalLayout from '@/layouts/JournalLayout.astro';
+import { NewPlanForm } from '@/components/islands/NewPlanForm';
 
 export const prerender = false;
-
-const plans = await journalFromEnv().listAdminPlans();
 ---
 
-<AdminLayout title="Plans">
-  <div>
-    <AdminPlans client:load plans={plans} />
-  </div>
-</AdminLayout>
+<JournalLayout title="New plan">
+  <NewPlanForm client:load />
+</JournalLayout>
