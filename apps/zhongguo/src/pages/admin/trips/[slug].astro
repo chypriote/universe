@@ -1,6 +1,5 @@
 ---
-import AdminLayout from '@/layouts/AdminLayout.astro';
-import { AddDayForm } from '@/components/islands/AddDayForm';
+import JournalLayout from '@/layouts/JournalLayout.astro';
 import { AdminTripEditor } from '@/components/islands/AdminTripEditor';
 import { journalFromEnv } from '@/lib/journal';
 
@@ -9,12 +8,9 @@ export const prerender = false;
 const journal = journalFromEnv();
 const trip = await journal.getAdminTrip(Astro.params.slug ?? '');
 if (!trip) return Astro.redirect('/admin/trips');
-const [cities, activities] = await Promise.all([journal.listCities(), journal.listAdminActivities()]);
+const [cities, activities] = await Promise.all([journal.listAdminCities(), journal.listAdminActivities()]);
 ---
 
-<AdminLayout title={trip.title}>
-  <div class="flex flex-col gap-12">
-    <AddDayForm client:load slug={trip.slug} cities={cities} />
-    {trip.days.length > 0 && <AdminTripEditor client:load trip={trip} cities={cities} activities={activities} />}
-  </div>
-</AdminLayout>
+<JournalLayout title={trip.title} current={{ kind: 'trip', slug: trip.slug }}>
+  <AdminTripEditor client:load trip={trip} cities={cities} activities={activities} />
+</JournalLayout>

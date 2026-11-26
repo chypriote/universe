@@ -1,13 +1,16 @@
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react';
 import { useState, type SyntheticEvent } from 'react';
-import type { AdminActivity, AdminCity, AdminPlanDay, AdminPlanDetail, AdminPlanPhoto } from '@/lib/journal';
+import type { AdminActivity, AdminCity, AdminCityDetail, AdminPlanDay, AdminPlanDetail, AdminPlanPhoto } from '@/lib/journal';
 import { DayActivities } from './DayActivities';
 import { DayText } from './DayText';
+import { JournalSwitches } from './JournalSwitches';
+import { JourneyMap } from './JourneyMap';
 import { Cover, Highlights, PhotoBoard } from './PhotoPicks';
+import { Tabs } from './Tabs';
 import { button, field, makeThumb, message, save } from './admin-form';
 import { Toast } from './Toast';
 
-type Props = { plan: AdminPlanDetail; cities: AdminCity[]; activities: AdminActivity[] };
+type Props = { plan: AdminPlanDetail; cities: AdminCityDetail[]; activities: AdminActivity[] };
 
 /** The Photos of the plan: upload, City of each, delete. The page reloads after an upload or a delete. */
 function Photos({ plan, cities, onNotice }: { plan: AdminPlanDetail; cities: AdminCity[]; onNotice: (text: string) => void }) {
@@ -116,6 +119,9 @@ export function AdminPlanEditor({ plan, cities, activities }: Props) {
   const [notes, setNotes] = useState('');
   const [busy, setBusy] = useState(false);
   const base = `/api/admin/plans/${encodeURIComponent(plan.slug)}`;
+  const [tab, setTab] = useState<'days' | 'photos' | 'covers'>('days');
+  const [activeId, setActiveId] = useState<number | null>(null);
+  const active = days.find((day) => day.id === activeId);
 
   const patchDay = (id: number, patch: Partial<AdminPlanDay>) =>
     setDays((current) => current.map((day) => (day.id === id ? { ...day, ...patch } : day)));
@@ -145,12 +151,33 @@ export function AdminPlanEditor({ plan, cities, activities }: Props) {
   return (
     <div className="flex flex-col gap-12">
       <Toast text={notice} onDone={() => setNotice('')} />
-      <Photos plan={plan} cities={cities} onNotice={setNotice} />
-      <Cover base={base} label="Plan cover" photos={plan.photos} coverId={plan.coverId} coverFocus={plan.coverFocus} onNotice={setNotice} />
-      <Highlights base={base} photos={plan.photos} highlightIds={plan.highlightIds} onNotice={setNotice} />
-      <section aria-labelledby="add-day-title" className="flex flex-col gap-4">
-        <h2 id="add-day-title" className="font-serif text-2xl">Add Day</h2>
-        <form onSubmit={(event) => void add(event)} className="flex flex-col gap-3 border border-border p-6">
+      <JournalSwitches
+        url={base}
+        switches={[
+          { key: 'visible', label: 'Visible', on: plan.visible },
+          { key: 'searchFlights', label: 'Search flights', on: plan.searchFlights },
+        ]}
+      />
+      <Tabs
+        tabs={[
+          { id: 'days', label: `Days ${days.length}` },
+          { id: 'photos', label: `Photos ${plan.photos.length}` },
+          { id: 'covers', label: 'Cover & highlights' },
+        ]}
+        current={tab}
+        onChange={setTab}
+      />
+      {tab === 'photos' && <Photos plan={plan} cities={cities} onNotice={setNotice} />}
+      {tab === 'covers' && (
+        <>
+          <Cover base={base} label="Plan cover" photos={plan.photos} coverId={plan.coverId} coverFocus={plan.coverFocus} onNotice={setNotice} />
+          <Highlights base={base} photos={plan.photos} highlightIds={plan.highlightIds} onNotice={setNotice} />
+        </>
+      )}
+      {tab === 'days' && (
+      <details className="border border-border p-6" open={days.length === 0}>
+        <summary className="cursor-pointer font-serif text-xl">Add a Day</summary>
+        <form onSubmit={(event) => void add(event)} className="mt-4 flex flex-col gap-3">
           <label className="flex flex-col gap-1 text-sm">
             Main City
             <select required value={cityId} onChange={(event) => setCityId(event.target.value)} className={field}>
@@ -176,14 +203,26 @@ export function AdminPlanEditor({ plan, cities, activities }: Props) {
             </button>
           </div>
         </form>
-      </section>
-      {days.length > 0 && (
+      </details>
+      )}
+      {tab === 'days' && days.length > 0 && (
         <section aria-labelledby="days-title" className="flex flex-col gap-6">
-          <h2 id="days-title" className="font-serif text-2xl">Days</h2>
-          <PhotoBoard photos={plan.photos} days={plan.days} daysUrl="/api/admin/plan-days" onNotice={setNotice}>
+          <h2 id="days-title" className="sr-only">Days</h2>
+          <PhotoBoard
+            photos={plan.photos}
+            days={plan.days}
+            daysUrl="/api/admin/plan-days"
+            onNotice={setNotice}
+            aside={<JourneyMap cities={cities} days={days.map((day) => ({ ...day, label: `Day ${day.number}` }))} active={active ? { ...active, label: `Day ${active.number}` } : null} />}
+          >
             {(list) =>
               days.map((day, index) => (
-                <article key={day.id} className="flex flex-col gap-4 border border-border bg-background p-6">
+                <article
+                  key={day.id}
+                  onPointerEnter={() => setActiveId(day.id)}
+                  onFocusCapture={() => setActiveId(day.id)}
+                  className={`flex flex-col gap-4 border bg-background p-6 ${day.id === activeId ? 'border-primary' : 'border-border'}`}
+                >
                   <DayText
                     day={day}
                     heading={`Day ${day.number} · ${(day.route.length > 0 ? day.route : [day.city]).map((city) => city.name).join(' → ')}, ${day.province}`}

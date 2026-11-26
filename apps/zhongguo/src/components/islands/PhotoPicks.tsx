@@ -257,12 +257,14 @@ type Board = {
   /** The API path that sets the Photos of a Day. */
   daysUrl: string;
   onNotice: (text: string) => void;
+  /** Shown above the tray, such as the route map. */
+  aside?: ReactNode;
   /** Draws the Days; `list` is the drop zone of one Day. */
   children: (list: (dayId: number, label: string) => ReactNode) => ReactNode;
 };
 
 /** The tray of Photos on no Day beside the Days: each drop saves the Day lists it changed. */
-export function PhotoBoard({ photos: all, days, daysUrl, onNotice, children }: Board) {
+export function PhotoBoard({ photos: all, days, daysUrl, onNotice, aside, children }: Board) {
   const photos = new Map(all.map((photo) => [photo.id, photo]));
   const [items, setItems] = useState<Record<string, number[]>>(() => {
     const placed = new Set(days.flatMap((day) => day.photoIds));
@@ -344,9 +346,10 @@ export function PhotoBoard({ photos: all, days, daysUrl, onNotice, children }: B
         setActive(null);
       }}
     >
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_17rem]">
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="flex max-h-[calc(100vh-2rem)] flex-col gap-2 overflow-y-auto lg:sticky lg:top-4 lg:col-start-2 lg:row-start-1">
-          <h3 className="eyebrow text-muted-foreground">On no Day ({items[TRAY].length})</h3>
+          {aside}
+          <h3 className="eyebrow mt-2 text-muted-foreground">On no Day ({items[TRAY].length})</h3>
           <PhotoList id={TRAY} photoIds={items[TRAY]} photos={photos} label="Photos on no Day" />
         </div>
         <div className="flex flex-col gap-6 lg:col-start-1 lg:row-start-1">

@@ -28,8 +28,7 @@ export function NewTripForm({ plans }: { plans: AdminPlanDetail[] }) {
   }
 
   return (
-    <form onSubmit={(event) => void create(event)} aria-labelledby="new-trip-title" className="flex flex-col gap-4 border border-border p-6">
-      <h2 id="new-trip-title" className="font-serif text-2xl">New Trip</h2>
+    <form onSubmit={(event) => void create(event)} aria-label="New Trip" className="flex flex-col gap-4 border border-border p-6">
       <label className="flex flex-col gap-1 text-sm">
         Title
         <input type="text" required value={title} onChange={(event) => setTitle(event.target.value)} className={field} />

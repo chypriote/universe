@@ -41,8 +41,12 @@ interface ChinaMapProps {
   preview?: boolean;
   /** Hovering a region shows a tooltip with its name and detail at the pointer. */
   regionTooltip?: boolean;
-  /** Zooms the map to this region; null shows all of China. */
-  zoomTo?: string | null;
+  /** Zooms the map to these regions; null or none shows all of China. */
+  zoomTo?: string | string[] | null;
+  /** City keys joined in order by a dashed line, such as a Trip's route. */
+  route?: string[];
+  /** City keys drawn like the selected City. */
+  highlight?: string[];
   /** Writes each City's name beside its dot. */
   cityLabels?: boolean;
 }
@@ -50,8 +54,16 @@ interface ChinaMapProps {
 type Box = { x: number; y: number; w: number; h: number };
 const FULL: Box = { x: 0, y: 0, w: CHINA_MAP.width, h: CHINA_MAP.height };
 
-/** The box around a shape with a margin, widened to the map's own shape so the map keeps its height. */
-function zoomBox(box: DOMRect): Box {
+/** The box around shapes with a margin, widened to the map's own shape so the map keeps its height. */
+function zoomBox(boxes: DOMRect[]): Box {
+  const left = Math.min(...boxes.map((item) => item.x));
+  const top = Math.min(...boxes.map((item) => item.y));
+  const box = {
+    x: left,
+    y: top,
+    width: Math.max(...boxes.map((item) => item.x + item.width)) - left,
+    height: Math.max(...boxes.map((item) => item.y + item.height)) - top,
+  };
   const ratio = CHINA_MAP.width / CHINA_MAP.height;
   // A city-sized region such as Beijing keeps some of its neighbours around it.
   let w = Math.max(box.width * 1.3, CHINA_MAP.width / 4);
@@ -110,6 +122,8 @@ export function ChinaMap({
   preview = true,
   regionTooltip = false,
   zoomTo = null,
+  route = [],
+  highlight = [],
   cityLabels = false,
 }: ChinaMapProps) {
   const [hoverRegion, setHoverRegion] = useState<string | null>(null);
@@ -150,10 +164,13 @@ export function ChinaMap({
     setLabelPos(next);
   }, [regions]);
 
+  const zoomKey = [zoomTo ?? []].flat().join('|');
   useLayoutEffect(() => {
-    const shape = zoomTo ? svgRef.current?.querySelector<SVGPathElement>(`path[data-shape="${CSS.escape(zoomTo)}"]`) : null;
-    setBox(shape ? zoomBox(shape.getBBox()) : FULL);
-  }, [zoomTo]);
+    const shapes = (zoomKey ? zoomKey.split('|') : [])
+      .map((name) => svgRef.current?.querySelector<SVGPathElement>(`path[data-shape="${CSS.escape(name)}"]`))
+      .filter((shape) => shape != null);
+    setBox(shapes.length > 0 ? zoomBox(shapes.map((shape) => shape.getBBox())) : FULL);
+  }, [zoomKey]);
 
   const regionByName = new Map(regions.map((region) => [region.name, region]));
   const cityByKey = new Map(cities.map((city) => [city.key, city]));
@@ -300,8 +317,20 @@ export function ChinaMap({
           );
         })}
 
+        {route.length > 1 && (
+          <polyline
+            points={route
+              .map((key) => cityByKey.get(key))
+              .filter((city) => city !== undefined)
+              .map((city) => `${city.x},${city.y}`)
+              .join(' ')}
+            className="pointer-events-none fill-none stroke-gold-ink"
+            style={{ strokeWidth: 3 * k, strokeDasharray: `${8 * k} ${6 * k}` }}
+          />
+        )}
+
         {cities.map((city) => {
-          const active = hoverCity === city.key || selectedCity === city.key;
+          const active = hoverCity === city.key || selectedCity === city.key || highlight.includes(city.key);
           return (
             <g
               key={city.key}
