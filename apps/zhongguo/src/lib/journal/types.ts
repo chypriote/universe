@@ -1,3 +1,5 @@
+import type { ActivityKind, ActivityRating } from './activity-kinds';
+
 export type Orientation = 'landscape' | 'portrait' | 'square';
 
 /** A Photo as a page shows it. */
@@ -436,6 +438,50 @@ export type EditCityResult =
   | { ok: true; city: AdminCityDetail; clearedCovers: string[] }
   | { ok: false; error: 'unknown-city' | 'invalid-name' | 'name-taken' | 'unknown-province' | 'invalid-position' };
 
+/** What the Owner types for an Activity. Latitude and longitude come together or not at all. */
+export type ActivityInput = {
+  name: string;
+  nameZh: string;
+  pinyin: string;
+  cityId: number;
+  kind: ActivityKind;
+  description: string;
+  address: string;
+  addressZh: string;
+  lat: number | null;
+  lng: number | null;
+  rating: ActivityRating | null;
+  /** Yuan per person: null is unknown, 0 is free. */
+  price: number | null;
+};
+
+export type AdminActivity = ActivityInput & {
+  id: number;
+  city: string;
+  province: string;
+  /** Days and Plan Days that list it. */
+  days: number;
+};
+
+export type ActivityProblem =
+  | 'invalid-name'
+  | 'invalid-kind'
+  | 'invalid-rating'
+  | 'invalid-price'
+  | 'invalid-position'
+  | 'unknown-city'
+  | 'name-taken';
+
+export type AddActivityResult = { ok: true; activity: AdminActivity } | { ok: false; error: ActivityProblem };
+
+export type EditActivityInput = ActivityInput & { id: number };
+
+export type EditActivityResult =
+  | { ok: true; activity: AdminActivity }
+  | { ok: false; error: ActivityProblem | 'unknown-activity' };
+
+export type DeleteActivityResult = { ok: true } | { ok: false; error: 'unknown-activity' | 'in-use' };
+
 export type CreateTripInput = {
   title: string;
   /** The date of the first copied Day, YYYY-MM-DD. */
@@ -593,6 +639,13 @@ export type Journal = {
   editCity(input: EditCityInput): Promise<EditCityResult>;
   /** Refused while a Photo, a Day, an Activity, a hotel or a restaurant uses the City. Its Airports go with it. */
   deleteCity(cityId: number): Promise<DeleteCityResult>;
+  /** Every Activity by City and name, with the number of Days and Plan Days that list it. */
+  listAdminActivities(): Promise<AdminActivity[]>;
+  /** One name per City. A name, a Chinese name and a pinyin are needed. */
+  addActivity(input: ActivityInput): Promise<AddActivityResult>;
+  editActivity(input: EditActivityInput): Promise<EditActivityResult>;
+  /** Refused while a Day or a Plan Day lists it. */
+  deleteActivity(id: number): Promise<DeleteActivityResult>;
   /** Every Province by name, with its Season and its Cities by name with their Airports. */
   listAdminProvinces(): Promise<AdminProvinceDetail[]>;
   /** Replaces the Season: any set of months, none included. */
