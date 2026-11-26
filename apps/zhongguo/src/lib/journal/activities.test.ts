@@ -251,3 +251,12 @@ describe('Activity pictures', () => {
     expect(activity.picture).toContain(`thumbs/activities/${pandas}/a.jpg.webp`);
   });
 });
+
+describe('Listing Activities', () => {
+  it('lists more than 100 Activities, as the admin pages do for every Day', async () => {
+    const { chengdu } = await world();
+    for (let index = 0; index < 150; index++) await addActivity(`Place ${index}`, chengdu);
+
+    expect(await journal.listAdminActivities()).toHaveLength(150);
+  });
+});

@@ -96,13 +96,19 @@ export function buildActivities(env: AdminEnv, urls: ActivityPictureUrls): Activ
   });
 
   async function picturesOf(activityIds: number[]): Promise<Map<number, ActivityPicture[]>> {
-    const rows = activityIds.length
-      ? await all<{ id: number; activity_id: number; name: string; version: number }>(
+    // D1 allows 100 bound parameters per statement, and the admin lists every Activity.
+    const rows: { id: number; activity_id: number; name: string; version: number }[] = [];
+    for (let start = 0; start < activityIds.length; start += 90) {
+      const chunk = activityIds.slice(start, start + 90);
+      rows.push(
+        ...(await all<{ id: number; activity_id: number; name: string; version: number }>(
           `SELECT id, activity_id, name, version FROM activity_pictures
-           WHERE activity_id IN (${activityIds.map(() => '?').join(',')}) ORDER BY activity_id, position, id`,
-          ...activityIds,
-        )
-      : [];
+           WHERE activity_id IN (${chunk.map(() => '?').join(',')}) ORDER BY activity_id, position, id`,
+          ...chunk,
+        )),
+      );
+    }
+    rows.sort((a, b) => a.activity_id - b.activity_id);
     const byActivity = new Map<number, ActivityPicture[]>();
     for (const row of rows) {
       const list = byActivity.get(row.activity_id) ?? [];
