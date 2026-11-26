@@ -27,14 +27,14 @@ const hasMap = trip.provinces.length > 0 || trip.route.stops.length > 0;
     </>
   )}
   <div class="relative flex gap-6 max-w-xl pt-4 lg:min-h-88">
-    <span class="[writing-mode:vertical-rl] rotate-180 eyebrow text-gold-ink pt-2">{trip.dates}</span>
+    {trip.type === 'report' && <span class="[writing-mode:vertical-rl] rotate-180 eyebrow text-gold-ink pt-2">{trip.dates}</span>}
     <div class="flex flex-col gap-5">
       <h2 class="font-script lg:text-nowrap! leading-[0.95] text-5xl lg:text-[6rem]">
         <a href={trip.link} class="hover:text-primary transition-colors">{trip.title}</a>
       </h2>
       <p class="text-muted-foreground leading-relaxed">{trip.description}</p>
       <a href={trip.link} class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit self-end lg:mt-auto">
-        <span lang="zh" aria-hidden="true" class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25">游记</span>
+        <span lang="zh" aria-hidden="true" class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25">{trip.type === 'plan' ? '行程' : '游记'}</span>
         <InkStroke class="absolute left-14 bottom-0 w-[calc(100%-3.5rem)] h-4 text-gold-ink transition-colors group-hover/link:text-primary" />
         <span class="relative transition-colors group-hover/link:text-primary">Explore<span class="sr-only"> {trip.title}</span></span>
       </a>

@@ -92,6 +92,7 @@ const fares = defineCollection({
         slug: z.string(),
         title: z.string(),
         zh: z.string(),
+        search: z.boolean(),
         seasons: z.array(z.number()),
         gateways: z.array(z.object({ code: z.string(), directWeekdays: z.number() })),
       }),

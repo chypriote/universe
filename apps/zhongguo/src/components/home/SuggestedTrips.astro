@@ -16,11 +16,11 @@ const { trips } = Astro.props;
   <Panda class="absolute right-[22px] top-1/2 -translate-y-1/2 z-[1] w-20 hidden min-[1400px]:block" />
   <Container>
     <header class="mb-10 reveal">
-      <SectionHeader zh="行程" eyebrow="Itineraries" title="Next on the list" lead="Where I'm heading next, and how I'll get there." />
+      <SectionHeader zh="行程" eyebrow="Itineraries" title="Suggested itineraries" lead="Routes I recommend, day by day." />
     </header>
 
     {trips.length === 0 ? (
-      <p class="text-muted-foreground font-serif">No trip plans yet.</p>
+      <p class="text-muted-foreground font-serif">No suggested itineraries yet.</p>
     ) : (
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
         {trips.map((trip, index) => {

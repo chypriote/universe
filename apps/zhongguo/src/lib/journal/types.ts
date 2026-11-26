@@ -183,11 +183,7 @@ export type AdminPhoto = {
 export type AdminTrip = {
   slug: string;
   title: string;
-  /** A report is a Trip that has ended; the rest are plans. */
-  type: TripType;
   visible: boolean;
-  /** Whether the Plan page shows the Trip and `npm run china` searches it. */
-  onPlan: boolean;
   /** All Photos of the Trip, those on hidden Days included. */
   photos: number;
 };
@@ -404,8 +400,12 @@ export type SetDayPhotosResult =
 export type Journal = {
   /** The visible Trips, newest first. */
   listTripCards(): Promise<TripCard[]>;
+  /** The visible Trip plans, by title. */
+  listPlanCards(): Promise<TripCard[]>;
   /** A visible Trip, or null when it does not exist or is hidden. */
   getTrip(slug: string): Promise<TripPage | null>;
+  /** A visible Trip plan, or null when it does not exist or is hidden. */
+  getPlan(slug: string): Promise<TripPage | null>;
   getGallery(): Promise<Gallery>;
   /** The Visited Provinces of the home map. */
   getHomeMap(): Promise<HomeProvince[]>;
@@ -428,7 +428,6 @@ export type Journal = {
   /** A Trip with its Days and Photos, hidden or not; null when it does not exist. */
   getAdminTrip(slug: string): Promise<AdminTripDetail | null>;
   setTripVisible(slug: string, visible: boolean): Promise<SetTripVisibleResult>;
-  setTripOnPlan(slug: string, onPlan: boolean): Promise<SetTripVisibleResult>;
   /** The Trip Cover: a landscape Photo of the Trip. */
   setTripCover(slug: string, photoId: number): Promise<SetTripCoverResult>;
   /** The focal point of the Trip Cover, in percent (0 to 100); needs a chosen cover. */
