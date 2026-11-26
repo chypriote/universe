@@ -39,8 +39,6 @@ export type FlightPrices = {
   first: string;
   last: string;
   plans: PlanLane[];
-  /** Titles of the plans with no Days. */
-  noDays: string[];
 };
 
 const SHOWN = 3;
@@ -59,13 +57,9 @@ export function flightPrices(trips: Plan[], searches: FlightSearch[], cities: Ma
   }
 
   const plans: PlanLane[] = [];
-  const noDays: string[] = [];
   for (const plan of trips) {
     const title = plan.title ?? plan.slug;
-    if (plan.seasons.length === 0) {
-      noDays.push(title);
-      continue;
-    }
+    if (plan.seasons.length === 0) continue;
     const windows = fareWindows([plan], today);
     const found = windows
       .map((window) => latest.get(windowKey(window)))
@@ -98,7 +92,7 @@ export function flightPrices(trips: Plan[], searches: FlightSearch[], cities: Ma
     (a, b) =>
       (a.windows[0]?.price ?? Infinity) - (b.windows[0]?.price ?? Infinity) || a.title.localeCompare(b.title),
   );
-  return { first, last, plans, noDays };
+  return { first, last, plans };
 }
 
 /** Whether a start date in the searched range fits a Trip with these Day Seasons. */
