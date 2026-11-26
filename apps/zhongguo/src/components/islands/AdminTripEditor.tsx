@@ -62,7 +62,6 @@ function Days({ trip, cities, activities, onNotice }: { trip: AdminTripDetail; c
               <DayActivities
                 url={`/api/admin/days/${day.id}/activities`}
                 label={`Day of ${day.date}`}
-                province={day.province}
                 cityIds={(day.route.length > 0 ? day.route : [day.city]).map((city) => city.id)}
                 activityIds={day.activityIds}
                 activities={activities}

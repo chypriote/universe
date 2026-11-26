@@ -209,7 +209,6 @@ export function AdminPlanEditor({ plan, cities, activities }: Props) {
                   <DayActivities
                     url={`/api/admin/plan-days/${day.id}/activities`}
                     label={`Day ${day.number}`}
-                    province={day.province}
                     cityIds={(day.route.length > 0 ? day.route : [day.city]).map((city) => city.id)}
                     activityIds={day.activityIds}
                     activities={activities}
