@@ -18,7 +18,7 @@ export type ChinaMapCity = {
   zh: string;
   x: number;
   y: number;
-  /** Minor City: an outlined dot instead of a filled one. Defaults to major. */
+  /** Minor City: a paper-filled dot with an outline instead of a filled one. Defaults to major. */
   major?: boolean;
   /** Shown in the hover tooltip after the name. */
   province?: string;
@@ -37,6 +37,8 @@ interface ChinaMapProps {
   idleText?: string;
   /** The photo and name beside the map; off, the map takes the full width. */
   preview?: boolean;
+  /** Hovering a region shows a tooltip with its name and detail at the pointer. */
+  regionTooltip?: boolean;
 }
 
 /** Label font size in map units; keep in step with the text-[…px] class on the label. */
@@ -57,6 +59,7 @@ const TONES = {
     dot: 'fill-foreground stroke-background',
     label: 'fill-foreground stroke-background stroke-[4]',
     leader: 'stroke-foreground',
+    hollow: 'fill-background',
     minorStroke: 'stroke-foreground',
     muted: 'text-muted-foreground',
     border: 'border-border',
@@ -68,6 +71,7 @@ const TONES = {
     dot: 'fill-dark-foreground stroke-dark-background',
     label: 'fill-dark-foreground stroke-dark-background stroke-[4]',
     leader: 'stroke-dark-foreground',
+    hollow: 'fill-dark-background',
     minorStroke: 'stroke-dark-foreground',
     muted: 'text-dark-muted-foreground',
     border: 'border-dark-border',
@@ -84,9 +88,11 @@ export function ChinaMap({
   tone = 'light',
   idleText = 'Hover a region',
   preview = true,
+  regionTooltip = false,
 }: ChinaMapProps) {
   const [hoverRegion, setHoverRegion] = useState<string | null>(null);
   const [hoverCity, setHoverCity] = useState<string | null>(null);
+  const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const t = TONES[tone];
   const svgRef = useRef<SVGSVGElement>(null);
   const [labelPos, setLabelPos] = useState<Record<string, { x: number; y: number; cx: number; cy: number }>>({});
@@ -131,7 +137,7 @@ export function ChinaMap({
     regionByName.get(selectedRegion ?? '');
 
   const dotClass = (city: ChinaMapCity, active: boolean) => {
-    if (city.major === false) return active ? 'fill-transparent stroke-primary' : `fill-transparent ${t.minorStroke}`;
+    if (city.major === false) return active ? `${t.hollow} stroke-primary` : `${t.hollow} ${t.minorStroke}`;
     return active ? 'fill-primary stroke-background' : t.dot;
   };
 
@@ -177,7 +183,14 @@ export function ChinaMap({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-      <div className={`relative ${preview ? 'lg:col-span-6' : 'lg:col-span-12'}`}>
+      <div
+        className={`relative ${preview ? 'lg:col-span-6' : 'lg:col-span-12'}`}
+        onPointerMove={(event) => {
+          if (!regionTooltip) return;
+          const box = event.currentTarget.getBoundingClientRect();
+          setPointer({ x: event.clientX - box.left, y: event.clientY - box.top });
+        }}
+      >
       <svg
         viewBox={`0 0 ${CHINA_MAP.width} ${CHINA_MAP.height}`}
         ref={svgRef}
@@ -289,6 +302,16 @@ export function ChinaMap({
           );
         })}
       </svg>
+      {regionTooltip && !hoverCityData && hoverRegion && pointer && (
+        <div
+          role="tooltip"
+          className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+          style={{ left: pointer.x, top: pointer.y - 14 }}
+        >
+          {regionByName.get(hoverRegion)?.name} <span lang="zh">{regionByName.get(hoverRegion)?.zh}</span>
+          {regionByName.get(hoverRegion)?.detail && ` · ${regionByName.get(hoverRegion)?.detail}`}
+        </div>
+      )}
       {hoverCityData && (
         <div
           role="tooltip"

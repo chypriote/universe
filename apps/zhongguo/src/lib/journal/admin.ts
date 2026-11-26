@@ -907,7 +907,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   async function listAdminProvinces(): Promise<AdminProvinceDetail[]> {
     const [provinces, cities, airports] = await Promise.all([
       all<{ id: number; name: string; name_zh: string; season: number }>('SELECT id, name, name_zh, season FROM provinces ORDER BY name'),
-      all<{ id: number; name: string; name_zh: string; province_id: number }>('SELECT id, name, name_zh, province_id FROM cities ORDER BY name'),
+      all<{ id: number; name: string; name_zh: string; province_id: number; lng: number; lat: number }>('SELECT id, name, name_zh, province_id, lng, lat FROM cities ORDER BY name'),
       all<{ code: string; city_id: number; direct_weekdays: number }>('SELECT code, city_id, direct_weekdays FROM airports ORDER BY code'),
     ]);
     return provinces.map((province) => ({
@@ -921,6 +921,8 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
           id: city.id,
           name: city.name,
           nameZh: city.name_zh,
+          lng: city.lng,
+          lat: city.lat,
           airports: airports
             .filter((airport) => airport.city_id === city.id)
             .map((airport) => ({ code: airport.code, directWeekdays: fromBits(airport.direct_weekdays, 7) })),
