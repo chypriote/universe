@@ -72,7 +72,7 @@ An airport of a City that has flights from Paris, named by its code (Beijing: PE
 An Airport of one of a plan's Cities, where the plan can start and end: a round trip from Paris to that Airport and back.
 
 **Fare window**:
-One Gateway, an outbound date and a return date, with the cheapest price found for it (one stop or fewer) and whether that flight is direct.
+One Gateway, an outbound date and a return date, with the cheapest price found for it (one stop or fewer; two for Lhasa and Urumqi) and whether that flight is direct.
 
 **Flight search**:
 One stored price for one Fare window, made by `npm run china` and kept in D1.
