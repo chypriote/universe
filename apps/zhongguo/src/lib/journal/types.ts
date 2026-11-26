@@ -186,8 +186,6 @@ export type AdminTrip = {
   /** A report is a Trip that has ended; the rest are plans. */
   type: TripType;
   visible: boolean;
-  /** A plan has no Days: it can only be switched on or off. */
-  hasDays: boolean;
   /** All Photos of the Trip, those on hidden Days included. */
   photos: number;
 };

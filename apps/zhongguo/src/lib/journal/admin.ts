@@ -200,8 +200,8 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
 
   async function listAdminTrips(): Promise<AdminTrip[]> {
     const today = new Date().toISOString().slice(0, 10);
-    const rows = await all<{ slug: string; title: string; visible: number; end_date: string | null; days: number; photos: number }>(
-      `SELECT slug, title, visible, end_date, (SELECT COUNT(*) FROM days WHERE days.trip_id = trips.id) AS days,
+    const rows = await all<{ slug: string; title: string; visible: number; end_date: string | null; photos: number }>(
+      `SELECT slug, title, visible, end_date,
          (SELECT COUNT(*) FROM photos WHERE photos.trip_id = trips.id) AS photos
        FROM trips ORDER BY start_date IS NULL, start_date DESC, slug`,
     );
@@ -210,7 +210,6 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       title: row.title,
       type: row.end_date !== null && row.end_date < today ? 'report' : 'plan',
       visible: row.visible === 1,
-      hasDays: row.days > 0,
       photos: row.photos,
     }));
   }

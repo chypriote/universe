@@ -3,7 +3,7 @@ import type { AdminTrip } from '@/lib/journal';
 
 const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
 
-/** Every Trip with its on/off switch. A plan opens the page to add its first Day. */
+/** Every Trip with its type and on/off switch. */
 export function AdminTrips(props: { trips: AdminTrip[] }) {
   const [trips, setTrips] = useState(props.trips);
   const [busy, setBusy] = useState('');
@@ -43,7 +43,7 @@ export function AdminTrips(props: { trips: AdminTrip[] }) {
             <div>
               <p className="font-serif text-xl">{trip.title}</p>
               <p className="text-sm text-muted-foreground">
-                {trip.hasDays ? 'Report' : 'Plan'} · {trip.visible ? 'On' : 'Off'}
+                {trip.type === 'report' ? 'Report' : 'Plan'} · {trip.visible ? 'On' : 'Off'}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
