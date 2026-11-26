@@ -3,6 +3,7 @@ import AdminLayout from '@/layouts/AdminLayout.astro';
 import { AddDayForm } from '@/components/islands/AddDayForm';
 import { AdminTripEditor } from '@/components/islands/AdminTripEditor';
 import { journalFromEnv } from '@/lib/journal';
+import { hasSeasonStart } from '@/lib/flight-prices';
 
 export const prerender = false;
 
@@ -10,10 +11,19 @@ const journal = journalFromEnv();
 const trip = await journal.getAdminTrip(Astro.params.slug ?? '');
 if (!trip) return Astro.redirect('/admin/trips');
 const cities = await journal.listCities();
+const offSeason = trip.seasons.length > 0 && !hasSeasonStart(trip.seasons, new Date().toISOString().slice(0, 10));
 ---
 
 <AdminLayout title={trip.title}>
   <div class="flex flex-col gap-12">
+    {
+      offSeason && (
+        <p role="status" class="border border-error p-4 text-sm text-error">
+          No start date fits this trip's Seasons, so it gets no flight prices. Set the Seasons of its Provinces in{' '}
+          <a href="/admin/provinces" class="underline">Provinces</a>.
+        </p>
+      )
+    }
     <AddDayForm client:load slug={trip.slug} cities={cities} />
     {trip.days.length > 0 && <AdminTripEditor client:load trip={trip} cities={cities} />}
   </div>
