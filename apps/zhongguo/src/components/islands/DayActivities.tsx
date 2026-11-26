@@ -86,7 +86,7 @@ export function DayActivities({ url, label, cityIds, activityIds, activities, on
         <button type="button" className={button} disabled={busy || !pick} onClick={add}>
           Add
         </button>
-        <a href="/admin/activities" className="text-sm underline">
+        <a href={cityIds[0] ? `/admin/atlas?city=${cityIds[0]}&tab=activities` : '/admin/atlas'} className="text-sm underline">
           New Activity
         </a>
       </div>
