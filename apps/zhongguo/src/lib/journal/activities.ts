@@ -5,6 +5,7 @@ import type {
   ActivityInput,
   ActivityPicture,
   ActivityPicturesResult,
+  MoveActivityPictureResult,
   ActivityProblem,
   AddActivityResult,
   AdminActivity,
@@ -27,6 +28,7 @@ type ActivityMethods = Pick<
   | 'uploadActivityPicture'
   | 'setActivityPictures'
   | 'deleteActivityPicture'
+  | 'moveActivityPicture'
 >;
 
 /** The public URLs of an Activity picture and of its thumbnail. */
@@ -275,7 +277,41 @@ export function buildActivities(env: AdminEnv, urls: ActivityPictureUrls): Activ
     return { ok: true, activity: left };
   }
 
+  async function moveActivityPicture(pictureId: number, activityId: number): Promise<MoveActivityPictureResult> {
+    const picture = await env.DB.prepare('SELECT id, activity_id, name FROM activity_pictures WHERE id = ?')
+      .bind(pictureId)
+      .first<{ id: number; activity_id: number; name: string }>();
+    if (!picture) return { ok: false, error: 'unknown-picture' };
+    if (!(await find(activityId))) return { ok: false, error: 'unknown-activity' };
+    if (picture.activity_id !== activityId) {
+      if (await env.DB.prepare('SELECT id FROM activity_pictures WHERE activity_id = ? AND name = ?').bind(activityId, picture.name).first()) {
+        return { ok: false, error: 'exists' };
+      }
+      // The keys hold the Activity id: copy the files first, so the row never points at a missing file.
+      const [oldFile, oldThumb] = keysOf(picture.activity_id, picture.name);
+      const [newFile, newThumb] = keysOf(activityId, picture.name);
+      for (const [from, to] of [[oldFile, newFile], [oldThumb, newThumb]]) {
+        const object = await env.PHOTOS.get(from);
+        if (object) await env.PHOTOS.put(to, object.body, { httpMetadata: object.httpMetadata });
+      }
+      await env.DB.prepare(
+        `UPDATE activity_pictures SET activity_id = ?1,
+           position = (SELECT COALESCE(MAX(position), 0) + 1 FROM activity_pictures WHERE activity_id = ?1)
+         WHERE id = ?2`,
+      )
+        .bind(activityId, pictureId)
+        .run();
+      await env.PHOTOS.delete([oldFile, oldThumb]);
+      const left = (await find(picture.activity_id))!;
+      await env.DB.batch(
+        left.pictures.map((remaining, index) => env.DB.prepare('UPDATE activity_pictures SET position = ? WHERE id = ?').bind(index + 1, remaining.id)),
+      );
+    }
+    return { ok: true, from: (await find(picture.activity_id))!, to: (await find(activityId))! };
+  }
+
   return {
+    moveActivityPicture,
     uploadActivityPicture,
     setActivityPictures,
     deleteActivityPicture,

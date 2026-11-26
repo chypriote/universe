@@ -506,6 +506,11 @@ export type UploadActivityPictureResult =
   | { ok: true; activity: AdminActivity; replaced: boolean }
   | { ok: false; error: 'unknown-activity' | 'invalid-name' | 'unsupported-type' | 'exists' | 'unreadable' };
 
+/** A picture moved to another Activity goes last there. */
+export type MoveActivityPictureResult =
+  | { ok: true; from: AdminActivity; to: AdminActivity }
+  | { ok: false; error: 'unknown-activity' | 'unknown-picture' | 'exists' };
+
 export type ActivityPicturesResult =
   | { ok: true; activity: AdminActivity }
   | { ok: false; error: 'unknown-activity' | 'unknown-picture' | 'duplicate-picture' };
@@ -708,6 +713,7 @@ export type Journal = {
   setActivityPictures(activityId: number, pictureIds: number[]): Promise<ActivityPicturesResult>;
   /** Deletes the picture and its files. */
   deleteActivityPicture(pictureId: number): Promise<ActivityPicturesResult>;
+  moveActivityPicture(pictureId: number, activityId: number): Promise<MoveActivityPictureResult>;
   /** Every Province by name, with its Season and its Cities by name with their Airports. */
   listAdminProvinces(): Promise<AdminProvinceDetail[]>;
   /** Replaces the Season: any set of months, none included. */

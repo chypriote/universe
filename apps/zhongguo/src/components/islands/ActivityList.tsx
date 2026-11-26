@@ -1,7 +1,6 @@
 import type { AdminActivity, AdminCity } from '@/lib/journal';
 import { ACTIVITY_KINDS, ACTIVITY_RATINGS } from '@/lib/journal/activity-kinds';
 import { ActivityForm, activityError } from './ActivityForm';
-import { ActivityPictures } from './ActivityPictures';
 
 const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
 
@@ -49,7 +48,10 @@ export function ActivityList({ activities, cities, onSaved, onDeleted, onNotice,
             </summary>
             <div className="flex flex-col gap-4 border-t border-border p-4">
               <ActivityForm key={JSON.stringify({ ...activity, pictures: undefined })} cities={cities} activity={activity} onSaved={onSaved} onError={onNotice} />
-              <ActivityPictures activity={activity} onSaved={onSaved} onError={onNotice} />
+              <p className="text-sm text-muted-foreground">
+                {activity.pictures.length} {activity.pictures.length === 1 ? 'picture' : 'pictures'}:{' '}
+                <a href={`/admin/gallery?activities=${encodeURIComponent(activity.province)}`}>manage them in the Gallery</a>.
+              </p>
               <button type="button" className={`${button} self-start text-error`} disabled={activity.days > 0} onClick={() => void remove(activity)}>
                 Delete
               </button>
