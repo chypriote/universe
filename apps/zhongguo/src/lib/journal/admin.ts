@@ -233,9 +233,10 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       city_id: number;
       city: string;
       province: string;
+      season: number;
     }>(
       `SELECT days.id, days.date, days.visible, days.title, days.notes, cities.id AS city_id, cities.name AS city,
-              provinces.name AS province
+              provinces.name AS province, provinces.season
        FROM days JOIN cities ON cities.id = days.city_id JOIN provinces ON provinces.id = cities.province_id
        WHERE days.trip_id = ? ORDER BY days.position`,
       trip.id,
@@ -273,6 +274,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       title: trip.title,
       visible: trip.visible === 1,
       days,
+      seasons: rows.filter((row) => row.visible === 1).map((row) => row.season),
       photos: await loadPhotos(trip.id),
       coverId: trip.cover_photo_id,
       coverFocus: { x: trip.cover_focus_x, y: trip.cover_focus_y },
