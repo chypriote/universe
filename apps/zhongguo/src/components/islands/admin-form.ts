@@ -19,6 +19,8 @@ export const MESSAGES: Record<string, string> = {
   'main-not-on-route': 'The main City must be one of the Cities of the Day',
   'invalid-title': 'A title is needed',
   'unknown-plan': 'The plan no longer exists: reload the page',
+  'invalid-date': 'Pick a valid start date',
+  'unknown-plan-day': 'A Plan Day no longer exists: reload the page',
   'slug-taken': 'A Trip or plan already has that name',
 };
 

@@ -2,6 +2,7 @@ import { issueToken, passwordMatches, tokenIsValid } from '@universe/owner/auth'
 import { buildAdmin } from './admin';
 import { buildPlanAdmin } from './plan-admin';
 import { buildPlanPhotos } from './plan-photos';
+import { buildTripCreate } from './trip-create';
 import { formatDateRange } from '../plan-calendar';
 import { getPlaceName } from '../place-names';
 import type {
@@ -705,5 +706,6 @@ export function buildJournal(env: JournalEnv): Journal {
     ...buildAdmin(env, { photoUrl, thumbUrl }),
     ...buildPlanAdmin(env, { photoUrl, thumbUrl }),
     ...buildPlanPhotos(env, { photoUrl, thumbUrl }),
+    ...buildTripCreate(env),
   };
 }
