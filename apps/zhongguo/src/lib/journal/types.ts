@@ -186,6 +186,8 @@ export type AdminTrip = {
   /** A report is a Trip that has ended; the rest are plans. */
   type: TripType;
   visible: boolean;
+  /** Whether the Plan page shows the Trip and `npm run china` searches it. */
+  onPlan: boolean;
   /** All Photos of the Trip, those on hidden Days included. */
   photos: number;
 };
@@ -426,6 +428,7 @@ export type Journal = {
   /** A Trip with its Days and Photos, hidden or not; null when it does not exist. */
   getAdminTrip(slug: string): Promise<AdminTripDetail | null>;
   setTripVisible(slug: string, visible: boolean): Promise<SetTripVisibleResult>;
+  setTripOnPlan(slug: string, onPlan: boolean): Promise<SetTripVisibleResult>;
   /** The Trip Cover: a landscape Photo of the Trip. */
   setTripCover(slug: string, photoId: number): Promise<SetTripCoverResult>;
   /** The focal point of the Trip Cover, in percent (0 to 100); needs a chosen cover. */
