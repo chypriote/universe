@@ -1,0 +1,15 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { AdminPlans } from '@/components/islands/AdminPlans';
+import { journalFromEnv } from '@/lib/journal';
+
+export const prerender = false;
+
+const plans = await journalFromEnv().listAdminPlans();
+---
+
+<AdminLayout title="Plans">
+  <div>
+    <AdminPlans client:load plans={plans} />
+  </div>
+</AdminLayout>

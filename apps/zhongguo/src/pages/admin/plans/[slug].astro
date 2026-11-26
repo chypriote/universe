@@ -1,0 +1,28 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { AdminPlanEditor } from '@/components/islands/AdminPlanEditor';
+import { journalFromEnv } from '@/lib/journal';
+import { hasSeasonStart } from '@/lib/flight-prices';
+
+export const prerender = false;
+
+const journal = journalFromEnv();
+const plan = await journal.getAdminPlan(Astro.params.slug ?? '');
+if (!plan) return Astro.redirect('/admin/plans');
+const cities = await journal.listCities();
+const offSeason = plan.seasons.length > 0 && !hasSeasonStart(plan.seasons, new Date().toISOString().slice(0, 10));
+---
+
+<AdminLayout title={plan.title}>
+  <div class="flex flex-col gap-12">
+    {
+      offSeason && (
+        <p role="status" class="border border-error p-4 text-sm text-error">
+          No start date fits this plan's Seasons, so it gets no flight prices. Set the Seasons of its Provinces in{' '}
+          <a href="/admin/provinces" class="underline">Provinces</a>.
+        </p>
+      )
+    }
+    <AdminPlanEditor client:load plan={plan} cities={cities} />
+  </div>
+</AdminLayout>

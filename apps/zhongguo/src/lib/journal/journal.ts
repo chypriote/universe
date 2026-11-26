@@ -1,5 +1,6 @@
 import { issueToken, passwordMatches, tokenIsValid } from '@universe/owner/auth';
 import { buildAdmin } from './admin';
+import { buildPlanAdmin } from './plan-admin';
 import { formatDateRange } from '../plan-calendar';
 import { getPlaceName } from '../place-names';
 import type {
@@ -701,5 +702,6 @@ export function buildJournal(env: JournalEnv): Journal {
     login,
     verifyToken,
     ...buildAdmin(env, { photoUrl, thumbUrl }),
+    ...buildPlanAdmin(env),
   };
 }
