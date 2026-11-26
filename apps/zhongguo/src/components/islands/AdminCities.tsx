@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import type { AdminCityDetail, AdminProvince, CityPhoto } from '@/lib/journal';
+import type { AdminActivity, AdminCityDetail, AdminProvince, CityPhoto } from '@/lib/journal';
+import { ActivitiesPanel } from './ActivitiesPanel';
 import { ChinaMap, type ChinaMapCity } from './ChinaMap';
 import { projectLngLat } from '@/lib/china-map';
 import { AddCityForm, cityError, fieldClass as field } from './AddCityForm';
@@ -10,6 +11,7 @@ type Props = {
   cityId: number;
   photos: CityPhoto[];
   provinces: AdminProvince[];
+  activities: AdminActivity[];
 };
 
 const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
@@ -186,6 +188,23 @@ export function AdminCities(props: Props) {
           <ChinaMap regions={[]} cities={mapCities} selectedCity={String(cityId)} onSelectCity={selectCity} preview={false} />
         </div>
       </div>
+
+      {city && (
+        <section aria-label="Activities" className="border border-border p-6">
+          <details>
+            <summary className="cursor-pointer font-serif text-2xl">Activities</summary>
+            <div className="mt-4">
+              <ActivitiesPanel
+                activities={props.activities}
+                cities={cities}
+                inScope={(activity) => activity.cityId === city.id}
+                cityId={city.id}
+                onNotice={setNotice}
+              />
+            </div>
+          </details>
+        </section>
+      )}
 
       {city && (
         <section aria-label="Photos" className="border border-border p-6">

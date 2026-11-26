@@ -1,16 +1,13 @@
 import { useState } from 'react';
 import type { AdminActivity, AdminCity } from '@/lib/journal';
-import { ACTIVITY_KINDS, ACTIVITY_RATINGS } from '@/lib/journal/activity-kinds';
-import { ActivityForm, activityError } from './ActivityForm';
+import { ACTIVITY_KINDS } from '@/lib/journal/activity-kinds';
+import { ActivityForm } from './ActivityForm';
+import { ActivityList } from './ActivityList';
 import { Toast } from './Toast';
 
 type Props = { activities: AdminActivity[]; cities: AdminCity[] };
 
 const field = 'border border-border bg-surface px-3 py-2 text-sm text-foreground';
-const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
-
-const label = (list: readonly { value: string; label: string }[], value: string | null) =>
-  list.find((item) => item.value === value)?.label ?? '';
 
 const byCity = (a: AdminActivity, b: AdminActivity) => a.city.localeCompare(b.city) || a.name.localeCompare(b.name);
 
@@ -29,18 +26,6 @@ export function AdminActivities(props: Props) {
       (!kind || activity.kind === kind) &&
       (!search || `${activity.name} ${activity.nameZh} ${activity.pinyin}`.toLowerCase().includes(search.toLowerCase())),
   );
-
-  async function remove(activity: AdminActivity) {
-    if (!confirm(`Delete ${activity.name} for good?`)) return;
-    const response = await fetch(`/api/admin/activities/${activity.id}`, { method: 'DELETE' });
-    const result = (await response.json()) as { ok: boolean; error?: string };
-    if (result.ok) {
-      setActivities((list) => list.filter((item) => item.id !== activity.id));
-      setNotice(`${activity.name} deleted`);
-    } else {
-      setNotice(activityError(result.error ?? ''));
-    }
-  }
 
   function saved(activity: AdminActivity) {
     setActivities((list) => [...list.filter((item) => item.id !== activity.id), activity].sort(byCity));
@@ -79,29 +64,13 @@ export function AdminActivities(props: Props) {
         <span className="text-sm text-muted-foreground">{shown.length} Activities</span>
       </div>
 
-      <ul className="flex flex-col gap-3">
-        {shown.map((activity) => (
-          <li key={activity.id} className="border border-border">
-            <details>
-              <summary className="flex cursor-pointer flex-wrap items-baseline gap-x-3 gap-y-1 p-4">
-                <span className="font-serif text-xl">{activity.name}</span>
-                <span lang="zh">{activity.nameZh}</span>
-                <span className="text-sm text-muted-foreground">
-                  {activity.city} · {label(ACTIVITY_KINDS, activity.kind)}
-                  {activity.rating && ` · ${label(ACTIVITY_RATINGS, activity.rating)}`} · {activity.days} Days
-                </span>
-              </summary>
-              <div className="flex flex-col gap-4 border-t border-border p-4">
-                <ActivityForm key={JSON.stringify(activity)} cities={cities} activity={activity} onSaved={saved} onError={setNotice} />
-                <button type="button" className={`${button} self-start text-error`} disabled={activity.days > 0} onClick={() => void remove(activity)}>
-                  Delete
-                </button>
-                {activity.days > 0 && <p className="text-sm text-muted-foreground">A Day or a Plan Day lists it: take it off first.</p>}
-              </div>
-            </details>
-          </li>
-        ))}
-      </ul>
+      <ActivityList
+        activities={shown}
+        cities={cities}
+        onSaved={saved}
+        onDeleted={(activity) => setActivities((list) => list.filter((item) => item.id !== activity.id))}
+        onNotice={setNotice}
+      />
     </div>
   );
 }

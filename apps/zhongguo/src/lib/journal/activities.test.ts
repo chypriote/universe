@@ -108,3 +108,51 @@ describe('Activities admin', () => {
     expect(await journal.listAdminActivities()).toHaveLength(1);
   });
 });
+
+describe('Activities of a Day', () => {
+  it('sets the Activities of a Day in order, from any City, and replaces the old list', async () => {
+    const { chengdu, lanzhou } = await world();
+    const trip = await addTrip({ slug: 'sichuan' });
+    const day = await addDay(trip, chengdu, '2025-03-01', { position: 1 });
+    const pandas = await addActivity('Pandas', chengdu);
+    const old = await addActivity('Old street', lanzhou);
+    const archive = await addActivity('Archive', chengdu);
+
+    expect(await journal.setDayActivities(day, [pandas, old])).toEqual({ ok: true });
+    expect((await journal.getAdminTrip('sichuan'))!.days[0].activityIds).toEqual([pandas, old]);
+
+    expect(await journal.setDayActivities(day, [archive, pandas])).toEqual({ ok: true });
+    expect((await journal.getAdminTrip('sichuan'))!.days[0].activityIds).toEqual([archive, pandas]);
+    expect((await journal.getTrip('sichuan'))!.days[0].activities.map((activity) => activity.name)).toEqual(['Archive', 'Pandas']);
+
+    expect(await journal.setDayActivities(day, [])).toEqual({ ok: true });
+    expect((await journal.getAdminTrip('sichuan'))!.days[0].activityIds).toEqual([]);
+  });
+
+  it('refuses an unknown Day or Activity and an Activity listed twice, and keeps the old list', async () => {
+    const { chengdu } = await world();
+    const trip = await addTrip({ slug: 'sichuan' });
+    const day = await addDay(trip, chengdu, '2025-03-01', { position: 1 });
+    const pandas = await addActivity('Pandas', chengdu);
+    await journal.setDayActivities(day, [pandas]);
+
+    expect(await journal.setDayActivities(9999, [pandas])).toEqual({ ok: false, error: 'unknown-day' });
+    expect(await journal.setDayActivities(day, [pandas, 9999])).toEqual({ ok: false, error: 'unknown-activity' });
+    expect(await journal.setDayActivities(day, [pandas, pandas])).toEqual({ ok: false, error: 'duplicate-activity' });
+    expect((await journal.getAdminTrip('sichuan'))!.days[0].activityIds).toEqual([pandas]);
+  });
+
+  it('sets the Activities of a Plan Day, shared with a Trip Day', async () => {
+    const { chengdu } = await world();
+    const trip = await addTrip({ slug: 'sichuan' });
+    const day = await addDay(trip, chengdu, '2025-03-01', { position: 1 });
+    const planDay = await addPlanDay(await addPlan({ slug: 'sichuan-plan' }), chengdu, 1);
+    const pandas = await addActivity('Pandas', chengdu);
+
+    expect(await journal.setPlanDayActivities(planDay, [pandas])).toEqual({ ok: true });
+    expect(await journal.setDayActivities(day, [pandas])).toEqual({ ok: true });
+    expect((await journal.getAdminPlan('sichuan-plan'))!.days[0].activityIds).toEqual([pandas]);
+    expect(await journal.setPlanDayActivities(9999, [pandas])).toEqual({ ok: false, error: 'unknown-day' });
+    expect((await journal.listAdminActivities())[0].days).toBe(2);
+  });
+});

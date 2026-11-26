@@ -5,7 +5,8 @@ import { journalFromEnv } from '@/lib/journal';
 
 export const prerender = false;
 
-const provinces = await journalFromEnv().listAdminProvinces();
+const journal = journalFromEnv();
+const [provinces, activities, cities] = await Promise.all([journal.listAdminProvinces(), journal.listAdminActivities(), journal.listCities()]);
 const requested = Number(Astro.url.searchParams.get('province'));
 const province = provinces.find((candidate) => candidate.id === requested) ?? provinces[0];
 ---
@@ -13,7 +14,7 @@ const province = provinces.find((candidate) => candidate.id === requested) ?? pr
 <AdminLayout title="Provinces">
   {
     province ? (
-      <AdminProvinces client:load provinces={provinces} provinceId={province.id} />
+      <AdminProvinces client:load provinces={provinces} provinceId={province.id} activities={activities} cities={cities} />
     ) : (
       <p class="text-muted-foreground">There is no Province yet.</p>
     )

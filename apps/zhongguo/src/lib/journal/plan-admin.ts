@@ -86,6 +86,12 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
        WHERE plan_days.plan_id = ? ORDER BY plan_day_photos.day_id, plan_day_photos.position`,
       plan.id,
     );
+    const activities = await all<{ day_id: number; activity_id: number }>(
+      `SELECT plan_day_activities.day_id, plan_day_activities.activity_id FROM plan_day_activities
+       JOIN plan_days ON plan_days.id = plan_day_activities.day_id
+       WHERE plan_days.plan_id = ? ORDER BY plan_day_activities.day_id, plan_day_activities.position`,
+      plan.id,
+    );
     const highlights = await all<{ photo_id: number }>(
       'SELECT photo_id FROM plan_highlight_photos WHERE plan_id = ? ORDER BY position',
       plan.id,
@@ -108,6 +114,7 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
         route: route.filter((entry) => entry.day_id === row.id).map((entry) => ({ id: entry.id, name: entry.name })),
         province: row.province,
         photoIds: onDays.filter((entry) => entry.day_id === row.id).map((entry) => entry.photo_id),
+        activityIds: activities.filter((entry) => entry.day_id === row.id).map((entry) => entry.activity_id),
       })),
       seasons: rows.map((row) => row.season),
     };

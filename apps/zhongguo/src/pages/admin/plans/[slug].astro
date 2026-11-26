@@ -9,7 +9,7 @@ export const prerender = false;
 const journal = journalFromEnv();
 const plan = await journal.getAdminPlan(Astro.params.slug ?? '');
 if (!plan) return Astro.redirect('/admin/plans');
-const cities = await journal.listCities();
+const [cities, activities] = await Promise.all([journal.listCities(), journal.listAdminActivities()]);
 const offSeason = plan.seasons.length > 0 && !hasSeasonStart(plan.seasons, new Date().toISOString().slice(0, 10));
 ---
 
@@ -23,6 +23,6 @@ const offSeason = plan.seasons.length > 0 && !hasSeasonStart(plan.seasons, new D
         </p>
       )
     }
-    <AdminPlanEditor client:load plan={plan} cities={cities} />
+    <AdminPlanEditor client:load plan={plan} cities={cities} activities={activities} />
   </div>
 </AdminLayout>
