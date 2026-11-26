@@ -341,6 +341,7 @@ export type AdminCityDetail = AdminCity & {
   days: number;
   /** Hotels and restaurants. */
   stays: number;
+  activities: number;
 };
 
 /** A Photo of a City, with its Trip. */
@@ -543,7 +544,7 @@ export type Journal = {
   movePlanDay(dayId: number, direction: 'up' | 'down'): Promise<PlanDayResult>;
   /**
    * A new Trip, off until the Owner switches it on. The chosen Plan Days become its Days (title, notes, Cities,
-   * attractions and train rides; no Photos, no link to the plan), dated from the start date.
+   * Activities and train rides; no Photos, no link to the plan), dated from the start date.
    */
   createTrip(input: CreateTripInput): Promise<CreateTripResult>;
   /** The plan cover: a landscape Photo of the plan. */
@@ -590,7 +591,7 @@ export type Journal = {
   listCityPhotos(cityId: number): Promise<CityPhoto[] | null>;
   /** A new Province clears the Province Cover of the old one when that cover is a Photo of the City: `clearedCovers` names those Provinces. */
   editCity(input: EditCityInput): Promise<EditCityResult>;
-  /** Refused while a Photo, a Day, a hotel or a restaurant uses the City. Its Airports go with it. */
+  /** Refused while a Photo, a Day, an Activity, a hotel or a restaurant uses the City. Its Airports go with it. */
   deleteCity(cityId: number): Promise<DeleteCityResult>;
   /** Every Province by name, with its Season and its Cities by name with their Airports. */
   listAdminProvinces(): Promise<AdminProvinceDetail[]>;

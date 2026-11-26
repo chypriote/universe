@@ -4,7 +4,7 @@ Date: 2026-11-26. Decided by Nico.
 
 A Trip is what Nico did. A Trip plan is what he recommends. They differ: his own Yunnan winter trip is half irrelevant to a visitor, so it must not feed the Plan page or its flight searches. Until now a Trip was a "plan" when its last Day was not past, with nothing stored.
 
-- Trip plans have their own tables (plans, plan days, plan day attractions, plan day train rides, plan photos, plan highlight photos). They share Cities and Provinces with Trips.
+- Trip plans have their own tables (plans, plan days, plan day activities, plan day train rides, plan photos, plan highlight photos). They share Cities and Provinces with Trips.
 - Plan Days are numbered and carry no dates. A plan stores no start date and no Season: its good periods come from the Provinces of its Cities (see ADR 0002).
 - Plan Photos are uploaded in the admin (Wikimedia loading is a later issue). They never show in the Gallery or on the Visited Provinces map. Their files sit under `trips/<slug>/` in the bucket, as a Trip's do, so a slug is unique across Trips and plans.
 - A plan has Visible and Search flights switches. The old `trips.on_plan` column is dropped.

@@ -741,6 +741,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       photos: number;
       days: number;
       stays: number;
+      activities: number;
     }>(
       `SELECT cities.id, cities.name, cities.name_zh, cities.province_id, provinces.name AS province, cities.lng, cities.lat,
               cities.major,
@@ -751,7 +752,8 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
                 + (SELECT COUNT(*) FROM plan_days WHERE plan_days.city_id = cities.id
                  OR plan_days.id IN (SELECT day_id FROM plan_day_cities WHERE plan_day_cities.city_id = cities.id)) AS days,
               (SELECT COUNT(*) FROM trip_hotels WHERE trip_hotels.city_id = cities.id)
-                + (SELECT COUNT(*) FROM trip_restaurants WHERE trip_restaurants.city_id = cities.id) AS stays
+                + (SELECT COUNT(*) FROM trip_restaurants WHERE trip_restaurants.city_id = cities.id) AS stays,
+              (SELECT COUNT(*) FROM activities WHERE activities.city_id = cities.id) AS activities
        FROM cities JOIN provinces ON provinces.id = cities.province_id ORDER BY cities.name`,
     );
     return rows.map((row) => ({
@@ -766,6 +768,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       photos: row.photos,
       days: row.days,
       stays: row.stays,
+      activities: row.activities,
     }));
   }
 
@@ -842,7 +845,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   async function deleteCity(cityId: number): Promise<DeleteCityResult> {
     const city = (await listAdminCities()).find((candidate) => candidate.id === cityId);
     if (!city) return { ok: false, error: 'unknown-city' };
-    if (city.photos + city.days + city.stays > 0) return { ok: false, error: 'in-use' };
+    if (city.photos + city.days + city.stays + city.activities > 0) return { ok: false, error: 'in-use' };
     await env.DB.batch([
       env.DB.prepare('DELETE FROM airports WHERE city_id = ?').bind(cityId),
       env.DB.prepare('DELETE FROM cities WHERE id = ?').bind(cityId),

@@ -154,7 +154,7 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
     await env.DB.batch([
       env.DB.prepare('DELETE FROM plan_day_cities WHERE day_id = ?').bind(dayId),
       env.DB.prepare('DELETE FROM plan_day_photos WHERE day_id = ?').bind(dayId),
-      env.DB.prepare('DELETE FROM plan_day_attractions WHERE day_id = ?').bind(dayId),
+      env.DB.prepare('DELETE FROM plan_day_activities WHERE day_id = ?').bind(dayId),
       env.DB.prepare('DELETE FROM plan_day_train_rides WHERE day_id = ?').bind(dayId),
       env.DB.prepare('DELETE FROM plan_days WHERE id = ?').bind(dayId),
     ]);

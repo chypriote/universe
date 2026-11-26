@@ -113,7 +113,7 @@ export function AdminCities(props: Props) {
     const [x, y] = projectLngLat(item.lng, item.lat);
     return { key: String(item.id), name: item.name, zh: item.nameZh, x, y, major: item.major, province: item.province };
   });
-  const inUse = city ? city.photos + city.days + city.stays : 0;
+  const inUse = city ? city.photos + city.days + city.stays + city.activities : 0;
 
   return (
     <div className="flex flex-col gap-10">
@@ -173,7 +173,7 @@ export function AdminCities(props: Props) {
                 </button>
               </form>
               <p className="text-sm text-muted-foreground">
-                Used by {city.photos} Photos, {city.days} Days, {city.stays} hotels and restaurants.
+                Used by {city.photos} Photos, {city.days} Days, {city.activities} Activities, {city.stays} hotels and restaurants.
               </p>
               <button type="button" className={`${button} self-start text-error`} disabled={busy || inUse > 0} onClick={() => void remove()}>
                 Delete

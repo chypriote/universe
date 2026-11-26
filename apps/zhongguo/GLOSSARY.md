@@ -9,7 +9,7 @@ A journey Nico recommends, shown at `/plans/<slug>`. It lives in its own table, 
 _Avoid_: Planned trip, suggested trip, suggested itinerary (the home section title only)
 
 **Plan Day**:
-One numbered Day of a Trip plan: main City, Cities in travel order, title, notes, attractions and train rides. No date, no hotels, no restaurants.
+One numbered Day of a Trip plan: main City, Cities in travel order, title, notes, Activities and train rides. No date, no hotels, no restaurants.
 
 **Copy from a plan**:
 Creating a Trip: the Owner gives a title and a start date, then ticks the Plan Days to copy. They become dated Days in order from the start date, without Photos. No link to the plan stays. The new Trip is off until the Owner switches it on.
@@ -21,8 +21,12 @@ _Avoid_: Trip overview
 **Day**:
 One day of a Trip: its date, main City, title, notes, photos and train rides. Its main City is where most of the Day was spent, and every Day has one. A Day can list all its Cities in travel order (the last is where it ends); it counts for each of them in the route. Train rides show at the bottom of the Day. Its number is its position among the visible Days, so it can change; its date does not. The Owner adds a Day to a Trip; a Trip has one Day per date, and its start and end dates follow its first and last Day.
 
+**Activity**:
+A place or thing to do in one City, of one kind: Nature, Heritage (temples, palaces, gardens, old towns, museums), Modern city (skylines, shopping streets, markets) or Show. It exists on its own, shared by every Day and Plan Day that lists it, like a City. It has a name in English, Chinese and pinyin, an address in English and Chinese to show a driver or a hotel, a description, and a map position found by lookup. It can be rated Do not miss, Recommended, Skippable or Avoid, and can have a price estimate (yuan per person). It has its own uploaded pictures, which are not Photos: a Plan Day shows them, a Trip Day shows only its own Photos. A Day lists its Activities in visit order, each once, and may list an Activity of a City it does not stay in (a day trip); adding one from another Province than the Day's main City asks the Owner to confirm. The Owner adds, edits and deletes it from the Activities, City and Province admin pages; it cannot be deleted while a Day lists it, and its City cannot be deleted while it exists. Food is not an Activity. Day trips, multi-day blocks and loops are not Activities: later, each will group several Activities.
+_Avoid_: Attraction, sight, place
+
 **City**:
-A place a Trip stays in or passes through, in one Province. Shown in English and Chinese. One City is shared by every Trip that visits it. A City exists on its own, with or without Photos; the Owner adds, edits and deletes it. A City cannot be deleted while a Photo, a Day, a hotel or a restaurant uses it.
+A place a Trip stays in or passes through, in one Province. Shown in English and Chinese. One City is shared by every Trip that visits it. A City exists on its own, with or without Photos; the Owner adds, edits and deletes it. A City cannot be deleted while a Photo, a Day, an Activity, a hotel or a restaurant uses it.
 
 **Major City**:
 A City that gets a pin on the Gallery map, such as Xi'an, Xining or Chengdu. A minor City, such as Huanglong or Jiayuguan, gets a pin only on the map of a Trip that visits it.

@@ -2,6 +2,7 @@ import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
 import {
+  addActivity,
   addCity,
   setDayCities,
   setProvinceCover,
@@ -13,6 +14,7 @@ import {
   addPlanDay,
   addProvince,
   addTrip,
+  listActivity,
   resetDatabase,
 } from './seed.test-helper';
 
@@ -332,6 +334,45 @@ describe('A Day in several Cities', () => {
       ['Kunming', '1, 3'],
       ['Dali', '4'],
     ]);
+  });
+
+  it('lists the Activities of a Day in order, with their Chinese name and pinyin', async () => {
+    const sichuan = await addProvince('Sichuan');
+    const chengdu = await addCity('Chengdu', sichuan);
+    const leshan = await addCity('Leshan', sichuan);
+    const trip = await addTrip({ slug: 'sichuan' });
+    const day = await addDay(trip, chengdu, '2025-03-01', { position: 1 });
+    await addDay(trip, chengdu, '2025-03-02', { position: 2 });
+    const buddha = await addActivity('Leshan Grand Buddha', leshan, { nameZh: '乐山大佛', pinyin: 'Lèshān Dàfó' });
+    const pandas = await addActivity('Pandas', chengdu, { nameZh: '熊猫基地', pinyin: 'Xióngmāo Jīdì' });
+    await listActivity('day_activities', day, 1, pandas);
+    await listActivity('day_activities', day, 2, buddha);
+
+    const days = (await journal.getTrip('sichuan'))!.days;
+
+    expect(days[0].activities).toEqual([
+      { name: 'Pandas', nameZh: '熊猫基地', pinyin: 'Xióngmāo Jīdì' },
+      { name: 'Leshan Grand Buddha', nameZh: '乐山大佛', pinyin: 'Lèshān Dàfó' },
+    ]);
+    expect(days[1].activities).toEqual([]);
+  });
+
+  it('lists the Activities of a Plan Day, shared with a Trip Day', async () => {
+    const sichuan = await addProvince('Sichuan');
+    const chengdu = await addCity('Chengdu', sichuan);
+    const trip = await addTrip({ slug: 'sichuan' });
+    const tripDay = await addDay(trip, chengdu, '2025-03-01', { position: 1 });
+    const plan = await addPlan({ slug: 'sichuan-plan' });
+    const planDay = await addPlanDay(plan, chengdu, 1);
+    const pandas = await addActivity('Pandas', chengdu, { nameZh: '熊猫基地', pinyin: 'Xióngmāo Jīdì' });
+    await listActivity('day_activities', tripDay, 1, pandas);
+    await listActivity('plan_day_activities', planDay, 1, pandas);
+
+    const fromPlan = (await journal.getPlan('sichuan-plan'))!.days[0].activities;
+    const fromTrip = (await journal.getTrip('sichuan'))!.days[0].activities;
+
+    expect(fromPlan).toEqual([{ name: 'Pandas', nameZh: '熊猫基地', pinyin: 'Xióngmāo Jīdì' }]);
+    expect(fromTrip).toEqual(fromPlan);
   });
 
   it('keeps its train rides out of the activities', async () => {

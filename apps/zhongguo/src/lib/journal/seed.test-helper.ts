@@ -7,7 +7,7 @@ const TABLES = [
   'plan_day_photos',
   'plan_highlight_photos',
   'plan_day_train_rides',
-  'plan_day_attractions',
+  'plan_day_activities',
   'plan_days',
   'plan_photos',
   'plans',
@@ -16,7 +16,8 @@ const TABLES = [
   'province_covers',
   'highlight_photos',
   'day_train_rides',
-  'day_attractions',
+  'day_activities',
+  'activities',
   'trip_hotels',
   'trip_restaurants',
   'days',
@@ -210,4 +211,26 @@ export async function addPlanPhoto(planId: number, dayId: number | null, name: s
   await insert('plan_photos', row);
   if (dayId !== null) await insert('plan_day_photos', { day_id: dayId, position: 1, photo_id: row.id });
   return row.id;
+}
+
+export async function addActivity(
+  name: string,
+  cityId: number,
+  options: { nameZh?: string; pinyin?: string; kind?: string } = {},
+) {
+  const row = {
+    id: id(),
+    name,
+    name_zh: options.nameZh ?? '',
+    pinyin: options.pinyin ?? '',
+    city_id: cityId,
+    kind: options.kind ?? 'heritage',
+  };
+  await insert('activities', row);
+  return row.id;
+}
+
+/** `table` is `day_activities` for a Trip Day, `plan_day_activities` for a Plan Day. */
+export async function listActivity(table: 'day_activities' | 'plan_day_activities', dayId: number, position: number, activityId: number) {
+  await insert(table, { day_id: dayId, position, activity_id: activityId });
 }
