@@ -104,6 +104,12 @@ export function flightPrices(plans: Plan[], searches: FlightSearch[], cities: Ma
   return { first, last, priced, unpriced };
 }
 
+/** Whether a start date in the searched range fits a Trip with these Day Seasons. */
+export function hasSeasonStart(seasons: number[], today: string): boolean {
+  const { first, last } = searchRange(today);
+  return seasons.length > 0 && fitRuns(seasons, first, last).length > 0;
+}
+
 function fitRuns(seasons: number[], first: string, last: string) {
   const runs: { from: string; to: string }[] = [];
   for (let date = first; date <= last; date = addDays(date, 1)) {

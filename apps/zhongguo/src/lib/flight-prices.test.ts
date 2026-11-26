@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { flightPrices, type FlightSearch } from './flight-prices';
+import { flightPrices, hasSeasonStart, type FlightSearch } from './flight-prices';
 
 const ALL_YEAR = 0b111111111111;
 const APRIL = 1 << 3;
@@ -98,5 +98,16 @@ describe('Flight prices', () => {
       { title: 'Never', reason: 'no start date in season' },
       { title: 'Waiting', reason: 'not searched yet' },
     ]);
+  });
+});
+
+describe('A Trip has a start date in season', () => {
+  it('when one start date in the searched range fits it', () => {
+    expect(hasSeasonStart(Array(5).fill(APRIL), TODAY)).toBe(true);
+  });
+
+  it('not when none fits, nor without Days', () => {
+    expect(hasSeasonStart([APRIL, APRIL, 0, 0, 0], TODAY)).toBe(false);
+    expect(hasSeasonStart([], TODAY)).toBe(false);
   });
 });

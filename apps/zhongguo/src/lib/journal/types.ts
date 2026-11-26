@@ -215,6 +215,8 @@ export type AdminTripDetail = {
   title: string;
   visible: boolean;
   days: AdminDay[];
+  /** The Season bits (bit 0 = January) of each visible Day's Province, in Day order. */
+  seasons: number[];
   /** Every Photo of the Trip, by date and name; those on no Day are in no Day's `photoIds`. */
   photos: AdminPhoto[];
   coverId: number | null;
