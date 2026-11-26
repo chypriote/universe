@@ -544,7 +544,7 @@ export type Journal = {
   movePlanDay(dayId: number, direction: 'up' | 'down'): Promise<PlanDayResult>;
   /**
    * A new Trip, off until the Owner switches it on. The chosen Plan Days become its Days (title, notes, Cities,
-   * attractions and train rides; no Photos, no link to the plan), dated from the start date.
+   * Activities and train rides; no Photos, no link to the plan), dated from the start date.
    */
   createTrip(input: CreateTripInput): Promise<CreateTripResult>;
   /** The plan cover: a landscape Photo of the plan. */

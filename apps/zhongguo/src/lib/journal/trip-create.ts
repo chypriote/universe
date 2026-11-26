@@ -48,8 +48,8 @@ export function buildTripCreate(env: { DB: D1Database }): Pick<Journal, 'createT
               `INSERT INTO day_cities (day_id, position, city_id, main) SELECT ${dayId}, position, city_id, main FROM plan_day_cities WHERE day_id = ?3`,
             ).bind(slug, position, day.id),
             env.DB.prepare(
-              `INSERT INTO day_attractions (day_id, position, name, city, rating, description)
-               SELECT ${dayId}, position, name, city, rating, description FROM plan_day_attractions WHERE day_id = ?3`,
+              `INSERT INTO day_activities (day_id, position, activity_id)
+               SELECT ${dayId}, position, activity_id FROM plan_day_activities WHERE day_id = ?3`,
             ).bind(slug, position, day.id),
             env.DB.prepare(
               `INSERT INTO day_train_rides (day_id, position, outgoing_city, destination_city, time_of_day, departure_time, arrival_time, duration_minutes)

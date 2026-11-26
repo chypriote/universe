@@ -1,7 +1,7 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
-import { addCity, addPlan, addPlanDay, addPlanPhoto, addProvince, addTrip, resetDatabase } from './seed.test-helper';
+import { addActivity, addCity, addPlan, addPlanDay, addPlanPhoto, addProvince, addTrip, resetDatabase } from './seed.test-helper';
 
 const journal = createJournal(env);
 
@@ -15,9 +15,10 @@ async function plan() {
   const one = await addPlanDay(planId, kunming, 1, { title: 'Arrive', notes: 'Rest' });
   const two = await addPlanDay(planId, dali, 2, { title: 'Old town' });
   const three = await addPlanDay(planId, dali, 3, { title: 'Lake' });
+  const pagodas = await addActivity('Three Pagodas', dali);
   await env.DB.batch([
     env.DB.prepare('INSERT INTO plan_day_cities (day_id, position, city_id, main) VALUES (?, 1, ?, 0), (?, 2, ?, 1)').bind(two, kunming, two, dali),
-    env.DB.prepare("INSERT INTO plan_day_attractions (day_id, position, name, city, rating, description) VALUES (?, 1, 'Three Pagodas', 'Dali', 4.5, 'Old')").bind(two),
+    env.DB.prepare('INSERT INTO plan_day_activities (day_id, position, activity_id) VALUES (?, 1, ?)').bind(two, pagodas),
     env.DB.prepare(
       "INSERT INTO plan_day_train_rides (day_id, position, outgoing_city, destination_city, time_of_day, departure_time, arrival_time, duration_minutes) VALUES (?, 1, 'Kunming', 'Dali', 'morning', '08:00', '10:00', 120)",
     ).bind(two),
@@ -27,7 +28,7 @@ async function plan() {
 }
 
 describe('Creating a Trip', () => {
-  it('copies the ticked Plan Days as dated Days in plan order, with Cities, attractions and train rides', async () => {
+  it('copies the ticked Plan Days as dated Days in plan order, with Cities, Activities and train rides', async () => {
     const { one, three, two } = await plan();
 
     const result = await journal.createTrip({ title: 'Yunnan, my way', startDate: '2027-01-30', planDayIds: [three, one, two] });
@@ -42,7 +43,10 @@ describe('Creating a Trip', () => {
     ]);
     expect(detail.days[1].route.map((city) => city.name)).toEqual(['Kunming', 'Dali']);
     const rows = async (sql: string) => (await env.DB.prepare(sql).all()).results;
-    expect(await rows('SELECT name, rating FROM day_attractions')).toEqual([{ name: 'Three Pagodas', rating: 4.5 }]);
+    expect(await rows('SELECT activities.name FROM day_activities JOIN activities ON activities.id = activity_id')).toEqual([
+      { name: 'Three Pagodas' },
+    ]);
+    expect(await rows('SELECT COUNT(*) AS total FROM activities')).toEqual([{ total: 1 }]);
     expect(await rows('SELECT outgoing_city, duration_minutes FROM day_train_rides')).toEqual([{ outgoing_city: 'Kunming', duration_minutes: 120 }]);
     expect(await rows('SELECT main FROM day_cities ORDER BY position')).toEqual([{ main: 0 }, { main: 1 }]);
   });
