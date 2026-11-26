@@ -2,7 +2,7 @@
 
 Date: 2026-11-25. Decided by Nico.
 
-SerpApi gives about 1,000 flight searches a month. Nico has no fixed date or place to leave for: any month and any weekday suit him, as long as the flight is affordable and the region is in its good season. So the Flight prices page does not show a price for every day. It recommends, for each visible Trip (plans and past trips, so viewers see the best seasons too), the 3 cheapest Fare windows that fit the plan.
+SerpApi gives about 1,000 flight searches a month. Nico has no fixed date or place to leave for: any month and any weekday suit him, as long as the flight is affordable and the region is in its good season. So the Plan page does not show a price for every day. It recommends, for each visible Trip (plans and past trips, so viewers see the best seasons too), the 3 cheapest Fare windows that fit the plan.
 
 - Each Province has a Season (whole months), set in the admin. A City has its Airports, each with the weekdays of a direct flight from Paris.
 - A plan's Gateways are the Airports of its Cities. Searches are round trips to one Gateway only.
