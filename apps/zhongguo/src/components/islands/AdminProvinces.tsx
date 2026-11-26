@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { AdminProvinceDetail, Airport } from '@/lib/journal';
+import { projectLngLat } from '@/lib/china-map';
 import { AddCityForm, fieldClass as field } from './AddCityForm';
+import { ChinaMap, type ChinaMapCity } from './ChinaMap';
 import { Toast } from './Toast';
 
 type Props = {
@@ -131,24 +133,51 @@ export function AdminProvinces(props: Props) {
     setBusy(false);
   }
 
-  return (
-    <div className="flex flex-col gap-8">
-      <label className="flex max-w-md flex-col gap-2">
-        <span className="eyebrow text-muted-foreground">Province</span>
-        <select className={field} value={province.id} onChange={(event) => (window.location.search = `?province=${event.target.value}`)}>
-          {provinces.map((candidate) => (
-            <option key={candidate.id} value={candidate.id}>
-              {candidate.name} · {describe(candidate.season)}
-            </option>
-          ))}
-        </select>
-      </label>
+  const regions = provinces.map((item) => ({ name: item.name, zh: item.nameZh, detail: describe(item.season) }));
+  const mapCities: ChinaMapCity[] = provinces.flatMap((item) =>
+    item.cities.map((city) => {
+      const [x, y] = projectLngLat(city.lng, city.lat);
+      return { key: String(city.id), name: city.name, zh: city.nameZh, x, y, major: city.airports.length > 0 };
+    }),
+  );
+  const withAirport = province.cities.filter((city) => city.airports.length > 0).length;
 
+  return (
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-start lg:gap-12">
+      <div className="flex flex-col gap-6">
+        <ChinaMap
+          regions={regions}
+          cities={mapCities}
+          selectedRegion={province.name}
+          onSelectRegion={(name) => {
+            const picked = provinces.find((item) => item.name === name);
+            if (picked) window.location.search = `?province=${picked.id}`;
+          }}
+          preview={false}
+          regionTooltip
+        />
+        <div className="flex flex-col gap-3 border-t border-border pt-4">
+          <p className="eyebrow text-muted-foreground">Selected Province</p>
+          <h2 className="font-serif text-4xl">
+            {province.name} <span lang="zh" className="text-2xl text-muted-foreground">{province.nameZh}</span>
+          </h2>
+          <p className="eyebrow text-muted-foreground">Season · {describe(province.season)}</p>
+          <p className="eyebrow text-muted-foreground">
+            {province.cities.length} {province.cities.length === 1 ? 'City' : 'Cities'} · {withAirport} with an Airport
+          </p>
+          <p className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted-foreground">
+            <span className="flex items-center gap-2"><span className="size-3 rounded-full bg-foreground" aria-hidden="true" />City with an Airport</span>
+            <span className="flex items-center gap-2"><span className="size-3 rounded-full border border-foreground bg-background" aria-hidden="true" />City without</span>
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-8">
       <Toast text={notice} onDone={() => setNotice('')} />
 
       <section aria-labelledby="season-title" className="flex flex-col gap-4 border border-border p-6">
         <h2 id="season-title" className="font-serif text-2xl">
-          {province.name} <span lang="zh">{province.nameZh}</span>
+          Season
         </h2>
         <p className="text-sm text-muted-foreground">Season: the months when {province.name} is good to visit.</p>
         <Picker labels={MONTHS} value={season} onChange={setSeason} name="Season" />
@@ -221,6 +250,7 @@ export function AdminProvinces(props: Props) {
         onAdded={() => window.location.reload()}
         onError={setNotice}
       />
+      </div>
     </div>
   );
 }

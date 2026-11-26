@@ -29,8 +29,8 @@ describe('Provinces of the admin', () => {
         nameZh: '四川',
         season: [4, 5, 10],
         cities: [
-          { id: chengdu, name: 'Chengdu', nameZh: '成都', airports: [{ code: 'TFU', directWeekdays: [1] }] },
-          { id: expect.any(Number), name: 'Leshan', nameZh: 'Leshan', airports: [] },
+          { id: chengdu, name: 'Chengdu', nameZh: '成都', lng: 100, lat: 30, airports: [{ code: 'TFU', directWeekdays: [1] }] },
+          { id: expect.any(Number), name: 'Leshan', nameZh: 'Leshan', lng: 100, lat: 30, airports: [] },
         ],
       },
     ]);

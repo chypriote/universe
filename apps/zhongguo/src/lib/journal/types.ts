@@ -236,7 +236,7 @@ export type AdminProvinceDetail = AdminProvince & {
   nameZh: string;
   /** The months of its Season, 1 = January … 12 = December. */
   season: number[];
-  cities: { id: number; name: string; nameZh: string; airports: Airport[] }[];
+  cities: { id: number; name: string; nameZh: string; lng: number; lat: number; airports: Airport[] }[];
 };
 
 export type SetProvinceSeasonResult = { ok: true } | { ok: false; error: 'unknown-province' | 'invalid-months' };

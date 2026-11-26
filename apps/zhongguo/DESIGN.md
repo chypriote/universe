@@ -129,8 +129,8 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 The admin (`/admin`, owner only) is plain: sharp corners, 1px borders, no brush calligraphy.
 - Top bar: seal, "Admin" and the page title after a slash, with Log out on the right. Pages have no title of their own.
 - Sidebar (from `lg`, sticky; two columns above the content under `lg`): the sections Trips, Photos, Provinces, Cities and Home as boxed links in a 1px grid, each with a serif label and a short line of text (hidden under `lg`). The current one has a cinnabar left rule and a muted fill. Under them a "Back home" link: the seal and an eyebrow label.
-- Provinces: one Province at a time, picked in a select. Its Season is a row of 12 month toggles (pressed = ink fill). Under it each City of the Province, its Airports with 7 weekday toggles for direct flights, and an Add Airport line. Then the Add a City form, the Province preset.
-- Cities: the form (24rem) beside the China map. A Minor City is an outlined dot, a Major City a filled one. Hovering a dot shows a tooltip in a bordered box above it: "City, Province".
+- Provinces: the China map on the left picks the Province (hover shows its name and Season; a filled dot is a City with an Airport, a white dot one without), with the selected Province info under it; on the right its Season, Cities and Airports and the Add a City form (stacked under `lg`). Its Season is a row of 12 month toggles (pressed = ink fill). Under it each City of the Province, its Airports with 7 weekday toggles for direct flights, and an Add Airport line. Then the Add a City form, the Province preset.
+- Cities: the form (24rem) beside the China map. A Minor City is a paper-filled dot with an outline, a Major City a filled one. Hovering a dot shows a tooltip in a bordered box above it: "City, Province".
 - Photos: the Trip is picked with one button per Trip, "Title · camera icon · Photo count"; the current Trip has a cinnabar border and text.
 - Trip editor: a Photo in a Day has an X in its top right corner that takes it off the Day and back to the "On no Day" tray.
 
