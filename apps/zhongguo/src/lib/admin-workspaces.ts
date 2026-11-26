@@ -2,5 +2,5 @@
 export const ADMIN_WORKSPACES = [
   { href: '/admin/trips', label: 'Journal', paths: ['/admin/trips', '/admin/plans'] },
   { href: '/admin/atlas', label: 'Atlas', paths: ['/admin/atlas'] },
-  { href: '/admin/photos', label: 'Photos', paths: ['/admin/photos'] },
+  { href: '/admin/gallery', label: 'Gallery', paths: ['/admin/gallery'] },
 ];

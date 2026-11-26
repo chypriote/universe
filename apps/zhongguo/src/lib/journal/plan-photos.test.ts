@@ -160,7 +160,7 @@ describe('Plan Photos: Days', () => {
   });
 });
 
-describe('Plan Photos: City and delete', () => {
+describe('Plan Photos: City, title and delete', () => {
   it('sets and clears the City of a Photo', async () => {
     const { urumqi } = await xinjiang();
     const one = await upload('one.jpg', landscape());
@@ -172,6 +172,18 @@ describe('Plan Photos: City and delete', () => {
     expect(await journal.setPlanPhotoCity(9999, null)).toEqual({ ok: false, error: 'unknown-photo' });
     expect(await journal.setPlanPhotoCity(id, null)).toEqual({ ok: true });
     expect((await journal.getAdminPlan('xinjiang'))!.photos[0].city).toBeNull();
+  });
+
+  it('sets and clears the title of a Photo', async () => {
+    await xinjiang();
+    const one = await upload('one.jpg', landscape());
+    const id = one.ok ? one.photo.id : 0;
+
+    expect(await journal.setPlanPhotoTitle(id, '  Karakul at dawn  ')).toEqual({ ok: true });
+    expect((await journal.getAdminPlan('xinjiang'))!.photos[0].title).toBe('Karakul at dawn');
+    expect(await journal.setPlanPhotoTitle(id, '')).toEqual({ ok: true });
+    expect((await journal.getAdminPlan('xinjiang'))!.photos[0].title).toBeNull();
+    expect(await journal.setPlanPhotoTitle(9999, 'x')).toEqual({ ok: false, error: 'unknown-photo' });
   });
 
   it('deletes a Photo with its files and its place on a Day', async () => {

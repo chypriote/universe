@@ -38,8 +38,9 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
     env.DB.prepare('SELECT id, slug FROM plans WHERE slug = ?').bind(slug).first<{ id: number; slug: string }>();
 
   async function listAdminPlans(): Promise<AdminPlan[]> {
-    const rows = await all<{ slug: string; title: string; visible: number; search_flights: number; days: number }>(
-      `SELECT slug, title, visible, search_flights, (SELECT COUNT(*) FROM plan_days WHERE plan_id = plans.id) AS days
+    const rows = await all<{ slug: string; title: string; visible: number; search_flights: number; days: number; photos: number }>(
+      `SELECT slug, title, visible, search_flights, (SELECT COUNT(*) FROM plan_days WHERE plan_id = plans.id) AS days,
+              (SELECT COUNT(*) FROM plan_photos WHERE plan_id = plans.id) AS photos
        FROM plans ORDER BY title`,
     );
     return rows.map((row) => ({
@@ -48,6 +49,7 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
       visible: row.visible === 1,
       searchFlights: row.search_flights === 1,
       days: row.days,
+      photos: row.photos,
     }));
   }
 

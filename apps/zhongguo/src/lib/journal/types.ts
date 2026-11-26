@@ -173,6 +173,9 @@ export type ClearProvinceCoverResult = { ok: true } | { ok: false; error: 'unkno
 
 export type LoginResult = { ok: true; token: string } | { ok: false; error: 'wrong-password' };
 
+/** Part of the day a Photo was taken: before noon, noon to 18:00, from 18:00. */
+export type PhotoTime = 'morning' | 'afternoon' | 'evening';
+
 /** A Photo as the admin lists it. */
 export type AdminPhoto = {
   id: number;
@@ -181,6 +184,8 @@ export type AdminPhoto = {
   thumb: string;
   orientation: Orientation;
   date: string;
+  /** Null when unknown. */
+  time: PhotoTime | null;
   /** Number of its visible Day; null when it has none. */
   day: number | null;
   title: string | null;
@@ -241,6 +246,7 @@ export type AdminPlan = {
   /** Whether `npm run china` searches the plan and the Plan page shows prices. */
   searchFlights: boolean;
   days: number;
+  photos: number;
 };
 
 /** A Day of a Trip plan, as the admin edits it. */
@@ -260,7 +266,7 @@ export type AdminPlanDay = {
 };
 
 /** A Photo of a Trip plan: no date, and on a Day only by choice. */
-export type AdminPlanPhoto = Pick<AdminPhoto, 'id' | 'name' | 'url' | 'thumb' | 'orientation' | 'city'>;
+export type AdminPlanPhoto = Pick<AdminPhoto, 'id' | 'name' | 'url' | 'thumb' | 'orientation' | 'city' | 'title'>;
 
 export type AdminPlanDetail = {
   slug: string;
@@ -310,6 +316,9 @@ export type UploadPlanPhotoResult =
 
 /** The City of a plan Photo; null means no City. */
 export type SetPlanPhotoCityResult = { ok: true } | { ok: false; error: 'unknown-photo' | 'unknown-city' };
+
+/** The title of a plan Photo; empty clears it. */
+export type SetPlanPhotoTitleResult = { ok: true } | { ok: false; error: 'unknown-photo' };
 
 /** A Photo that is the plan cover or a Highlight Photo cannot be deleted: pick another one first. */
 export type DeletePlanPhotoResult = { ok: true } | { ok: false; error: 'unknown-photo' | 'in-use' };
@@ -412,13 +421,15 @@ export type EditPhotosInput = {
   place?: PhotoPlace;
   /** YYYY-MM-DD. */
   date?: string;
+  /** Null clears it. */
+  time?: PhotoTime | null;
   /** Empty clears it. */
   title?: string;
 };
 
 export type EditPhotosResult =
   | { ok: true; updated: number }
-  | { ok: false; error: 'unknown-photo' | 'unknown-city' | 'unknown-province' | 'invalid-date' };
+  | { ok: false; error: 'unknown-photo' | 'unknown-city' | 'unknown-province' | 'invalid-date' | 'invalid-time' };
 
 export type DeletePhotosInput = {
   ids: number[];
@@ -644,6 +655,7 @@ export type Journal = {
   /** Stores a plan Photo and its thumbnail in the bucket and its row in D1. */
   uploadPlanPhoto(input: UploadPlanPhotoInput): Promise<UploadPlanPhotoResult>;
   setPlanPhotoCity(photoId: number, cityId: number | null): Promise<SetPlanPhotoCityResult>;
+  setPlanPhotoTitle(photoId: number, title: string): Promise<SetPlanPhotoTitleResult>;
   deletePlanPhoto(photoId: number): Promise<DeletePlanPhotoResult>;
   /** The Trip Cover: a landscape Photo of the Trip. */
   setTripCover(slug: string, photoId: number): Promise<SetTripCoverResult>;

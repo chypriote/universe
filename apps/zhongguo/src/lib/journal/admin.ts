@@ -1,6 +1,7 @@
 import { editDayRows, TRIP_DAY_TABLES } from './day-edit';
 import { fileNameDate, isDate, readPhotoFile } from './photo-file';
 import type {
+  PhotoTime,
   AddCityInput,
   AddDayInput,
   AddDayResult,
@@ -102,6 +103,7 @@ type PhotoRow = {
   width: number;
   height: number;
   date: string;
+  time: PhotoTime | null;
   title: string | null;
   version: number;
   day_id: number | null;
@@ -110,6 +112,8 @@ type PhotoRow = {
   city_province: string | null;
   on_the_way_province: string | null;
 };
+
+const PHOTO_TIMES: PhotoTime[] = ['morning', 'afternoon', 'evening'];
 
 const IMAGE_TYPES: Record<string, string> = {
   jpg: 'image/jpeg',
@@ -168,7 +172,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     );
     const rows = await all<PhotoRow>(
       `SELECT photos.id, photos.name, trips.slug, photos.trip_id, photos.width, photos.height, photos.date,
-              photos.title, photos.version, day_photos.day_id, cities.id AS city_id, cities.name AS city,
+              photos.time, photos.title, photos.version, day_photos.day_id, cities.id AS city_id, cities.name AS city,
               city_provinces.name AS city_province, own_provinces.name AS on_the_way_province
        FROM photos
        JOIN trips ON trips.id = photos.trip_id
@@ -177,7 +181,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
        LEFT JOIN provinces AS city_provinces ON city_provinces.id = cities.province_id
        LEFT JOIN provinces AS own_provinces ON own_provinces.id = photos.province_id
        WHERE photos.trip_id = ? ${photoId === undefined ? '' : 'AND photos.id = ?'}
-       ORDER BY photos.date, photos.name`,
+       ORDER BY photos.date, CASE photos.time WHEN 'morning' THEN 1 WHEN 'afternoon' THEN 2 WHEN 'evening' THEN 3 ELSE 4 END, photos.name`,
       tripId,
       ...(photoId === undefined ? [] : [photoId]),
     );
@@ -190,6 +194,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
         thumb: urls.thumbUrl(row.slug, row.name, row.version),
         orientation: orientationOf(row),
         date: row.date,
+        time: row.time,
         day: day === -1 ? null : day + 1,
         title: row.title,
         city: row.city_id === null ? null : { id: row.city_id, name: row.city ?? '' },
@@ -538,14 +543,14 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     let photoId: number;
     if (existing) {
       photoId = existing.id;
-      await env.DB.prepare('UPDATE photos SET width = ?, height = ?, version = version + 1 WHERE id = ?')
-        .bind(file.width, file.height, existing.id)
+      await env.DB.prepare('UPDATE photos SET width = ?, height = ?, time = COALESCE(time, ?), version = version + 1 WHERE id = ?')
+        .bind(file.width, file.height, file.exifTime, existing.id)
         .run();
     } else {
       const row = await env.DB.prepare(
-        'INSERT INTO photos (trip_id, name, width, height, date, title, city_id) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id',
+        'INSERT INTO photos (trip_id, name, width, height, date, time, title, city_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id',
       )
-        .bind(trip.id, name, file.width, file.height, date, input.title ?? null, input.cityId ?? null)
+        .bind(trip.id, name, file.width, file.height, date, file.exifTime, input.title ?? null, input.cityId ?? null)
         .first<{ id: number }>();
       photoId = row!.id;
       await placeOnDayOfDate(photoId, trip.id, date!);
@@ -560,6 +565,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     const known = await inChunks(ids, (marks, chunk) => all<{ id: number }>(`SELECT id FROM photos WHERE id IN (${marks})`, ...chunk));
     if (ids.length === 0 || known.length !== ids.length) return { ok: false, error: 'unknown-photo' };
     if (input.date !== undefined && !isDate(input.date)) return { ok: false, error: 'invalid-date' };
+    if (input.time !== undefined && input.time !== null && !PHOTO_TIMES.includes(input.time)) return { ok: false, error: 'invalid-time' };
 
     const sets: string[] = [];
     const params: (string | number | null)[] = [];
@@ -579,6 +585,10 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     if (input.date !== undefined) {
       sets.push('date = ?');
       params.push(input.date);
+    }
+    if (input.time !== undefined) {
+      sets.push('time = ?');
+      params.push(input.time);
     }
     if (input.title !== undefined) {
       sets.push('title = ?');

@@ -1,11 +1,19 @@
 import ExifReader from 'exifreader';
+import type { PhotoTime } from './types';
 
 export type PhotoFile = {
   width: number;
   height: number;
   /** YYYY-MM-DD from the EXIF capture time; null when there is none. */
   exifDate: string | null;
+  /** Part of the day from the EXIF capture time; null when there is none. */
+  exifTime: PhotoTime | null;
 };
+
+/** The part of the day of an hour from 0 to 23. */
+export function timeOfHour(hour: number): PhotoTime {
+  return hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+}
 
 /** A real calendar date as YYYY-MM-DD, or null. */
 function isoDate(year: number, month: number, day: number): string | null {
@@ -52,10 +60,11 @@ export function readPhotoFile(file: ArrayBuffer): PhotoFile | null {
   if (!(width > 0) || !(height > 0)) return null;
 
   const turned = Number(tags.Orientation?.value) >= 5;
-  const taken = /^(\d{4})[:-](\d{2})[:-](\d{2})/.exec(String(tags.DateTimeOriginal?.description ?? ''));
+  const taken = /^(\d{4})[:-](\d{2})[:-](\d{2})(?: (\d{2}):)?/.exec(String(tags.DateTimeOriginal?.description ?? ''));
   return {
     width: turned ? height : width,
     height: turned ? width : height,
     exifDate: taken ? isoDate(Number(taken[1]), Number(taken[2]), Number(taken[3])) : null,
+    exifTime: taken?.[4] !== undefined && Number(taken[4]) < 24 ? timeOfHour(Number(taken[4])) : null,
   };
 }

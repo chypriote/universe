@@ -21,15 +21,15 @@ async function cities() {
 const titles = async (slug: string) => (await journal.getAdminPlan(slug))!.days.map((day) => [day.number, day.title]);
 
 describe('Plans admin', () => {
-  it('lists every plan, hidden ones too, with its switches and number of Days', async () => {
+  it('lists every plan, hidden ones too, with its switches and number of Days and Photos', async () => {
     const { kunming } = await cities();
     const open = await addPlan({ slug: 'yunnan', title: 'Yunnan' });
     await addPlanDay(open, kunming, 1);
     await addPlan({ slug: 'tibet', title: 'Tibet', visible: false, searchFlights: false });
 
     expect(await journal.listAdminPlans()).toEqual([
-      { slug: 'tibet', title: 'Tibet', visible: false, searchFlights: false, days: 0 },
-      { slug: 'yunnan', title: 'Yunnan', visible: true, searchFlights: true, days: 1 },
+      { slug: 'tibet', title: 'Tibet', visible: false, searchFlights: false, days: 0, photos: 0 },
+      { slug: 'yunnan', title: 'Yunnan', visible: true, searchFlights: true, days: 1, photos: 0 },
     ]);
   });
 
@@ -37,7 +37,7 @@ describe('Plans admin', () => {
     expect(await journal.createPlan('  Jiangnan Autumn!  ')).toEqual({ ok: true, slug: 'jiangnan-autumn' });
 
     expect(await journal.listAdminPlans()).toEqual([
-      { slug: 'jiangnan-autumn', title: 'Jiangnan Autumn!', visible: true, searchFlights: true, days: 0 },
+      { slug: 'jiangnan-autumn', title: 'Jiangnan Autumn!', visible: true, searchFlights: true, days: 0, photos: 0 },
     ]);
   });
 

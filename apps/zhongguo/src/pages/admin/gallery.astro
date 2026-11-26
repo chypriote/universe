@@ -1,0 +1,57 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { GalleryPlan } from '@/components/islands/GalleryPlan';
+import { GalleryTrip } from '@/components/islands/GalleryTrip';
+import { journalFromEnv } from '@/lib/journal';
+
+export const prerender = false;
+
+const journal = journalFromEnv();
+const [trips, plans, cities] = await Promise.all([journal.listAdminTrips(), journal.listAdminPlans(), journal.listAdminCities()]);
+const params = Astro.url.searchParams;
+const plan = params.has('plan') ? await journal.getAdminPlan(params.get('plan') ?? '') : null;
+const trip = plan ? undefined : (trips.find((item) => item.slug === params.get('trip')) ?? trips[0]);
+const [photos, provinces] = await Promise.all([trip ? journal.listAdminPhotos(trip.slug) : null, journal.listProvinces()]);
+const groups = [
+  { label: 'Trips', items: trips.map((item) => ({ key: `trip=${item.slug}`, title: item.title, count: item.photos, current: item.slug === trip?.slug })) },
+  { label: 'Plans', items: plans.map((item) => ({ key: `plan=${item.slug}`, title: item.title, count: item.photos, current: item.slug === plan?.slug })) },
+];
+---
+
+<AdminLayout title="Gallery" heading={false}>
+  <div class="lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
+    <nav aria-label="Trips and plans" class="mb-10 flex flex-col gap-6 lg:sticky lg:top-8 lg:mb-0 lg:self-start">
+      {
+        groups.map((group) => (
+          <div class="flex flex-col gap-2">
+            <p class="eyebrow text-muted-foreground">{group.label}</p>
+            <ul class="divide-y divide-border border border-border text-sm">
+              {group.items.length === 0 && <li class="px-3 py-2 text-muted-foreground">None yet</li>}
+              {group.items.map((item) => (
+                <li>
+                  <a
+                    href={`/admin/gallery?${item.key}`}
+                    aria-current={item.current ? 'page' : undefined}
+                    class="flex items-center justify-between gap-3 border-l-2 border-transparent px-3 py-2 no-underline text-foreground hover:text-primary aria-[current=page]:border-primary aria-[current=page]:bg-muted/40"
+                  >
+                    <span class="truncate">{item.title}</span>
+                    <span class="text-xs text-muted-foreground">{item.count}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+    <div class="min-w-0">
+      {plan && <GalleryPlan client:load plan={{ slug: plan.slug, title: plan.title }} photos={plan.photos} cities={cities} />}
+      {
+        trip && photos && (
+          <GalleryTrip client:load trip={{ slug: trip.slug, title: trip.title }} photos={photos} cities={cities} provinces={provinces} />
+        )
+      }
+      {!plan && !trip && <p class="text-muted-foreground">There is no Trip yet.</p>}
+    </div>
+  </div>
+</AdminLayout>
