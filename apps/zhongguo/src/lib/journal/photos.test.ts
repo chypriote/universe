@@ -448,7 +448,7 @@ describe('Delete Photos', () => {
           {
             key: 'province-cover:Sichuan',
             kind: 'province-cover',
-            href: '/admin/home',
+            href: '/admin/atlas?province=Sichuan',
             replacements: [{ name: 'here.jpg' }, { name: 'later.jpg' }],
           },
         ],

@@ -479,7 +479,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
         key: `province-cover:${row.province}`,
         kind: 'province-cover',
         label: `Province Cover of ${row.province}`,
-        href: '/admin/home',
+        href: `/admin/atlas?province=${encodeURIComponent(row.province ?? '')}`,
         province: row.province,
       });
     }

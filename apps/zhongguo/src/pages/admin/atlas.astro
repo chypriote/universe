@@ -1,0 +1,43 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { AdminAtlas, type AtlasTab } from '@/components/islands/AdminAtlas';
+import { journalFromEnv } from '@/lib/journal';
+
+export const prerender = false;
+
+const journal = journalFromEnv();
+const [provinces, cities, activities, visited] = await Promise.all([
+  journal.listAdminProvinces(),
+  journal.listAdminCities(),
+  journal.listAdminActivities(),
+  journal.listVisitedProvinces(),
+]);
+const params = Astro.url.searchParams;
+const city = cities.find((candidate) => candidate.id === Number(params.get('city')));
+const province =
+  provinces.find((candidate) => candidate.name === (city?.province ?? params.get('province'))) ??
+  provinces.find((candidate) => candidate.name === visited[0]?.name) ??
+  provinces[0];
+const photos = city ? ((await journal.listCityPhotos(city.id)) ?? []) : [];
+const tab = params.get('tab') as AtlasTab | null;
+---
+
+<AdminLayout title={city ? city.name : (province?.name ?? 'Atlas')} heading={false}>
+  {
+    province ? (
+      <AdminAtlas
+        client:load
+        provinces={provinces}
+        cities={cities}
+        activities={activities}
+        visited={visited}
+        provinceName={province.name}
+        cityId={city?.id ?? null}
+        photos={photos}
+        tab={tab}
+      />
+    ) : (
+      <p class="text-muted-foreground">There is no Province yet.</p>
+    )
+  }
+</AdminLayout>

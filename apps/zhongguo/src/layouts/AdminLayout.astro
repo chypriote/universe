@@ -3,17 +3,24 @@ import '@/styles/global.css';
 import { Font } from 'astro:assets';
 import SEOHead from '@/components/SEOHead.astro';
 import Container from '@/components/Container.astro';
+import { ADMIN_WORKSPACES } from '@/lib/admin-workspaces';
 
 export interface Props {
   title: string;
-  /** Shows the sidebar with the admin sections, and Log out. Off on the login page. */
+  /** Shows the workspace tabs and Log out. Off on the login page. */
   nav?: boolean;
+  /** Shows the title as the page heading. Off when the page has its own. */
+  heading?: boolean;
 }
 
-const { title, nav = true } = Astro.props;
-import { ADMIN_SECTIONS as links } from '@/lib/admin-sections';
+const { title, nav = true, heading = true } = Astro.props;
 const path = Astro.url.pathname;
-const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
+const within = (href: string) => path === href || path.startsWith(`${href}/`);
+const workspace = ADMIN_WORKSPACES.find((item) => item.paths.some(within));
+const journalLinks = [
+  { href: '/admin/trips', label: 'Trips' },
+  { href: '/admin/plans', label: 'Plans' },
+];
 ---
 
 <!DOCTYPE html>
@@ -24,14 +31,26 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
   </head>
   <body class="min-h-svh">
     <header class="border-b border-border bg-background">
-      <Container class="flex flex-wrap items-center justify-between gap-x-10 gap-y-3 py-4">
-        <a href={nav ? '/admin' : '/admin/login'} class="flex items-center gap-3 no-underline text-foreground">
+      <Container class="flex flex-wrap items-stretch gap-x-10 gap-y-2">
+        <a href={nav ? '/admin' : '/admin/login'} class="flex items-center gap-3 py-4 no-underline text-foreground">
           <span class="seal w-8 text-base" aria-hidden="true">中</span>
           <span class="font-serif text-xl tracking-tight">Admin</span>
-          {title !== 'Admin' && <span class="font-serif text-xl tracking-tight text-muted-foreground">/ {title}</span>}
         </a>
         {nav && (
-          <form method="post" action="/admin/logout">
+          <nav aria-label="Admin" class="flex items-stretch gap-8">
+            {ADMIN_WORKSPACES.map((item) => (
+              <a
+                href={item.href}
+                aria-current={item === workspace ? 'page' : undefined}
+                class="flex items-center border-b-2 border-transparent font-serif text-lg no-underline text-muted-foreground hover:text-primary aria-[current=page]:border-primary aria-[current=page]:text-foreground"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        )}
+        {nav && (
+          <form method="post" action="/admin/logout" class="ml-auto flex items-center">
             <button type="submit" class="eyebrow text-muted-foreground hover:text-primary cursor-pointer">Log out</button>
           </form>
         )}
@@ -39,35 +58,17 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     </header>
     <main>
       <Container class="py-8 lg:py-10">
-        {nav ? (
-          <div class="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
-            <nav aria-label="Admin" class="lg:sticky lg:top-8 lg:self-start">
-              <ul class="grid grid-cols-2 gap-px border border-border bg-border lg:grid-cols-1">
-                {links.map((link) => (
-                  <li class="bg-background">
-                    <a
-                      href={link.href}
-                      aria-current={isCurrent(link.href) ? 'page' : undefined}
-                      class="block h-full border-l-2 border-transparent p-4 no-underline text-foreground hover:text-primary aria-[current=page]:border-primary aria-[current=page]:bg-muted/40 lg:p-5"
-                    >
-                      <span class="font-serif text-xl">{link.label}</span>
-                      <span class="mt-1 hidden text-xs text-muted-foreground lg:block">{link.text}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <a href="/" class="mt-6 flex items-center gap-3 no-underline text-muted-foreground hover:text-primary">
-                <span class="seal w-8 text-base" aria-hidden="true">中</span>
-                <span class="eyebrow">Back home</span>
+        {workspace?.label === 'Journal' && (
+          <nav aria-label="Journal" class="mb-8 flex gap-6 text-sm">
+            {journalLinks.map((link) => (
+              <a href={link.href} aria-current={within(link.href) ? 'page' : undefined} class="eyebrow no-underline text-muted-foreground hover:text-primary aria-[current=page]:text-primary">
+                {link.label}
               </a>
-            </nav>
-            <div class="mt-10 min-w-0 lg:mt-0">
-              <slot />
-            </div>
-          </div>
-        ) : (
-          <slot />
+            ))}
+          </nav>
         )}
+        {heading && title !== 'Admin' && <h1 class="mb-8 font-serif text-3xl">{title}</h1>}
+        <slot />
       </Container>
     </main>
   </body>

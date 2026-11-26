@@ -8,6 +8,8 @@ export type ChinaMapRegion = {
   /** Focal point of the photo in percent, as `object-position`; the centre without one. */
   focus?: { x: number; y: number };
   detail?: string;
+  /** False draws the region like land the map does not list, though it stays clickable. Defaults to true. */
+  visited?: boolean;
   /** With an href the region is a link; without one it calls onSelectRegion. */
   href?: string;
 };
@@ -39,6 +41,24 @@ interface ChinaMapProps {
   preview?: boolean;
   /** Hovering a region shows a tooltip with its name and detail at the pointer. */
   regionTooltip?: boolean;
+  /** Zooms the map to this region; null shows all of China. */
+  zoomTo?: string | null;
+  /** Writes each City's name beside its dot. */
+  cityLabels?: boolean;
+}
+
+type Box = { x: number; y: number; w: number; h: number };
+const FULL: Box = { x: 0, y: 0, w: CHINA_MAP.width, h: CHINA_MAP.height };
+
+/** The box around a shape with a margin, widened to the map's own shape so the map keeps its height. */
+function zoomBox(box: DOMRect): Box {
+  const ratio = CHINA_MAP.width / CHINA_MAP.height;
+  // A city-sized region such as Beijing keeps some of its neighbours around it.
+  let w = Math.max(box.width * 1.3, CHINA_MAP.width / 4);
+  let h = box.height * 1.3;
+  if (w / h > ratio) h = w / ratio;
+  else w = h * ratio;
+  return { x: box.x + box.width / 2 - w / 2, y: box.y + box.height / 2 - h / 2, w, h };
 }
 
 /** Label font size in map units; keep in step with the text-[…px] class on the label. */
@@ -89,12 +109,17 @@ export function ChinaMap({
   idleText = 'Hover a region',
   preview = true,
   regionTooltip = false,
+  zoomTo = null,
+  cityLabels = false,
 }: ChinaMapProps) {
   const [hoverRegion, setHoverRegion] = useState<string | null>(null);
   const [hoverCity, setHoverCity] = useState<string | null>(null);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const t = TONES[tone];
   const svgRef = useRef<SVGSVGElement>(null);
+  const [box, setBox] = useState<Box>(FULL);
+  /** Map units per unit of the full map: dots, strokes and labels shrink with it to keep their size on screen. */
+  const k = box.w / CHINA_MAP.width;
   const [labelPos, setLabelPos] = useState<Record<string, { x: number; y: number; cx: number; cy: number }>>({});
 
   // Touch screens have no hover, so each clickable region carries its name, centred on its shape unless pinned.
@@ -125,6 +150,11 @@ export function ChinaMap({
     setLabelPos(next);
   }, [regions]);
 
+  useLayoutEffect(() => {
+    const shape = zoomTo ? svgRef.current?.querySelector<SVGPathElement>(`path[data-shape="${CSS.escape(zoomTo)}"]`) : null;
+    setBox(shape ? zoomBox(shape.getBBox()) : FULL);
+  }, [zoomTo]);
+
   const regionByName = new Map(regions.map((region) => [region.name, region]));
   const cityByKey = new Map(cities.map((city) => [city.key, city]));
 
@@ -144,7 +174,7 @@ export function ChinaMap({
   const regionClass = (name: string) => {
     if (hoverRegion === name) return 'fill-primary stroke-background';
     if (selectedRegion === name) return t.selected;
-    return regionByName.has(name) ? t.visited : t.land;
+    return regionByName.has(name) && regionByName.get(name)?.visited !== false ? t.visited : t.land;
   };
 
   // Touch browsers fire emulated mouse and focus events before click, so hover state cannot tell a first tap from a second.
@@ -182,7 +212,7 @@ export function ChinaMap({
   });
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+    <div className={preview ? 'grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start' : undefined}>
       <div
         className={`relative ${preview ? 'lg:col-span-6' : 'lg:col-span-12'}`}
         onPointerMove={(event) => {
@@ -192,19 +222,19 @@ export function ChinaMap({
         }}
       >
       <svg
-        viewBox={`0 0 ${CHINA_MAP.width} ${CHINA_MAP.height}`}
+        viewBox={`${box.x} ${box.y} ${box.w} ${box.h}`}
         ref={svgRef}
-        className="w-full h-auto"
+        className="w-full h-auto overflow-hidden"
         role="group"
         aria-label="Map of China"
       >
         {CHINA_MAP.regions.map((shape) => {
           const region = regionByName.get(shape.name);
           if (!region || shape.outline) {
-            return <path key={shape.name} d={shape.d} className={`${t.land} stroke-[1.5]`} />;
+            return <path key={shape.name} d={shape.d} data-shape={shape.name} className={t.land} style={{ strokeWidth: 1.5 * k }} />;
           }
           const path = (
-            <path d={shape.d} data-region={shape.name} className={`${regionClass(shape.name)} stroke-[1.5] transition-colors`} />
+            <path d={shape.d} data-region={shape.name} data-shape={shape.name} className={`${regionClass(shape.name)} transition-colors`} style={{ strokeWidth: 1.5 * k }} />
           );
           return region.href ? (
             <a key={shape.name} href={region.href} aria-label={`${region.name} ${region.zh}`} {...regionHandlers(region)}>
@@ -243,7 +273,8 @@ export function ChinaMap({
                   y1={pos.cy}
                   x2={pos.x}
                   y2={pos.y - LABEL_SIZE / 2}
-                  className={`${hoverRegion === region.name ? 'stroke-primary' : t.leader} stroke-[1.5] pointer-events-none transition-colors`}
+                  className={`${hoverRegion === region.name ? 'stroke-primary' : t.leader} pointer-events-none transition-colors`}
+                  style={{ strokeWidth: 1.5 * k }}
                 />
               )}
               <text
@@ -251,8 +282,8 @@ export function ChinaMap({
                 y={pos.y}
                 textAnchor="middle"
                 dominantBaseline="central"
-                className={`select-none text-[22px] font-medium ${t.label}`}
-                style={{ paintOrder: 'stroke' }}
+                className={`select-none font-medium ${t.label}`}
+                style={{ paintOrder: 'stroke', fontSize: LABEL_SIZE * k, strokeWidth: 4 * k }}
               >
                 {region.name}
               </text>
@@ -291,13 +322,25 @@ export function ChinaMap({
                 }
               }}
             >
-              <circle cx={city.x} cy={city.y} r={16} className="fill-transparent" />
+              <circle cx={city.x} cy={city.y} r={16 * k} className="fill-transparent" />
               <circle
                 cx={city.x}
                 cy={city.y}
-                r={active ? 9 : 7}
-                className={`${dotClass(city, active)} stroke-[2.5] transition-all`}
+                r={(active ? 9 : 7) * k}
+                className={`${dotClass(city, active)} transition-all`}
+                style={{ strokeWidth: 2.5 * k }}
               />
+              {cityLabels && (
+                <text
+                  x={city.x + 14 * k}
+                  y={city.y}
+                  dominantBaseline="central"
+                  className={`select-none ${active ? 'fill-primary' : 'fill-foreground'} stroke-background`}
+                  style={{ paintOrder: 'stroke', fontSize: 26 * k, strokeWidth: 5 * k }}
+                >
+                  {city.name}
+                </text>
+              )}
             </g>
           );
         })}
@@ -317,8 +360,8 @@ export function ChinaMap({
           role="tooltip"
           className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-border bg-background px-3 py-1.5 text-sm text-foreground"
           style={{
-            left: `${(hoverCityData.x / CHINA_MAP.width) * 100}%`,
-            top: `calc(${(hoverCityData.y / CHINA_MAP.height) * 100}% - 14px)`,
+            left: `${((hoverCityData.x - box.x) / box.w) * 100}%`,
+            top: `calc(${((hoverCityData.y - box.y) / box.h) * 100}% - 14px)`,
           }}
         >
           {hoverCityData.province ? `${hoverCityData.name}, ${hoverCityData.province}` : `${hoverCityData.name} ${hoverCityData.zh}`}
