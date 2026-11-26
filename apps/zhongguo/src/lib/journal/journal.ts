@@ -3,7 +3,6 @@ import { buildAdmin } from './admin';
 import { buildPlanAdmin } from './plan-admin';
 import { buildPlanPhotos } from './plan-photos';
 import { formatDateRange } from '../plan-calendar';
-import { getPlaceName } from '../place-names';
 import type {
   Activity,
   ClearProvinceCoverResult,
@@ -120,7 +119,7 @@ type Source = {
   dayPhotos: string;
   photos: string;
   highlights: string;
-  attractions: string;
+  dayActivities: string;
   rides: string;
   /** SQL for the columns plans do not have. */
   startDate: string;
@@ -140,7 +139,7 @@ const TRIPS: Source = {
   dayPhotos: 'day_photos',
   photos: 'photos',
   highlights: 'highlight_photos',
-  attractions: 'day_attractions',
+  dayActivities: 'day_activities',
   rides: 'day_train_rides',
   startDate: 'trips.start_date',
   endDate: 'trips.end_date',
@@ -159,7 +158,7 @@ const PLANS: Source = {
   dayPhotos: 'plan_day_photos',
   photos: 'plan_photos',
   highlights: 'plan_highlight_photos',
-  attractions: 'plan_day_attractions',
+  dayActivities: 'plan_day_activities',
   rides: 'plan_day_train_rides',
   startDate: 'NULL',
   endDate: 'NULL',
@@ -419,11 +418,6 @@ export function buildJournal(env: JournalEnv): Journal {
     });
   }
 
-  function placeActivity(name: string): Activity {
-    const place = getPlaceName(name);
-    return { name, nameZh: place.zh, pinyin: place.pinyin };
-  }
-
   async function pageOf(slug: string, source: Source): Promise<TripPage | null> {
     const S = source;
     const [trip] = await loadTrips(slug, S);
@@ -431,9 +425,11 @@ export function buildJournal(env: JournalEnv): Journal {
 
     const majors = await majorCityIds();
     const dayIds = trip.days.map((day) => day.id);
-    const attractions = dayIds.length
-      ? await all<{ day_id: number; name: string }>(
-          `SELECT day_id, name FROM ${S.attractions} WHERE day_id IN (${dayIds.map(() => '?').join(',')}) ORDER BY day_id, position`,
+    const activities = dayIds.length
+      ? await all<{ day_id: number; name: string; name_zh: string; pinyin: string }>(
+          `SELECT listed.day_id, activities.name, activities.name_zh, activities.pinyin
+           FROM ${S.dayActivities} listed JOIN activities ON activities.id = listed.activity_id
+           WHERE listed.day_id IN (${dayIds.map(() => '?').join(',')}) ORDER BY listed.day_id, listed.position`,
           ...dayIds,
         )
       : [];
@@ -471,7 +467,9 @@ export function buildJournal(env: JournalEnv): Journal {
       notes: day.notes,
       city: day.city,
       cities: day.stops.map((city) => ({ name: city.name, nameZh: city.nameZh, main: city.main })),
-      activities: attractions.filter((row) => row.day_id === day.id).map((row) => placeActivity(row.name)),
+      activities: activities
+        .filter((row) => row.day_id === day.id)
+        .map((row): Activity => ({ name: row.name, nameZh: row.name_zh, pinyin: row.pinyin })),
       rides: rides
         .filter((row) => row.day_id === day.id)
         .map((ride) => `${ride.outgoing_city} → ${ride.destination_city} (${ride.departure_time} – ${ride.arrival_time})`),

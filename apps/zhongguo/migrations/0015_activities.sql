@@ -1,0 +1,291 @@
+-- Activities replace the free-text attractions of Days and Plan Days (issue #204).
+-- An Activity is one place or thing to do in one City, shared by every Day and Plan Day that lists it.
+CREATE TABLE activities (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    name_zh TEXT NOT NULL,
+    pinyin TEXT NOT NULL,
+    city_id INTEGER NOT NULL REFERENCES cities (id),
+    kind TEXT NOT NULL CHECK (kind IN ('nature', 'heritage', 'modern-city', 'show')),
+    description TEXT NOT NULL DEFAULT '',
+    address TEXT NOT NULL DEFAULT '',
+    address_zh TEXT NOT NULL DEFAULT '',
+    lat REAL,
+    lng REAL,
+    rating TEXT CHECK (rating IN ('do-not-miss', 'recommended', 'skippable', 'avoid')),
+    -- Yuan per person: NULL is unknown, 0 is free.
+    price INTEGER CHECK (price >= 0),
+    UNIQUE (city_id, name)
+);
+
+CREATE TABLE day_activities (
+    day_id INTEGER NOT NULL REFERENCES days (id),
+    position INTEGER NOT NULL,
+    activity_id INTEGER NOT NULL REFERENCES activities (id),
+    PRIMARY KEY (day_id, position),
+    UNIQUE (day_id, activity_id)
+);
+
+CREATE TABLE plan_day_activities (
+    day_id INTEGER NOT NULL REFERENCES plan_days (id),
+    position INTEGER NOT NULL,
+    activity_id INTEGER NOT NULL REFERENCES activities (id),
+    PRIMARY KEY (day_id, position),
+    UNIQUE (day_id, activity_id)
+);
+
+-- Scratch tables for the move below; dropped at the end.
+CREATE TABLE activity_seed (name TEXT PRIMARY KEY, name_zh TEXT NOT NULL, pinyin TEXT NOT NULL, kind TEXT NOT NULL);
+
+INSERT INTO activity_seed (name, name_zh, pinyin, kind) VALUES
+    ('Bailong Elevator', '百龙电梯', 'Bǎilóng Diàntī', 'nature'),
+    ('Baisha Ancient Town', '白沙古镇', 'Báishā Gǔzhèn', 'heritage'),
+    ('Baishuitai', '白水台', 'Báishuǐtái', 'nature'),
+    ('Baitashan Park', '白塔山公园', 'Báitǎshān Gōngyuán', 'nature'),
+    ('Baixiang Street', '白象街', 'Báixiàng Jiē', 'modern-city'),
+    ('Baofeng Lake', '宝峰湖', 'Bǎofēng Hú', 'nature'),
+    ('Bayi Square', '八一广场', 'Bāyī Guǎngchǎng', 'modern-city'),
+    ('Beihai', '北海', 'Běihǎi', 'nature'),
+    ('Bell and Drum Tower', '钟鼓楼', 'Zhōnggǔlóu', 'heritage'),
+    ('Blue Moon Valley', '蓝月谷', 'Lányuè Gǔ', 'nature'),
+    ('Bright Summit', '光明顶', 'Guāngmíng Dǐng', 'nature'),
+    ('Broken Bridge', '断桥', 'Duàn Qiáo', 'nature'),
+    ('Caicun Wharf', '才村码头', 'Cáicūn Mǎtóu', 'nature'),
+    ('Canton Tower', '广州塔', 'Guǎngzhōu Tǎ', 'modern-city'),
+    ('Chaka Salt Lake', '茶卡盐湖', 'Chákǎ Yánhú', 'nature'),
+    ('Chaotianmen Square', '朝天门广场', 'Cháotiānmén Guǎngchǎng', 'modern-city'),
+    ('Charhan Salt Lake', '察尔汗盐湖', 'Chá''ěrhán Yánhú', 'nature'),
+    ('Chengdu 339', '成都339', 'Chéngdū 339', 'modern-city'),
+    ('Cheung Chau', '長洲', 'Chángzhōu', 'modern-city'),
+    ('Chongsheng Temple Three Pagodas', '崇圣寺三塔', 'Chóngshèng Sì Sān Tǎ', 'heritage'),
+    ('Chunxi Road Taikooli', '春熙路太古里', 'Chūnxī Lù Tàigǔlǐ', 'modern-city'),
+    ('Ciqikou Ancient Town', '磁器口古镇', 'Cíqìkǒu Gǔzhèn', 'heritage'),
+    ('City Walls', '西安城墙', 'Xī''ān Chéngqiáng', 'heritage'),
+    ('Daci Temple', '大慈寺', 'Dàcí Sì', 'heritage'),
+    ('Datang Everbright City', '大唐不夜城', 'Dàtáng Bùyèchéng', 'modern-city'),
+    ('Des Voeux Road Central', '德輔道中', 'Défǔ Dào Zhōng', 'modern-city'),
+    ('Dianchi Lake', '滇池', 'Diānchí', 'nature'),
+    ('Dongguan Great Mosque', '东关清真大寺', 'Dōngguān Qīngzhēn Dàsì', 'heritage'),
+    ('Dounan Flower Market', '斗南花市', 'Dòunán Huāshì', 'modern-city'),
+    ('Dragon Girl Lake', '龙女湖', 'Lóngnǚ Hú', 'nature'),
+    ('Du Fu Jiangge', '杜甫江阁', 'Dù Fǔ Jiānggé', 'heritage'),
+    ('Du Fu Thatched Cottage', '杜甫草堂', 'Dù Fǔ Cǎotáng', 'heritage'),
+    ('Dukezong Ancient City', '独克宗古城', 'Dúkèzōng Gǔchéng', 'heritage'),
+    ('Dunhuang Yadan', '敦煌雅丹', 'Dūnhuáng Yǎdān', 'nature'),
+    ('Eiffel Tower at The Parisian Macao', '澳门巴黎人埃菲尔铁塔', 'Àomén Bālírén Āifēi’ěr Tiětǎ', 'modern-city'),
+    ('Eling Park', '鹅岭公园', 'Élǐng Gōngyuán', 'nature'),
+    ('Erhai Lake', '洱海', 'Ěrhǎi', 'nature'),
+    ('Feilai Peak', '飞来峰', 'Fēilái Fēng', 'nature'),
+    ('Flying Rock', '飞来石', 'Fēilái Shí', 'nature'),
+    ('Forbidden City', '故宫', 'Gùgōng', 'heritage'),
+    ('French Concession', '法租界', 'Fǎ Zūjiè', 'modern-city'),
+    ('Fuzimiao', '夫子庙', 'Fūzǐmiào', 'heritage'),
+    ('Garden of the Golden Chambers', '金殿花園', 'Jīndiàn Huāyuán', 'nature'),
+    ('Giant Wild Goose Pagoda', '大雁塔', 'Dàyàn Tǎ', 'heritage'),
+    ('Golden Whip Stream', '金鞭溪', 'Jīnbiān Xī', 'nature'),
+    ('Grand Lisboa Hotel', '新葡京酒店', 'Xīn Pújīng Jiǔdiàn', 'modern-city'),
+    ('Green Lake Park', '翠湖公园', 'Cuìhú Gōngyuán', 'nature'),
+    ('Guang Ren Si', '广仁寺', 'Guǎngrén Sì', 'heritage'),
+    ('Guest-Greeting Pine', '迎客松', 'Yíngkè Sōng', 'nature'),
+    ('Haba Snow Mountain', '哈巴雪山', 'Hābā Xuěshān', 'nature'),
+    ('Haixinsha Asian Games Park', '海心沙亚运公园', 'Hǎixīnshā Yàyùn Gōngyuán', 'nature'),
+    ('Haohe', '濠河', 'Háo Hé', 'heritage'),
+    ('Heidu Mountain', '黑独山', 'Hēidú Shān', 'nature'),
+    ('Hongcun', '宏村', 'Hóngcūn', 'heritage'),
+    ('HongyaDong', '洪崖洞', 'Hóngyádòng', 'modern-city'),
+    ('Huanglong', '黄龙', 'Huánglóng', 'nature'),
+    ('Huangshizhai', '黄石寨', 'Huángshízhài', 'nature'),
+    ('Huanhuaxi Park', '浣花溪公园', 'Huànhuāxī Gōngyuán', 'nature'),
+    ('Huaqiang Road', '华强路', 'Huáqiáng Lù', 'modern-city'),
+    ('Huashan', '华山', 'Huàshān', 'nature'),
+    ('Humble Administrator''s Garden', '拙政园', 'Zhuōzhèng Yuán', 'heritage'),
+    ('Jade Dragon Snow Mountain', '玉龙雪山', 'Yùlóng Xuěshān', 'nature'),
+    ('Jiayuguan Fortress', '嘉峪关关城', 'Jiāyùguān Guānchéng', 'heritage'),
+    ('Jiefangbei', '解放碑', 'Jiěfàngbēi', 'modern-city'),
+    ('Jingshan Park', '景山公园', 'Jǐngshān Gōngyuán', 'heritage'),
+    ('Jinshuo Island', '金梭岛', 'Jīnsuō Dǎo', 'nature'),
+    ('Jiuyan Bridge', '九眼桥', 'Jiǔyǎn Qiáo', 'modern-city'),
+    ('Jiuzhaigou', '九寨沟', 'Jiǔzhàigōu', 'nature'),
+    ('Juzizhou Island', '橘子洲', 'Júzizhōu', 'nature'),
+    ('Kuanzhai Alley', '宽窄巷子', 'Kuānzhǎi Xiàngzi', 'heritage'),
+    ('Kumbum Monastery', '塔尔寺', 'Tǎ''ěr Sì', 'heritage'),
+    ('Kunming Old Street', '昆明老街', 'Kūnmíng Lǎojiē', 'heritage'),
+    ('Kunming Zoo', '昆明动物园', 'Kūnmíng Dòngwùyuán', 'nature'),
+    ('Langshan', '狼山', 'Lángshān', 'heritage'),
+    ('Lanzhou old street', '兰州老街', 'Lánzhōu Lǎojiē', 'heritage'),
+    ('Leifeng Pagoda', '雷峰塔', 'Léifēng Tǎ', 'heritage'),
+    ('Leshan Grand Buddha', '乐山大佛', 'Lèshān Dàfó', 'heritage'),
+    ('Lianhuashan Park', '莲花山公园', 'Liánhuāshān Gōngyuán', 'nature'),
+    ('Lijiang Old Town', '丽江古城', 'Lìjiāng Gǔchéng', 'heritage'),
+    ('Lijiang Prayer Flags', '丽江经幡', 'Lìjiāng Jīngfān', 'heritage'),
+    ('Lingering Garden', '留园', 'Liú Yuán', 'heritage'),
+    ('Lingyin Temple', '灵隐寺', 'Língyǐn Sì', 'heritage'),
+    ('Lixiangbang', '理想邦', 'Lǐxiǎngbāng', 'nature'),
+    ('Liziba', '李子坝', 'Lǐzǐbà', 'modern-city'),
+    ('Lonely Star', '孤独之星', 'Gūdú zhī Xīng', 'nature'),
+    ('Longjing Village', '龙井村', 'Lóngjǐng Cūn', 'nature'),
+    ('Longmen Grottoes', '西山龙门', 'Xīshān Lóngmén', 'heritage'),
+    ('Longshui Gorge Seam', '龙水峡地缝', 'Lóngshuǐxiá Dìfèng', 'nature'),
+    ('Lotus Garden', '金蓮花廣場', 'Jīnliánhuā Guǎngchǎng', 'nature'),
+    ('Lugu Lake', '泸沽湖', 'Lúgū Hú', 'nature'),
+    ('Lujiazui', '陆家嘴', 'Lùjiāzuǐ', 'modern-city'),
+    ('Luoquan Peninsula', '萝村半岛', 'Luócūn Bàndǎo', 'nature'),
+    ('Master of the Nets Garden', '网师园', 'Wǎngshī Yuán', 'heritage'),
+    ('Mati Temple', '马蹄寺', 'Mǎtí Sì', 'heritage'),
+    ('Mausoleum of Qin Shi Huang', '秦始皇陵', 'Qínshǐhuáng Líng', 'heritage'),
+    ('Ming Xiaoling', '明孝陵', 'Míng Xiàolíng', 'heritage'),
+    ('Mingsha mountain', '鸣沙山', 'Míngshā Shān', 'nature'),
+    ('Mogao caves', '莫高窟', 'Mògāo Kū', 'heritage'),
+    ('Monster Building', '怪獸大廈', 'Guàishòu Dàshà', 'modern-city'),
+    ('Monte Fortress', '大炮台', 'Dà Pàotái', 'heritage'),
+    ('Mutianyu Great Wall', '慕田峪长城', 'Mùtiányù Chángchéng', 'heritage'),
+    ('Nanjing City Wall', '南京城墙', 'Nánjīng Chéngqiáng', 'heritage'),
+    ('Nanjing Museum', '南京博物院', 'Nánjīng Bówùyuàn', 'heritage'),
+    ('Nantong Museum', '南通博物苑', 'Nántōng Bówùyuàn', 'heritage'),
+    ('Nanyue King Museum', '南越王博物院', 'Nányuèwáng Bówùyuàn', 'heritage'),
+    ('Napa Grassland', '纳帕草原', 'Nàpà Cǎoyuán', 'nature'),
+    ('Napa Lake', '纳帕海', 'Nàpà Hǎi', 'nature'),
+    ('Overhanging great wall', '悬壁长城', 'Xuánbì Chángchéng', 'heritage'),
+    ('People''s Park', '人民公园', 'Rénmín Gōngyuán', 'nature'),
+    ('Ping An Finance Center', '平安金融中心', 'Píng''ān Jīnróng Zhōngxīn', 'modern-city'),
+    ('Pingjiang Road', '平江路', 'Píngjiāng Lù', 'heritage'),
+    ('Pingyao Ancient City', '平遥古城', 'Píngyáo Gǔchéng', 'heritage'),
+    ('Potatso National Park', '普达措国家公园', 'Pǔdácuò Guójiā Gōngyuán', 'nature'),
+    ('Presidential Palace', '总统府', 'Zǒngtǒng Fǔ', 'heritage'),
+    ('Qilian Great Steppe', '祁连大草原', 'Qílián Dàcǎoyuán', 'nature'),
+    ('Qinghai Lake', '青海湖', 'Qīnghǎi Hú', 'nature'),
+    ('Qinghefang', '清河坊', 'Qīnghéfāng', 'heritage'),
+    ('Qingyang Palace', '青羊宫', 'Qīngyáng Gōng', 'heritage'),
+    ('Qiushui Square', '秋水广场', 'Qiūshuǐ Guǎngchǎng', 'modern-city'),
+    ('Refreshing Terrace', '清凉台', 'Qīngliáng Tái', 'nature'),
+    ('Research Base of Giant Panda Breeding', '成都大熊猫繁育研究基地', 'Chéngdū Dàxióngmāo Fányù Yánjiū Jīdì', 'nature'),
+    ('RiyueShan', '日月山', 'Rìyuè Shān', 'nature'),
+    ('Royal Hot Springs', '海泉湾温泉', 'Hǎiquánwān Wēnquán', 'modern-city'),
+    ('Ruins of St. Paul''s', '大三巴牌坊', 'Dàsānbā Páifāng', 'heritage'),
+    ('SKP', 'SKP', 'SKP', 'modern-city'),
+    ('Senado Square', '議事亭前地', 'Yìshìtíng Qiándì', 'heritage'),
+    ('Shaanxi Museum', '陕西历史博物馆', 'Shǎnxī Lìshǐ Bówùguǎn', 'heritage'),
+    ('Shamian Dao', '沙面岛', 'Shāmiàn Dǎo', 'heritage'),
+    ('Shanghai Museum East', '上海博物馆东馆', 'Shànghǎi Bówùguǎn Dōngguǎn', 'heritage'),
+    ('Shantang Street', '山塘街', 'Shāntáng Jiē', 'heritage'),
+    ('Shazhou night market', '沙州夜市', 'Shāzhōu Yèshì', 'modern-city'),
+    ('Shibati', '十八梯', 'Shíbātī', 'heritage'),
+    ('Shili Gallery', '十里画廊', 'Shílǐ Huàláng', 'nature'),
+    ('Shilin Stone Forest', '石林', 'Shílín', 'nature'),
+    ('Shuanglang Ancient Town', '双廊古镇', 'Shuāngláng Gǔzhèn', 'heritage'),
+    ('Shuduhu Lake', '属都湖', 'Shǔdū Hú', 'nature'),
+    ('Shuhe Ancient Town', '束河古镇', 'Shùhé Gǔzhèn', 'heritage'),
+    ('Silk Road Heritage City', '敦煌古城', 'Dūnhuáng Gǔchéng', 'heritage'),
+    ('Son of Earth', '大地之子', 'Dàdì zhī Zǐ', 'nature'),
+    ('Songzanlin', '松赞林寺', 'Sōngzànlín Sì', 'heritage'),
+    ('Splendid China Folk Village', '锦绣中华民俗村', 'Jǐnxiù Zhōnghuá Mínsú Cūn', 'modern-city'),
+    ('Su Causeway', '苏堤', 'Sū Dī', 'nature'),
+    ('Summer Palace', '颐和园', 'Yíhéyuán', 'heritage'),
+    ('Sun Yat-sen Mausoleum', '中山陵', 'Zhōngshān Líng', 'heritage'),
+    ('Suzhou Museum', '苏州博物馆', 'Sūzhōu Bówùguǎn', 'heritage'),
+    ('Taiping Old Street', '太平老街', 'Tàipíng Lǎojiē', 'heritage'),
+    ('Talent Park', '人才公园', 'Réncái Gōngyuán', 'nature'),
+    ('Tangzha', '唐闸', 'Tángzhá', 'heritage'),
+    ('Tengwang Pavilion', '滕王阁', 'Téngwáng Gé', 'heritage'),
+    ('Terracotta Army', '兵马俑', 'Bīngmǎyǒng', 'heritage'),
+    ('Testbed 2', '贰厂', 'Èrchǎng', 'modern-city'),
+    ('The Bund', '外滩', 'Wàitān', 'heritage'),
+    ('The Song of Everlasting Regret', '长恨歌', 'Chánghèn Gē', 'show'),
+    ('Three Natural Bridges', '天生三桥', 'Tiānshēng Sān Qiáo', 'nature'),
+    ('Tian Tan Buddha', '天壇大佛', 'Tiāntán Dàfó', 'heritage'),
+    ('TianMen Fox Fairy', '天门狐仙', 'Tiānmén Húxiān', 'show'),
+    ('TianMen Mountain', '天门山', 'Tiānmén Shān', 'nature'),
+    ('Tiananmen Square', '天安门广场', 'Tiān''ānmén Guǎngchǎng', 'heritage'),
+    ('Tianfu Square', '天府广场', 'Tiānfǔ Guǎngchǎng', 'modern-city'),
+    ('Tianzi Shan', '天子山', 'Tiānzǐ Shān', 'nature'),
+    ('Tiger Hill', '虎丘', 'Hǔqiū', 'heritage'),
+    ('Tiger Leaping Gorge', '虎跳峡', 'Hǔtiào Xiá', 'nature'),
+    ('Tower of Harmony', '和谐塔', 'Héxié Tǎ', 'heritage'),
+    ('Tunxi Old Street', '屯溪老街', 'Túnxī Lǎojiē', 'heritage'),
+    ('Victoria Peak', '太平山', 'Tàipíng Shān', 'modern-city'),
+    ('Victoria Peak''s evening skyline', '太平山夜景', 'Tàipíng Shān Yèjǐng', 'modern-city'),
+    ('Wanping Jie', '望平街', 'Wàngpíng Jiē', 'modern-city'),
+    ('Wanshou Palace', '万寿宫', 'Wànshòu Gōng', 'heritage'),
+    ('Wen Heyou', '文和友', 'Wén Héyǒu', 'modern-city'),
+    ('Wenshu Monastery', '文殊院', 'Wénshū Yuàn', 'heritage'),
+    ('West Bund', '西岸', 'Xī’àn', 'modern-city'),
+    ('West Lake', '西湖', 'Xī Hú', 'nature'),
+    ('West Sea Grand Canyon', '西海大峡谷', 'Xīhǎi Dàxiágǔ', 'nature'),
+    ('Wuhou District', '武侯区', 'Wǔhóu Qū', 'modern-city'),
+    ('Wulong Karst', '武隆喀斯特', 'Wǔlóng Kāsītè', 'nature'),
+    ('Wuyi Square', '五一广场', 'Wǔyī Guǎngchǎng', 'modern-city'),
+    ('Xiahaoli', '下浩里', 'Xiàhàolǐ', 'modern-city'),
+    ('Xidi', '西递', 'Xīdì', 'heritage'),
+    ('Xining wildlife Park', '西宁野生动物园', 'Xīníng Yěshēng Dòngwùyuán', 'nature'),
+    ('Xishan', '西山', 'Xīshān', 'nature'),
+    ('Xizhou Old Town', '喜洲古镇', 'Xǐzhōu Gǔzhèn', 'heritage'),
+    ('Xuanwu Lake', '玄武湖', 'Xuánwǔ Hú', 'nature'),
+    ('Yangguan', '阳关', 'Yángguān', 'heritage'),
+    ('Yardang landform', '雅丹地貌', 'Yǎdān Dìmào', 'nature'),
+    ('Yellow River Tower', '黄河楼', 'Huánghé Lóu', 'heritage'),
+    ('Yongxingfang', '永兴坊', 'Yǒngxīngfāng', 'modern-city'),
+    ('Yu Garden', '豫园', 'Yùyuán', 'heritage'),
+    ('Yuanjiajie', '袁家界', 'Yuánjiājiè', 'nature'),
+    ('Yuelu Academy', '岳麓书院', 'Yuèlù Shūyuàn', 'heritage'),
+    ('Yuelu Mountain', '岳麓山', 'Yuèlù Shān', 'nature'),
+    ('Yulin Caves', '榆林窟', 'Yúlín Kū', 'heritage'),
+    ('Yumenguan', '玉门关', 'Yùménguān', 'heritage'),
+    ('Yungu Cableway', '云谷索道', 'Yúngǔ Suǒdào', 'nature'),
+    ('Zhangjiajie Glass Bridge Canyon', '张家界大峡谷玻璃桥', 'Zhāngjiājiè Dàxiágǔ Bōlí Qiáo', 'nature'),
+    ('Zhangjiajie National Forest Park', '张家界国家森林公园', 'Zhāngjiājiè Guójiā Sēnlín Gōngyuán', 'nature'),
+    ('Zhangye Danxia', '张掖丹霞', 'Zhāngyè Dānxiá', 'nature'),
+    ('Zhengyang Gate', '正阳门', 'Zhèngyángmén', 'heritage'),
+    ('Zhongshan bridge', '中山桥', 'Zhōngshān Qiáo', 'heritage');
+
+-- The old city text names a City when it matches one without apostrophes and case ("Xian" is Xi'an);
+-- otherwise the Activity takes the main City of its Day.
+CREATE TABLE activity_source (
+    id INTEGER PRIMARY KEY,
+    plan INTEGER NOT NULL,
+    day_id INTEGER NOT NULL,
+    position INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    city_text TEXT NOT NULL,
+    city_id INTEGER NOT NULL,
+    matched INTEGER NOT NULL,
+    rating REAL NOT NULL,
+    description TEXT NOT NULL
+);
+
+INSERT INTO activity_source (plan, day_id, position, name, city_text, city_id, matched, rating, description)
+SELECT 0, a.day_id, a.position, a.name, a.city,
+       COALESCE((SELECT c.id FROM cities c WHERE replace(lower(c.name), '''', '') = replace(lower(a.city), '''', '')), d.city_id),
+       EXISTS (SELECT 1 FROM cities c WHERE replace(lower(c.name), '''', '') = replace(lower(a.city), '''', '')),
+       a.rating, a.description
+FROM day_attractions a JOIN days d ON d.id = a.day_id
+ORDER BY a.day_id, a.position;
+
+INSERT INTO activity_source (plan, day_id, position, name, city_text, city_id, matched, rating, description)
+SELECT 1, a.day_id, a.position, a.name, a.city,
+       COALESCE((SELECT c.id FROM cities c WHERE replace(lower(c.name), '''', '') = replace(lower(a.city), '''', '')), d.city_id),
+       EXISTS (SELECT 1 FROM cities c WHERE replace(lower(c.name), '''', '') = replace(lower(a.city), '''', '')),
+       a.rating, a.description
+FROM plan_day_attractions a JOIN plan_days d ON d.id = a.day_id
+ORDER BY a.day_id, a.position;
+
+-- One Activity per name and City, from its first row.
+INSERT INTO activities (name, name_zh, pinyin, city_id, kind, description, rating)
+SELECT s.name, seed.name_zh, seed.pinyin, s.city_id, seed.kind, s.description,
+       CASE WHEN s.rating >= 5 THEN 'do-not-miss' WHEN s.rating >= 4 THEN 'recommended' WHEN s.rating >= 3 THEN 'skippable' END
+FROM activity_source s JOIN activity_seed seed ON seed.name = s.name
+WHERE s.id = (SELECT MIN(x.id) FROM activity_source x WHERE x.name = s.name AND x.city_id = s.city_id)
+ORDER BY s.id;
+
+-- A Day lists an Activity once: a repeated row is dropped and the positions keep their gap.
+INSERT OR IGNORE INTO day_activities (day_id, position, activity_id)
+SELECT s.day_id, s.position, a.id FROM activity_source s
+JOIN activities a ON a.name = s.name AND a.city_id = s.city_id WHERE s.plan = 0 ORDER BY s.id;
+
+INSERT OR IGNORE INTO plan_day_activities (day_id, position, activity_id)
+SELECT s.day_id, s.position, a.id FROM activity_source s
+JOIN activities a ON a.name = s.name AND a.city_id = s.city_id WHERE s.plan = 1 ORDER BY s.id;
+
+DROP TABLE activity_source;
+DROP TABLE activity_seed;
+DROP TABLE day_attractions;
+DROP TABLE plan_day_attractions;
