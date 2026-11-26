@@ -1,5 +1,6 @@
 import { issueToken, passwordMatches, tokenIsValid } from '@universe/owner/auth';
 import { buildAdmin } from './admin';
+import { buildActivities } from './activities';
 import { buildPlanAdmin } from './plan-admin';
 import { buildPlanPhotos } from './plan-photos';
 import { buildTripCreate } from './trip-create';
@@ -703,6 +704,7 @@ export function buildJournal(env: JournalEnv): Journal {
     verifyToken,
     ...buildAdmin(env, { photoUrl, thumbUrl }),
     ...buildPlanAdmin(env, { photoUrl, thumbUrl }),
+    ...buildActivities(env),
     ...buildPlanPhotos(env, { photoUrl, thumbUrl }),
     ...buildTripCreate(env),
   };
