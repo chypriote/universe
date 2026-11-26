@@ -1,6 +1,7 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
+import { landscape } from './jpeg.test-helper';
 import type { ActivityInput } from './index';
 import { addActivity, addCity, addDay, addPlan, addPlanDay, addProvince, addTrip, listActivity, resetDatabase } from './seed.test-helper';
 
@@ -154,5 +155,99 @@ describe('Activities of a Day', () => {
     expect((await journal.getAdminPlan('sichuan-plan'))!.days[0].activityIds).toEqual([pandas]);
     expect(await journal.setPlanDayActivities(9999, [pandas])).toEqual({ ok: false, error: 'unknown-day' });
     expect((await journal.listAdminActivities())[0].days).toBe(2);
+  });
+});
+
+describe('Activity pictures', () => {
+  const thumb = () => new Uint8Array([1, 2, 3]).buffer;
+  const upload = (activityId: number, name: string, overwrite = false) =>
+    journal.uploadActivityPicture({ activityId, name, file: landscape(), thumb: thumb(), overwrite });
+  const keys = async () => (await env.PHOTOS.list()).objects.map((object) => object.key).sort();
+
+  it('stores the file and its thumbnail and keeps pictures in upload order', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+
+    await upload(pandas, 'b.jpg');
+    const result = await upload(pandas, 'a.jpg');
+
+    expect(result.ok && result.activity.pictures.map((picture) => picture.name)).toEqual(['b.jpg', 'a.jpg']);
+    expect(await keys()).toEqual([
+      `activities/${pandas}/a.jpg`,
+      `activities/${pandas}/b.jpg`,
+      `thumbs/activities/${pandas}/a.jpg.webp`,
+      `thumbs/activities/${pandas}/b.jpg.webp`,
+    ]);
+  });
+
+  it('refuses a name twice unless it overwrites, and bad names, types and files', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+    await upload(pandas, 'a.jpg');
+
+    expect(await upload(pandas, 'a.jpg')).toEqual({ ok: false, error: 'exists' });
+    const replaced = await upload(pandas, 'a.jpg', true);
+    expect(replaced.ok && replaced.replaced).toBe(true);
+    expect(replaced.ok && replaced.activity.pictures).toHaveLength(1);
+    expect(await upload(pandas, 'a.gif')).toEqual({ ok: false, error: 'unsupported-type' });
+    expect(await upload(pandas, 'x/a.jpg')).toEqual({ ok: false, error: 'invalid-name' });
+    expect(await upload(9999, 'a.jpg')).toEqual({ ok: false, error: 'unknown-activity' });
+    expect(
+      await journal.uploadActivityPicture({ activityId: pandas, name: 'bad.jpg', file: new Uint8Array([1]).buffer, thumb: thumb() }),
+    ).toEqual({ ok: false, error: 'unreadable' });
+  });
+
+  it('reorders the pictures and refuses a list that is not exactly its own', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+    await upload(pandas, 'a.jpg');
+    const second = await upload(pandas, 'b.jpg');
+    const [a, b] = second.ok ? second.activity.pictures.map((picture) => picture.id) : [];
+
+    const result = await journal.setActivityPictures(pandas, [b, a]);
+
+    expect(result.ok && result.activity.pictures.map((picture) => picture.name)).toEqual(['b.jpg', 'a.jpg']);
+    expect(await journal.setActivityPictures(pandas, [a])).toEqual({ ok: false, error: 'unknown-picture' });
+    expect(await journal.setActivityPictures(pandas, [a, a])).toEqual({ ok: false, error: 'duplicate-picture' });
+    expect(await journal.setActivityPictures(9999, [])).toEqual({ ok: false, error: 'unknown-activity' });
+  });
+
+  it('deletes a picture with its files and closes the gap', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+    await upload(pandas, 'a.jpg');
+    const second = await upload(pandas, 'b.jpg');
+    const [a] = second.ok ? second.activity.pictures.map((picture) => picture.id) : [];
+
+    const result = await journal.deleteActivityPicture(a);
+
+    expect(result.ok && result.activity.pictures.map((picture) => picture.name)).toEqual(['b.jpg']);
+    expect(await keys()).toEqual([`activities/${pandas}/b.jpg`, `thumbs/activities/${pandas}/b.jpg.webp`]);
+    expect(await journal.deleteActivityPicture(a)).toEqual({ ok: false, error: 'unknown-picture' });
+  });
+
+  it('removes the pictures and their files when the Activity is deleted', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+    await upload(pandas, 'a.jpg');
+
+    expect(await journal.deleteActivity(pandas)).toEqual({ ok: true });
+
+    expect(await keys()).toEqual([]);
+  });
+
+  it('shows the first picture of an Activity on its Plan Day, with price and address', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+    const planDay = await addPlanDay(await addPlan({ slug: 'sichuan-plan' }), chengdu, 1);
+    await journal.editActivity({ ...input(chengdu), id: pandas, rating: 'do-not-miss', price: 55, addressZh: '成都市' });
+    await journal.setPlanDayActivities(planDay, [pandas]);
+    expect((await journal.getPlan('sichuan-plan'))!.days[0].activities[0].picture).toBeNull();
+    await upload(pandas, 'a.jpg');
+
+    const [activity] = (await journal.getPlan('sichuan-plan'))!.days[0].activities;
+
+    expect(activity).toMatchObject({ kind: 'nature', rating: 'do-not-miss', price: 55, addressZh: '成都市' });
+    expect(activity.picture).toContain(`thumbs/activities/${pandas}/a.jpg.webp`);
   });
 });

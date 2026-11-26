@@ -5,6 +5,7 @@ import { buildPlanAdmin } from './plan-admin';
 import { buildPlanPhotos } from './plan-photos';
 import { buildTripCreate } from './trip-create';
 import { formatDateRange } from '../plan-calendar';
+import type { ActivityKind, ActivityRating } from './activity-kinds';
 import type {
   Activity,
   ClearProvinceCoverResult,
@@ -181,6 +182,11 @@ export function buildJournal(env: JournalEnv): Journal {
     `${photosUrl}/trips/${slug}/${encodeURIComponent(name)}${versioned(version)}`;
   const thumbUrl = (slug: string, name: string, version = 1) =>
     `${photosUrl}/thumbs/${slug}/${encodeURIComponent(name)}.webp${versioned(version)}`;
+
+  const activityPictureUrl = (activityId: number, name: string, version = 1) =>
+    `${photosUrl}/activities/${activityId}/${encodeURIComponent(name)}${versioned(version)}`;
+  const activityThumbUrl = (activityId: number, name: string, version = 1) =>
+    `${photosUrl}/thumbs/activities/${activityId}/${encodeURIComponent(name)}.webp${versioned(version)}`;
 
   async function all<T>(sql: string, ...params: (string | number)[]): Promise<T[]> {
     const { results } = await env.DB.prepare(sql)
@@ -428,8 +434,25 @@ export function buildJournal(env: JournalEnv): Journal {
     const majors = await majorCityIds();
     const dayIds = trip.days.map((day) => day.id);
     const activities = dayIds.length
-      ? await all<{ day_id: number; name: string; name_zh: string; pinyin: string }>(
-          `SELECT listed.day_id, activities.name, activities.name_zh, activities.pinyin
+      ? await all<{
+          day_id: number;
+          activity_id: number;
+          name: string;
+          name_zh: string;
+          pinyin: string;
+          kind: ActivityKind;
+          rating: ActivityRating | null;
+          description: string;
+          price: number | null;
+          address: string;
+          address_zh: string;
+          picture_name: string | null;
+          picture_version: number | null;
+        }>(
+          `SELECT listed.day_id, activities.id AS activity_id, activities.name, activities.name_zh, activities.pinyin,
+             activities.kind, activities.rating, activities.description, activities.price, activities.address, activities.address_zh,
+             (SELECT name FROM activity_pictures WHERE activity_id = activities.id ORDER BY position LIMIT 1) AS picture_name,
+             (SELECT version FROM activity_pictures WHERE activity_id = activities.id ORDER BY position LIMIT 1) AS picture_version
            FROM ${S.dayActivities} listed JOIN activities ON activities.id = listed.activity_id
            WHERE listed.day_id IN (${dayIds.map(() => '?').join(',')}) ORDER BY listed.day_id, listed.position`,
           ...dayIds,
@@ -471,7 +494,21 @@ export function buildJournal(env: JournalEnv): Journal {
       cities: day.stops.map((city) => ({ name: city.name, nameZh: city.nameZh, main: city.main })),
       activities: activities
         .filter((row) => row.day_id === day.id)
-        .map((row): Activity => ({ name: row.name, nameZh: row.name_zh, pinyin: row.pinyin })),
+        .map(
+          (row): Activity => ({
+            name: row.name,
+            nameZh: row.name_zh,
+            pinyin: row.pinyin,
+            kind: row.kind,
+            rating: row.rating,
+            description: row.description,
+            price: row.price,
+            address: row.address,
+            addressZh: row.address_zh,
+            picture:
+              row.picture_name === null ? null : activityThumbUrl(row.activity_id, row.picture_name, row.picture_version ?? 1),
+          }),
+        ),
       rides: rides
         .filter((row) => row.day_id === day.id)
         .map((ride) => `${ride.outgoing_city} → ${ride.destination_city} (${ride.departure_time} – ${ride.arrival_time})`),
@@ -704,7 +741,7 @@ export function buildJournal(env: JournalEnv): Journal {
     verifyToken,
     ...buildAdmin(env, { photoUrl, thumbUrl }),
     ...buildPlanAdmin(env, { photoUrl, thumbUrl }),
-    ...buildActivities(env),
+    ...buildActivities(env, { pictureUrl: activityPictureUrl, thumbUrl: activityThumbUrl }),
     ...buildPlanPhotos(env, { photoUrl, thumbUrl }),
     ...buildTripCreate(env),
   };

@@ -99,6 +99,7 @@ Photo overlays may use `white` / `black` with opacity (hero, gallery lightbox). 
 | Button | Primitive | CTA. `btn` utility: uppercase, semibold, sharp corners | `btn-primary` (cinnabar fill), `btn-outline` (current color, fills with ink on hover) |
 | Text link with arrow | Primitive | "Read more" style link | Primary color; arrow moves right on hover |
 | Eyebrow label | Primitive | Small label above a title (`eyebrow` utility) | Primary, muted |
+| Activity row | Component | One Activity of a Plan Day (`ActivityRow.tsx`): square picture with a rating icon top left (filled star do-not-miss, outlined star recommended, cross avoid, none for skippable; tooltip on hover), kind tag top right, serif name, Chinese name with the pinyin as a hover tooltip, description filling the height, then price left and the address right with a language switch and a copy button. Trip reports keep the plain list | — |
 | Tabs | Primitive | Toggle Trip reports / Trip plans (`aria-pressed`): large serif labels, each over a faint brush character (游记, 行程) | Active = ink text, darker character, gold-ink brush stroke underneath |
 | Section header | Component | Home sections: vertical brush characters, an eyebrow that translates them, `h2`, lead (`home/SectionHeader.astro`). Same top padding in every home section | — |
 | Bamboo | Decoration | Bamboo stalks and leaf sprays (`Bamboo.astro`, currentColor) | `flip` |
