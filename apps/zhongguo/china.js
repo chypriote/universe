@@ -15,10 +15,12 @@ const requestObject = {
   departure_id: "CDG, ORY",
   type: "1",
   sort_by: "2",
-  stops: "2", // one stop or fewer
   max_duration: 1260,
   deep_search: true,
 }
+// SerpApi stops: "2" = one stop or fewer, "3" = two stops or fewer.
+// Few flights reach Lhasa and Urumqi with one stop.
+const TWO_STOP_AIRPORTS = new Set(["LXA", "URC"])
 const MAX_REQUESTS_PER_HOUR = 200
 const HOUR_MS = 60 * 60 * 1000
 const requestTimes = []
@@ -71,6 +73,7 @@ async function run() {
       json = await rateLimitedGetJson({
         ...requestObject,
         arrival_id: window.airport,
+        stops: TWO_STOP_AIRPORTS.has(window.airport) ? "3" : "2",
         outbound_date: window.outbound,
         return_date: window.return,
       })

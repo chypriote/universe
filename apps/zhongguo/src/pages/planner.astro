@@ -106,7 +106,7 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                             {day(window.outbound, true)} – {day(window.return)}
                           </span>
                           <span class="block text-sm text-muted-foreground">
-                            {plan.title} · {window.city} {window.airport} · {window.direct ? 'direct' : '1 stop'} · price of {day(window.searchedOn)}
+                            {plan.title} · {window.city} {window.airport} · {window.direct ? 'direct' : 'with stops'} · price of {day(window.searchedOn)}
                           </span>
                         </span>
                         <span class:list={['font-serif text-2xl tabular-nums', rank === 0 && 'text-secondary']}>€{window.price}</span>

@@ -6,7 +6,7 @@ SerpApi gives about 1,000 flight searches a month. Nico has no fixed date or pla
 
 - Each Province has a Season (whole months), set in the admin. A City has its Airports, each with the weekdays of a direct flight from Paris.
 - A plan's Gateways are the Airports of its Cities. Searches are round trips to one Gateway only.
-- One search per Gateway per week: on a direct-flight weekday when the Airport has some, else on Friday. The trip length is the plan's number of Days, rounded up to whole weeks when the Gateway has direct flights on some weekdays only, so the return is also a direct day. One search asks for one stop or fewer and records whether the cheapest flight is direct.
+- One search per Gateway per week: on a direct-flight weekday when the Airport has some, else on Friday. The trip length is the plan's number of Days, rounded up to whole weeks when the Gateway has direct flights on some weekdays only, so the return is also a direct day. One search asks for one stop or fewer (two for Lhasa and Urumqi, which few one-stop flights reach) and records whether the cheapest flight is direct.
 - A start date fits a plan when at most 20% of its Days, counted from that date, fall outside the Season of their main City's Province.
 - Start dates run from 27 March 2027 or two weeks from today, whichever is later, to 10 months from today.
 - `npm run china` stays a hand-run script. It searches the windows with the oldest price first (never searched first) and stops when SerpApi has no calls left that month, so every call refreshes the stalest price.
