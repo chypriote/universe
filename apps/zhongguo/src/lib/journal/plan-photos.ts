@@ -10,18 +10,19 @@ type PlanPhotoMethods = Pick<
   | 'setPlanDayPhotos'
   | 'uploadPlanPhoto'
   | 'setPlanPhotoCity'
+  | 'setPlanPhotoTitle'
   | 'deletePlanPhoto'
 >;
 
 const IMAGE_TYPES: Record<string, string> = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
 const CACHE_CONTROL = 'public, max-age=31536000, immutable';
 
-type PhotoRow = { id: number; name: string; slug: string; width: number; height: number; version: number; city_id: number | null; city: string | null };
+type PhotoRow = { id: number; name: string; slug: string; width: number; height: number; version: number; title: string | null; city_id: number | null; city: string | null };
 
 /** The Photos of a plan by name, or the one with the given id. */
 export async function loadPlanPhotos(env: AdminEnv, urls: PhotoUrls, planId: number, photoId?: number): Promise<AdminPlanPhoto[]> {
   const { results } = await env.DB.prepare(
-    `SELECT plan_photos.id, plan_photos.name, plans.slug, plan_photos.width, plan_photos.height, plan_photos.version,
+    `SELECT plan_photos.id, plan_photos.name, plans.slug, plan_photos.width, plan_photos.height, plan_photos.version, plan_photos.title,
             cities.id AS city_id, cities.name AS city
      FROM plan_photos JOIN plans ON plans.id = plan_photos.plan_id
      LEFT JOIN cities ON cities.id = plan_photos.city_id
@@ -36,6 +37,7 @@ export async function loadPlanPhotos(env: AdminEnv, urls: PhotoUrls, planId: num
     thumb: urls.thumbUrl(row.slug, row.name, row.version),
     orientation: orientationOf(row),
     city: row.city_id === null ? null : { id: row.city_id, name: row.city ?? '' },
+    title: row.title,
   }));
 }
 
@@ -156,6 +158,11 @@ export function buildPlanPhotos(env: AdminEnv, urls: PhotoUrls): PlanPhotoMethod
     return { ok: true as const };
   }
 
+  async function setPlanPhotoTitle(photoId: number, title: string) {
+    const { meta } = await env.DB.prepare('UPDATE plan_photos SET title = ? WHERE id = ?').bind(title.trim() || null, photoId).run();
+    return meta.changes === 0 ? { ok: false as const, error: 'unknown-photo' as const } : { ok: true as const };
+  }
+
   async function deletePlanPhoto(photoId: number) {
     const photo = await env.DB.prepare(
       `SELECT plan_photos.id, plan_photos.name, plans.slug, plans.cover_photo_id FROM plan_photos
@@ -175,5 +182,5 @@ export function buildPlanPhotos(env: AdminEnv, urls: PhotoUrls): PlanPhotoMethod
     return { ok: true as const };
   }
 
-  return { setPlanCover, setPlanCoverFocus, setPlanHighlightPhotos, setPlanDayPhotos, uploadPlanPhoto, setPlanPhotoCity, deletePlanPhoto };
+  return { setPlanCover, setPlanCoverFocus, setPlanHighlightPhotos, setPlanDayPhotos, uploadPlanPhoto, setPlanPhotoCity, setPlanPhotoTitle, deletePlanPhoto };
 }

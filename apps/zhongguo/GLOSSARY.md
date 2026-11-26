@@ -42,7 +42,10 @@ A Province where a visible Day of a visible Trip has its main City. Trip plans n
 Nico, the only person who logs in. The Owner login opens `/admin`, and every admin page and admin API refuses a request without it. It is the same login as in the other apps.
 
 **Photo**:
-A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip. A new Photo goes on the Day of its date; it can then be moved to another Day or taken off every Day, and still shows in the Gallery. Its date can be edited. It can have a title typed by hand, which replaces its place in captions. Pictures that belong to no Trip are site images kept in the repo, not Photos.
+A picture taken on a Trip, stored in the photo bucket. It belongs to exactly one Trip. A new Photo goes on the Day of its date; it can then be moved to another Day or taken off every Day, and still shows in the Gallery. Its date and its Photo time can be edited. It can have a title typed by hand, which replaces its place in captions. Pictures that belong to no Trip are site images kept in the repo, not Photos.
+
+**Photo time**:
+The part of the day a Photo was taken: Morning (before 12:00), Afternoon (12:00 to 18:00) or Evening (from 18:00), or none. An upload fills it from the EXIF capture time; plan Photos have none.
 
 **On the way photo**:
 A Photo taken between two Cities, for example from a train. It has no City. It can name a Province, which only its caption shows. It never makes a Province visited.
@@ -67,6 +70,9 @@ A practical article (visa, payments, apps, transport) at `/guides/<slug>`.
 
 **Gallery**:
 Every trip photo, grouped by Trip, at `/gallery`. Photos live in R2 (`docs/photos.md`).
+
+**Gallery workspace**:
+The admin tab at `/admin/gallery` where the Owner uploads Photos and sets what each one is: place, date, Photo time, title. Not the public Gallery. Days and order are set in the Journal workspace.
 
 **Plan page**:
 The page at `/planner` (nav "Plan") that recommends when to leave for each visible Trip plan with Days: the start dates that fit it, and its 3 cheapest Fare windows once searched, built from the stored Flight searches.

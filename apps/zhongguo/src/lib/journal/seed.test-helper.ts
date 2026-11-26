@@ -136,6 +136,7 @@ export async function addPhoto(
     title?: string | null;
     cityId?: number | null;
     provinceId?: number | null;
+    time?: 'morning' | 'afternoon' | 'evening' | null;
   } = {},
 ) {
   const row = {
@@ -145,6 +146,7 @@ export async function addPhoto(
     width: options.width ?? 4000,
     height: options.height ?? 3000,
     date,
+    time: options.time ?? null,
     title: options.title ?? null,
     city_id: options.cityId ?? null,
     province_id: options.provinceId ?? null,

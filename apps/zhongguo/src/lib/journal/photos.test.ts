@@ -77,6 +77,38 @@ describe('Upload Photo: date without EXIF', () => {
   });
 });
 
+describe('Upload Photo: time', () => {
+  it('comes from the hour of the EXIF capture time', async () => {
+    await sichuanTrip();
+
+    const result = await upload('a.jpg', landscapeExif());
+
+    expect(result).toMatchObject({ ok: true, photo: { time: 'morning' } });
+  });
+
+  it('stays empty without EXIF, even when the file name has an hour', async () => {
+    await sichuanTrip();
+
+    const result = await upload('2025-03-29-19-02.jpg', landscape());
+
+    expect(result).toMatchObject({ ok: true, photo: { time: null } });
+  });
+
+  it('is kept on a replaced Photo when set by hand, and filled when empty', async () => {
+    const { trip } = await sichuanTrip();
+    await addPhoto(trip, '2025-04-02', { name: 'kept.jpg', time: 'evening' });
+    await addPhoto(trip, '2025-04-02', { name: 'empty.jpg' });
+
+    await upload('kept.jpg', landscapeExif(), { overwrite: true });
+    await upload('empty.jpg', landscapeExif(), { overwrite: true });
+
+    expect((await journal.listAdminPhotos('sichuan'))!.map((photo) => [photo.name, photo.time])).toEqual([
+      ['empty.jpg', 'morning'],
+      ['kept.jpg', 'evening'],
+    ]);
+  });
+});
+
 describe('Upload Photo: storing', () => {
   it('keeps the file and the thumbnail under the Trip, with spaces and accents in the name', async () => {
     await sichuanTrip();
@@ -323,6 +355,24 @@ describe('Edit Photos', () => {
     expect((await read()).map((photo) => photo.title)).toEqual([null, 'From the train']);
   });
 
+  it('sets and clears the time of the selection, and lists Photos by date, then time, then name', async () => {
+    const { a, b, read } = await twoPhotos();
+    await journal.editPhotos({ ids: [a, b], date: '2025-04-01' });
+
+    await journal.editPhotos({ ids: [a], time: 'evening' });
+    await journal.editPhotos({ ids: [b], time: 'morning' });
+    expect((await read()).map((photo) => [photo.name, photo.time])).toEqual([
+      ['b.jpg', 'morning'],
+      ['a.jpg', 'evening'],
+    ]);
+
+    await journal.editPhotos({ ids: [a, b], time: null });
+    expect((await read()).map((photo) => [photo.name, photo.time])).toEqual([
+      ['a.jpg', null],
+      ['b.jpg', null],
+    ]);
+  });
+
   it('moves a Photo to the Day of its new date', async () => {
     const { chengdu, b } = await twoPhotos();
     const tripId = (await env.DB.prepare('SELECT id FROM trips').first<{ id: number }>())!.id;
@@ -346,6 +396,7 @@ describe('Edit Photos', () => {
       error: 'unknown-province',
     });
     expect(await journal.editPhotos({ ids: [a], date: '2025-02-30' })).toEqual({ ok: false, error: 'invalid-date' });
+    expect(await journal.editPhotos({ ids: [a], time: 'night' as never })).toEqual({ ok: false, error: 'invalid-time' });
     expect(await read()).toEqual(before);
   });
 });

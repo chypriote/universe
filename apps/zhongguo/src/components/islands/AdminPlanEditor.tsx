@@ -1,114 +1,17 @@
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react';
 import { useState, type SyntheticEvent } from 'react';
-import type { AdminActivity, AdminCity, AdminCityDetail, AdminPlanDay, AdminPlanDetail, AdminPlanPhoto } from '@/lib/journal';
+import type { AdminActivity, AdminCityDetail, AdminPlanDay, AdminPlanDetail } from '@/lib/journal';
 import { DayActivities } from './DayActivities';
 import { DayText } from './DayText';
 import { JournalSwitches } from './JournalSwitches';
 import { JourneyMap } from './JourneyMap';
 import { Cover, Highlights, PhotoBoard } from './PhotoPicks';
 import { Tabs } from './Tabs';
-import { button, field, makeThumb, message, save } from './admin-form';
+import { button, field, message, save } from './admin-form';
 import { Toast } from './Toast';
 
 type Props = { plan: AdminPlanDetail; cities: AdminCityDetail[]; activities: AdminActivity[] };
 
-/** The Photos of the plan: upload, City of each, delete. The page reloads after an upload or a delete. */
-function Photos({ plan, cities, onNotice }: { plan: AdminPlanDetail; cities: AdminCity[]; onNotice: (text: string) => void }) {
-  const [photos, setPhotos] = useState(plan.photos);
-  const [busy, setBusy] = useState(false);
-  const url = `/api/admin/plans/${encodeURIComponent(plan.slug)}/photos`;
-
-  async function send(file: File, overwrite: boolean) {
-    const form = new FormData();
-    form.set('file', file, file.name);
-    form.set('thumb', await makeThumb(file), `${file.name}.webp`);
-    if (overwrite) form.set('overwrite', 'true');
-    return (await (await fetch(url, { method: 'POST', body: form })).json()) as { ok: boolean; error?: string };
-  }
-
-  /** One file per request, so a request stays under the Worker limits. */
-  async function upload(files: File[]) {
-    setBusy(true);
-    const failures: string[] = [];
-    for (const file of files) {
-      try {
-        let result = await send(file, false);
-        if (!result.ok && result.error === 'exists') {
-          if (!window.confirm(`"${file.name}" is already in this plan. Replace it?`)) continue;
-          result = await send(file, true);
-        }
-        if (!result.ok) failures.push(`${file.name}: ${message(result.error)}`);
-      } catch {
-        failures.push(`${file.name}: upload failed`);
-      }
-    }
-    if (failures.length === 0) return window.location.reload();
-    onNotice(failures.join('. '));
-    setBusy(false);
-  }
-
-  async function setCity(photo: AdminPlanPhoto, value: string) {
-    const city = cities.find((candidate) => String(candidate.id) === value);
-    const result = await save('PATCH', `/api/admin/plan-photos/${photo.id}`, { cityId: city ? city.id : null });
-    if (!result.ok) return onNotice(message(result.error));
-    setPhotos((current) => current.map((item) => (item.id === photo.id ? { ...item, city: city ? { id: city.id, name: city.name } : null } : item)));
-    onNotice('City saved');
-  }
-
-  async function remove(photo: AdminPlanPhoto) {
-    if (!window.confirm(`Delete ${photo.name} for good? Its files are removed too.`)) return;
-    const result = await save('DELETE', `/api/admin/plan-photos/${photo.id}`, {});
-    if (result.ok) return window.location.reload();
-    onNotice(message(result.error));
-  }
-
-  return (
-    <section aria-labelledby="photos-title" className="flex flex-col gap-4">
-      <h2 id="photos-title" className="font-serif text-2xl">Photos</h2>
-      <label className="flex flex-col gap-1 text-sm">
-        Upload Photos
-        <input
-          type="file"
-          multiple
-          accept="image/jpeg,image/png,image/webp"
-          disabled={busy}
-          className={field}
-          onChange={(event) => {
-            const files = [...(event.target.files ?? [])];
-            event.target.value = '';
-            if (files.length > 0) void upload(files);
-          }}
-        />
-      </label>
-      {busy && <p role="status" className="text-sm text-muted-foreground">Uploading…</p>}
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {photos.map((photo) => (
-          <li key={photo.id} className="flex flex-col gap-2 border border-border p-3">
-            <img src={photo.thumb} alt={photo.name} loading="lazy" className="aspect-[4/3] w-full bg-surface object-cover" />
-            <p className="truncate text-xs text-muted-foreground">{photo.name}</p>
-            <select
-              aria-label={`City of ${photo.name}`}
-              value={photo.city?.id ?? ''}
-              onChange={(event) => void setCity(photo, event.target.value)}
-              className={field}
-            >
-              <option value="">No City</option>
-              {cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.name}, {city.province}
-                </option>
-              ))}
-            </select>
-            <button type="button" className={button} aria-label={`Delete ${photo.name}`} onClick={() => void remove(photo)}>
-              Delete
-            </button>
-          </li>
-        ))}
-        {photos.length === 0 && <li className="text-sm text-muted-foreground">No Photo yet</li>}
-      </ul>
-    </section>
-  );
-}
 
 /** The numbered Days of a plan: edit, move, delete, and add one at the end. The page reloads after a change of order. */
 export function AdminPlanEditor({ plan, cities, activities }: Props) {
@@ -119,7 +22,7 @@ export function AdminPlanEditor({ plan, cities, activities }: Props) {
   const [notes, setNotes] = useState('');
   const [busy, setBusy] = useState(false);
   const base = `/api/admin/plans/${encodeURIComponent(plan.slug)}`;
-  const [tab, setTab] = useState<'days' | 'photos' | 'covers'>('days');
+  const [tab, setTab] = useState<'days' | 'covers'>('days');
   const [activeId, setActiveId] = useState<number | null>(null);
   const active = days.find((day) => day.id === activeId);
 
@@ -161,13 +64,14 @@ export function AdminPlanEditor({ plan, cities, activities }: Props) {
       <Tabs
         tabs={[
           { id: 'days', label: `Days ${days.length}` },
-          { id: 'photos', label: `Photos ${plan.photos.length}` },
           { id: 'covers', label: 'Cover & highlights' },
         ]}
         current={tab}
         onChange={setTab}
       />
-      {tab === 'photos' && <Photos plan={plan} cities={cities} onNotice={setNotice} />}
+      <p className="-mt-8 text-sm text-muted-foreground">
+        Upload the plan's Photos and set their City in the <a href={`/admin/gallery?plan=${encodeURIComponent(plan.slug)}`}>Gallery</a>.
+      </p>
       {tab === 'covers' && (
         <>
           <Cover base={base} label="Plan cover" photos={plan.photos} coverId={plan.coverId} coverFocus={plan.coverFocus} onNotice={setNotice} />
