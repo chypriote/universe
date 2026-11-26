@@ -2,7 +2,7 @@
 
 Date: 2026-11-25. Decided by Nico.
 
-SerpApi gives about 1,000 flight searches a month. Nico has no fixed date or place to leave for: any month and any weekday suit him, as long as the flight is affordable and the region is in its good season. So the Flight prices page does not show a price for every day. It recommends, for each visible Trip (plans and past trips, so viewers see the best seasons too), the 3 cheapest Fare windows that fit the plan.
+SerpApi gives about 1,000 flight searches a month. Nico has no fixed date or place to leave for: any month and any weekday suit him, as long as the flight is affordable and the region is in its good season. So the Plan page does not show a price for every day. It recommends, for each visible Trip (plans and past trips, so viewers see the best seasons too), the 3 cheapest Fare windows that fit the plan.
 
 - Each Province has a Season (whole months), set in the admin. A City has its Airports, each with the weekdays of a direct flight from Paris.
 - A plan's Gateways are the Airports of its Cities. Searches are round trips to one Gateway only.
@@ -10,7 +10,7 @@ SerpApi gives about 1,000 flight searches a month. Nico has no fixed date or pla
 - A start date fits a plan when at most 20% of its Days, counted from that date, fall outside the Season of their main City's Province.
 - Start dates run from 27 March 2027 or two weeks from today, whichever is later, to 10 months from today.
 - `npm run china` stays a hand-run script. It searches the windows with the oldest price first (never searched first) and stops when SerpApi has no calls left that month, so every call refreshes the stalest price.
-- A plan with no Days has no Fare windows. Hidden Trips show nothing. Vietnam and Japan are not searched for now.
+- A plan with no Days has no Fare windows. Hidden Trips, and Trips switched off the Plan page in the admin, show nothing and are not searched. Vietnam and Japan are not searched for now.
 
 ## Considered options
 

@@ -74,7 +74,7 @@ const docs = defineCollection({
   }),
 });
 
-// The Flight prices page data, from D1 at build time. One entry; the page reads it with getEntry.
+// The Plan page data, from D1 at build time. One entry; the page reads it with getEntry.
 const fares = defineCollection({
   loader: async () => {
     const [plans, searches, airports] = await Promise.all([
