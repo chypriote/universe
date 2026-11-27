@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import EggIcon from '@lucide/svelte/icons/egg';
 	import EyeIcon from '@lucide/svelte/icons/eye';
+	import TreesIcon from '@lucide/svelte/icons/trees';
 	import MapPinOffIcon from '@lucide/svelte/icons/map-pin-off';
 	import MoonIcon from '@lucide/svelte/icons/moon';
 	import PlaneTakeoffIcon from '@lucide/svelte/icons/plane-takeoff';
@@ -62,6 +63,8 @@
 	]);
 
 	const changed = $derived(habitat !== '' || FLAGS.some((key) => flags[key] !== ''));
+
+	const habitatName = $derived(new Map(habitats.map((h) => [h.id, h.name])));
 
 	let search = $state('');
 	let sortKey = $state<'arrival' | 'name'>('arrival');
@@ -132,15 +135,22 @@
 				if (result.type === 'success') reset();
 			}}
 	>
-		<div class="grid gap-3 sm:grid-cols-2">
+		<div class="grid gap-3 sm:grid-cols-3">
 			<div class="flex flex-col gap-1.5">
-				<span class="text-sm font-bold">{label(labels, 'Habitat')}</span>
+				<span class="flex items-center gap-1.5 text-xs font-bold">
+					<TreesIcon class="size-4 text-icon-accent" aria-hidden="true" />
+					{label(labels, 'Habitat')}
+				</span>
 				<Select bind:value={habitat} label={label(labels, 'Habitat')} options={habitatOptions} />
 				<input type="hidden" name="habitat" value={habitat} />
 			</div>
 			{#each FLAGS as key (key)}
+				{@const look = FLAG_LOOK[key]}
 				<div class="flex flex-col gap-1.5">
-					<span class="text-sm font-bold">{label(labels, FLAG_LOOK[key].code)}</span>
+					<span class="flex items-center gap-1.5 text-xs font-bold">
+						<look.icon class="size-4 {look.color}" aria-hidden="true" />
+						{label(labels, look.code)}
+					</span>
 					<Select
 						bind:value={flags[key]}
 						label={label(labels, FLAG_LOOK[key].code)}
@@ -208,12 +218,17 @@
 							</span>
 						{/if}
 						<span class="truncate">{bird.name}</span>
-						<span class="ms-auto flex shrink-0 gap-1">
-							{#each FLAGS.filter((key) => bird[key]) as key (key)}
+						<span class="ms-auto w-24 shrink-0 truncate text-xs text-muted-foreground sm:w-32">
+							{habitatName.get(bird.habitatId ?? -1) ?? ''}
+						</span>
+						<span class="flex shrink-0 gap-1">
+							{#each FLAGS as key (key)}
 								{@const look = FLAG_LOOK[key]}
-								<span title={label(labels, look.code)}>
-									<look.icon class="size-4 {look.color}" aria-hidden="true" />
-									<span class="sr-only">{label(labels, look.code)}</span>
+								<span class="size-4" title={bird[key] ? label(labels, look.code) : undefined}>
+									{#if bird[key]}
+										<look.icon class="size-4 {look.color}" aria-hidden="true" />
+										<span class="sr-only">{label(labels, look.code)}</span>
+									{/if}
 								</span>
 							{/each}
 						</span>
