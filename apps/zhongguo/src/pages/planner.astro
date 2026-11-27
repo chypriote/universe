@@ -4,13 +4,13 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { flightPrices } from '@/lib/flight-prices';
 import { formatDayMonth, formatEuros, formatMonth, monthName } from '@universe/universe/format';
-import { journalFromEnv } from '@/lib/journal';
+import { publicReads } from '@/lib/journal';
 
 export const prerender = false;
 
 // Prices and covers are read on request.
-const covers = new Map((await journalFromEnv().listPlanCards()).map((card) => [card.slug, card]));
-const { plans, searches, airports } = await journalFromEnv().getFareData();
+const covers = new Map((await publicReads().listPlanCards()).map((card) => [card.slug, card]));
+const { plans, searches, airports } = await publicReads().getFareData();
 const today = new Date().toISOString().slice(0, 10);
 const { first, last, plans: lanes } = flightPrices(
   plans,
@@ -24,7 +24,7 @@ const pictures = new Map<string, string[]>();
 for (const plan of lanes) {
   let urls = covers.get(plan.slug)?.highlights ?? [];
   if (urls.length === 0) {
-    const page = await journalFromEnv().getPlan(plan.slug);
+    const page = await publicReads().getPlan(plan.slug);
     urls = [...new Set(page?.days.flatMap((day) => day.activities.map((activity) => activity.picture)).filter((url): url is string => url !== null))];
   }
   pictures.set(plan.slug, urls.slice(0, 3));

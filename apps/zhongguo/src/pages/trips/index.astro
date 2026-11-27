@@ -4,11 +4,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import TripArchive from '@/components/TripArchive.astro';
 import { SITE } from '@/config/site';
-import { journalFromEnv } from '@/lib/journal';
+import { publicReads } from '@/lib/journal';
 
 export const prerender = false;
 
-const journal = journalFromEnv();
+const journal = publicReads();
 const trips = [...(await journal.listTripCards()), ...(await journal.listPlanCards())];
 
 const jsonLd = {

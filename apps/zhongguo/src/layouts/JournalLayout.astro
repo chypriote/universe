@@ -1,6 +1,6 @@
 ---
 import AdminLayout from '@/layouts/AdminLayout.astro';
-import { journalFromEnv } from '@/lib/journal';
+import { journalWorkspace } from '@/lib/journal';
 
 export interface Props {
   title: string;
@@ -9,7 +9,7 @@ export interface Props {
 }
 
 const { title, current } = Astro.props;
-const journal = journalFromEnv();
+const journal = journalWorkspace();
 const [trips, plans] = await Promise.all([journal.listAdminTrips(), journal.listAdminPlans()]);
 const path = Astro.url.pathname;
 const groups = [

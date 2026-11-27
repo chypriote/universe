@@ -1,16 +1,17 @@
 ---
 import AdminLayout from '@/layouts/AdminLayout.astro';
 import { AdminAtlas, type AtlasTab } from '@/components/islands/AdminAtlas';
-import { journalFromEnv } from '@/lib/journal';
+import { atlas, provinceCovers } from '@/lib/journal';
 
 export const prerender = false;
 
-const journal = journalFromEnv();
+const journal = atlas();
+const covers = provinceCovers();
 const [provinces, cities, activities, visited] = await Promise.all([
   journal.listAdminProvinces(),
   journal.listAdminCities(),
   journal.listAdminActivities(),
-  journal.listVisitedProvinces(),
+  covers.listVisitedProvinces(),
 ]);
 const params = Astro.url.searchParams;
 const city = cities.find((candidate) => candidate.id === Number(params.get('city')));

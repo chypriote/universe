@@ -1,11 +1,11 @@
 ---
 import JournalLayout from '@/layouts/JournalLayout.astro';
 import { NewTripForm } from '@/components/islands/NewTripForm';
-import { journalFromEnv } from '@/lib/journal';
+import { journalWorkspace } from '@/lib/journal';
 
 export const prerender = false;
 
-const journal = journalFromEnv();
+const journal = journalWorkspace();
 const plans = (await Promise.all((await journal.listAdminPlans()).map((plan) => journal.getAdminPlan(plan.slug)))).filter((plan) => plan !== null);
 ---
 
