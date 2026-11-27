@@ -71,10 +71,11 @@ export function ActivityList({ activities, cities, onSaved, onDeleted, onNotice,
                 {activity.pictures.length} {activity.pictures.length === 1 ? 'picture' : 'pictures'}:{' '}
                 <a href={`/admin/gallery?activities=${encodeURIComponent(activity.province)}`}>manage them in the Gallery</a>.
               </p>
-              <button type="button" className={`${button} self-start text-error`} disabled={activity.days > 0} onClick={() => void remove(activity)}>
-                Delete
-              </button>
-              {activity.days > 0 && <p className="text-sm text-muted-foreground">A Day or a Plan Day lists it: take it off first.</p>}
+              <span className="self-start" title={activity.days > 0 ? 'A Day or a Plan Day lists it: take it off first.' : undefined}>
+                <button type="button" className={`${button} text-error`} disabled={activity.days > 0} onClick={() => void remove(activity)}>
+                  Delete
+                </button>
+              </span>
             </div>
           </details>
         </li>
