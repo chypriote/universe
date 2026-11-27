@@ -173,7 +173,6 @@ export type SetProvinceCoverFocusResult =
 
 export type ClearProvinceCoverResult = { ok: true } | { ok: false; error: 'unknown-province' };
 
-
 /** Part of the day a Photo was taken: before noon, noon to 18:00, from 18:00. */
 export type PhotoTime = 'morning' | 'afternoon' | 'evening';
 
