@@ -119,6 +119,17 @@ describe('Major Cities', () => {
     expect(card.description).toBe('A journey across Chengdu.');
   });
 
+  it('are replaced in the Trip Card and on the Trip page by the Trip description when it is set', async () => {
+    await twoCityTrip();
+    await env.DB.prepare("UPDATE trips SET description = 'Pandas and mist.' WHERE slug = 'sichuan'").run();
+
+    const [card] = await journal.listTripCards();
+    const page = await journal.getTrip('sichuan');
+
+    expect(card.description).toBe('Pandas and mist.');
+    expect(page?.description).toBe('Pandas and mist.');
+  });
+
   it('leave the trip map with a pin for every City, and the Trip page with every City listed', async () => {
     await twoCityTrip();
 
