@@ -15,18 +15,28 @@ const keyOf = (name: string, slug?: string) =>
 /**
  * The Journal with the pages read from a JSON snapshot in the bucket (docs/adr/0004).
  * A miss, an old snapshot or an unreadable one builds the page from D1 and stores it again. The bucket
- * never breaks a page: any bucket error falls back to D1.
+ * never breaks a page: any bucket error falls back to D1. When D1 fails (its daily quota, say), an old
+ * snapshot of the same build is served instead of the error.
  */
 export function withSnapshots(journal: Journal, bucket: R2Bucket): Journal {
   async function cached<T>(name: string, slug: string | undefined, build: () => Promise<T | null>, maxAge = MAX_AGE_MS) {
     const key = keyOf(name, slug);
+    let old: R2ObjectBody | null = null;
     try {
       const hit = await bucket.get(key);
       if (hit && Date.now() - hit.uploaded.getTime() < maxAge) return await hit.json<T>();
+      old = hit;
     } catch (error) {
       console.error('Snapshot read failed', key, error);
     }
-    const page = await build();
+    let page: T | null;
+    try {
+      page = await build();
+    } catch (error) {
+      if (!old) throw error;
+      console.error('D1 failed, serving the old snapshot', key, error);
+      return await old.json<T>();
+    }
     // Only pages that exist: an unknown slug must not write to the bucket.
     if (page) {
       try {

@@ -7,7 +7,7 @@ A Trip or plan page runs about 50 D1 queries, and the home page, `/trips` and th
 - The Journal reads that feed a public page go through `withSnapshots` (`src/lib/journal/snapshots.ts`): `getTrip`, `getPlan`, `listTripCards`, `listPlanCards`, `getHomeMap`, `getGallery` and `getFareData`. A miss builds the page from D1 and stores it at `snapshots/<build id>/<name>[/<slug>].json`. A page that does not exist stores nothing.
 - Any successful admin write (a non-GET request to `/api/admin`, in the middleware) deletes the snapshots it can change, chosen by the route (`snapshotsChangedBy`): Trip routes drop the Trip pages, their lists, the home map and the Gallery; plan routes drop the plan pages, their list and the fares; Seasons and Airports drop the fares; Province covers drop the home map. Cities, Activities and any route not listed feed every page, so they drop all. A new route is safe by default: it drops all.
 - A snapshot is also stale after a deploy (the build id is in the key) and after 7 days (`MAX_AGE_MS`), because a data migration run by hand does not pass through the admin. After such a migration, any admin save in the right area refreshes the pages at once.
-- A bucket error never breaks a page: it falls back to D1.
+- A bucket error never breaks a page: it falls back to D1. A D1 error (the daily read quota, say) serves the expired snapshot of the same build when there is one.
 - The flight searches are written by `npm run china`, not through the admin, so the fare data expires after 1 day (`FARES_MAX_AGE_MS`) and new prices show within a day.
 - The admin reads D1 as before.
 

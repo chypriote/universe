@@ -142,6 +142,21 @@ describe('Snapshots', () => {
     expect(calls.getTrip).toBe(2);
   });
 
+  it('serves the old snapshot when D1 fails, and fails when there is none', async () => {
+    await seed();
+    const { journal, raw } = counted();
+    const first = await journal.getTrip('yunnan-trip');
+    const failing = withSnapshots({ ...raw, getTrip: () => Promise.reject(new Error('D1 quota')) }, env.PHOTOS);
+
+    vi.useFakeTimers({ toFake: ['Date'], now: Date.now() + 8 * 24 * 60 * 60 * 1000 });
+    try {
+      expect(await failing.getTrip('yunnan-trip')).toEqual(first);
+      await expect(failing.getTrip('other-trip')).rejects.toThrow('D1 quota');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('builds the page from D1 when the snapshot is unreadable', async () => {
     await seed();
     const { journal, calls } = counted();
