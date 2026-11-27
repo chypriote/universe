@@ -12,7 +12,8 @@ Aviary is a Showcase theme. Core tokens, semantic bindings and the contrast tabl
 | `--theme-accent` | lime.500 #8fd14f / lime.400 #a3e05f | Active tab |
 | `--theme-icon-accent` | lime.700 #3f7d0e / lime.400 #a3e05f | Title dot |
 | `--theme-selected`, `-foreground` | accent (default) | Pressed Toggle |
-| `--display-family` | Lilita One, weight 400 | No faux bold |
+| `--popup-picture-size` | 150px (Showcase default) | Popup media column, at most 40% of the Popup |
+| `--display-family` | Lilita One, then Nunito | Weight 400, no faux bold |
 | `--tracking-label-value` | 0.02em | |
 | `--tracking-caption-value` | 0.02em | |
 | `--tracking-heading-value` | 0 | |
@@ -31,3 +32,11 @@ All pairs of the Showcase table pass in light and dark with these slots. Light: 
 | parakeet.outline | icon accent (light-dark) | Login art, 3:1 or more on the page |
 | parakeet.wing | lime.800 #2f6209 / lime.700 #3f7d0e | Login art, 3:1 or more on the body |
 | parakeet.beak | navy.800 / navy.950 | Login art, beak and eye, 3:1 or more on the body |
+| flag.seen | color.info (sky.400) | BirdTile flag icon |
+| flag.flown | color.success (mint.400) | BirdTile flag icon |
+| flag.lost | color.destructive (coral.600 / coral.400) | BirdTile flag icon |
+| flag.nest | color.highlight (sun.400) | BirdTile flag icon |
+| flag.shadow | 0 1px 3px rgb(0 0 0 / .55) | BirdTile flag icons, so they read on any picture |
+| tile.initials.bg | bg.highlight, bg.success, bg.info, bg.accent (in this order) | Initials square, picked by name |
+| tile.initials.text | text.on-accent | Initials square |
+| picture.first.outline | icon.accent, 2px | PictureList, the first Picture (the tile Picture) |
