@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import type { AdminActivity, AdminCity } from '@/lib/journal';
 import { ACTIVITY_KINDS, ACTIVITY_RATINGS } from '@/lib/journal/activity-kinds';
 
@@ -27,13 +27,15 @@ type Props = {
   cityId?: number;
   onSaved: (activity: AdminActivity) => void;
   onError: (message: string) => void;
+  /** Shown at the bottom left of the form, beside Save. */
+  children?: ReactNode;
 };
 
 const snapshot = (form: HTMLFormElement) => JSON.stringify([...new FormData(form)]);
 const number = (value: FormDataEntryValue | null) => (String(value ?? '').trim() === '' ? null : Number(value));
 
 /** The Activity form: adds one, or edits one. Shared by the Activities, City and Province pages. */
-export function ActivityForm({ cities, activity, cityId, onSaved, onError }: Props) {
+export function ActivityForm({ cities, activity, cityId, onSaved, onError, children }: Props) {
   const [busy, setBusy] = useState(false);
   /** The last pinyin filled in from the hanzi: typing hanzi replaces it, never a pinyin typed by hand. */
   const autoPinyin = useRef(activity ? null : '');
@@ -181,7 +183,10 @@ export function ActivityForm({ cities, activity, cityId, onSaved, onError }: Pro
         <button type="button" disabled={busy} className={button} onClick={(event) => void lookUp(event.currentTarget.form!)}>
           Look up
         </button>
-        <button type="submit" disabled={busy || !dirty} className={`${button} ml-auto ${dirty ? 'border-foreground bg-foreground text-background' : ''}`}>
+      </div>
+      <div className="flex items-end justify-between gap-3">
+        <div className="flex flex-col gap-4">{children}</div>
+        <button type="submit" disabled={busy || !dirty} className={`${button} ${dirty ? 'border-foreground bg-foreground text-background' : ''}`}>
           {activity ? 'Save' : 'Add Activity'}
         </button>
       </div>
