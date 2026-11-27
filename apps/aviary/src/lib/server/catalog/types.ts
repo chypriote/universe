@@ -10,7 +10,7 @@ export type { LoginResult };
 export type Labels = Record<string, string>;
 
 /** The three tabs. Grounded is computed from Flown or Lost; Seen is the Seen flag. */
-export type BirdView = 'aloft' | 'grounded' | 'seen';
+export type BirdView = 'flock' | 'aloft' | 'grounded' | 'seen';
 
 /** The Nest filter: every Bird, only Nest Birds, or only Birds not in the Nest. */
 export type NestFilter = 'all' | 'only' | 'not';
