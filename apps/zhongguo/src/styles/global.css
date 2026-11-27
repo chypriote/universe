@@ -211,6 +211,11 @@
   mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
+/* Shallower photo fade for the home journey teaser. */
+@utility mist-soft {
+  mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+}
+
 /* Vertical calligraphy, read top to bottom. */
 @utility vertical {
   writing-mode: vertical-rl;
