@@ -233,7 +233,7 @@ describe('Province Cover', () => {
       {
         name: 'Sichuan',
         nameZh: '四川',
-        photo: 'https://photos.test/thumbs/sichuan/first.jpg.webp',
+        photo: 'https://photos.test/trips/sichuan/first.jpg',
         tripCount: 1,
         href: '/trips/sichuan',
       },
@@ -246,7 +246,7 @@ describe('Province Cover', () => {
 
     const [province] = await journal.getHomeMap();
 
-    expect(province.photo).toBe('https://photos.test/thumbs/sichuan/second.jpg.webp');
+    expect(province.photo).toBe('https://photos.test/trips/sichuan/second.jpg');
   });
 });
 

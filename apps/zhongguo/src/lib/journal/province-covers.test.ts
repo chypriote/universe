@@ -5,6 +5,7 @@ import { addCity, addDay, addPhoto, addProvince, addTrip, resetDatabase, setProv
 
 const journal = createJournal(env);
 const thumb = (slug: string, name: string) => `https://photos.test/thumbs/${slug}/${name}.webp`;
+const full = (slug: string, name: string) => `https://photos.test/trips/${slug}/${name}`;
 const names = (photos: { name: string }[]) => photos.map((photo) => photo.name);
 
 beforeEach(resetDatabase);
@@ -118,7 +119,7 @@ describe('Province Cover', () => {
     expect(await journal.setProvinceCover('Sichuan', picked)).toEqual({ ok: true });
 
     const home = await journal.getHomeMap();
-    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(thumb('first', 'b.jpg'));
+    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(full('first', 'b.jpg'));
     const row = (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
     expect(row).toMatchObject({ coverId: picked, fallback: false });
   });
@@ -132,7 +133,7 @@ describe('Province Cover', () => {
     await journal.setProvinceCover('Sichuan', a);
 
     const home = await journal.getHomeMap();
-    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(thumb('first', 'a.jpg'));
+    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(full('first', 'a.jpg'));
   });
 
   it('clear brings back the first Photo', async () => {
@@ -144,7 +145,7 @@ describe('Province Cover', () => {
     expect(await journal.clearProvinceCover('Sichuan')).toEqual({ ok: true });
 
     const home = await journal.getHomeMap();
-    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(thumb('first', 'a.jpg'));
+    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(full('first', 'a.jpg'));
     const row = (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
     expect(row).toMatchObject({ coverId: null, fallback: true });
   });
