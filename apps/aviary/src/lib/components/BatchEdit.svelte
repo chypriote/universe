@@ -1,7 +1,14 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import EggIcon from '@lucide/svelte/icons/egg';
+	import EyeIcon from '@lucide/svelte/icons/eye';
+	import MapPinOffIcon from '@lucide/svelte/icons/map-pin-off';
+	import MoonIcon from '@lucide/svelte/icons/moon';
+	import PlaneTakeoffIcon from '@lucide/svelte/icons/plane-takeoff';
 	import { label, type Labels } from '#lib/labels';
-	import type { BirdTile, ListValue } from '#lib/server/catalog/types';
+	import { initials, tintClass } from '#lib/tile';
+	import type { BatchBird, ListValue } from '#lib/server/catalog/types';
+	import BirdPicture from './BirdPicture.svelte';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
@@ -12,7 +19,7 @@
 		labels,
 		error = null
 	}: {
-		birds: BirdTile[];
+		birds: BatchBird[];
 		habitats: ListValue[];
 		labels: Labels;
 		/** Label code name of the last refusal on this form. */
@@ -20,15 +27,18 @@
 	} = $props();
 
 	const FLAGS = ['seen', 'flown', 'lost', 'roosted', 'nest'] as const;
-	const FLAG_LABELS = {
-		seen: 'Seen',
-		flown: 'Flown',
-		lost: 'Lost',
-		roosted: 'Roosted',
-		nest: 'Nest'
+	// Same icons and colours as the BirdTile flags and the BirdForm; Roosted is a moon.
+	const FLAG_LOOK = {
+		seen: { code: 'Seen', icon: EyeIcon, color: 'text-info' },
+		flown: { code: 'Flown', icon: PlaneTakeoffIcon, color: 'text-success' },
+		lost: { code: 'Lost', icon: MapPinOffIcon, color: 'text-destructive' },
+		roosted: { code: 'Roosted', icon: MoonIcon, color: 'text-muted-foreground' },
+		nest: { code: 'Nest', icon: EggIcon, color: 'text-highlight' }
 	} as const;
 
 	let selected = $state<number[]>([]);
+	/** Birds whose thumbnail failed to load; they show initials instead. */
+	let failed = $state<number[]>([]);
 	let habitat = $state('');
 	let flags = $state<Record<(typeof FLAGS)[number], string>>({
 		seen: '',
@@ -71,33 +81,16 @@
 	<form
 		method="POST"
 		action="?/editBirds"
-		class="flex flex-col gap-3"
+		class="grid gap-4 lg:grid-cols-3"
 		use:enhance={() =>
 			async ({ result, update }) => {
 				await update({ reset: false });
 				if (result.type === 'success') reset();
 			}}
 	>
-		<div class="grid gap-3 sm:grid-cols-2">
-			<div class="flex flex-col gap-1.5">
-				<span class="text-sm font-bold">{label(labels, 'Habitat')}</span>
-				<Select bind:value={habitat} label={label(labels, 'Habitat')} options={habitatOptions} />
-				<input type="hidden" name="habitat" value={habitat} />
-			</div>
-			{#each FLAGS as key (key)}
-				<div class="flex flex-col gap-1.5">
-					<span class="text-sm font-bold">{label(labels, FLAG_LABELS[key])}</span>
-					<Select
-						bind:value={flags[key]}
-						label={label(labels, FLAG_LABELS[key])}
-						options={flagOptions}
-					/>
-					<input type="hidden" name={key} value={flags[key]} />
-				</div>
-			{/each}
-		</div>
-
-		<ul class="flex max-h-80 flex-col overflow-y-auto rounded-md border border-input">
+		<ul
+			class="flex max-h-[32rem] flex-col overflow-y-auto rounded-md border border-input lg:col-span-1"
+		>
 			<li class="border-b border-input">
 				<label class="flex min-h-11 cursor-pointer items-center gap-2 px-3 text-sm font-bold">
 					<input
@@ -112,15 +105,40 @@
 			</li>
 			{#each birds as bird (bird.id)}
 				<li>
-					<label class="flex min-h-11 cursor-pointer items-center gap-2 px-3 text-sm">
+					<label class="flex min-h-11 cursor-pointer items-center gap-2 px-3 py-1 text-sm">
 						<input
 							type="checkbox"
 							name="ids"
 							value={bird.id}
 							bind:group={selected}
-							class="size-5 accent-icon-accent"
+							class="size-5 shrink-0 accent-icon-accent"
 						/>
+						{#if bird.pictureId !== null && !failed.includes(bird.id)}
+							<BirdPicture
+								pictureId={bird.pictureId}
+								class="size-8 shrink-0 rounded-sm object-cover"
+								onFail={() => (failed = [...failed, bird.id])}
+							/>
+						{:else}
+							<span
+								class="flex size-8 shrink-0 items-center justify-center rounded-sm text-xs font-extrabold text-primary-foreground {tintClass(
+									bird.name
+								)}"
+								aria-hidden="true"
+							>
+								{initials(bird.name)}
+							</span>
+						{/if}
 						<span class="truncate">{bird.name}</span>
+						<span class="ms-auto flex shrink-0 gap-1">
+							{#each FLAGS.filter((key) => bird[key]) as key (key)}
+								{@const look = FLAG_LOOK[key]}
+								<span title={label(labels, look.code)}>
+									<look.icon class="size-4 {look.color}" aria-hidden="true" />
+									<span class="sr-only">{label(labels, look.code)}</span>
+								</span>
+							{/each}
+						</span>
 					</label>
 				</li>
 			{:else}
@@ -128,10 +146,30 @@
 			{/each}
 		</ul>
 
-		<div class="flex justify-end">
-			<Button type="submit" intent="success" disabled={selected.length === 0 || !changed}>
-				{label(labels, 'BatchApply')}
-			</Button>
+		<div class="flex flex-col gap-4 lg:col-span-2">
+			<div class="grid gap-3 sm:grid-cols-2">
+				<div class="flex flex-col gap-1.5">
+					<span class="text-sm font-bold">{label(labels, 'Habitat')}</span>
+					<Select bind:value={habitat} label={label(labels, 'Habitat')} options={habitatOptions} />
+					<input type="hidden" name="habitat" value={habitat} />
+				</div>
+				{#each FLAGS as key (key)}
+					<div class="flex flex-col gap-1.5">
+						<span class="text-sm font-bold">{label(labels, FLAG_LOOK[key].code)}</span>
+						<Select
+							bind:value={flags[key]}
+							label={label(labels, FLAG_LOOK[key].code)}
+							options={flagOptions}
+						/>
+						<input type="hidden" name={key} value={flags[key]} />
+					</div>
+				{/each}
+			</div>
+			<div class="flex justify-end">
+				<Button type="submit" intent="success" disabled={selected.length === 0 || !changed}>
+					{label(labels, 'BatchApply')}
+				</Button>
+			</div>
 		</div>
 	</form>
 </section>

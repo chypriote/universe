@@ -6,10 +6,10 @@ Shared components (StickyBar, EmptyState, Field, Button, Popup, TileGrid and the
 
 ## Hierarchy
 
-| Level | Components |
-| --- | --- |
-| Component | BirdTile, BirdPopup, BirdPicture |
-| Pattern | Parakeets (login art), BirdList, SightingList, AddBird, BirdForm, PictureList, CropPicture, SimilarNames, ValueList, BatchEdit, ArchivedList, AdminLink |
+| Level     | Components                                                                                                                                              |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Component | BirdTile, BirdPopup, BirdPicture                                                                                                                        |
+| Pattern   | Parakeets (login art), BirdList, SightingList, AddBird, BirdForm, PictureList, CropPicture, SimilarNames, ValueList, BatchEdit, ArchivedList, AdminLink |
 
 The shared StickyBar, TileGrid, Popup, EmptyState, ConfirmDialog, Field and Select are used as Showcase defines them.
 
@@ -114,7 +114,7 @@ Props: `kind` (`habitat` or `song`), `heading`, `values` (name and number of Bir
 **Hierarchy:** Pattern
 **Purpose:** Change the Habitat and flags of several Birds at once, on the Admin page.
 
-Props: `birds` (tiles of every Bird not Archived, by name), `habitats`, `labels`, `error` (label code name of the last refusal). A Select for the Habitat (keep, none, or a value) and one per flag (keep, set, clear), all starting on keep. Below, a scrolling checklist of Birds with a select-all row and the number selected. The Apply Button is disabled until a Bird is picked and one field is not on keep; it posts `?/editBirds`, then the form and selection reset. Seen cannot be cleared on a Bird that has a Sighting: that Bird keeps Seen and takes the other changes.
+Props: `birds` (every Bird not Archived, by name: a tile plus `roosted`), `habitats`, `labels`, `error` (label code name of the last refusal). From `lg` up, two columns: the Bird checklist on the left (1/3), the fields and Apply on the right (2/3); below `lg` they stack. A Select for the Habitat (keep, none, or a value) and one per flag (keep, set, clear), all starting on keep. The scrolling checklist has a select-all row with the number selected; each Bird row shows a 32px thumbnail of its first Picture (lazy, from `/pictures/:id`; initials on a tint when none or on failure), the name, and on the right one icon per set flag (the BirdTile icons and colours, a moon for Roosted) with a tooltip naming it. The Apply Button is disabled until a Bird is picked and one field is not on keep; it posts `?/editBirds`, then the form and selection reset. Seen cannot be cleared on a Bird that has a Sighting: that Bird keeps Seen and takes the other changes.
 
 ## ArchivedList
 

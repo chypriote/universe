@@ -47,6 +47,9 @@ export interface BirdTile {
 	pictureId: number | null;
 }
 
+/** A tile with the Roosted flag, for the Admin batch list only. */
+export type BatchBird = BirdTile & { roosted: boolean };
+
 /** One meeting with a Bird. */
 export interface Sighting {
 	id: number;
@@ -172,6 +175,8 @@ export interface Catalog {
 	labels(token: string): Promise<Labels>;
 	/** Tiles of one view, Archived excluded, Arrival newest first (a month or year sorts with days, none last). */
 	listBirds(token: string, query: ListBirdsQuery): Promise<BirdTile[]>;
+	/** Every Bird not Archived, by name, with its Roosted flag (a tile never carries it): the Admin batch list. */
+	listBatchBirds(token: string): Promise<BatchBird[]>;
 	/** Stores a new Bird with its ordered Pictures (bytes in R2 under random keys). */
 	addBird(token: string, input: BirdInput): Promise<AddBirdResult>;
 	/**
