@@ -49,6 +49,10 @@ States: default, hover and focus (lift and tilt, motion allowed only; focus also
 
 Props: `view`, `birds`, `labels`, `filters`, `habitats`, `songs`. StickyBar with the three tabs, the search, the Habitat and Songs selects, then Seen on Aloft and Grounded or Nest and Roosted on Seen, AddBird and AdminLink; then a TileGrid of BirdTiles (Arrival newest first). The filters live in the URL query and reload the tab after a short pause. With no Bird: the Showcase EmptyState; with a filter or search active, an EmptyState with a "clear filters" Button. A tile opens the BirdPopup. Pictures come only through the authenticated `/pictures/:id` route (`Cache-Control: private`).
 
+## Fixed words
+
+The shared components take their fixed words from Showcase `setUiLabels`, set in the root layout from these label code names: SkipToContent, SwitchToLight, SwitchToDark, Cancel, Save, Lists, PickDate (`{label}` stands for the Field label). CropPicture also uses Cancel, Save and Zoom. The optional label `Lang` sets the page `lang`; with none it stays `en`. A missing label shows its code name, as everywhere.
+
 ## Login page
 
 `h1` "Log in", Field "Password", Button `success` "Log in", Parakeets. A wrong password shows the Field error. After login the Owner returns to the page in `next`.

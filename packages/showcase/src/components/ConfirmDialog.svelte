@@ -1,6 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import * as AlertDialog from './ui/alert-dialog/index.js';
+	import { getUiLabels } from '../ui-labels.js';
+
+	const ui = getUiLabels();
 
 	let {
 		open = $bindable(false),
@@ -35,7 +38,7 @@
 		</AlertDialog.Header>
 		{@render children?.()}
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Cancel>{ui().cancel}</AlertDialog.Cancel>
 			<!-- The bits-ui Action does not close the dialog by itself. -->
 			<AlertDialog.Action disabled={actionDisabled} onclick={confirm}>
 				{actionLabel}

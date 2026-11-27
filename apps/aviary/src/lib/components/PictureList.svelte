@@ -70,6 +70,7 @@
 		{#key queue[0]}
 			<CropPicture
 				file={queue[0]}
+				{labels}
 				{busy}
 				onUse={(chosen) => crop(queue[0], chosen)}
 				onSkip={() => (queue = queue.slice(1))}

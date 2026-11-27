@@ -1,6 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Button from './Button.svelte';
+	import { getUiLabels } from '../ui-labels.js';
+
+	const ui = getUiLabels();
 
 	let {
 		busy = false,
@@ -21,7 +24,7 @@
 <div class="flex flex-wrap items-center gap-2">
 	{@render start?.()}
 	<div class="ms-auto flex gap-2">
-		{#if onCancel}<Button onclick={onCancel}>Cancel</Button>{/if}
-		<Button intent="success" type="submit" loading={busy} {disabled}>Save</Button>
+		{#if onCancel}<Button onclick={onCancel}>{ui().cancel}</Button>{/if}
+		<Button intent="success" type="submit" loading={busy} {disabled}>{ui().save}</Button>
 	</div>
 </div>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { cn } from '../utils.js';
+	import { getUiLabels } from '../ui-labels.js';
 
 	type Link = { key: string; href: string; label: string };
 
@@ -11,10 +12,12 @@
 		/** `href` already resolved by the app (`resolve('/wishlist')`). */
 		links: Link[];
 	} = $props();
+
+	const ui = getUiLabels();
 </script>
 
 <nav
-	aria-label="Lists"
+	aria-label={ui().lists}
 	class="inline-flex gap-0.5 rounded-control bg-card p-1 shadow-(--shadow-raised)"
 >
 	{#each links as link (link.key)}

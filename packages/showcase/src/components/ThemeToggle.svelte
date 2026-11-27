@@ -3,6 +3,9 @@
 	import MoonIcon from '@lucide/svelte/icons/moon';
 	import SunIcon from '@lucide/svelte/icons/sun';
 	import { Button } from './ui/button/index.js';
+	import { getUiLabels } from '../ui-labels.js';
+
+	const ui = getUiLabels();
 
 	let dark = $state(false);
 
@@ -30,5 +33,5 @@
 	{:else}
 		<MoonIcon aria-hidden="true" class="size-4" />
 	{/if}
-	<span class="sr-only">{dark ? 'Switch to light theme' : 'Switch to dark theme'}</span>
+	<span class="sr-only">{dark ? ui().switchToLight : ui().switchToDark}</span>
 </Button>
