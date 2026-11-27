@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { label } from '#lib/labels';
 	import { lists } from '#lib/lists';
+	import BatchEdit from '#lib/components/BatchEdit.svelte';
 	import ArchivedList from '#lib/components/ArchivedList.svelte';
 	import ValueList from '#lib/components/ValueList.svelte';
 	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
@@ -32,6 +33,12 @@
 		values={data.songs}
 		labels={data.labels}
 		error={refusal('song')}
+	/>
+	<BatchEdit
+		birds={data.birds}
+		habitats={data.habitats}
+		labels={data.labels}
+		error={form && 'batchError' in form ? (form.batchError ?? null) : null}
 	/>
 	<ArchivedList
 		birds={data.archived}

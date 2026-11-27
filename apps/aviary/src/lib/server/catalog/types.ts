@@ -156,6 +156,15 @@ export interface SimilarBird extends BirdTile {
 export type ArchiveResult = { ok: true } | { ok: false; error: 'not-found' };
 export type DeleteForeverResult = { ok: true } | { ok: false; error: 'not-found' | 'not-archived' };
 
+/** What a batch edit changes. A missing field stays as it is; `habitatId: null` clears the Habitat. */
+export interface BirdBatchChange {
+	habitatId?: number | null;
+	flags?: Partial<BirdFlags>;
+}
+
+export type BatchEditResult =
+	{ ok: true; updated: number } | { ok: false; error: 'not-found' | 'bad-habitat' };
+
 export interface Catalog {
 	login(password: string): Promise<LoginResult>;
 	verifyToken(token: string): Promise<boolean>;
@@ -171,6 +180,11 @@ export interface Catalog {
 	 * Picture stays. Seen stays on while the Bird has a Sighting, whatever `flags.seen` says.
 	 */
 	editBird(token: string, id: number, input: BirdInput): Promise<EditBirdResult>;
+	/**
+	 * Applies one change to every listed Bird together, or to none. Seen cannot be cleared on a
+	 * Bird that has a Sighting: that Bird keeps Seen and gets the rest.
+	 */
+	editBirds(token: string, ids: number[], change: BirdBatchChange): Promise<BatchEditResult>;
 	/** Archives a Bird: it leaves every view, filter and search, and shows only in similar names. */
 	archiveBird(token: string, id: number): Promise<ArchiveResult>;
 	/** Brings an Archived Bird back to its view. */

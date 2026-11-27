@@ -63,7 +63,7 @@ A Bird the Owner does not want to see on the pages, for any reason. It is stored
 ### Admin
 
 **Admin page**:
-The page, behind the Owner login, where the Owner keeps the Habitat and Songs lists and the Archived Birds. A value can be added, renamed, or removed after moving every Bird that uses it to another value.
+The page, behind the Owner login, where the Owner keeps the Habitat and Songs lists, changes the Habitat and flags of several Birds at once, and manages the Archived Birds. A value can be added, renamed, or removed after moving every Bird that uses it to another value.
 
 ### People
 

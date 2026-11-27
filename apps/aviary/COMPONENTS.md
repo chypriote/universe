@@ -9,7 +9,7 @@ Shared components (StickyBar, EmptyState, Field, Button, Popup, TileGrid and the
 | Level | Components |
 | --- | --- |
 | Component | BirdTile, BirdPopup |
-| Pattern | Parakeets (login art), BirdList, SightingList, AddBird, BirdForm, PictureList, CropPicture, SimilarNames, ValueList, ArchivedList, AdminLink |
+| Pattern | Parakeets (login art), BirdList, SightingList, AddBird, BirdForm, PictureList, CropPicture, SimilarNames, ValueList, BatchEdit, ArchivedList, AdminLink |
 
 The shared StickyBar, TileGrid, Popup, EmptyState, ConfirmDialog, Field and Select are used as Showcase defines them.
 
@@ -101,6 +101,13 @@ Props: `labels`. Reads the Habitat and Songs lists from the page data.
 **Purpose:** One Admin list, Habitat or Songs.
 
 Props: `kind` (`habitat` or `song`), `heading`, `values` (name and number of Birds using it), `labels`, `error` (label code name of the last refusal). One row per value: a rename Field with the use count and a Rename Button, and a danger Remove Button. A value nobody uses is removed at once. A value in use opens a ConfirmDialog with a Select of the other values: removing moves every Bird there first. A last Field and Button add a value.
+
+## BatchEdit
+
+**Hierarchy:** Pattern
+**Purpose:** Change the Habitat and flags of several Birds at once, on the Admin page.
+
+Props: `birds` (tiles of every Bird not Archived, by name), `habitats`, `labels`, `error` (label code name of the last refusal). A Select for the Habitat (keep, none, or a value) and one per flag (keep, set, clear), all starting on keep. Below, a scrolling checklist of Birds with a select-all row and the number selected. The Apply Button is disabled until a Bird is picked and one field is not on keep; it posts `?/editBirds`, then the form and selection reset. Seen cannot be cleared on a Bird that has a Sighting: that Bird keeps Seen and takes the other changes.
 
 ## ArchivedList
 

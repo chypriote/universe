@@ -55,4 +55,10 @@ INSERT OR REPLACE INTO labels (code_name, word) VALUES
 	('DeleteForeverText', 'DeleteForeverText'),
 	('NoArchived', 'NoArchived'),
 	('BirdNotArchived', 'BirdNotArchived'),
+	('BatchEdit', 'BatchEdit'),
+	('BatchKeep', 'BatchKeep'),
+	('BatchSet', 'BatchSet'),
+	('BatchClear', 'BatchClear'),
+	('BatchSelectAll', 'BatchSelectAll'),
+	('BatchApply', 'BatchApply'),
 	('Admin', 'Admin');
