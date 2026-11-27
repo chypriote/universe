@@ -1,6 +1,18 @@
 import { editDayRows } from './day-edit';
 import { TRIP_TABLES } from './tables';
 import { fileNameDate, isDate, readPhotoFile } from './photo-file';
+import {
+  checkFileName,
+  cityExists,
+  findPhotoByName,
+  ID_CHUNK,
+  insertPhoto,
+  putPhotoFiles,
+  removePhotos,
+  replacePhotoFile,
+  titleValue,
+  updatePhotos,
+} from './photo-store';
 import type {
   PhotoTime,
   AddCityInput,
@@ -116,21 +128,13 @@ type PhotoRow = {
 
 const PHOTO_TIMES: PhotoTime[] = ['morning', 'afternoon', 'evening'];
 
-const IMAGE_TYPES: Record<string, string> = {
-  jpg: 'image/jpeg',
-  jpeg: 'image/jpeg',
-  png: 'image/png',
-  webp: 'image/webp',
-};
-const ID_CHUNK = 90;
-const CACHE_CONTROL = 'public, max-age=31536000, immutable';
 
 type ChoiceRow = { id: number; name: string; slug: string; width: number; height: number; version: number };
 
 type CoverRow = { photo_id: number; slug: string; title: string; position?: number; province?: string };
 
 /** Whether a Photo of this size can be the cover: landscape for a Trip Cover, portrait for a Highlight Photo. */
-function fits(kind: CoverRef['kind'], size: { width: number; height: number }): boolean {
+export function fits(kind: CoverRef['kind'], size: { width: number; height: number }): boolean {
   if (kind === 'trip-cover') return orientationOf(size) === 'landscape';
   if (kind === 'highlight') return orientationOf(size) === 'portrait';
   return true;
@@ -505,22 +509,19 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
 
   async function uploadPhoto(input: UploadPhotoInput): Promise<UploadPhotoResult> {
     const { name } = input;
-    if (!name || name.includes('/')) return { ok: false, error: 'invalid-name' };
-    const contentType = IMAGE_TYPES[name.split('.').pop()?.toLowerCase() ?? ''];
-    if (!contentType) return { ok: false, error: 'unsupported-type' };
+    const checked = checkFileName(name);
+    if ('error' in checked) return { ok: false, error: checked.error };
 
     const trip = await env.DB.prepare('SELECT id, slug FROM trips WHERE slug = ?')
       .bind(input.trip)
       .first<{ id: number; slug: string }>();
     if (!trip) return { ok: false, error: 'unknown-trip' };
 
-    if (input.cityId !== undefined && !(await env.DB.prepare('SELECT id FROM cities WHERE id = ?').bind(input.cityId).first())) {
+    if (input.cityId !== undefined && !(await cityExists(env, input.cityId))) {
       return { ok: false, error: 'unknown-city' };
     }
 
-    const existing = await env.DB.prepare('SELECT id FROM photos WHERE trip_id = ? AND name = ?')
-      .bind(trip.id, name)
-      .first<{ id: number }>();
+    const existing = await findPhotoByName(env, TRIP_TABLES, trip.id, name);
     if (existing && !input.overwrite) return { ok: false, error: 'exists' };
 
     if (input.date !== undefined && !isDate(input.date)) return { ok: false, error: 'invalid-date' };
@@ -534,26 +535,18 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       if (broken.length > 0) return { ok: false, error: 'breaks-cover', covers: broken.map(toCoverRef) };
     }
 
-    // R2 first: a failed put leaves no row without a file.
-    await env.PHOTOS.put(`trips/${trip.slug}/${name}`, input.file, {
-      httpMetadata: { contentType, cacheControl: CACHE_CONTROL },
-    });
-    await env.PHOTOS.put(`thumbs/${trip.slug}/${name}.webp`, input.thumb, {
-      httpMetadata: { contentType: 'image/webp', cacheControl: CACHE_CONTROL },
-    });
+    await putPhotoFiles(env, trip.slug, name, checked.contentType, input.file, input.thumb);
     let photoId: number;
     if (existing) {
       photoId = existing.id;
-      await env.DB.prepare('UPDATE photos SET width = ?, height = ?, time = COALESCE(time, ?), version = version + 1 WHERE id = ?')
-        .bind(file.width, file.height, file.exifTime, existing.id)
-        .run();
+      await replacePhotoFile(env, TRIP_TABLES, existing.id, file, { set: 'time = COALESCE(time, ?), ', params: [file.exifTime] });
     } else {
-      const row = await env.DB.prepare(
-        'INSERT INTO photos (trip_id, name, width, height, date, time, title, city_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id',
-      )
-        .bind(trip.id, name, file.width, file.height, date, file.exifTime, input.title ?? null, input.cityId ?? null)
-        .first<{ id: number }>();
-      photoId = row!.id;
+      photoId = await insertPhoto(env, TRIP_TABLES, trip.id, name, file, {
+        date,
+        time: file.exifTime,
+        title: input.title ?? null,
+        city_id: input.cityId ?? null,
+      });
       await placeOnDayOfDate(photoId, trip.id, date!);
     }
 
@@ -574,7 +567,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     if (place) {
       const cityId = 'cityId' in place ? place.cityId : null;
       const provinceId = 'onTheWay' in place ? (place.provinceId ?? null) : null;
-      if (cityId !== null && !(await env.DB.prepare('SELECT id FROM cities WHERE id = ?').bind(cityId).first())) {
+      if (cityId !== null && !(await cityExists(env, cityId))) {
         return { ok: false, error: 'unknown-city' };
       }
       if (provinceId !== null && !(await env.DB.prepare('SELECT id FROM provinces WHERE id = ?').bind(provinceId).first())) {
@@ -593,7 +586,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     }
     if (input.title !== undefined) {
       sets.push('title = ?');
-      params.push(input.title.trim() || null);
+      params.push(titleValue(input.title));
     }
     if (input.date !== undefined) {
       const moving = await inChunks(ids, (marks, chunk) =>
@@ -609,15 +602,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       }
     }
     if (sets.length > 0) {
-      await env.DB.batch(
-        Array.from({ length: Math.ceil(ids.length / ID_CHUNK) }, (_, index) => {
-          const chunk = ids.slice(index * ID_CHUNK, (index + 1) * ID_CHUNK);
-          return env.DB.prepare(`UPDATE photos SET ${sets.join(', ')} WHERE id IN (${chunk.map(() => '?').join(',')})`).bind(
-            ...params,
-            ...chunk,
-          );
-        }),
-      );
+      await updatePhotos(env, TRIP_TABLES, ids, sets, params);
     }
     return { ok: true, updated: ids.length };
   }
@@ -706,8 +691,6 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
                   ).bind(id, cover.province),
           );
         });
-        statements.push(env.DB.prepare('DELETE FROM day_photos WHERE photo_id = ?').bind(photo.id));
-        statements.push(env.DB.prepare('DELETE FROM photos WHERE id = ?').bind(photo.id));
         deleted.push(photo.id);
       } else {
         kept.push({
@@ -721,12 +704,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
       }
     }
 
-    if (statements.length > 0) await env.DB.batch(statements);
-    // The rows go first: a failed bucket delete leaves an orphan file, never a row without one.
-    const gone = photos.filter((photo) => deleted.includes(photo.id));
-    if (gone.length > 0) {
-      await env.PHOTOS.delete(gone.flatMap((photo) => [`trips/${photo.slug}/${photo.name}`, `thumbs/${photo.slug}/${photo.name}.webp`]));
-    }
+    await removePhotos(env, TRIP_TABLES, photos.filter((photo) => deleted.includes(photo.id)), statements);
     return { deleted, kept };
   }
 
