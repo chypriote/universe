@@ -23,6 +23,11 @@ function pillClass(active: boolean): string {
 export function GalleryArchive({ photos, provinces, cities }: Gallery) {
   const [filter, setFilter] = useState<Filter>({ region: null, city: null });
 
+  const visibleCities = useMemo(
+    () => (filter.region ? cities.filter((city) => city.province === filter.region) : cities),
+    [cities, filter.region],
+  );
+
   const visiblePhotos = useMemo(() => {
     return photos.filter((photo) => {
       if (filter.city) return photo.city === filter.city;
@@ -85,7 +90,57 @@ export function GalleryArchive({ photos, provinces, cities }: Gallery) {
       />
 
       <div>
-        <details className="group border border-border">
+        <div className="hidden space-y-6 md:block">
+          <div>
+            <p className="mb-3 eyebrow">
+              Province
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" className={pillClass(filter.region === null)} onClick={() => selectRegion(null)}>
+                All
+              </button>
+              {provinces.map((region) => (
+                <button
+                  key={region}
+                  type="button"
+                  className={pillClass(filter.region === region)}
+                  onClick={() => selectRegion(region)}
+                >
+                  {region}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {visibleCities.length > 0 && (
+            <div>
+              <p className="mb-3 eyebrow">
+                City
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {visibleCities.map((city) => (
+                  <button
+                    key={city.name}
+                    type="button"
+                    className={pillClass(filter.city === city.name)}
+                    title={
+                      filter.city === city.name
+                        ? `Open ${city.day === null ? '' : `day ${city.day} in `}${city.tripTitle}`
+                        : `Show photographs from ${city.name}`
+                    }
+                    onClick={() => selectCity(city)}
+                  >
+                    {city.name}
+                    <span className="ml-1.5" lang="zh">
+                      {city.nameZh}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <details className="group border border-border md:hidden">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 [&::-webkit-details-marker]:hidden">
             <span className="flex items-baseline gap-3">
               <span className="eyebrow">Filter</span>
