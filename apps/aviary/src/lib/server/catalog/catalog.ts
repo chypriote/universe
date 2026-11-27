@@ -62,6 +62,9 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		)`
 	};
 
+	/** Whether a Bird's name holds the lowercased needle. JS lowercasing folds every script. */
+	const nameHas = (name: string, needle: string) => name.toLowerCase().includes(needle);
+
 	/** A real calendar day as `YYYY-MM-DD`. */
 	const isDay = (day: string) => {
 		const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day);
@@ -151,8 +154,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 					? undefined
 					: sql`EXISTS (SELECT 1 FROM bird_song bs WHERE bs.bird_id = bird.id AND bs.song_id = ${song})`,
 				nest === 'only' ? eq(birds.nest, true) : undefined,
-				nest === 'not' ? eq(birds.nest, false) : undefined,
-				needle ? sql`instr(lower(${birds.name}), ${needle}) > 0` : undefined
+				nest === 'not' ? eq(birds.nest, false) : undefined
 			];
 			// A year-only Arrival counts as the first day of that year, so it sorts with day Arrivals.
 			const arrivalKey = sql`CASE ${birds.arrivalPrecision} WHEN 'year' THEN ${birds.arrival} || '-01-01' ELSE ${birds.arrival} END`;
@@ -166,7 +168,8 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 					asc(birds.name),
 					asc(birds.id)
 				);
-			return rows;
+			// D1's SQL lower() folds ASCII only, so the name match runs here, on both sides alike.
+			return needle ? rows.filter((row) => nameHas(row.name, needle)) : rows;
 		},
 
 		async addBird(token, input) {
@@ -329,13 +332,19 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				.select({ key: pictures.key })
 				.from(pictures)
 				.where(eq(pictures.birdId, id));
-			// One batch: the rows go together or not at all. The R2 objects follow.
-			await db.batch([
-				db.delete(birdSongs).where(eq(birdSongs.birdId, id)),
-				db.delete(sightings).where(eq(sightings.birdId, id)),
-				db.delete(pictures).where(eq(pictures.birdId, id)),
-				db.delete(birds).where(and(eq(birds.id, id), eq(birds.archived, true)))
+			// One batch: the rows go together or not at all. Each child delete re-checks that the Bird
+			// is still Archived, so a Restore landing meanwhile loses nothing. The R2 objects follow.
+			const stillArchived = sql`EXISTS (SELECT 1 FROM bird b WHERE b.id = ${id} AND b.archived = 1)`;
+			const [, , , removed] = await db.batch([
+				db.delete(birdSongs).where(and(eq(birdSongs.birdId, id), stillArchived)),
+				db.delete(sightings).where(and(eq(sightings.birdId, id), stillArchived)),
+				db.delete(pictures).where(and(eq(pictures.birdId, id), stillArchived)),
+				db
+					.delete(birds)
+					.where(and(eq(birds.id, id), eq(birds.archived, true)))
+					.returning({ id: birds.id })
 			]);
+			if (removed.length === 0) return { ok: false, error: 'not-archived' };
 			if (stored.length > 0) await env.PICTURES.delete(stored.map((p) => p.key));
 			return { ok: true };
 		},
@@ -344,11 +353,11 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			await owner(token);
 			const needle = text.trim().toLowerCase();
 			if ([...needle].length < MIN_SIMILAR_CHARS) return [];
-			return db
+			const rows = await db
 				.select({ ...tileColumns, archived: birds.archived })
 				.from(birds)
-				.where(sql`instr(lower(${birds.name}), ${needle}) > 0`)
 				.orderBy(asc(birds.name), asc(birds.id));
+			return rows.filter((row) => nameHas(row.name, needle));
 		},
 
 		async getBird(token, id) {

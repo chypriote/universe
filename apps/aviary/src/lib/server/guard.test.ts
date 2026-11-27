@@ -92,5 +92,8 @@ describe('safeNext', () => {
 		expect(safeNext('https://elsewhere.test/')).toBe('/');
 		expect(safeNext('//elsewhere.test/')).toBe('/');
 		expect(safeNext('/\\elsewhere.test')).toBe('/');
+		expect(safeNext('/%09/elsewhere.test')).toBe('/');
+		expect(safeNext('/\t/elsewhere.test')).toBe('/');
+		expect(safeNext('/\n/elsewhere.test')).toBe('/');
 	});
 });

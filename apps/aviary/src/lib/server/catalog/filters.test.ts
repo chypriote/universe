@@ -95,6 +95,12 @@ describe('listBirds filters', () => {
 		expect(await names({ view: 'aloft', search: '  beTA ' })).toEqual(['Beta']);
 	});
 
+	it('searches a non-ASCII capital in a name, ignoring case', async () => {
+		await insertBird('\u00c9ric');
+		expect(await names({ view: 'aloft', search: '\u00e9ric' })).toEqual(['\u00c9ric']);
+		expect(await names({ view: 'aloft', search: '\u00c9RIC' })).toEqual(['\u00c9ric']);
+	});
+
 	it('takes % and _ in the search literally', async () => {
 		await insertBird('Bird A');
 		await insertBird('Bird_B');

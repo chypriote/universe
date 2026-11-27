@@ -68,18 +68,32 @@
 		onChanged?.();
 	}
 
+	let loading: AbortController | null = null;
+
 	async function load() {
-		const response = await fetch(`/api/birds/${birdId}`);
-		if (response.status === 401) {
-			window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
-			return;
+		loading?.abort();
+		const request = new AbortController();
+		loading = request;
+		const id = birdId;
+		try {
+			const response = await fetch(`/api/birds/${id}`, { signal: request.signal });
+			if (request.signal.aborted || id !== birdId) return;
+			if (response.status === 401) {
+				window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+				return;
+			}
+			if (!response.ok) {
+				loadError = true;
+				return;
+			}
+			const loaded: BirdDetail = await response.json();
+			if (request.signal.aborted || id !== birdId) return;
+			bird = loaded;
+			loadError = false;
+		} catch {
+			// A superseded request was aborted on purpose; any other failure shows the error.
+			if (!request.signal.aborted && id === birdId) loadError = true;
 		}
-		if (!response.ok) {
-			loadError = true;
-			return;
-		}
-		bird = await response.json();
-		loadError = false;
 	}
 
 	$effect(() => {

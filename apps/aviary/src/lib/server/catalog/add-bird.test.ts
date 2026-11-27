@@ -165,6 +165,11 @@ describe('addBird', () => {
 });
 
 describe('findSimilarNames', () => {
+	it('finds a non-ASCII capital, ignoring case', async () => {
+		const { id } = await added({ name: '\u00c9ric Bird' });
+		expect(await catalog.findSimilarNames(token, '\u00e9ric')).toMatchObject([{ id }]);
+	});
+
 	it('is empty under 3 characters', async () => {
 		await added({ name: 'Robin' });
 		expect(await catalog.findSimilarNames(token, 'Ro')).toEqual([]);

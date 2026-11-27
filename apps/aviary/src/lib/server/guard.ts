@@ -7,6 +7,17 @@ const ROBOTS = 'User-agent: *\nDisallow: /\n';
 /** A `next` value that stays on this app: a path, never a URL or a protocol-relative link. */
 export function safeNext(next: string | null): string {
 	if (!next || !next.startsWith('/') || next.startsWith('//') || next.includes('\\')) return '/';
+	// A browser drops tabs and newlines from a URL, so `/%09/host` (or a raw tab) can turn into
+	// `//host`. Reject control characters, raw or percent-encoded, and keep only a path that
+	// stays on this origin.
+	try {
+		// eslint-disable-next-line no-control-regex
+		if (/[\u0000-\u001f\u007f]/.test(decodeURIComponent(next))) return '/';
+		const base = 'https://aviary.invalid';
+		if (new URL(next, base).origin !== base) return '/';
+	} catch {
+		return '/';
+	}
 	return next;
 }
 

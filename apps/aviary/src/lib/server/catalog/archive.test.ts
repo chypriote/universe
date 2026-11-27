@@ -131,6 +131,33 @@ describe('deleteBirdForever', () => {
 		expect(await catalog.findSimilarNames(token, 'bird one')).toEqual([]);
 	});
 
+	it('loses nothing when a Restore lands before the delete runs', async () => {
+		const { id } = await added();
+		await catalog.addSighting(token, id, '2024-01-02');
+		await catalog.archiveBird(token, id);
+		// A Restore from another request lands between the check and the batch.
+		const racing = new Proxy(env.DB, {
+			get(target, prop) {
+				if (prop === 'batch') {
+					return async (statements: D1PreparedStatement[]) => {
+						await target.prepare('UPDATE bird SET archived = 0 WHERE id = ?').bind(id).run();
+						return target.batch(statements);
+					};
+				}
+				const value = Reflect.get(target, prop, target);
+				return typeof value === 'function' ? value.bind(target) : value;
+			}
+		});
+		const racer = createCatalog({ ...env, DB: racing });
+
+		expect(await racer.deleteBirdForever(token, id)).toEqual({ ok: false, error: 'not-archived' });
+
+		expect(await count('bird')).toBe(1);
+		expect(await count('picture')).toBe(1);
+		expect(await count('sighting')).toBe(1);
+		expect((await env.PICTURES.list()).objects).toHaveLength(1);
+	});
+
 	it('is refused for a Bird that is not Archived', async () => {
 		const { id, pictureIds } = await added();
 		expect(await catalog.deleteBirdForever(token, id)).toEqual({
