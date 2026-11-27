@@ -1,7 +1,20 @@
-import { orientationOf, type AdminEnv, type PhotoUrls } from './admin';
+import { fits, orientationOf, type AdminEnv, type PhotoUrls } from './admin';
 import { buildCoverPhotos } from './cover-photos';
-import { PLAN_TABLES } from './tables';
 import { readPhotoFile } from './photo-file';
+import {
+  checkFileName,
+  cityExists,
+  findPhotoByName,
+  frameKindsOf,
+  insertPhoto,
+  photoExists,
+  putPhotoFiles,
+  removePhotos,
+  replacePhotoFile,
+  titleValue,
+  updatePhotos,
+} from './photo-store';
+import { PLAN_TABLES } from './tables';
 import type { AdminPlanPhoto, Journal } from './types';
 
 type PlanPhotoMethods = Pick<
@@ -15,9 +28,6 @@ type PlanPhotoMethods = Pick<
   | 'setPlanPhotoTitle'
   | 'deletePlanPhoto'
 >;
-
-const IMAGE_TYPES: Record<string, string> = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
-const CACHE_CONTROL = 'public, max-age=31536000, immutable';
 
 type PhotoRow = { id: number; name: string; slug: string; width: number; height: number; version: number; title: string | null; city_id: number | null; city: string | null };
 
@@ -53,54 +63,42 @@ export function buildPlanPhotos(env: AdminEnv, urls: PhotoUrls): PlanPhotoMethod
 
   async function uploadPlanPhoto(input: Parameters<Journal['uploadPlanPhoto']>[0]): ReturnType<Journal['uploadPlanPhoto']> {
     const { name } = input;
-    if (!name || name.includes('/')) return { ok: false, error: 'invalid-name' };
-    const contentType = IMAGE_TYPES[name.split('.').pop()?.toLowerCase() ?? ''];
-    if (!contentType) return { ok: false, error: 'unsupported-type' };
+    const checked = checkFileName(name);
+    if ('error' in checked) return { ok: false, error: checked.error };
     const plan = await planBySlug(input.plan);
     if (!plan) return { ok: false, error: 'unknown-plan' };
-    const existing = await env.DB.prepare('SELECT id FROM plan_photos WHERE plan_id = ? AND name = ?').bind(plan.id, name).first<{ id: number }>();
+    const existing = await findPhotoByName(env, PLAN_TABLES, plan.id, name);
     if (existing && !input.overwrite) return { ok: false, error: 'exists' };
     const file = readPhotoFile(input.file);
     if (!file) return { ok: false, error: 'unreadable' };
 
-    if (existing) {
-      const cover = await env.DB.prepare('SELECT 1 AS used FROM plans WHERE id = ? AND cover_photo_id = ?').bind(plan.id, existing.id).first();
-      const highlight = await env.DB.prepare('SELECT 1 AS used FROM plan_highlight_photos WHERE photo_id = ?').bind(existing.id).first();
-      const shape = orientationOf(file);
-      if ((cover && shape !== 'landscape') || (highlight && shape !== 'portrait')) return { ok: false, error: 'breaks-cover' };
+    if (existing && (await frameKindsOf(env, PLAN_TABLES, existing.id)).some((kind) => !fits(kind, file))) {
+      return { ok: false, error: 'breaks-cover' };
     }
 
-    // R2 first: a failed put leaves no row without a file.
-    await env.PHOTOS.put(`trips/${plan.slug}/${name}`, input.file, { httpMetadata: { contentType, cacheControl: CACHE_CONTROL } });
-    await env.PHOTOS.put(`thumbs/${plan.slug}/${name}.webp`, input.thumb, { httpMetadata: { contentType: 'image/webp', cacheControl: CACHE_CONTROL } });
+    await putPhotoFiles(env, plan.slug, name, checked.contentType, input.file, input.thumb);
     let photoId: number;
     if (existing) {
       photoId = existing.id;
-      await env.DB.prepare('UPDATE plan_photos SET width = ?, height = ?, version = version + 1 WHERE id = ?').bind(file.width, file.height, existing.id).run();
+      await replacePhotoFile(env, PLAN_TABLES, existing.id, file);
     } else {
-      const row = await env.DB.prepare('INSERT INTO plan_photos (plan_id, name, width, height) VALUES (?, ?, ?, ?) RETURNING id')
-        .bind(plan.id, name, file.width, file.height)
-        .first<{ id: number }>();
-      photoId = row!.id;
+      photoId = await insertPhoto(env, PLAN_TABLES, plan.id, name, file);
     }
     const [photo] = await loadPlanPhotos(env, urls, plan.id, photoId);
     return { ok: true, photo, replaced: existing !== null };
   }
 
   async function setPlanPhotoCity(photoId: number, cityId: number | null) {
-    if (!(await env.DB.prepare('SELECT id FROM plan_photos WHERE id = ?').bind(photoId).first())) {
-      return { ok: false as const, error: 'unknown-photo' as const };
-    }
-    if (cityId !== null && !(await env.DB.prepare('SELECT id FROM cities WHERE id = ?').bind(cityId).first())) {
-      return { ok: false as const, error: 'unknown-city' as const };
-    }
-    await env.DB.prepare('UPDATE plan_photos SET city_id = ? WHERE id = ?').bind(cityId, photoId).run();
+    if (!(await photoExists(env, PLAN_TABLES, photoId))) return { ok: false as const, error: 'unknown-photo' as const };
+    if (cityId !== null && !(await cityExists(env, cityId))) return { ok: false as const, error: 'unknown-city' as const };
+    await updatePhotos(env, PLAN_TABLES, [photoId], ['city_id = ?'], [cityId]);
     return { ok: true as const };
   }
 
   async function setPlanPhotoTitle(photoId: number, title: string) {
-    const { meta } = await env.DB.prepare('UPDATE plan_photos SET title = ? WHERE id = ?').bind(title.trim() || null, photoId).run();
-    return meta.changes === 0 ? { ok: false as const, error: 'unknown-photo' as const } : { ok: true as const };
+    if (!(await photoExists(env, PLAN_TABLES, photoId))) return { ok: false as const, error: 'unknown-photo' as const };
+    await updatePhotos(env, PLAN_TABLES, [photoId], ['title = ?'], [titleValue(title)]);
+    return { ok: true as const };
   }
 
   async function deletePlanPhoto(photoId: number) {
@@ -113,12 +111,7 @@ export function buildPlanPhotos(env: AdminEnv, urls: PhotoUrls): PlanPhotoMethod
     if (!photo) return { ok: false as const, error: 'unknown-photo' as const };
     const highlight = await env.DB.prepare('SELECT 1 AS used FROM plan_highlight_photos WHERE photo_id = ?').bind(photoId).first();
     if (photo.cover_photo_id === photoId || highlight) return { ok: false as const, error: 'in-use' as const };
-    await env.DB.batch([
-      env.DB.prepare('DELETE FROM plan_day_photos WHERE photo_id = ?').bind(photoId),
-      env.DB.prepare('DELETE FROM plan_photos WHERE id = ?').bind(photoId),
-    ]);
-    // The row goes first: a failed bucket delete leaves an orphan file, never a row without one.
-    await env.PHOTOS.delete([`trips/${photo.slug}/${photo.name}`, `thumbs/${photo.slug}/${photo.name}.webp`]);
+    await removePhotos(env, PLAN_TABLES, [photo]);
     return { ok: true as const };
   }
 

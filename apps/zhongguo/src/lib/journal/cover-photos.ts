@@ -1,8 +1,6 @@
 import { orientationOf, type AdminEnv } from './admin';
+import { ID_CHUNK } from './photo-store';
 import type { TripTables } from './tables';
-
-/** D1 allows 100 bound parameters per statement. */
-const ID_CHUNK = 90;
 
 type Refused<E extends string> = { ok: false; error: E };
 type Done = { ok: true };
