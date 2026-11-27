@@ -24,10 +24,22 @@
 	}
 
 	const total = $derived(groups.reduce((n, g) => n + g.options.length, 0));
+
+	let details = $state<HTMLDetailsElement>();
+	let summary = $state<HTMLElement>();
+
+	function closeOnEscape(e: KeyboardEvent) {
+		if (e.key !== 'Escape' || !details?.open) return;
+		details.open = false;
+		summary?.focus();
+	}
 </script>
 
-<details class="relative">
+<!-- Catches Esc from the pill and from every checkbox in the list. -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<details bind:this={details} onkeydown={closeOnEscape} class="relative">
 	<summary
+		bind:this={summary}
 		class="flex min-h-11 cursor-pointer list-none items-center rounded-control bg-card px-4 text-sm font-bold text-foreground shadow-(--shadow-raised) outline-ring focus-visible:outline-3 focus-visible:outline-solid [&::-webkit-details-marker]:hidden"
 	>
 		{value.length ? `${label} (${value.length})` : `All ${label.toLowerCase()} (${total})`}

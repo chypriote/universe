@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ShirtIcon from '@lucide/svelte/icons/shirt';
+	import WalletIcon from '@lucide/svelte/icons/wallet';
 	import { resolve } from '$app/paths';
 	import { tick } from 'svelte';
 	import type { PageProps } from './$types';
@@ -145,7 +146,7 @@
 	{#snippet title()}Jerseys{/snippet}
 	{#snippet chips()}
 		<Chip tone="highlight" label="jerseys" value={String(data.jerseys.length)} icon={ShirtIcon} />
-		<Chip tone="success" label="spent" value={formatCents(totalSpentCents)} compact />
+		<Chip tone="success" label="spent" value={formatCents(totalSpentCents)} icon={WalletIcon} />
 	{/snippet}
 	{#snippet login()}
 		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} />
@@ -178,7 +179,7 @@
 	<PictureCleaner kits={data.jerseys.map((j) => j.kit)} />
 {/if}
 
-<main>
+<main id="main">
 	<div
 		class="ps-[max(1rem,env(safe-area-inset-left))] pe-[max(1rem,env(safe-area-inset-right))] pb-4"
 	>
