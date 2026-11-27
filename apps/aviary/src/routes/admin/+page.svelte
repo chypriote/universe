@@ -19,30 +19,34 @@
 	{#snippet title()}{label(data.labels, 'Admin')}<span class="text-icon-accent">.</span>{/snippet}
 </StickyBar>
 
-<main id="main" class="flex flex-col gap-8 px-4 pb-12 sm:max-w-xl">
-	<ValueList
-		kind="habitat"
-		heading={label(data.labels, 'Habitat')}
-		values={data.habitats}
-		labels={data.labels}
-		error={refusal('habitat')}
-	/>
-	<ValueList
-		kind="song"
-		heading={label(data.labels, 'Songs')}
-		values={data.songs}
-		labels={data.labels}
-		error={refusal('song')}
-	/>
+<main id="main" class="flex flex-col gap-8 px-4 pb-12 lg:max-w-6xl">
+	<div class="flex flex-col gap-8 sm:max-w-xl">
+		<ValueList
+			kind="habitat"
+			heading={label(data.labels, 'Habitat')}
+			values={data.habitats}
+			labels={data.labels}
+			error={refusal('habitat')}
+		/>
+		<ValueList
+			kind="song"
+			heading={label(data.labels, 'Songs')}
+			values={data.songs}
+			labels={data.labels}
+			error={refusal('song')}
+		/>
+	</div>
 	<BatchEdit
 		birds={data.birds}
 		habitats={data.habitats}
 		labels={data.labels}
 		error={form && 'batchError' in form ? (form.batchError ?? null) : null}
 	/>
-	<ArchivedList
-		birds={data.archived}
-		labels={data.labels}
-		error={form && 'archivedError' in form ? (form.archivedError ?? null) : null}
-	/>
+	<div class="sm:max-w-xl">
+		<ArchivedList
+			birds={data.archived}
+			labels={data.labels}
+			error={form && 'archivedError' in form ? (form.archivedError ?? null) : null}
+		/>
+	</div>
 </main>

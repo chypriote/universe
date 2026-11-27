@@ -139,3 +139,19 @@ describe('editBirds', () => {
 		await expect(catalog.editBirds('nope', [1], {})).rejects.toBeInstanceOf(UnauthorizedError);
 	});
 });
+
+describe('listBatchBirds', () => {
+	it('lists every Bird not Archived by name, with its Roosted flag', async () => {
+		await added('Bird B');
+		await added('Bird A', { flags: { ...noFlags, roosted: true } });
+		const gone = await added('Bird C');
+		await catalog.archiveBird(token, gone);
+
+		const rows = await catalog.listBatchBirds(token);
+
+		expect(rows.map((r) => [r.name, r.roosted])).toEqual([
+			['Bird A', true],
+			['Bird B', false]
+		]);
+	});
+});

@@ -175,6 +175,15 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return needle ? rows.filter((row) => nameHas(row.name, needle)) : rows;
 		},
 
+		async listBatchBirds(token) {
+			await owner(token);
+			return db
+				.select({ ...tileColumns, roosted: birds.roosted })
+				.from(birds)
+				.where(eq(birds.archived, false))
+				.orderBy(asc(birds.name), asc(birds.id));
+		},
+
 		async addBird(token, input) {
 			await owner(token);
 			const checked = await checkBirdInput(input);
