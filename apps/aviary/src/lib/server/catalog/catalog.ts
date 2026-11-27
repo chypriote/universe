@@ -73,7 +73,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return Object.fromEntries(rows.map((row) => [row.codeName, row.word]));
 		},
 
-		async listBirds(token, { view }) {
+		async listBirds(token, { view, habitat, song, nest, search }) {
 			await owner(token);
 			const grounded = or(eq(birds.flown, true), eq(birds.lost, true));
 			const inView = {
@@ -81,6 +81,16 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				grounded,
 				nest: eq(birds.nest, true)
 			}[view];
+			const needle = search?.trim().toLowerCase();
+			const filters = [
+				habitat === undefined ? undefined : eq(birds.habitatId, habitat),
+				song === undefined
+					? undefined
+					: sql`EXISTS (SELECT 1 FROM bird_song bs WHERE bs.bird_id = bird.id AND bs.song_id = ${song})`,
+				nest === 'only' ? eq(birds.nest, true) : undefined,
+				nest === 'not' ? eq(birds.nest, false) : undefined,
+				needle ? sql`instr(lower(${birds.name}), ${needle}) > 0` : undefined
+			];
 			// A year-only Arrival counts as the first day of that year, so it sorts with day Arrivals.
 			const arrivalKey = sql`CASE ${birds.arrivalPrecision} WHEN 'year' THEN ${birds.arrival} || '-01-01' ELSE ${birds.arrival} END`;
 			const rows = await db
@@ -97,7 +107,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 					)`
 				})
 				.from(birds)
-				.where(and(eq(birds.archived, false), inView))
+				.where(and(eq(birds.archived, false), inView, ...filters))
 				.orderBy(
 					sql`${arrivalKey} IS NULL`,
 					sql`${arrivalKey} DESC`,
