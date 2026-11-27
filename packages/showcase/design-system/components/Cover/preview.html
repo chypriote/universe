@@ -1,0 +1,43 @@
+<!-- @dsCard height=288 -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><style>
+html,body{margin:0;padding:0;height:288px;overflow:hidden;background:var(--background)}
+.cover{position:relative;width:960px;height:288px}
+svg{position:absolute;inset:0}
+.t{rx:var(--radius-md);ry:var(--radius-md)}
+.m{fill:var(--card)}.ink{fill:var(--foreground)}.acc{fill:var(--primary)}.sun{fill:var(--highlight)}.sky{fill:var(--info)}.mint{fill:var(--success)}
+.sh{fill:var(--shadow-color)}
+.name{position:absolute;left:40px;bottom:32px;max-width:440px;margin:0}
+.name h1{margin:0;color:var(--foreground);font-family:var(--display-family);font-style:var(--display-style);text-transform:var(--display-transform);font-size:88px;font-weight:800;line-height:.95;letter-spacing:var(--tracking-heading)}
+.name h1 b{color:var(--icon-accent)}
+.name p{margin:12px 0 0;color:var(--muted-foreground);font:500 14px/1.45 Nunito,ui-rounded,system-ui,sans-serif}
+</style></head><body><div class="cover">
+<svg viewBox="0 0 960 288" width="960" height="288" aria-hidden="true">
+<!-- blocks: primary (the theme's accent) 2x2 tile 120x124; foreground (ink) two 2-wide tiles 120x56; highlight (sun) two 56x56; info (sky) one 2-wide 120x56; success (mint) one 56x56; the rest card 56x56, each with the 3px shadow-color offset
+     arrangement: a packed 7x4 wall from x=504, tiles merged two-wide or 2x2 like the app grid, nothing left of x=480
+     pattern: "geometric, modular, dense UI" -> tiles cut by radius-md: every app is a packed wall of square tiles; one card tile lifted 3px and tilted -1.5deg, the tile hover signature
+     scales: tile 56 with space-200 (8) across and space-300 (12) down, pitch 64 x 68; corners radius-md 14px; shadow-raised offset 3px -->
+<g><rect class="t sh" x="504" y="17" width="56" height="56"/><rect class="t m" x="504" y="14" width="56" height="56"/></g>
+<g><rect class="t sh" x="568" y="17" width="120" height="56"/><rect class="t ink" x="568" y="14" width="120" height="56"/></g>
+<g><rect class="t sh" x="696" y="17" width="56" height="56"/><rect class="t m" x="696" y="14" width="56" height="56"/></g>
+<g><rect class="t sh" x="760" y="17" width="56" height="56"/><rect class="t sun" x="760" y="14" width="56" height="56"/></g>
+<g><rect class="t sh" x="824" y="17" width="56" height="56"/><rect class="t m" x="824" y="14" width="56" height="56"/></g>
+<g><rect class="t sh" x="888" y="17" width="56" height="56"/><rect class="t mint" x="888" y="14" width="56" height="56"/></g>
+<g><rect class="t sh" x="504" y="85" width="56" height="56"/><rect class="t m" x="504" y="82" width="56" height="56"/></g>
+<g><rect class="t sh" x="568" y="85" width="56" height="56"/><rect class="t m" x="568" y="82" width="56" height="56"/></g>
+<g><rect class="t sh" x="632" y="85" width="120" height="124"/><rect class="t acc" x="632" y="82" width="120" height="124"/></g>
+<g><rect class="t sh" x="760" y="85" width="56" height="56"/><rect class="t m" x="760" y="82" width="56" height="56"/></g>
+<g><rect class="t sh" x="824" y="85" width="120" height="56"/><rect class="t sky" x="824" y="82" width="120" height="56"/></g>
+<g><rect class="t sh" x="504" y="153" width="56" height="56"/><rect class="t sun" x="504" y="150" width="56" height="56"/></g>
+<g><rect class="t sh" x="568" y="153" width="56" height="56"/><rect class="t m" x="568" y="150" width="56" height="56"/></g>
+<g><rect class="t sh" x="760" y="153" width="56" height="56"/><rect class="t m" x="760" y="150" width="56" height="56"/></g>
+<g transform="translate(0 -3) rotate(-1.5 852 178)"><rect class="t sh" x="824" y="153" width="56" height="56"/><rect class="t m" x="824" y="150" width="56" height="56"/></g>
+<g><rect class="t sh" x="888" y="153" width="56" height="56"/><rect class="t m" x="888" y="150" width="56" height="56"/></g>
+<g><rect class="t sh" x="504" y="221" width="56" height="56"/><rect class="t m" x="504" y="218" width="56" height="56"/></g>
+<g><rect class="t sh" x="568" y="221" width="56" height="56"/><rect class="t m" x="568" y="218" width="56" height="56"/></g>
+<g><rect class="t sh" x="632" y="221" width="56" height="56"/><rect class="t m" x="632" y="218" width="56" height="56"/></g>
+<g><rect class="t sh" x="696" y="221" width="56" height="56"/><rect class="t m" x="696" y="218" width="56" height="56"/></g>
+<g><rect class="t sh" x="760" y="221" width="120" height="56"/><rect class="t ink" x="760" y="218" width="120" height="56"/></g>
+<g><rect class="t sh" x="888" y="221" width="56" height="56"/><rect class="t m" x="888" y="218" width="56" height="56"/></g>
+</svg>
+<div class="name"><h1>Showcase</h1><p>One wall for every collection.</p></div>
+</div></body></html>
