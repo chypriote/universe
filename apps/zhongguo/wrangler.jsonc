@@ -8,7 +8,6 @@
   "assets": {
     "html_handling": "drop-trailing-slash"
   },
-  // Parent domain shared by every Universe app: one Owner login for all of them. Empty: this app only.
   "vars": { "OWNER_COOKIE_DOMAIN": "nicolastemeni.workers.dev" },
   // Trips, Days, Cities and Photos: the Journal reads them on each request (src/lib/journal).
   // Flight searches: the Plan page reads them on request; `npm run china` writes them through the D1 REST API (scripts/d1.js).
@@ -20,14 +19,12 @@
       "migrations_dir": "migrations"
     }
   ],
-  // The photo bucket: the admin writes it (docs/photos.md).
   "r2_buckets": [
     {
       "binding": "PHOTOS",
       "bucket_name": "nico-zhongguo-photos"
     }
   ],
-  // Not in this file: set them with `wrangler secret put` (see README). PHOTOS_URL is the public base URL of the photo bucket, no trailing slash.
   "secrets": {
     "required": ["PHOTOS_URL", "OWNER_PASSWORD", "JWT_SECRET"]
   }

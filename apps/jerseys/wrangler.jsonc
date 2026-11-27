@@ -3,7 +3,6 @@
 	"name": "jerseys",
 	"compatibility_date": "2026-11-01",
 	"compatibility_flags": ["nodejs_compat"],
-	// Parent domain shared by every Universe app: one Owner login for all of them. Empty: this app only.
 	"vars": { "OWNER_COOKIE_DOMAIN": "nicolastemeni.workers.dev" },
 	"d1_databases": [
 		{
@@ -11,26 +10,14 @@
 			"database_name": "jerseys",
 			"database_id": "4d824f55-f2ea-4107-9b7b-e37d362b61cb",
 			"migrations_dir": "drizzle"
-		},
-		{
-			"binding": "jerseys",
-			"database_name": "jerseys",
-			"database_id": "4d824f55-f2ea-4107-9b7b-e37d362b61cb",
-			"remote": true
 		}
 	],
 	"r2_buckets": [
 		{
 			"binding": "COVERS",
 			"bucket_name": "jerseys-covers"
-		},
-		{
-			"bucket_name": "jerseys-covers",
-			"binding": "jerseys_covers",
-			"remote": true
 		}
 	],
-	// Values are not in this file: set them with `wrangler secret put` (see README).
 	"secrets": {
 		"required": ["OWNER_PASSWORD", "JWT_SECRET", "THESPORTSDB_KEY"]
 	}

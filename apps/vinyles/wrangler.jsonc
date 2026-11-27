@@ -3,7 +3,6 @@
 	"name": "vinyles",
 	"compatibility_date": "2026-11-01",
 	"compatibility_flags": ["nodejs_compat"],
-	// Parent domain shared by every Universe app: one Owner login for all of them. Empty: this app only.
 	"vars": { "OWNER_COOKIE_DOMAIN": "nicolastemeni.workers.dev" },
 	"d1_databases": [
 		{
@@ -13,7 +12,6 @@
 			"migrations_dir": "drizzle"
 		}
 	],
-	// Every 6 hours: the Refresh of the oldest Wishlist Items (see src/routes/api/cron).
 	"triggers": { "crons": ["0 */6 * * *"] },
 	"r2_buckets": [
 		{
@@ -21,5 +19,4 @@
 			"bucket_name": "vinyles-covers"
 		}
 	]
-	// Secrets (not in this file): OWNER_PASSWORD, JWT_SECRET and CRON_SECRET. See README.
 }
