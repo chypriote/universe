@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import DiscIcon from '@lucide/svelte/icons/disc-3';
+	import WalletIcon from '@lucide/svelte/icons/wallet';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import type { PageProps } from './$types';
 	import type { WithCoverUrl } from '#lib/covers';
@@ -125,7 +126,12 @@
 			value={String(data.totals.recordCount)}
 			icon={DiscIcon}
 		/>
-		<Chip tone="success" label="spent" value={formatCents(data.totals.totalSpentCents)} compact />
+		<Chip
+			tone="success"
+			label="spent"
+			value={formatCents(data.totals.totalSpentCents)}
+			icon={WalletIcon}
+		/>
 	{/snippet}
 	{#snippet login()}
 		<LoginAction isOwner={data.isOwner} adminHref={resolve('/admin')} />
@@ -157,7 +163,7 @@
 	{/snippet}
 </StickyBar>
 
-<main>
+<main id="main">
 	{#if data.records.length === 0}
 		<EmptyState message="No records yet" />
 	{:else if records.length === 0}

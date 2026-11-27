@@ -106,7 +106,12 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                 {lanes.map((plan, index) => {
                   return (
                     <div id={`fares-${plan.slug}`} data-fares={plan.slug} class:list={[index > 0 && 'hidden']}>
-                      <h3 class="pb-1 font-serif text-xl">{plan.title}</h3>
+                      <div class="flex flex-wrap items-baseline justify-between gap-x-6 pb-1">
+                        <h3 class="font-serif text-xl">{plan.title}</h3>
+                        <a href={`/plans/${plan.slug}`} class="text-sm text-primary underline-offset-4 hover:underline">
+                          See the plan <span aria-hidden="true">→</span>
+                        </a>
+                      </div>
                       {plan.fits.length > 0 && (
                         <p class="pb-3 text-sm text-muted-foreground">Good dates to leave: {plan.fits.map(run).join(', ')}.</p>
                       )}
@@ -161,7 +166,9 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
 
 <script>
   // Hover, focus or tap a plan: its lane comes forward, and its cheapest dates and cover show below.
+  // A click locks that plan: other lanes ignore hover until Esc or a click outside the lanes.
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-plan]');
+  let locked = false;
   const show = (slug: string) => {
     buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.plan === slug)));
     document
@@ -170,8 +177,17 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
   };
   buttons.forEach((button) => {
     const slug = button.dataset.plan!;
-    button.addEventListener('mouseenter', () => show(slug));
-    button.addEventListener('focus', () => show(slug));
-    button.addEventListener('click', () => show(slug));
+    button.addEventListener('mouseenter', () => !locked && show(slug));
+    button.addEventListener('focus', () => !locked && show(slug));
+    button.addEventListener('click', () => {
+      locked = true;
+      show(slug);
+    });
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') locked = false;
+  });
+  document.addEventListener('click', (event) => {
+    if (!(event.target as Element).closest('[data-plan]')) locked = false;
   });
 </script>

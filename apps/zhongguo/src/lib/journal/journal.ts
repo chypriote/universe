@@ -51,6 +51,7 @@ type TripRow = {
   cover_photo_id: number | null;
   cover_focus_x: number;
   cover_focus_y: number;
+  description: string | null;
 };
 
 type DayRow = {
@@ -127,6 +128,7 @@ type Source = {
   /** SQL for the columns plans do not have. */
   startDate: string;
   endDate: string;
+  description: string;
   dayDate: string;
   dayVisible: string;
   photoDate: string;
@@ -146,6 +148,7 @@ const TRIPS: Source = {
   rides: 'day_train_rides',
   startDate: 'trips.start_date',
   endDate: 'trips.end_date',
+  description: 'description',
   dayDate: 'days.date',
   dayVisible: 'days.visible',
   photoDate: 'photos.date',
@@ -165,6 +168,7 @@ const PLANS: Source = {
   rides: 'plan_day_train_rides',
   startDate: 'NULL',
   endDate: 'NULL',
+  description: 'NULL',
   dayDate: "''",
   dayVisible: '1',
   photoDate: "''",
@@ -199,7 +203,7 @@ export function buildJournal(env: JournalEnv): Journal {
   async function loadTrips(slug?: string, source: Source = TRIPS): Promise<LoadedTrip[]> {
     const S = source;
     const trips = await all<TripRow>(
-      `SELECT id, slug, title, ${S.startDate} AS start_date, ${S.endDate} AS end_date, cover_photo_id, cover_focus_x, cover_focus_y
+      `SELECT id, slug, title, ${S.startDate} AS start_date, ${S.endDate} AS end_date, cover_photo_id, cover_focus_x, cover_focus_y, ${S.description} AS description
        FROM ${S.trips} WHERE visible = 1 ${slug === undefined ? '' : 'AND slug = ?'}`,
       ...(slug === undefined ? [] : [slug]),
     );
@@ -407,6 +411,7 @@ export function buildJournal(env: JournalEnv): Journal {
         description = plan ? `A ${trip.days.length}-day itinerary${where}.` : `A journey${where}.`;
         if (!plan && cities.length === 0) description = `A ${trip.days.length}-day journey.`;
       }
+      if (trip.description) description = trip.description;
       return {
         slug: trip.slug,
         title: trip.title,
@@ -533,6 +538,7 @@ export function buildJournal(env: JournalEnv): Journal {
           ? `A ${trip.days.length}-day ${what} across ${names.join(', ')}.`
           : `A ${trip.days.length}-day ${what}.`;
     }
+    if (trip.description) description = trip.description;
 
     return {
       slug: trip.slug,

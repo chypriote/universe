@@ -66,7 +66,7 @@
 	}
 </script>
 
-<main class="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+<main id="main" class="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
 	<h1>Import</h1>
 
 	<section class="flex flex-col gap-3">
