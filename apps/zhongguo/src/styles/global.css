@@ -322,6 +322,10 @@ body {
 .guide-prose { color: var(--color-foreground); }
 .guide-prose > * + * { margin-top: 1.25em; }
 .guide-prose h2 { font-family: var(--font-serif); font-weight: 300; font-size: var(--text-h3); line-height: 1.25; margin-top: 4rem; scroll-margin-top: 7rem; }
+/* The title above a table: its faint brush 汉字 (data-zh, from remark-table-zh) floats behind it. */
+.guide-prose :is(h2, h3)[data-zh] { position: relative; isolation: isolate; }
+.guide-prose :is(h2, h3)[data-zh]::after { content: attr(data-zh) / ""; position: absolute; z-index: -1; left: -0.25rem; top: 50%; transform: translateY(-50%); font-family: var(--font-brush); font-weight: 400; font-size: 4.5rem; line-height: 1; white-space: nowrap; color: color-mix(in oklab, var(--color-gold-ink) 22%, transparent); pointer-events: none; }
+.guide-prose h3[data-zh]::after { font-size: 3.5rem; }
 .guide-prose h2::before { content: ""; display: block; width: 2.5rem; height: 2px; background: var(--color-gold-ink); margin-bottom: 1.25rem; }
 .guide-prose p, .guide-prose li { font-size: 1.0625rem; line-height: 1.75; }
 .guide-prose a { color: var(--color-primary); text-underline-offset: 3px; }
@@ -384,20 +388,20 @@ li {
 
 .hero-animate {
   opacity: 0;
-  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: opacity, transform;
 }
 .hero-animate-delay-1 {
-  animation-delay: 0.1s;
+  animation-delay: 0.05s;
 }
 .hero-animate-delay-2 {
-  animation-delay: 0.2s;
+  animation-delay: 0.1s;
 }
 .hero-animate-delay-3 {
-  animation-delay: 0.3s;
+  animation-delay: 0.15s;
 }
 .hero-animate-delay-4 {
-  animation-delay: 0.4s;
+  animation-delay: 0.2s;
 }
 
 @media (prefers-reduced-motion: reduce) {

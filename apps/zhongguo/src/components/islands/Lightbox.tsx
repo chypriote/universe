@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import type { GalleryPhoto } from '@/lib/journal';
 
@@ -14,6 +14,8 @@ interface LightboxProps {
 
 export function Lightbox({ photos, index, onIndexChange, onClose }: LightboxProps) {
   const selected = photos[index];
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const nextPhoto = () => onIndexChange((index + 1) % photos.length);
   const prevPhoto = () => onIndexChange((index - 1 + photos.length) % photos.length);
 
@@ -22,15 +24,30 @@ export function Lightbox({ photos, index, onIndexChange, onClose }: LightboxProp
       if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowRight') onIndexChange((index + 1) % photos.length);
       if (e.key === 'ArrowLeft') onIndexChange((index - 1 + photos.length) % photos.length);
+      if (e.key === 'Tab' && dialogRef.current) {
+        const focusable = [...dialogRef.current.querySelectorAll<HTMLElement>('button, a[href]')];
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [index, photos.length, onIndexChange, onClose]);
 
   useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
     document.body.style.overflow = 'hidden';
+    closeRef.current?.focus();
     return () => {
       document.body.style.overflow = '';
+      opener?.focus();
     };
   }, []);
 
@@ -41,8 +58,15 @@ export function Lightbox({ photos, index, onIndexChange, onClose }: LightboxProp
   if (!selected) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-dark-background/95 backdrop-blur-sm flex items-center justify-center p-4 md:p-12 animate-fade-in">
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={selected.caption || selected.alt}
+      className="fixed inset-0 z-[100] bg-dark-background/95 backdrop-blur-sm flex items-center justify-center p-4 md:p-12 animate-fade-in"
+    >
       <button
+        ref={closeRef}
         type="button"
         onClick={onClose}
         className="absolute top-6 right-6 text-dark-foreground hover:text-primary transition-colors z-[110]"

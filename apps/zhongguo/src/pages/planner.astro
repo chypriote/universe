@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { flightPrices } from '@/lib/flight-prices';
 import { getEntry } from 'astro:content';
+import { formatDayMonth, formatEuros, formatMonth, monthName } from '@universe/universe/format';
 import { journalFromEnv } from '@/lib/journal';
 
 export const prerender = false;
@@ -26,11 +27,13 @@ const end = Date.UTC(lastMonth.getUTCFullYear(), lastMonth.getUTCMonth() + 1, 1)
 const x = (date: string) => ((utc(date) - start) / (end - start)) * 100;
 const months: { label: string; year: number }[] = [];
 for (let cursor = new Date(start); cursor.getTime() < end; cursor.setUTCMonth(cursor.getUTCMonth() + 1)) {
-  months.push({ label: cursor.toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' }), year: cursor.getUTCFullYear() });
+  months.push({ label: monthName(cursor.toISOString()), year: cursor.getUTCFullYear() });
 }
-const range = `${new Date(start).toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })} – ${lastMonth.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })}`;
+const range = `${formatMonth(first.slice(0, 7))} – ${formatMonth(last.slice(0, 7))}`;
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const day = (date: string, weekday = false) =>
-  new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { ...(weekday && { weekday: 'short' }), day: 'numeric', month: 'short', timeZone: 'UTC' });
+  `${weekday ? `${WEEKDAYS[new Date(`${date}T12:00:00Z`).getUTCDay()]} ` : ''}${formatDayMonth(date)}`;
+const euros = (price: number) => formatEuros(price, { whole: true });
 
 const run = (fit: { from: string; to: string }) => (fit.from === fit.to ? day(fit.from) : `${day(fit.from)} – ${day(fit.to)}`);
 
@@ -82,7 +85,7 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                   )}
                   <span class="relative block font-serif text-lg">{plan.title}</span>
                   <span class="relative block text-xs text-muted-foreground">
-                    {plan.days} days · {plan.windows.length > 0 ? `from €${plan.windows[0].price}` : 'no prices yet'}
+                    {plan.days} days · {plan.windows.length > 0 ? `from ${euros(plan.windows[0].price)}` : 'no prices yet'}
                   </span>
                 </span>
                 <span class="relative block h-16 lg:h-auto opacity-60 group-aria-pressed:opacity-100 transition-opacity" aria-hidden="true">
@@ -90,10 +93,10 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                     <span class="absolute inset-y-0 bg-gold/45" title={`Good dates to leave: ${run(fit)}`} style={`left:${x(fit.from)}%;width:${x(fit.to) - x(fit.from) + (100 / ((end - start) / 864e5))}%`} />
                   ))}
                   {plan.windows.map((window, rank) => (
-                    <span class="absolute" title={`${day(window.outbound, true)} – ${day(window.return)} · €${window.price}`} style={`left:${x(window.outbound)}%;width:${x(window.return) - x(window.outbound)}%;top:${30 + rank * 18}%`}>
+                    <span class="absolute" title={`${day(window.outbound, true)} – ${day(window.return)} · ${euros(window.price)}`} style={`left:${x(window.outbound)}%;width:${x(window.return) - x(window.outbound)}%;top:${30 + rank * 18}%`}>
                       <span class={`block h-1.5 ${rank === 0 ? 'bg-primary' : 'bg-primary/45'}`} />
                       {rank === 0 && (
-                        <span class="absolute left-full ml-1.5 -top-1.5 text-xs font-semibold tabular-nums whitespace-nowrap">€{window.price}</span>
+                        <span class="absolute left-full ml-1.5 -top-1.5 text-xs font-semibold tabular-nums whitespace-nowrap">{euros(window.price)}</span>
                       )}
                     </span>
                   ))}
@@ -127,7 +130,7 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                                 {window.city} {window.airport} · {window.direct ? 'direct' : 'with stops'} · price of {day(window.searchedOn)}
                               </span>
                             </span>
-                            <span class:list={['font-serif text-2xl tabular-nums', rank === 0 && 'text-secondary']}>€{window.price}</span>
+                            <span class:list={['font-serif text-2xl tabular-nums', rank === 0 && 'text-secondary']}>{euros(window.price)}</span>
                           </li>
                         ))}
                       </ol>

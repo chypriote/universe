@@ -14,8 +14,16 @@ import { ArrowUp } from '@lucide/astro';
 <script>
   const button = document.getElementById('back-to-top');
   if (button) {
+    // Hide the button while it would cover gallery controls (phones put them under it).
+    const coversControls = () => {
+      const top = window.innerHeight - 80;
+      return [...document.querySelectorAll('[data-covers-back-to-top]')].some((el) => {
+        const r = el.getBoundingClientRect();
+        return r.bottom > top && r.top < window.innerHeight && r.right > window.innerWidth - 80;
+      });
+    };
     const update = () => {
-      const show = window.scrollY >= 600;
+      const show = window.scrollY >= 600 && !coversControls();
       button.classList.toggle("hidden", !show);
       button.classList.toggle("flex", show);
     };
