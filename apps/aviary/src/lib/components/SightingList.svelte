@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PlusIcon from '@lucide/svelte/icons/plus';
 	import Trash2Icon from '@lucide/svelte/icons/trash-2';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import ConfirmDialog from '@universe/showcase/components/ConfirmDialog.svelte';
@@ -60,8 +61,11 @@
 			{/each}
 		</ul>
 	{/if}
-	<div>
-		<Button onclick={() => run({ op: 'add', day: today() })}>{label(labels, 'SightingAdd')}</Button>
+	<div class="flex justify-end">
+		<Button size="icon-sm" onclick={() => run({ op: 'add', day: today() })}>
+			<PlusIcon class="size-4" aria-hidden="true" />
+			<span class="sr-only">{label(labels, 'SightingAdd')}</span>
+		</Button>
 	</div>
 	{#if error}<ErrorMessage message={error} />{/if}
 </div>
