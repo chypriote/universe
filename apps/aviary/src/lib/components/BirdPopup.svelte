@@ -180,6 +180,14 @@
 	{#if bird}<Button onclick={() => (editing = true)}>{label(labels, 'EditBird')}</Button>{/if}
 {/snippet}
 
+{#snippet below()}
+	{#if bird}
+		<div class="border-t border-border pt-4">
+			<SightingList sightings={bird.sightings} {labels} {change} onChange={changed} />
+		</div>
+	{/if}
+{/snippet}
+
 {#snippet details()}
 	{#if loadError}
 		<p class="font-bold text-destructive" role="alert">! {label(labels, 'BirdLoadError')}</p>
@@ -202,7 +210,6 @@
 					{/each}
 				</ul>
 			{/if}
-			<SightingList sightings={bird.sightings} {labels} {change} onChange={changed} />
 			{#if bird.notes}
 				<p class="text-md [overflow-wrap:anywhere] whitespace-pre-line">{bird.notes}</p>
 			{/if}
@@ -218,6 +225,7 @@
 	mediaWidth="min(var(--popup-picture-size), 40%)"
 	{media}
 	{details}
+	{below}
 	{actions}
 />
 
