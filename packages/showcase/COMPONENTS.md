@@ -40,7 +40,6 @@ A count or total in the StickyBar. Not interactive. Built on the `badge` part.
 | label   | string                               | —       | "jerseys", "spent"                        |
 | value   | string                               | —       | Already formatted ("67", "4 120,00 €")    |
 | icon    | Component                            | —       | Shown in place of the label below `sm`    |
-| compact | boolean                              | false   | Hide the label below `sm`, keep the value |
 
 ### SearchField
 
@@ -88,7 +87,7 @@ The two lines under a tile: `title` in the display face, 14px / 800, `--tracking
 
 ### MultiSelectFilter
 
-A `<details>` pill with checkboxes, in the StickyBar `controls`. Summary: "All {label} ({n})" or "{label} ({picked})". The list opens under the pill from its start edge. A neutral Button "Clear filter" stays at the top while the list scrolls; it is disabled when nothing is picked. A group with a `label` has a heading checkbox that picks or clears its options (indeterminate when some are picked).
+A `<details>` pill with checkboxes, in the StickyBar `controls`. Summary: "All {label} ({n})" or "{label} ({picked})". The list opens under the pill from its start edge. A neutral Button "Clear filter" stays at the top while the list scrolls; it is disabled when nothing is picked. Esc closes the list and returns focus to the pill. A group with a `label` has a heading checkbox that picks or clears its options (indeterminate when some are picked).
 
 | Prop   | Type                                                    | Default | Description                        |
 | ------ | ------------------------------------------------------- | ------- | ---------------------------------- |
@@ -180,6 +179,10 @@ An `icon-sm` Button that switches light and dark and saves the choice.
 ### EmptyState
 
 A short message, and an optional action ("Clear filters"). No illustration.
+
+### SkipLink
+
+The first focusable element of every page, in the app's root layout: "Skip to content", visually hidden until focused, then a pill at the top start corner above the StickyBar. It jumps to `<main id="main">`, so every page's `<main>` has that id.
 
 ### Signature
 

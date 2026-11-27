@@ -166,7 +166,7 @@
 	<PictureCleaner kits={data.items.map((i) => i.kit)} />
 {/if}
 
-<main>
+<main id="main">
 	{#if data.items.length === 0}
 		<EmptyState message="Nothing on the wishlist" />
 	{:else if items.length === 0}
