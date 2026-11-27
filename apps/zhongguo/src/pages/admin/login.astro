@@ -2,11 +2,11 @@
 import { env } from 'cloudflare:workers';
 import { ownerToken, setOwnerToken } from '@universe/owner/astro';
 import AdminLayout from '@/layouts/AdminLayout.astro';
-import { journalFromEnv } from '@/lib/journal';
+import { ownerLogin } from '@/lib/journal';
 
 export const prerender = false;
 
-const journal = journalFromEnv();
+const journal = ownerLogin();
 
 const token = ownerToken(Astro.cookies);
 if (token && (await journal.verifyToken(token))) return Astro.redirect('/admin', 303);

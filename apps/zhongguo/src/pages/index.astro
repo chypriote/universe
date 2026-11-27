@@ -5,11 +5,11 @@ import Hero from '@/components/home/Hero.astro';
 import CompletedTrips from '@/components/home/CompletedTrips.astro';
 import SuggestedTrips from '@/components/home/SuggestedTrips.astro';
 import RegionRecommendations from '@/components/home/RegionRecommendations.astro';
-import { journalFromEnv } from '@/lib/journal';
+import { publicReads } from '@/lib/journal';
 
 export const prerender = false;
 
-const journal = journalFromEnv();
+const journal = publicReads();
 const completedTrips = await journal.listTripCards();
 const suggestedTrips = await journal.listPlanCards();
 const provinces = await journal.getHomeMap();

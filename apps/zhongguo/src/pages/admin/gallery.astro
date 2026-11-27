@@ -4,16 +4,18 @@ import { GalleryActivities } from '@/components/islands/GalleryActivities';
 import { GalleryPlan } from '@/components/islands/GalleryPlan';
 import { GalleryProvinceMap } from '@/components/islands/GalleryProvinceMap';
 import { GalleryTrip } from '@/components/islands/GalleryTrip';
-import { journalFromEnv } from '@/lib/journal';
+import { atlas, galleryWorkspace, journalWorkspace } from '@/lib/journal';
 
 export const prerender = false;
 
-const journal = journalFromEnv();
+const journal = journalWorkspace();
+const atlasReads = atlas();
+const gallery = galleryWorkspace();
 const [trips, plans, cities, activities] = await Promise.all([
   journal.listAdminTrips(),
   journal.listAdminPlans(),
-  journal.listAdminCities(),
-  journal.listAdminActivities(),
+  atlasReads.listAdminCities(),
+  atlasReads.listAdminActivities(),
 ]);
 const params = Astro.url.searchParams;
 
@@ -25,7 +27,7 @@ const activityProvince = params.has('activities') ? (activityProvinces.find((nam
 
 const plan = activityProvince === null && params.has('plan') ? await journal.getAdminPlan(params.get('plan') ?? '') : null;
 const trip = activityProvince !== null || plan ? undefined : (trips.find((item) => item.slug === params.get('trip')) ?? trips[0]);
-const [photos, provinces] = await Promise.all([trip ? journal.listAdminPhotos(trip.slug) : null, journal.listProvinces()]);
+const [photos, provinces] = await Promise.all([trip ? gallery.listAdminPhotos(trip.slug) : null, atlasReads.listProvinces()]);
 const groups = [
   { label: 'Trips', items: trips.map((item) => ({ key: `trip=${item.slug}`, title: item.title, count: item.photos, current: item.slug === trip?.slug })) },
   { label: 'Plans', items: plans.map((item) => ({ key: `plan=${item.slug}`, title: item.title, count: item.photos, current: item.slug === plan?.slug })) },

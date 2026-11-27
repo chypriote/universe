@@ -1,170 +1,177 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createJournal } from './index';
-import { addCity, addDay, addPlan, addPlanDay, addProvince, addTrip, resetDatabase } from './seed.test-helper';
-import { dropSnapshots, snapshotsChangedBy, withSnapshots } from './snapshots';
+import {
+	addCity,
+	addDay,
+	addPlan,
+	addPlanDay,
+	addProvince,
+	addTrip,
+	resetDatabase
+} from './seed.test-helper';
+import { snapshotInvalidation } from './invalidation';
+import { withSnapshots } from './snapshots';
 
 beforeEach(resetDatabase);
 
 /** A Journal that counts the page builds, over the real one. */
 function counted() {
-  const journal = createJournal(env);
-  const calls = { getTrip: 0, getPlan: 0 };
-  const wrapped = {
-    ...journal,
-    getTrip: (slug: string) => (calls.getTrip++, journal.getTrip(slug)),
-    getPlan: (slug: string) => (calls.getPlan++, journal.getPlan(slug)),
-  };
-  return { journal: withSnapshots(wrapped, env.PHOTOS), calls, raw: journal };
+	const journal = createJournal(env);
+	const calls = { getTrip: 0, getPlan: 0 };
+	const wrapped = {
+		...journal,
+		getTrip: (slug: string) => (calls.getTrip++, journal.getTrip(slug)),
+		getPlan: (slug: string) => (calls.getPlan++, journal.getPlan(slug))
+	};
+	return { journal: withSnapshots(wrapped, env.PHOTOS), calls, raw: journal };
 }
 
 async function seed() {
-  const province = await addProvince('Yunnan', '云南');
-  const city = await addCity('Kunming', province, { major: true, nameZh: '昆明' });
-  const trip = await addTrip({ slug: 'yunnan-trip', title: 'Yunnan trip' });
-  await addDay(trip, city, '2027-05-01');
-  const plan = await addPlan({ slug: 'yunnan-plan', title: 'Yunnan plan' });
-  await addPlanDay(plan, city, 1);
+	const province = await addProvince('Yunnan', '云南');
+	const city = await addCity('Kunming', province, { major: true, nameZh: '昆明' });
+	const trip = await addTrip({ slug: 'yunnan-trip', title: 'Yunnan trip' });
+	await addDay(trip, city, '2027-05-01');
+	const plan = await addPlan({ slug: 'yunnan-plan', title: 'Yunnan plan' });
+	await addPlanDay(plan, city, 1);
 }
 
-describe('Snapshots changed by an admin write', () => {
-  it.each([
-    ['/api/admin/trips/yunnan/days', ['trip/', 'trip-cards.json', 'home-map.json', 'gallery.json']],
-    ['/api/admin/photos', ['trip/', 'trip-cards.json', 'home-map.json', 'gallery.json']],
-    ['/api/admin/days/4/photos', ['trip/', 'trip-cards.json', 'home-map.json', 'gallery.json']],
-    ['/api/admin/plans/yunnan', ['plan/', 'plan-cards.json', 'fares.json']],
-    ['/api/admin/plan-days/4/activities', ['plan/', 'plan-cards.json', 'fares.json']],
-    ['/api/admin/seasons/3', ['fares.json']],
-    ['/api/admin/airports/KMG', ['fares.json']],
-    ['/api/admin/provinces/Yunnan/cover', ['home-map.json']],
-    ['/api/admin/cities/3', null],
-    ['/api/admin/activities', null],
-    ['/api/admin/something-new', null],
-  ])('%s', (path, expected) => {
-    expect(snapshotsChangedBy(path)).toEqual(expected);
-  });
-});
-
 describe('Snapshots', () => {
-  it('builds a Trip page once, then serves the same page from the bucket', async () => {
-    await seed();
-    const { journal, calls } = counted();
+	it('builds a Trip page once, then serves the same page from the bucket', async () => {
+		await seed();
+		const { journal, calls } = counted();
 
-    const first = await journal.getTrip('yunnan-trip');
-    const second = await journal.getTrip('yunnan-trip');
+		const first = await journal.getTrip('yunnan-trip');
+		const second = await journal.getTrip('yunnan-trip');
 
-    expect(calls.getTrip).toBe(1);
-    expect(second).toEqual(first);
-    expect((await env.PHOTOS.list({ prefix: 'snapshots/' })).objects).toHaveLength(1);
-  });
+		expect(calls.getTrip).toBe(1);
+		expect(second).toEqual(first);
+		expect((await env.PHOTOS.list({ prefix: 'snapshots/' })).objects).toHaveLength(1);
+	});
 
-  it('keeps a Trip and a plan with the same slug apart', async () => {
-    await seed();
-    const { journal, calls } = counted();
+	it('keeps a Trip and a plan with the same slug apart', async () => {
+		await seed();
+		const { journal, calls } = counted();
 
-    await journal.getTrip('yunnan-trip');
-    await journal.getPlan('yunnan-plan');
-    await journal.getPlan('yunnan-plan');
+		await journal.getTrip('yunnan-trip');
+		await journal.getPlan('yunnan-plan');
+		await journal.getPlan('yunnan-plan');
 
-    expect(calls).toEqual({ getTrip: 1, getPlan: 1 });
-  });
+		expect(calls).toEqual({ getTrip: 1, getPlan: 1 });
+	});
 
-  it('serves the lists, the home map, the Gallery and the fare data from the bucket too', async () => {
-    await seed();
-    const { raw } = counted();
-    const spies = ['listTripCards', 'listPlanCards', 'getHomeMap', 'getGallery', 'getFareData'] as const;
-    const counts = Object.fromEntries(spies.map((name) => [name, 0]));
-    const wrapped = { ...raw };
-    for (const name of spies) {
-      const original = raw[name].bind(raw);
-      (wrapped as Record<string, unknown>)[name] = () => (counts[name]++, original());
-    }
-    const cached = withSnapshots(wrapped, env.PHOTOS);
+	it('serves the lists, the home map, the Gallery and the fare data from the bucket too', async () => {
+		await seed();
+		const { raw } = counted();
+		const spies = [
+			'listTripCards',
+			'listPlanCards',
+			'getHomeMap',
+			'getGallery',
+			'getFareData'
+		] as const;
+		const counts = Object.fromEntries(spies.map((name) => [name, 0]));
+		const wrapped = { ...raw };
+		for (const name of spies) {
+			const original = raw[name].bind(raw);
+			(wrapped as Record<string, unknown>)[name] = () => (counts[name]++, original());
+		}
+		const cached = withSnapshots(wrapped, env.PHOTOS);
 
-    const first = await Promise.all(spies.map((name) => cached[name]()));
-    const second = await Promise.all(spies.map((name) => cached[name]()));
+		const first = await Promise.all(spies.map((name) => cached[name]()));
+		const second = await Promise.all(spies.map((name) => cached[name]()));
 
-    expect(counts).toEqual({ listTripCards: 1, listPlanCards: 1, getHomeMap: 1, getGallery: 1, getFareData: 1 });
-    expect(second).toEqual(JSON.parse(JSON.stringify(first)));
-  });
+		expect(counts).toEqual({
+			listTripCards: 1,
+			listPlanCards: 1,
+			getHomeMap: 1,
+			getGallery: 1,
+			getFareData: 1
+		});
+		expect(second).toEqual(JSON.parse(JSON.stringify(first)));
+	});
 
-  it('stores nothing for a page that does not exist', async () => {
-    const { journal } = counted();
+	it('stores nothing for a page that does not exist', async () => {
+		const { journal } = counted();
 
-    expect(await journal.getTrip('nope')).toBeNull();
+		expect(await journal.getTrip('nope')).toBeNull();
 
-    expect((await env.PHOTOS.list({ prefix: 'snapshots/' })).objects).toHaveLength(0);
-  });
+		expect((await env.PHOTOS.list({ prefix: 'snapshots/' })).objects).toHaveLength(0);
+	});
 
-  it('builds the page again after the snapshots are dropped', async () => {
-    await seed();
-    const { journal, calls, raw } = counted();
-    await journal.getTrip('yunnan-trip');
-    await raw.setTripVisible('yunnan-trip', false);
+	it('builds the page again after the snapshots are dropped', async () => {
+		await seed();
+		const { journal, calls, raw } = counted();
+		await journal.getTrip('yunnan-trip');
+		await raw.setTripVisible('yunnan-trip', false);
 
-    expect(await journal.getTrip('yunnan-trip')).not.toBeNull();
-    await dropSnapshots(env.PHOTOS);
+		expect(await journal.getTrip('yunnan-trip')).not.toBeNull();
+		await snapshotInvalidation(env.PHOTOS).changed('city');
 
-    expect(await journal.getTrip('yunnan-trip')).toBeNull();
-    expect(calls.getTrip).toBe(2);
-  });
+		expect(await journal.getTrip('yunnan-trip')).toBeNull();
+		expect(calls.getTrip).toBe(2);
+	});
 
-  it('drops only the snapshots a write can change', async () => {
-    await seed();
-    const { journal, calls } = counted();
-    await journal.getTrip('yunnan-trip');
-    await journal.getPlan('yunnan-plan');
-    await journal.listPlanCards();
+	it('drops only the snapshots a write can change', async () => {
+		await seed();
+		const { journal, calls } = counted();
+		await journal.getTrip('yunnan-trip');
+		await journal.getPlan('yunnan-plan');
+		await journal.listPlanCards();
 
-    await dropSnapshots(env.PHOTOS, snapshotsChangedBy('/api/admin/plans/yunnan-plan/days')!);
+		await snapshotInvalidation(env.PHOTOS).changed('plan');
 
-    await journal.getTrip('yunnan-trip');
-    await journal.getPlan('yunnan-plan');
-    expect(calls).toEqual({ getTrip: 1, getPlan: 2 });
-    expect((await env.PHOTOS.list({ prefix: 'snapshots/' })).objects.map((o) => o.key.split('/').slice(2).join('/')).sort()).toEqual([
-      'plan/yunnan-plan.json',
-      'trip/yunnan-trip.json',
-    ]);
-  });
+		await journal.getTrip('yunnan-trip');
+		await journal.getPlan('yunnan-plan');
+		expect(calls).toEqual({ getTrip: 1, getPlan: 2 });
+		expect(
+			(await env.PHOTOS.list({ prefix: 'snapshots/' })).objects
+				.map((o) => o.key.split('/').slice(2).join('/'))
+				.sort()
+		).toEqual(['plan/yunnan-plan.json', 'trip/yunnan-trip.json']);
+	});
 
-  it('builds the page again when the snapshot is more than a week old', async () => {
-    await seed();
-    const { journal, calls } = counted();
-    await journal.getTrip('yunnan-trip');
+	it('builds the page again when the snapshot is more than a week old', async () => {
+		await seed();
+		const { journal, calls } = counted();
+		await journal.getTrip('yunnan-trip');
 
-    vi.useFakeTimers({ toFake: ['Date'], now: Date.now() + 8 * 24 * 60 * 60 * 1000 });
-    try {
-      await journal.getTrip('yunnan-trip');
-    } finally {
-      vi.useRealTimers();
-    }
+		vi.useFakeTimers({ toFake: ['Date'], now: Date.now() + 8 * 24 * 60 * 60 * 1000 });
+		try {
+			await journal.getTrip('yunnan-trip');
+		} finally {
+			vi.useRealTimers();
+		}
 
-    expect(calls.getTrip).toBe(2);
-  });
+		expect(calls.getTrip).toBe(2);
+	});
 
-  it('serves the old snapshot when D1 fails, and fails when there is none', async () => {
-    await seed();
-    const { journal, raw } = counted();
-    const first = await journal.getTrip('yunnan-trip');
-    const failing = withSnapshots({ ...raw, getTrip: () => Promise.reject(new Error('D1 quota')) }, env.PHOTOS);
+	it('serves the old snapshot when D1 fails, and fails when there is none', async () => {
+		await seed();
+		const { journal, raw } = counted();
+		const first = await journal.getTrip('yunnan-trip');
+		const failing = withSnapshots(
+			{ ...raw, getTrip: () => Promise.reject(new Error('D1 quota')) },
+			env.PHOTOS
+		);
 
-    vi.useFakeTimers({ toFake: ['Date'], now: Date.now() + 8 * 24 * 60 * 60 * 1000 });
-    try {
-      expect(await failing.getTrip('yunnan-trip')).toEqual(first);
-      await expect(failing.getTrip('other-trip')).rejects.toThrow('D1 quota');
-    } finally {
-      vi.useRealTimers();
-    }
-  });
+		vi.useFakeTimers({ toFake: ['Date'], now: Date.now() + 8 * 24 * 60 * 60 * 1000 });
+		try {
+			expect(await failing.getTrip('yunnan-trip')).toEqual(first);
+			await expect(failing.getTrip('other-trip')).rejects.toThrow('D1 quota');
+		} finally {
+			vi.useRealTimers();
+		}
+	});
 
-  it('builds the page from D1 when the snapshot is unreadable', async () => {
-    await seed();
-    const { journal, calls } = counted();
-    await journal.getTrip('yunnan-trip');
-    const [{ key }] = (await env.PHOTOS.list({ prefix: 'snapshots/' })).objects;
-    await env.PHOTOS.put(key, 'not json');
+	it('builds the page from D1 when the snapshot is unreadable', async () => {
+		await seed();
+		const { journal, calls } = counted();
+		await journal.getTrip('yunnan-trip');
+		const [{ key }] = (await env.PHOTOS.list({ prefix: 'snapshots/' })).objects;
+		await env.PHOTOS.put(key, 'not json');
 
-    expect(await journal.getTrip('yunnan-trip')).not.toBeNull();
-    expect(calls.getTrip).toBe(2);
-  });
+		expect(await journal.getTrip('yunnan-trip')).not.toBeNull();
+		expect(calls.getTrip).toBe(2);
+	});
 });

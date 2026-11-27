@@ -1,14 +1,15 @@
 ---
 import JournalLayout from '@/layouts/JournalLayout.astro';
 import { AdminTripEditor } from '@/components/islands/AdminTripEditor';
-import { journalFromEnv } from '@/lib/journal';
+import { atlas, journalWorkspace } from '@/lib/journal';
 
 export const prerender = false;
 
-const journal = journalFromEnv();
+const journal = journalWorkspace();
+const atlasReads = atlas();
 const trip = await journal.getAdminTrip(Astro.params.slug ?? '');
 if (!trip) return Astro.redirect('/admin/trips');
-const [cities, activities] = await Promise.all([journal.listAdminCities(), journal.listAdminActivities()]);
+const [cities, activities] = await Promise.all([atlasReads.listAdminCities(), atlasReads.listAdminActivities()]);
 ---
 
 <JournalLayout title={trip.title} current={{ kind: 'trip', slug: trip.slug }}>

@@ -1,9 +1,10 @@
 import { formatDate, formatMonth } from '@universe/universe/format';
-import { getPlaceName } from '@/lib/place-names';
+import { pinyinOf } from '@/lib/pinyin';
 
 export type PlanDay = {
   day: number;
   city: string;
+  cityZh: string;
 };
 
 export type CityCalendarCell = {
@@ -51,13 +52,12 @@ export function buildCityCalendarDays(days: PlanDay[], startDate: string): CityC
   return [...days]
     .sort((a, b) => a.day - b.day)
     .map((planDay) => {
-      const place = getPlaceName(planDay.city);
       return {
         date: getDayDate(startDate, planDay.day),
         day: planDay.day,
         city: planDay.city,
-        cityZh: place.zh,
-        cityPinyin: place.pinyin,
+        cityZh: planDay.cityZh,
+        cityPinyin: pinyinOf(planDay.cityZh),
       };
     });
 }

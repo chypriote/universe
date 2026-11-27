@@ -4,11 +4,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Container from '@/components/Container.astro';
 import { GalleryArchive } from '@/components/islands/GalleryArchive';
 import { SITE } from '@/config/site';
-import { journalFromEnv } from '@/lib/journal';
+import { publicReads } from '@/lib/journal';
 
 export const prerender = false;
 
-const archive = await journalFromEnv().getGallery();
+const archive = await publicReads().getGallery();
 
 const jsonLd = {
   "@context": "https://schema.org",
