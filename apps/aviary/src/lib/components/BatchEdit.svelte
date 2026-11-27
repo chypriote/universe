@@ -11,6 +11,8 @@
 	import BirdPicture from './BirdPicture.svelte';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
+	import SearchField from '@universe/showcase/components/SearchField.svelte';
+	import SortDirection from '@universe/showcase/components/SortDirection.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
 
 	let {
@@ -60,10 +62,52 @@
 	]);
 
 	const changed = $derived(habitat !== '' || FLAGS.some((key) => flags[key] !== ''));
-	const allSelected = $derived(birds.length > 0 && selected.length === birds.length);
+
+	let search = $state('');
+	let sortKey = $state<'arrival' | 'name'>('arrival');
+	let direction = $state('desc');
+	const sortOptions = $derived([
+		{ value: 'arrival', label: label(labels, 'Arrival') },
+		{ value: 'name', label: label(labels, 'Name') }
+	]);
+
+	/** A month or year Arrival counts as the first day of it, so it sorts with day Arrivals. */
+	const arrivalKey = (arrival: string | null) =>
+		arrival === null
+			? null
+			: arrival.length === 4
+				? `${arrival}-01-01`
+				: arrival.length === 7
+					? `${arrival}-01`
+					: arrival;
+
+	/** Birds that match the search, sorted; a Bird with no Arrival goes last either way. */
+	const visible = $derived.by(() => {
+		const needle = search.trim().toLowerCase();
+		const sign = direction === 'asc' ? 1 : -1;
+		return birds
+			.filter((b) => b.name.toLowerCase().includes(needle))
+			.sort((a, b) => {
+				if (sortKey === 'name') return sign * (a.name.localeCompare(b.name) || a.id - b.id);
+				const ka = arrivalKey(a.arrival);
+				const kb = arrivalKey(b.arrival);
+				if (ka === kb) return a.name.localeCompare(b.name) || a.id - b.id;
+				if (ka === null) return 1;
+				if (kb === null) return -1;
+				return sign * (ka < kb ? -1 : 1);
+			});
+	});
+	const allSelected = $derived(visible.length > 0 && visible.every((b) => selected.includes(b.id)));
+
+	function toggle(id: number, checked: boolean) {
+		selected = checked ? [...selected, id] : selected.filter((x) => x !== id);
+	}
 
 	function toggleAll(checked: boolean) {
-		selected = checked ? birds.map((b) => b.id) : [];
+		const ids = new Set(visible.map((b) => b.id));
+		selected = checked
+			? [...selected, ...visible.map((b) => b.id).filter((id) => !selected.includes(id))]
+			: selected.filter((id) => !ids.has(id));
 	}
 
 	function reset() {
@@ -81,16 +125,51 @@
 	<form
 		method="POST"
 		action="?/editBirds"
-		class="grid gap-4 lg:grid-cols-3"
+		class="flex flex-col gap-4"
 		use:enhance={() =>
 			async ({ result, update }) => {
 				await update({ reset: false });
 				if (result.type === 'success') reset();
 			}}
 	>
-		<ul
-			class="flex max-h-[32rem] flex-col overflow-y-auto rounded-md border border-input lg:col-span-1"
-		>
+		<div class="grid gap-3 sm:grid-cols-2">
+			<div class="flex flex-col gap-1.5">
+				<span class="text-sm font-bold">{label(labels, 'Habitat')}</span>
+				<Select bind:value={habitat} label={label(labels, 'Habitat')} options={habitatOptions} />
+				<input type="hidden" name="habitat" value={habitat} />
+			</div>
+			{#each FLAGS as key (key)}
+				<div class="flex flex-col gap-1.5">
+					<span class="text-sm font-bold">{label(labels, FLAG_LOOK[key].code)}</span>
+					<Select
+						bind:value={flags[key]}
+						label={label(labels, FLAG_LOOK[key].code)}
+						options={flagOptions}
+					/>
+					<input type="hidden" name={key} value={flags[key]} />
+				</div>
+			{/each}
+		</div>
+		<div class="flex justify-end">
+			<Button type="submit" intent="success" disabled={selected.length === 0 || !changed}>
+				{label(labels, 'BatchApply')}
+			</Button>
+		</div>
+
+		<div class="flex flex-wrap items-end gap-2">
+			<SearchField
+				bind:value={search}
+				label={label(labels, 'SearchBirds')}
+				placeholder={label(labels, 'SearchBirds')}
+			/>
+			<div class="w-44">
+				<Select bind:value={sortKey} label={label(labels, 'BatchSortBy')} options={sortOptions} />
+			</div>
+			<SortDirection bind:value={direction} />
+		</div>
+
+		{#each selected as id (id)}<input type="hidden" name="ids" value={id} />{/each}
+		<ul class="flex max-h-[32rem] flex-col overflow-y-auto rounded-md border border-input">
 			<li class="border-b border-input">
 				<label class="flex min-h-11 cursor-pointer items-center gap-2 px-3 text-sm font-bold">
 					<input
@@ -103,14 +182,13 @@
 					<span class="ml-auto font-normal text-muted-foreground">{selected.length}</span>
 				</label>
 			</li>
-			{#each birds as bird (bird.id)}
+			{#each visible as bird (bird.id)}
 				<li>
 					<label class="flex min-h-11 cursor-pointer items-center gap-2 px-3 py-1 text-sm">
 						<input
 							type="checkbox"
-							name="ids"
-							value={bird.id}
-							bind:group={selected}
+							checked={selected.includes(bird.id)}
+							onchange={(e) => toggle(bird.id, e.currentTarget.checked)}
 							class="size-5 shrink-0 accent-icon-accent"
 						/>
 						{#if bird.pictureId !== null && !failed.includes(bird.id)}
@@ -145,31 +223,5 @@
 				<li class="px-3 py-2 text-sm text-muted-foreground">{label(labels, 'NoBirds')}</li>
 			{/each}
 		</ul>
-
-		<div class="flex flex-col gap-4 lg:col-span-2">
-			<div class="grid gap-3 sm:grid-cols-2">
-				<div class="flex flex-col gap-1.5">
-					<span class="text-sm font-bold">{label(labels, 'Habitat')}</span>
-					<Select bind:value={habitat} label={label(labels, 'Habitat')} options={habitatOptions} />
-					<input type="hidden" name="habitat" value={habitat} />
-				</div>
-				{#each FLAGS as key (key)}
-					<div class="flex flex-col gap-1.5">
-						<span class="text-sm font-bold">{label(labels, FLAG_LOOK[key].code)}</span>
-						<Select
-							bind:value={flags[key]}
-							label={label(labels, FLAG_LOOK[key].code)}
-							options={flagOptions}
-						/>
-						<input type="hidden" name={key} value={flags[key]} />
-					</div>
-				{/each}
-			</div>
-			<div class="flex justify-end">
-				<Button type="submit" intent="success" disabled={selected.length === 0 || !changed}>
-					{label(labels, 'BatchApply')}
-				</Button>
-			</div>
-		</div>
 	</form>
 </section>
