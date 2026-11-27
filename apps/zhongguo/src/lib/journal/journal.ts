@@ -641,7 +641,7 @@ export function buildJournal(env: JournalEnv): Journal {
       return {
         name,
         nameZh: zh.find((province) => province.name === name)?.name_zh ?? '',
-        photo: shown ? thumbUrl(shown.trip.slug, shown.photo.name, shown.photo.version) : null,
+        photo: shown ? photoUrl(shown.trip.slug, shown.photo.name, shown.photo.version) : null,
         ...(picked && { focus: covers.get(name)!.focus }),
         tripCount: tripsThere.length,
         href: `/trips/${tripsThere[0].slug}`,
