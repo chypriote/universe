@@ -12,6 +12,10 @@ Stack: SvelteKit (Svelte 5), shadcn-svelte on bits-ui, Tailwind CSS v4. "Snippet
 - `cn()` and the shadcn helper types: `@universe/showcase/utils`.
 - A new shadcn-svelte part: add it with the CLI in a scratch app, move it to `src/components/ui/<name>/`, and make its imports relative.
 
+## Fixed words
+
+SkipLink, ThemeToggle, Tabs, ConfirmDialog, FormActions and the date Field have fixed English words ("Skip to content", "Cancel", "Save", and so on). An app that needs other words calls `setUiLabels(() => ({ cancel: '…' }))` from `@universe/showcase/ui-labels` once in its root layout. The keys are in `src/ui-labels.ts`; missing keys stay English.
+
 ## Shared rules
 
 - Touch target: every control is at least `control.size.min` (44px), or has a 44px tap area.

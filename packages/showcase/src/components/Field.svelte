@@ -3,6 +3,9 @@
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { Input } from './ui/input/index.js';
 	import { Label } from './ui/label/index.js';
+	import { getUiLabels } from '../ui-labels.js';
+
+	const ui = getUiLabels();
 
 	let {
 		value = $bindable(''),
@@ -62,7 +65,7 @@
 				onclick={openPicker}
 			>
 				<CalendarIcon class="size-5" />
-				<span class="sr-only">Pick {label} date</span>
+				<span class="sr-only">{ui().pickDate.replace('{label}', label)}</span>
 			</button>
 			<input
 				bind:this={picker}

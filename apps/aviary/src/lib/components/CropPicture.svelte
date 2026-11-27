@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
 	import Button from '@universe/showcase/components/Button.svelte';
+	import { label, type Labels } from '#lib/labels';
 	import { MAX_ZOOM, panCrop, squareCrop, zoomCrop, zoomOf, type Crop } from '#lib/image-prep';
 
 	/**
@@ -9,12 +10,14 @@
 	 */
 	let {
 		file,
+		labels,
 		busy = false,
 		onUse,
 		onSkip,
 		onUnreadable
 	}: {
 		file: Blob;
+		labels: Labels;
 		busy?: boolean;
 		onUse: (crop: Crop) => void;
 		onSkip: () => void;
@@ -94,12 +97,12 @@
 		oninput={setZoom}
 		disabled={!crop}
 		class="w-full max-w-72 accent-icon-accent"
-		aria-label="Zoom"
+		aria-label={label(labels, 'Zoom')}
 	/>
 	<div class="flex gap-2">
-		<Button onclick={onSkip}>Cancel</Button>
+		<Button onclick={onSkip}>{label(labels, 'Cancel')}</Button>
 		<Button intent="success" loading={busy} disabled={!crop} onclick={() => crop && onUse(crop)}>
-			Save
+			{label(labels, 'Save')}
 		</Button>
 	</div>
 </div>

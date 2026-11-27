@@ -6,6 +6,7 @@
 	"exports": {
 		"./showcase.css": "./src/showcase.css",
 		"./utils": "./src/utils.ts",
+		"./ui-labels": "./src/ui-labels.ts",
 		"./components/*": "./src/components/*",
 		"./ui/*": "./src/components/ui/*/index.ts"
 	},
