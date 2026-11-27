@@ -2,7 +2,7 @@ import { addBirdAction, archiveBirdAction, editBirdAction } from '#lib/server/bi
 import { loadView } from '#lib/server/list-view';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = ({ cookies, url }) => loadView(cookies, url, 'aloft');
+export const load: PageServerLoad = ({ url }) => loadView(url, 'aloft');
 
 export const actions: Actions = {
 	addBird: addBirdAction,

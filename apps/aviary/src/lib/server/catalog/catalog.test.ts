@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { createCatalog, UnauthorizedError } from './index';
+import { createCatalog } from './index';
 import type { Catalog } from './types';
 
 let catalog: Catalog;
@@ -84,13 +84,8 @@ describe('Owner login', () => {
 });
 
 describe('labels', () => {
-	it('rejects a bad token with UnauthorizedError', async () => {
-		await expect(catalog.labels('not-a-token')).rejects.toBeInstanceOf(UnauthorizedError);
-		await expect(catalog.labels('')).rejects.toBeInstanceOf(UnauthorizedError);
-	});
-
 	it('maps each code name to its display word', async () => {
-		expect(await catalog.labels(token)).toEqual({
+		expect(await catalog.labels()).toEqual({
 			Aloft: 'Aloft',
 			Grounded: 'Grounded',
 			Nest: 'Nest',
@@ -103,7 +98,7 @@ describe('labels', () => {
 
 	it('is empty when no label is seeded', async () => {
 		await seedLabels([]);
-		expect(await catalog.labels(token)).toEqual({});
+		expect(await catalog.labels()).toEqual({});
 	});
 });
 
@@ -169,19 +164,13 @@ beforeEach(async () => {
 const names = (tiles: { name: string }[]) => tiles.map((t) => t.name);
 
 describe('listBirds', () => {
-	it('rejects a bad token with UnauthorizedError', async () => {
-		await expect(catalog.listBirds('nope', { view: 'aloft' })).rejects.toBeInstanceOf(
-			UnauthorizedError
-		);
-	});
-
 	it('puts Birds neither Flown nor Lost in Aloft, and Flown or Lost in Grounded', async () => {
 		await seedBird('Bird A');
 		await seedBird('Bird B', { flown: true });
 		await seedBird('Bird C', { lost: true });
 		await seedBird('Bird D', { flown: true, lost: true });
-		expect(names(await catalog.listBirds(token, { view: 'aloft' }))).toEqual(['Bird A']);
-		expect(names(await catalog.listBirds(token, { view: 'grounded' })).sort()).toEqual([
+		expect(names(await catalog.listBirds({ view: 'aloft' }))).toEqual(['Bird A']);
+		expect(names(await catalog.listBirds({ view: 'grounded' })).sort()).toEqual([
 			'Bird B',
 			'Bird C',
 			'Bird D'
@@ -192,22 +181,16 @@ describe('listBirds', () => {
 		await seedBird('Bird A', { seen: true });
 		await seedBird('Bird B', { seen: true, lost: true });
 		await seedBird('Bird C');
-		expect(names(await catalog.listBirds(token, { view: 'seen' })).sort()).toEqual([
-			'Bird A',
-			'Bird B'
-		]);
-		expect(names(await catalog.listBirds(token, { view: 'aloft' })).sort()).toEqual([
-			'Bird A',
-			'Bird C'
-		]);
-		expect(names(await catalog.listBirds(token, { view: 'grounded' }))).toEqual(['Bird B']);
+		expect(names(await catalog.listBirds({ view: 'seen' })).sort()).toEqual(['Bird A', 'Bird B']);
+		expect(names(await catalog.listBirds({ view: 'aloft' })).sort()).toEqual(['Bird A', 'Bird C']);
+		expect(names(await catalog.listBirds({ view: 'grounded' }))).toEqual(['Bird B']);
 	});
 
 	it('leaves Archived Birds out of every view', async () => {
 		await seedBird('Bird A', { archived: true, seen: true });
 		await seedBird('Bird B', { archived: true, flown: true });
 		for (const view of ['aloft', 'grounded', 'seen'] as const) {
-			expect(await catalog.listBirds(token, { view })).toEqual([]);
+			expect(await catalog.listBirds({ view })).toEqual([]);
 		}
 	});
 
@@ -218,7 +201,7 @@ describe('listBirds', () => {
 		await seedBird('New day', { arrival: '2022-03-10' });
 		await seedBird('Mid day', { arrival: '2020-12-31' });
 		await seedBird('Month only', { arrival: '2020-12' });
-		expect(names(await catalog.listBirds(token, { view: 'aloft' }))).toEqual([
+		expect(names(await catalog.listBirds({ view: 'aloft' }))).toEqual([
 			'New day',
 			'Year only',
 			'Mid day',
@@ -236,7 +219,7 @@ describe('listBirds', () => {
 			pictures: ['key-one', 'key-two']
 		});
 		await seedBird('Bird B');
-		const tiles = await catalog.listBirds(token, { view: 'aloft' });
+		const tiles = await catalog.listBirds({ view: 'aloft' });
 		const a = tiles.find((t) => t.id === id)!;
 		expect(a).toMatchObject({
 			name: 'Bird A',
@@ -253,21 +236,16 @@ describe('listBirds', () => {
 });
 
 describe('getPicture', () => {
-	it('refuses a bad token with UnauthorizedError', async () => {
-		await seedBird('Bird A', { pictures: ['key-one'] });
-		await expect(catalog.getPicture('nope', 1)).rejects.toBeInstanceOf(UnauthorizedError);
-	});
-
 	it('streams the R2 object', async () => {
 		await seedBird('Bird A', { pictures: ['key-one'] });
-		const [tile] = await catalog.listBirds(token, { view: 'aloft' });
-		const picture = await catalog.getPicture(token, tile.pictureId!);
+		const [tile] = await catalog.listBirds({ view: 'aloft' });
+		const picture = await catalog.getPicture(tile.pictureId!);
 		expect(picture).not.toBeNull();
 		expect(await new Response(picture!.body).text()).toBe('bytes-of-key-one');
 	});
 
 	it('answers null for an unknown Picture', async () => {
-		expect(await catalog.getPicture(token, 999999)).toBeNull();
+		expect(await catalog.getPicture(999999)).toBeNull();
 	});
 });
 
@@ -276,28 +254,27 @@ describe('thumbnails', () => {
 
 	it('has none until the browser stores one, then streams it', async () => {
 		await seedBird('Bird A', { pictures: ['key-one'] });
-		const [tile] = await catalog.listBirds(token, { view: 'aloft' });
-		expect(await catalog.getPicture(token, tile.pictureId!, 'thumb')).toBeNull();
+		const [tile] = await catalog.listBirds({ view: 'aloft' });
+		expect(await catalog.getPicture(tile.pictureId!, 'thumb')).toBeNull();
 
-		expect(await catalog.putThumbnail(token, tile.pictureId!, bytes)).toBe(true);
-		const thumb = await catalog.getPicture(token, tile.pictureId!, 'thumb');
+		expect(await catalog.putThumbnail(tile.pictureId!, bytes)).toBe(true);
+		const thumb = await catalog.getPicture(tile.pictureId!, 'thumb');
 		expect(await new Response(thumb!.body).text()).toBe('small');
-		const full = await catalog.getPicture(token, tile.pictureId!);
+		const full = await catalog.getPicture(tile.pictureId!);
 		expect(await new Response(full!.body).text()).toBe('bytes-of-key-one');
 	});
 
-	it('refuses a bad token and answers false for an unknown Picture', async () => {
-		await expect(catalog.putThumbnail('nope', 1, bytes)).rejects.toBeInstanceOf(UnauthorizedError);
-		expect(await catalog.putThumbnail(token, 999999, bytes)).toBe(false);
+	it('answers false for an unknown Picture', async () => {
+		expect(await catalog.putThumbnail(999999, bytes)).toBe(false);
 	});
 
 	it('goes with its Picture when the Bird is deleted for good', async () => {
 		const id = await seedBird('Bird A', { pictures: ['key-one'], archived: true });
 		const [row] = (await env.DB.prepare('SELECT id FROM picture').all<{ id: number }>()).results;
-		await catalog.putThumbnail(token, row.id, bytes);
+		await catalog.putThumbnail(row.id, bytes);
 		expect(await env.PICTURES.head('thumb/key-one')).not.toBeNull();
 
-		expect(await catalog.deleteBirdForever(token, id)).toEqual({ ok: true });
+		expect(await catalog.deleteBirdForever(id)).toEqual({ ok: true });
 		expect(await env.PICTURES.head('key-one')).toBeNull();
 		expect(await env.PICTURES.head('thumb/key-one')).toBeNull();
 	});

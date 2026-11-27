@@ -6,7 +6,6 @@ import type { LayoutServerLoad } from './$types';
 export const load: LayoutServerLoad = async ({ cookies }) => {
 	const catalog = catalogFromPlatform();
 	const token = ownerToken(cookies);
-	const labels =
-		token !== '' && (await catalog.verifyToken(token)) ? await catalog.labels(token) : {};
+	const labels = token !== '' && (await catalog.verifyToken(token)) ? await catalog.labels() : {};
 	return { labels };
 };
