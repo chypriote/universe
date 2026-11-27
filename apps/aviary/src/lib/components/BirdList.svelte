@@ -1,4 +1,5 @@
 <script lang="ts">
+	import AdminLink from './AdminLink.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
 	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
 	import TileGrid from '@universe/showcase/components/TileGrid.svelte';
@@ -18,6 +19,7 @@
 <svelte:head><title>{appLabel} | {viewLabel}</title></svelte:head>
 
 <StickyBar current={view} links={lists(labels)}>
+	{#snippet login()}<AdminLink label={label(labels, 'Admin')} />{/snippet}
 	{#snippet title()}{appLabel}<span class="text-icon-accent">.</span>{/snippet}
 </StickyBar>
 

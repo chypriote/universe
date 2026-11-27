@@ -34,6 +34,19 @@ export interface PictureObject {
 	contentType: string;
 }
 
+/** The two Admin lists. */
+export type ValueKind = 'habitat' | 'song';
+
+/** A Habitat or Song value, with the number of Birds that use it. */
+export interface ListValue {
+	id: number;
+	name: string;
+	uses: number;
+}
+
+export type ValueResult<E extends string> = { ok: true } | { ok: false; error: E };
+export type AddValueResult = { ok: true; id: number } | { ok: false; error: 'empty' | 'duplicate' };
+
 export interface Catalog {
 	login(password: string): Promise<LoginResult>;
 	verifyToken(token: string): Promise<boolean>;
@@ -43,4 +56,23 @@ export interface Catalog {
 	listBirds(token: string, query: ListBirdsQuery): Promise<BirdTile[]>;
 	/** The R2 object of a Picture, or null when the Picture or its object is gone. */
 	getPicture(token: string, id: number): Promise<PictureObject | null>;
+	/** Every value of a list, by name, with its usage. */
+	listValues(token: string, kind: ValueKind): Promise<ListValue[]>;
+	addValue(token: string, kind: ValueKind, name: string): Promise<AddValueResult>;
+	renameValue(
+		token: string,
+		kind: ValueKind,
+		id: number,
+		name: string
+	): Promise<ValueResult<'empty' | 'duplicate' | 'not-found'>>;
+	/**
+	 * Removes a value. A value in use is refused without `moveTo`; with it, every Bird
+	 * moves to that value first (a Bird that has both gets it once).
+	 */
+	removeValue(
+		token: string,
+		kind: ValueKind,
+		id: number,
+		moveTo?: number
+	): Promise<ValueResult<'in-use' | 'not-found' | 'bad-target'>>;
 }
