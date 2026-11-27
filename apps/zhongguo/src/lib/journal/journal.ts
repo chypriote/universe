@@ -485,7 +485,7 @@ export function buildJournal(env: JournalEnv): Journal {
       description,
       cities: route.cities.map((city) => ({ name: city.name, nameZh: city.nameZh })),
       days,
-      planDays: trip.days.map((day) => ({ day: day.number, city: day.city })),
+      planDays: trip.days.map((day) => ({ day: day.number, city: day.city, cityZh: day.city_zh })),
       route,
     };
   }

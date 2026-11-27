@@ -100,7 +100,7 @@ export type TripPage = {
   cities: TripCity[];
   days: TripDay[];
   /** One entry per visible Day, for the calendar of a Trip with Days. */
-  planDays: { day: number; city: string }[];
+  planDays: { day: number; city: string; cityZh: string }[];
   route: Route;
 };
 
