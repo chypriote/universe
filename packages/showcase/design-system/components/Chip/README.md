@@ -11,3 +11,5 @@ One count or total in the StickyBar, on a sun, mint or sky pill. Showcase `Chip.
 | compact | boolean | Hide the label below 640px, keep the value |
 
 Text is always `on-chip` (navy-800) in every theme: value in 800, label in 700. Chips sit in an `aria-live="polite"` group. Not interactive: no hover, no focus.
+
+Aviary does not use the StickyBar `chips` slot: its sun Chip (the Birds shown, with the tab name) sits above the Seen select, or the Nest select on the Seen tab, inside the filter row.
