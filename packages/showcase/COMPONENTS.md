@@ -197,4 +197,12 @@ The Owner login in the StickyBar title row. Viewer: a lock `icon-sm` Button (hid
 | isOwner   | boolean | —       | From the page data  |
 | adminHref | string  | —       | `resolve('/admin')` |
 
-LoginForm: one password Field and a `success` Button "Log in". It posts to the app's `/login` action. Wrong password: Field error "Wrong password". On success the page data reloads, so `isOwner` flips.
+### LoginForm
+
+The Owner login form, shown in the LoginAction Popup: one password Field and a `success` Button "Log in". It posts to the app's `/login` action.
+
+| Prop      | Type       | Default | Description                                                                              |
+| --------- | ---------- | ------- | ---------------------------------------------------------------------------------------- |
+| onSuccess | () => void | —       | Called after the page data reloaded (`isOwner` flips); LoginAction closes the Popup here |
+
+States: default, loading (the Button shows loading while the request runs), error (Field error "Wrong password", the password stays). On success the password clears and the page data reloads.
