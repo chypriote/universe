@@ -48,7 +48,7 @@ export interface BirdTile {
 }
 
 /** A tile with the Roosted flag, for the Admin batch list only. */
-export type BatchBird = BirdTile & { roosted: boolean };
+export type BatchBird = BirdTile & { roosted: boolean; habitatId: number | null };
 
 /** One meeting with a Bird. */
 export interface Sighting {

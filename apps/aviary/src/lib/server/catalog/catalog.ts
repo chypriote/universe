@@ -178,7 +178,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		async listBatchBirds(token) {
 			await owner(token);
 			return db
-				.select({ ...tileColumns, roosted: birds.roosted })
+				.select({ ...tileColumns, roosted: birds.roosted, habitatId: birds.habitatId })
 				.from(birds)
 				.where(eq(birds.archived, false))
 				.orderBy(asc(birds.name), asc(birds.id));
