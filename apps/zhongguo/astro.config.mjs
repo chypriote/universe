@@ -181,6 +181,8 @@ export default defineConfig({
     inlineStylesheets: 'always',
   },
   vite: {
+    // A snapshot of a Trip page belongs to the build that made it (docs/adr/0004).
+    define: { __BUILD_ID__: JSON.stringify(Date.now().toString(36)) },
     plugins: [tailwindcss(), prebundleCloudflareDevDeps()],
     resolve: {
       dedupe: ['react', 'react-dom'],
