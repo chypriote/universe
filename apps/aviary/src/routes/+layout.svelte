@@ -1,0 +1,27 @@
+<script lang="ts">
+	import '../app.css';
+	import favicon from '#lib/assets/favicon.svg';
+	import { label } from '#lib/labels';
+	import Signature from '@universe/showcase/components/Signature.svelte';
+	import SkipLink from '@universe/showcase/components/SkipLink.svelte';
+	import type { LayoutProps } from './$types';
+
+	let { data, children }: LayoutProps = $props();
+</script>
+
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
+
+<SkipLink />
+
+<!-- layer.safe-area: page-color strip over the top inset, above the sticky bar. -->
+<div
+	aria-hidden="true"
+	class="pointer-events-none fixed inset-x-0 top-0 z-(--layer-safe-area) h-[env(safe-area-inset-top)] bg-background"
+></div>
+
+<div class="min-h-dvh bg-background text-foreground">
+	{@render children()}
+	<Signature label={label(data.labels, 'Signature')} />
+</div>

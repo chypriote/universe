@@ -6,7 +6,7 @@ Nico's apps. The collection apps (Jerseys, Vinyles) share the Showcase design sy
 
 ### Issue tracker
 
-Issues live in GitHub Issues for `chypriote/universe`. Each issue carries one area label: `app:jerseys`, `app:vinyles`, `app:zhongguo`, `showcase` or `universe`. See `docs/agents/issue-tracker.md`. Older issues stay in `chypriote/jerseys`, `chypriote/vinyles` and `chypriote/nico-zhongguo`.
+Issues live in GitHub Issues for `chypriote/universe`. Each issue carries one area label: `app:jerseys`, `app:vinyles`, `app:aviary`, `app:zhongguo`, `showcase` or `universe`. See `docs/agents/issue-tracker.md`. Older issues stay in `chypriote/jerseys`, `chypriote/vinyles` and `chypriote/nico-zhongguo`.
 
 ### Triage labels
 

@@ -1,0 +1,25 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "aviary",
+	"compatibility_date": "2026-11-01",
+	"compatibility_flags": ["nodejs_compat"],
+	// Parent domain shared by every Universe app: one Owner login for all of them. Empty: this app only.
+	"vars": { "OWNER_COOKIE_DOMAIN": "nicolastemeni.workers.dev" },
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "aviary",
+			// Replace with the id printed by `npx wrangler d1 create aviary`.
+			"database_id": "00000000-0000-0000-0000-000000000000",
+			"migrations_dir": "drizzle"
+		}
+	],
+	// Private bucket: no public URL, no custom domain. Pictures go through an authenticated route.
+	"r2_buckets": [
+		{
+			"binding": "PICTURES",
+			"bucket_name": "aviary"
+		}
+	]
+	// Secrets (not in this file): OWNER_PASSWORD and JWT_SECRET. See README.
+}
