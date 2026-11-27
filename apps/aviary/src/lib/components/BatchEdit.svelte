@@ -159,11 +159,11 @@
 					<input type="hidden" name={key} value={flags[key]} />
 				</div>
 			{/each}
-		</div>
-		<div class="flex justify-end">
-			<Button type="submit" intent="success" disabled={selected.length === 0 || !changed}>
-				{label(labels, 'BatchApply')}
-			</Button>
+			<div class="flex justify-end sm:self-end">
+				<Button type="submit" intent="success" disabled={selected.length === 0 || !changed}>
+					{label(labels, 'BatchApply')}
+				</Button>
+			</div>
 		</div>
 
 		<div class="flex flex-wrap items-end gap-2">
