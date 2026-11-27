@@ -1,0 +1,5 @@
+<!-- @dsCard group="Forms" height=200 subtitle="Default and wrong password" -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><style>body{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;align-items:start}form{display:flex;flex-direction:column;gap:16px}</style></head><body>
+<form><div class="sc-field"><label class="sc-label" for="a">Password</label><input class="sc-input" id="a" type="password" value="secret"></div><button class="sc-btn sc-btn--success" type="button">Log in</button></form>
+<form><div class="sc-field"><label class="sc-label" for="b">Password</label><input class="sc-input" id="b" type="password" value="wrong" aria-invalid="true" aria-describedby="be"><p class="sc-error" id="be">! Wrong password</p></div><button class="sc-btn sc-btn--success" type="button">Log in</button></form>
+</body></html>
