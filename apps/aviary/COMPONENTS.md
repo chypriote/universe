@@ -65,7 +65,7 @@ One row per Sighting: a date input (empty means no day; changing or clearing it 
 **Hierarchy:** Pattern
 **Purpose:** The one form for Add and Edit.
 
-Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `action` (default `?/addBird`), `initial`, `initialPictures`, `seenLocked`, `similar`, `onDone`, `start` (snippet left of Save: Edit puts the Archive Button there). Fields: name, PictureList, Habitat (pick one or none), Songs (multi-pick), Arrival (a day, a month, a year or empty), the five flags, notes. It posts `buildBirdFormData` to the action and shows a refusal as a Field-style error. Edit reuses it with `?/editBird&id=`, the Bird's values and Pictures, and `similar` off.
+Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `action` (default `?/addBird`), `initial`, `initialPictures`, `seenLocked`, `similar`, `onDone`, `start` (snippet left of Save: Edit puts the Archive Button there). Fields: name; then PictureList with Habitat (pick one or none) and Arrival (a day, a month, a year or empty) to its right; then Songs (multi-pick) and the five flags as two columns, each with an icon (the BirdTile flag icons and colours, a music note for every Song, a moon for Roosted); notes. Below `sm` every row stacks. It posts `buildBirdFormData` to the action and shows a refusal as a Field-style error. Edit reuses it with `?/editBird&id=`, the Bird's values and Pictures, and `similar` off.
 
 ## PictureList
 
