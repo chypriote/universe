@@ -111,7 +111,7 @@ Props: `labels`. Reads the Habitat and Songs lists from the page data.
 **Hierarchy:** Pattern
 **Purpose:** One Admin list, Habitat or Songs.
 
-Props: `kind` (`habitat` or `song`), `heading`, `values` (name and number of Birds using it), `labels`, `error` (label code name of the last refusal). One row per value: a rename Field with the use count and a Rename Button, and a danger Remove Button. A value nobody uses is removed at once. A value in use opens a ConfirmDialog with a Select of the other values: removing moves every Bird there first. A last Field and Button add a value.
+Props: `kind` (`habitat` or `song`), `heading`, `values` (name and number of Birds using it), `labels`, `error` (label code name of the last refusal). One row per value: a rename Field with the use count, a pencil icon Button (Rename) and a danger bin icon Button (Remove), all on one line; every icon Button has a tooltip and a screen-reader label. A value nobody uses is removed at once. A value in use opens a ConfirmDialog with a Select of the other values: removing moves every Bird there first. A last Field and a plus icon Button (Add) add a value.
 
 ## BatchEdit
 
