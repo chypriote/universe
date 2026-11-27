@@ -34,6 +34,8 @@
 	--parakeet-outline: light-dark(var(--lime-700), var(--lime-400));
 	--parakeet-wing: light-dark(var(--lime-800), var(--lime-700));
 	--parakeet-beak: light-dark(#1a2f6b, #101a3a);
+
+	--flag-shadow: 0 1px 3px rgb(0 0 0 / 0.55);
 }
 
 /* Lilita One has one weight, 400: never let the browser fake a bold on the display face. */

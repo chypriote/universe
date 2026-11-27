@@ -61,7 +61,7 @@
 				</span>
 			{/if}
 			{#if flags.length > 0}
-				<span class="absolute start-1 top-1 flex gap-0.5 drop-shadow-[0_1px_3px_rgb(0_0_0/0.55)]">
+				<span class="absolute start-1 top-1 flex gap-0.5 drop-shadow-(--flag-shadow)">
 					{#each flags as flag (flag.code)}
 						<flag.icon class="size-4 {flag.color}" aria-hidden="true" />
 						<span class="sr-only">{label(labels, flag.code)}</span>

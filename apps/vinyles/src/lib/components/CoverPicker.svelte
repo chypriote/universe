@@ -364,19 +364,19 @@
 						/>
 						{#if candidate.title}
 							<span
-								class="line-clamp-2 text-[11px] leading-tight font-bold break-words"
+								class="line-clamp-2 text-2xs leading-tight font-bold break-words"
 								title="{candidate.artist} – {candidate.title}"
 							>
 								{candidate.artist} – {candidate.title}{candidate.year ? ` (${candidate.year})` : ''}
 							</span>
 						{/if}
-						<span class="block truncate text-[11px] leading-tight text-muted-foreground">
+						<span class="block truncate text-2xs leading-tight text-muted-foreground">
 							{sourceName(candidate)}
 						</span>
 						{#if key(candidate) in ratings}
 							{@const reason = ratings[key(candidate)]}
 							<span
-								class="block truncate text-[11px] leading-tight {reason
+								class="block truncate text-2xs leading-tight {reason
 									? 'text-destructive'
 									: 'text-muted-foreground'}"
 								title={reason ?? 'Passes the quality check'}
