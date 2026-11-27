@@ -8,9 +8,10 @@ Shared components (StickyBar, EmptyState, Field, Button, Popup, TileGrid and the
 
 | Level | Components |
 | --- | --- |
-| Pattern | Parakeets (login art), BirdTile, AddBird, BirdForm, PictureList, SimilarNames |
+| Component | BirdTile, BirdPopup |
+| Pattern | Parakeets (login art), BirdList, SightingList, AddBird, BirdForm, PictureList, SimilarNames, ValueList, AdminLink |
 
-The Popup media column, BirdForm, SightingList, SimilarNames and the Admin lists are named in the spec (#278) and described here when their slices land.
+The shared StickyBar, TileGrid, Popup, EmptyState, ConfirmDialog, Field and Select are used as Showcase defines them.
 
 ## Parakeets
 
@@ -30,17 +31,31 @@ Static.
 
 Props: `bird` (id, name, arrival, seen, flown, lost, nest, pictureId), `labels`. The first Picture fills a square, loaded from `/pictures/:id`; with none, or if it fails, the initials on a tinted square. One icon per set flag (Seen, Flown, Lost, Nest) top left, coloured by flag (Nest is sun), with a soft drop shadow and no circle; Roosted is never shown. Caption: name, then the Arrival as a day or a year. Hover tilt only.
 
-## Pages in this slice
+Props `onSelect`: gives the Popup the tile to focus on close. The tile is one `<button>`; the image has `alt=""` and each flag icon has a visually hidden label. Flag icons use the `flag.*` tokens.
 
-- **Login:** `h1` "Log in", Field "Password", Button `success` "Log in", Parakeets. A wrong password shows the Field error. After login the Owner returns to the page in `next`.
-- **Aloft, Grounded, Nest:** StickyBar with three tabs, then a TileGrid of BirdTiles (Arrival newest first), or the Showcase EmptyState when the tab has no Bird. Pictures come only through the authenticated `/pictures/:id` route (`Cache-Control: private`).
+States: default, hover and focus (lift and tilt, motion allowed only; focus also shows the ring), no Picture or a Picture that fails (initials square).
+
+## BirdList
+
+**Hierarchy:** Pattern
+**Purpose:** The body of the Aloft, Grounded and Nest pages.
+
+Props: `view`, `birds`, `labels`, `filters`, `habitats`, `songs`. StickyBar with the three tabs, the search, the Habitat, Songs and Nest selects, AddBird and AdminLink; then a TileGrid of BirdTiles (Arrival newest first). The filters live in the URL query and reload the tab after a short pause. With no Bird: the Showcase EmptyState; with a filter or search active, an EmptyState with a "clear filters" Button. A tile opens the BirdPopup. Pictures come only through the authenticated `/pictures/:id` route (`Cache-Control: private`).
+
+## Login page
+
+`h1` "Log in", Field "Password", Button `success` "Log in", Parakeets. A wrong password shows the Field error. After login the Owner returns to the page in `next`.
 
 ## BirdPopup
 
 **Hierarchy:** Pattern
 **Purpose:** The whole Bird, opened over its tile (Showcase Popup).
 
+<<<<<<< HEAD
 Props: `birdId`, `name`, `labels`, `anchor`. Loads the Bird from `/api/birds/:id`. Pictures as squares on the left (a thumbnail row when there are several). Right: name, then Habitat and Arrival; flags (Roosted included) and Songs as read-only tags with no section labels; the SightingList; the notes. An Edit Button in the actions row opens a wide Popup with the BirdForm filled from the Bird (`birdToForm`), posting to `?/editBird&id=` with `seenLocked` while the Bird has a Sighting; saving reloads the popup and the grid.
+=======
+Props: `open` (bindable), `anchor`, `birdId`, `name` (shown while the Bird loads), `labels`, `onChanged` (a Sighting changed Seen: the grid reloads). Loads the Bird from `/api/birds/:id`; a 401 sends the Owner to login. Media column (Showcase Popup `mediaWidth`, `min(popup-picture-size, 40%)`): the shown Picture as a square, then a thumbnail row when there are several (each a toggle Button); with no Picture, the initials square. Subtitle: Habitat and Arrival. Details: flags (Roosted included) and Songs as read-only Badges with no section labels, the SightingList, the notes. A failed load shows an error line.
+>>>>>>> claude/project-thread-t1p0iy
 
 ## SightingList
 
@@ -72,4 +87,21 @@ Props: `text`, `labels`. After 3 characters, small tiles of Birds whose name mat
 
 ## AddBird
 
-The "+" AddAction of the tab header: a Popup with a BirdForm. Reads the Habitat and Songs lists from the page data.
+**Hierarchy:** Pattern
+**Purpose:** The "+" AddAction of the tab header: a Popup with a BirdForm.
+
+Props: `labels`. Reads the Habitat and Songs lists from the page data.
+
+## ValueList
+
+**Hierarchy:** Pattern
+**Purpose:** One Admin list, Habitat or Songs.
+
+Props: `kind` (`habitat` or `song`), `heading`, `values` (name and number of Birds using it), `labels`, `error` (label code name of the last refusal). One row per value: a rename Field with the use count and a Rename Button, and a danger Remove Button. A value nobody uses is removed at once. A value in use opens a ConfirmDialog with a Select of the other values: removing moves every Bird there first. A last Field and Button add a value.
+
+## AdminLink
+
+**Hierarchy:** Pattern
+**Purpose:** The link from the sticky bar to the Admin page.
+
+Props: `label` (visually hidden). An icon-only neutral Button with the settings icon.

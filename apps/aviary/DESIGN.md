@@ -6,16 +6,19 @@ Aviary is private: every page is behind the Owner login. It has no Viewer, no "L
 
 ## Color tokens
 
+Only what differs from Showcase. Surface, muted, chips and the focus ring are the Showcase values.
+
 | Token | Light | Dark |
 |---|---|---|
 | bg (page) | #eef9dc | #101a3a |
 | line | #d6ecb6 | #2a3a6e |
 | ink | #1a2f6b | #eef9dc |
-| accent | #8fd14f | #a3e05f |
+| accent (lime) | #8fd14f | #a3e05f |
 | icon accent | #3f7d0e | #a3e05f |
 | on-accent | #101a3a | #101a3a |
 
-- Pressed Toggle: the accent. The Nest flag colour stays sun.
+- Pressed Toggle: the accent.
+- Flag icons on a tile: Seen sky, Flown mint, Lost coral, Nest sun. Roosted has no icon.
 - Every pair of the Showcase contrast table passes in light and dark (checked by `src/lib/theme.test.ts`). Tiers: [TOKENS.md](TOKENS.md).
 - Follow the system theme. `data-theme` overrides it.
 
@@ -30,10 +33,27 @@ Display face: Lilita One at weight 400, never a faux bold (`font-synthesis-weigh
 | Labels (tabs) | Showcase | 0.02em |
 | Tile caption | Showcase | 0.02em |
 
+## Layout
+
+- Sticky bar: title, tabs (Aloft, Grounded, Nest), search on the name, Habitat, Songs and Nest (all, only, not) selects, the "+" AddAction and the Admin link.
+- Caption under each tile: name, then the Arrival as a day or a year.
+- Tiles are sorted by Arrival, newest first; Birds with no Arrival come last.
+
+## Components
+
+- **Tile:** a square Picture that fills the tile, or the initials on a tinted square. Flag icons top left with a soft shadow and no circle. Roosted is never shown on a tile.
+- **Popup:** Pictures as squares in the media column on the left (a thumbnail row when there are several). Right: name, Habitat and Arrival, flags and Songs as read-only tags with no section labels, Sightings, notes.
+- **Forms:** one Bird form for Add and Edit. Habitat and Songs are picked, never typed; new values live on the Admin page.
+- **Admin:** the Habitat and Songs lists. A value in use is removed only after another value is picked and every Bird moves to it.
+
 ## Login page
 
 A bare password form titled "Log in", with a generic page title. Static parakeets peek up from the bottom edge: five on desktop; on a phone three, smaller, in the flow below the form so they never cover it. Inline SVG, colours from CSS variables, wing and beak checked on the dark page.
 
-## Not decided
+## Don't
 
-Tile, Popup and form looks come with the slices that build them: see [COMPONENTS.md](COMPONENTS.md).
+- Never put a real word, picture or link in code, tests or fixtures: code names only.
+- Never add an Open Graph or Twitter tag, or a public picture URL.
+- Never fake a bold on the display face.
+
+Component details: [COMPONENTS.md](COMPONENTS.md).
