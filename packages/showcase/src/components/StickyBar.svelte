@@ -13,6 +13,7 @@
 		chips,
 		login,
 		action,
+		count,
 		searchBox,
 		controls,
 		searchActive = false,
@@ -28,6 +29,8 @@
 		login?: Snippet;
 		/** Add button (Owner), next to the tabs. */
 		action?: Snippet;
+		/** One Chip, after the Add button, in the tabs row. */
+		count?: Snippet;
 		/** SearchField. */
 		searchBox?: Snippet;
 		/** Filters, Selects, SortDirection. */
@@ -82,6 +85,7 @@
 	<div class="flex flex-wrap items-center gap-2">
 		<Tabs {current} {links} />
 		{@render action?.()}
+		{@render count?.()}
 		<div class="flex gap-2 sm:hidden">
 			{@render toggleButton('search', 'Search', searchActive)}
 			{@render toggleButton('filters', 'Filters and sort', filtersActive)}

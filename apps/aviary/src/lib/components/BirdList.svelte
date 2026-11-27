@@ -154,14 +154,13 @@
 
 <svelte:head><title>{appLabel} | {viewLabel}</title></svelte:head>
 
-{#snippet count()}
-	<div aria-live="polite">
-		<Chip tone="highlight" label={viewLabel} value={String(birds.length)} />
-	</div>
-{/snippet}
-
 <StickyBar current={view} links={lists(labels)} {searchActive} {filtersActive}>
 	{#snippet action()}<AddBird {labels} />{/snippet}
+	{#snippet count()}
+		<div aria-live="polite">
+			<Chip tone="highlight" label={viewLabel} value={String(birds.length)} />
+		</div>
+	{/snippet}
 	{#snippet login()}<AdminLink label={label(labels, 'Admin')} />{/snippet}
 	{#snippet title()}{appLabel}<span class="text-icon-accent">.</span>{/snippet}
 	{#snippet searchBox()}
@@ -183,16 +182,10 @@
 			options={[...all('AllSongs'), ...options(songs)]}
 		/>
 		{#if view === 'seen'}
-			<div class="flex flex-col items-start gap-1">
-				{@render count()}
-				<Select bind:value={nest} label={label(labels, 'Nest')} options={nestOptions} />
-			</div>
+			<Select bind:value={nest} label={label(labels, 'Nest')} options={nestOptions} />
 			<Select bind:value={roosted} label={label(labels, 'Roosted')} options={roostedOptions} />
 		{:else}
-			<div class="flex flex-col items-start gap-1">
-				{@render count()}
-				<Select bind:value={seen} label={label(labels, 'Seen')} options={seenOptions} />
-			</div>
+			<Select bind:value={seen} label={label(labels, 'Seen')} options={seenOptions} />
 		{/if}
 	{/snippet}
 </StickyBar>
