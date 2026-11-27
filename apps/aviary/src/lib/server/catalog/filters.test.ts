@@ -23,14 +23,24 @@ async function insertBird(
 		habitat?: number;
 		songs?: number[];
 		nest?: boolean;
+		seen?: boolean;
+		roosted?: boolean;
 		flown?: boolean;
 		archived?: boolean;
 	} = {}
 ) {
 	const row = await env.DB.prepare(
-		'INSERT INTO bird (name, habitat_id, nest, flown, archived) VALUES (?, ?, ?, ?, ?) RETURNING id'
+		'INSERT INTO bird (name, habitat_id, nest, seen, roosted, flown, archived) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id'
 	)
-		.bind(name, opts.habitat ?? null, +!!opts.nest, +!!opts.flown, +!!opts.archived)
+		.bind(
+			name,
+			opts.habitat ?? null,
+			+!!opts.nest,
+			+!!opts.seen,
+			+!!opts.roosted,
+			+!!opts.flown,
+			+!!opts.archived
+		)
 		.first<{ id: number }>();
 	for (const songId of opts.songs ?? []) {
 		await env.DB.prepare('INSERT INTO bird_song (bird_id, song_id) VALUES (?, ?)')
@@ -87,6 +97,21 @@ describe('listBirds filters', () => {
 		expect(await names({ view: 'aloft', nest: 'not' })).toEqual(['Bird B']);
 	});
 
+	it('filters by Seen: all, only, not', async () => {
+		await insertBird('Bird A', { seen: true });
+		await insertBird('Bird B');
+		expect(await names({ view: 'aloft', seen: 'all' })).toEqual(['Bird A', 'Bird B']);
+		expect(await names({ view: 'aloft', seen: 'only' })).toEqual(['Bird A']);
+		expect(await names({ view: 'aloft', seen: 'not' })).toEqual(['Bird B']);
+	});
+
+	it('filters by Roosted: all, only', async () => {
+		await insertBird('Bird A', { roosted: true });
+		await insertBird('Bird B');
+		expect(await names({ view: 'aloft', roosted: 'all' })).toEqual(['Bird A', 'Bird B']);
+		expect(await names({ view: 'aloft', roosted: 'only' })).toEqual(['Bird A']);
+	});
+
 	it('searches the name, ignoring case', async () => {
 		await insertBird('Alpha Bird');
 		await insertBird('Beta');
@@ -109,24 +134,37 @@ describe('listBirds filters', () => {
 	});
 
 	it('never matches Archived Birds, whatever the filter', async () => {
-		await insertBird('Bird A', { archived: true, habitat: habitatA, songs: [songX], nest: true });
+		await insertBird('Bird A', {
+			archived: true,
+			habitat: habitatA,
+			songs: [songX],
+			nest: true,
+			seen: true
+		});
 		expect(await names({ view: 'aloft', search: 'Bird A' })).toEqual([]);
 		expect(await names({ view: 'aloft', habitat: habitatA })).toEqual([]);
-		expect(await names({ view: 'nest', song: songX, nest: 'only' })).toEqual([]);
+		expect(await names({ view: 'seen', song: songX, nest: 'only' })).toEqual([]);
 	});
 
 	it('combines filters with each other and with the view', async () => {
-		await insertBird('Bird A', { habitat: habitatA, songs: [songX], nest: true });
-		await insertBird('Bird B', { habitat: habitatA, songs: [songX] });
-		await insertBird('Bird C', { habitat: habitatA, songs: [songY], nest: true });
-		await insertBird('Bird D', { habitat: habitatA, songs: [songX], nest: true, flown: true });
+		await insertBird('Bird A', { habitat: habitatA, songs: [songX], nest: true, seen: true });
+		await insertBird('Bird B', { habitat: habitatA, songs: [songX], seen: true });
+		await insertBird('Bird C', { habitat: habitatA, songs: [songY], nest: true, seen: true });
+		await insertBird('Bird D', {
+			habitat: habitatA,
+			songs: [songX],
+			nest: true,
+			seen: true,
+			flown: true
+		});
 		const q = { habitat: habitatA, song: songX, search: 'bird' };
 		expect(await names({ view: 'aloft', ...q })).toEqual(['Bird A', 'Bird B']);
 		expect(await names({ view: 'aloft', ...q, nest: 'only' })).toEqual(['Bird A']);
 		expect(await names({ view: 'aloft', ...q, nest: 'not' })).toEqual(['Bird B']);
 		expect(await names({ view: 'grounded', ...q })).toEqual(['Bird D']);
-		expect(await names({ view: 'nest', ...q })).toEqual(['Bird A', 'Bird D']);
-		expect(await names({ view: 'nest', ...q, nest: 'not' })).toEqual([]);
+		expect(await names({ view: 'seen', ...q })).toEqual(['Bird A', 'Bird B', 'Bird D']);
+		expect(await names({ view: 'seen', ...q, nest: 'not' })).toEqual(['Bird B']);
+		expect(await names({ view: 'seen', ...q, roosted: 'only' })).toEqual([]);
 		expect(await names({ view: 'aloft', ...q, search: 'zzz' })).toEqual([]);
 	});
 

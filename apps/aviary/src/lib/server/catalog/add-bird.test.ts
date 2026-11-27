@@ -58,10 +58,10 @@ describe('addBird', () => {
 			flags: { ...noFlags, seen: true, lost: true, nest: true, roosted: true }
 		});
 		const grounded = await catalog.listBirds(token, { view: 'grounded' });
-		const nest = await catalog.listBirds(token, { view: 'nest' });
+		const seen = await catalog.listBirds(token, { view: 'seen' });
 		expect(await catalog.listBirds(token, { view: 'aloft' })).toEqual([]);
 		expect(grounded).toMatchObject([{ id, name: 'Bird One', seen: true, lost: true, nest: true }]);
-		expect(nest.map((b) => b.id)).toEqual([id]);
+		expect(seen.map((b) => b.id)).toEqual([id]);
 	});
 
 	it('stores the Habitat and the Songs', async () => {

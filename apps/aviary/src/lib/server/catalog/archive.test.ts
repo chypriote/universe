@@ -51,8 +51,8 @@ describe('archiveBird', () => {
 		const habitat = await catalog.addValue(token, 'habitat', 'H1');
 		if (!habitat.ok) throw new Error('setup');
 		const { id } = await added({ name: 'Bird One', habitatId: habitat.id });
-		await added({ name: 'Bird Two', flags: { ...noFlags, flown: true, nest: true } });
-		const nested = await added({ name: 'Bird Three', flags: { ...noFlags, nest: true } });
+		await added({ name: 'Bird Two', flags: { ...noFlags, flown: true, seen: true } });
+		const nested = await added({ name: 'Bird Three', flags: { ...noFlags, seen: true } });
 
 		expect(await catalog.archiveBird(token, id)).toEqual({ ok: true });
 		await catalog.archiveBird(token, nested.id);
@@ -60,7 +60,7 @@ describe('archiveBird', () => {
 		expect(await aloftNames()).toEqual([]);
 		expect(await aloftNames('one')).toEqual([]);
 		expect((await catalog.listBirds(token, { view: 'aloft', habitat: habitat.id })).length).toBe(0);
-		expect((await catalog.listBirds(token, { view: 'nest' })).map((b) => b.name)).toEqual([
+		expect((await catalog.listBirds(token, { view: 'seen' })).map((b) => b.name)).toEqual([
 			'Bird Two'
 		]);
 	});
