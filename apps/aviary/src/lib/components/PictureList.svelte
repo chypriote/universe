@@ -1,6 +1,4 @@
 <script lang="ts">
-	import ArrowLeftIcon from '@lucide/svelte/icons/arrow-left';
-	import ArrowRightIcon from '@lucide/svelte/icons/arrow-right';
 	import PlusIcon from '@lucide/svelte/icons/plus';
 	import XIcon from '@lucide/svelte/icons/x';
 	import Button from '@universe/showcase/components/Button.svelte';
@@ -61,6 +59,37 @@
 		items = removePicture(items, index);
 	}
 
+	/** Index of the Picture under the pointer; the list reorders live while it moves. */
+	let dragging = $state<number | null>(null);
+
+	function startDrag(event: PointerEvent, index: number) {
+		if ((event.target as Element).closest('button')) return;
+		dragging = index;
+		(event.currentTarget as Element).setPointerCapture(event.pointerId);
+	}
+
+	function drag(event: PointerEvent) {
+		if (dragging === null) return;
+		const over = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-picture]');
+		const target = over ? Number((over as HTMLElement).dataset.picture) : dragging;
+		if (target === dragging) return;
+		items = movePicture(items, dragging, target);
+		dragging = target;
+	}
+
+	function endDrag() {
+		dragging = null;
+	}
+
+	/** Keyboard reordering: arrows move the focused Picture. */
+	function key(event: KeyboardEvent, index: number) {
+		if (event.target !== event.currentTarget) return;
+		const step = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 }[event.key];
+		if (step === undefined) return;
+		event.preventDefault();
+		items = movePicture(items, index, index + step);
+	}
+
 	const shown = $derived(problem ?? error);
 </script>
 
@@ -83,36 +112,34 @@
 	{/if}
 	<ul class="grid grid-cols-3 gap-2 sm:grid-cols-4">
 		{#each items as item, i (item.key)}
-			<li class="flex flex-col gap-1">
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+			<li
+				class="relative touch-none select-none {dragging === i ? 'opacity-50' : ''}"
+				data-picture={i}
+				tabindex="0"
+				onpointerdown={(event) => startDrag(event, i)}
+				onpointermove={drag}
+				onpointerup={endDrag}
+				onpointercancel={endDrag}
+				onkeydown={(event) => key(event, i)}
+			>
 				<img
 					src={item.url}
 					alt=""
+					draggable="false"
 					class="aspect-square w-full rounded-md object-cover {i === 0
 						? 'outline-2 outline-icon-accent'
 						: ''}"
 				/>
-				<div class="flex items-center justify-between">
-					<Button
-						size="icon-sm"
-						disabled={i === 0}
-						onclick={() => (items = movePicture(items, i, i - 1))}
-					>
-						<ArrowLeftIcon class="size-4" aria-hidden="true" />
-						<span class="sr-only">{label(labels, 'MoveEarlier')}</span>
-					</Button>
-					<Button
-						size="icon-sm"
-						disabled={i === items.length - 1}
-						onclick={() => (items = movePicture(items, i, i + 1))}
-					>
-						<ArrowRightIcon class="size-4" aria-hidden="true" />
-						<span class="sr-only">{label(labels, 'MoveLater')}</span>
-					</Button>
-					<Button intent="danger" size="icon-sm" onclick={() => remove(i)}>
-						<XIcon class="size-4" aria-hidden="true" />
-						<span class="sr-only">{label(labels, 'Remove')}</span>
-					</Button>
-				</div>
+				<Button
+					intent="danger"
+					size="icon-sm"
+					class="absolute top-1 right-1"
+					onclick={() => remove(i)}
+				>
+					<XIcon class="size-4" aria-hidden="true" />
+					<span class="sr-only">{label(labels, 'Remove')}</span>
+				</Button>
 			</li>
 		{/each}
 	</ul>

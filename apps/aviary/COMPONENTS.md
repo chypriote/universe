@@ -83,7 +83,7 @@ Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `
 **Hierarchy:** Pattern
 **Purpose:** The ordered Pictures of the form.
 
-Props: `items` (bindable `PictureItem[]`: a stored Picture has an `id`, a new one a `blob`), `labels`, `error`. Add files: each opens in a CropPicture panel above the list (drag to move the square, slider to zoom 1 to 4, Cancel skips the file, Save adds it), then is resized to 1600 px at most and encoded as JPEG in `image-prep.ts`, move earlier or later, remove. The first Picture is outlined: it is the tile Picture. A file over 25 MB is refused with a clear error before resize.
+Props: `items` (bindable `PictureItem[]`: a stored Picture has an `id`, a new one a `blob`), `labels`, `error`. Add files: each opens in a CropPicture panel above the list (drag to move the square, slider to zoom 1 to 4, Cancel skips the file, Save adds it), then is resized to 1600 px at most and encoded as JPEG in `image-prep.ts`, remove (a small round X over the top right corner of each Picture). Reorder by dragging a Picture (pointer or touch); with the keyboard, focus a Picture and press the arrow keys. The first Picture is outlined: it is the tile Picture. A file over 25 MB is refused with a clear error before resize.
 
 ## CropPicture
 
