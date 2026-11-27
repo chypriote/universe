@@ -11,8 +11,18 @@ export type Labels = Record<string, string>;
 /** The three tabs. Grounded is computed from Flown or Lost; Nest is the Nest flag. */
 export type BirdView = 'aloft' | 'grounded' | 'nest';
 
+/** The Nest filter: every Bird, only Nest Birds, or only Birds not in the Nest. */
+export type NestFilter = 'all' | 'only' | 'not';
+
 export interface ListBirdsQuery {
 	view: BirdView;
+	/** Habitat id. */
+	habitat?: number;
+	/** Song id. */
+	song?: number;
+	nest?: NestFilter;
+	/** Part of the name, ignoring case. Blank means no search. */
+	search?: string;
 }
 
 /** What a tile shows. Roosted is never on a tile. */
@@ -28,6 +38,37 @@ export interface BirdTile {
 	/** The first Picture, or null (the tile shows the initials). */
 	pictureId: number | null;
 }
+
+/** One meeting with a Bird. */
+export interface Sighting {
+	id: number;
+	/** `YYYY-MM-DD`, or null when the day is unknown. */
+	day: string | null;
+}
+
+/** The popup view of one Bird. */
+export interface BirdDetail {
+	id: number;
+	name: string;
+	arrival: string | null;
+	/** The Habitat name, or null. */
+	habitat: string | null;
+	/** Song names, by name. */
+	songs: string[];
+	notes: string;
+	seen: boolean;
+	flown: boolean;
+	lost: boolean;
+	roosted: boolean;
+	nest: boolean;
+	/** Picture ids in order; the first is the tile Picture. */
+	pictureIds: number[];
+	/** Newest day first, unknown days last. */
+	sightings: Sighting[];
+}
+
+export type AddSightingResult =
+	{ ok: true; id: number } | { ok: false; error: 'not-found' | 'bad-day' };
 
 export interface PictureObject {
 	body: ReadableStream;
@@ -109,6 +150,18 @@ export interface Catalog {
 	addBird(token: string, input: BirdInput): Promise<AddBirdResult>;
 	/** Birds whose name contains `text` (ignoring case), Archived included. Empty under 3 characters. */
 	findSimilarNames(token: string, text: string): Promise<SimilarBird[]>;
+	/** The popup view of a Bird, or null when there is no such Bird. */
+	getBird(token: string, id: number): Promise<BirdDetail | null>;
+	/** Adds a Sighting (`YYYY-MM-DD`, or no day). The first Sighting turns Seen on. */
+	addSighting(token: string, birdId: number, day?: string): Promise<AddSightingResult>;
+	/** Changes a Sighting's day, or clears it with null. */
+	setSightingDay(
+		token: string,
+		id: number,
+		day: string | null
+	): Promise<ValueResult<'not-found' | 'bad-day'>>;
+	/** Deletes a Sighting. Seen stays on: it is only forced, never cleared. */
+	deleteSighting(token: string, id: number): Promise<ValueResult<'not-found'>>;
 	/** The R2 object of a Picture, or null when the Picture or its object is gone. */
 	getPicture(token: string, id: number): Promise<PictureObject | null>;
 	/** Every value of a list, by name, with its usage. */

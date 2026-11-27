@@ -34,4 +34,13 @@ INSERT OR REPLACE INTO labels (code_name, word) VALUES
 	('SessionExpired', 'SessionExpired'),
 	('SimilarNames', 'SimilarNames'),
 	('SomethingWrong', 'SomethingWrong'),
-	('Songs', 'Songs');
+	('Songs', 'Songs'),
+	('NoMatch', 'NoMatch'),
+	('ClearFilters', 'ClearFilters'),
+	('SearchBirds', 'SearchBirds'),
+	('AllHabitats', 'AllHabitats'),
+	('AllSongs', 'AllSongs'),
+	('NestAll', 'NestAll'),
+	('NestOnly', 'NestOnly'),
+	('NestNot', 'NestNot'),
+	('Admin', 'Admin');

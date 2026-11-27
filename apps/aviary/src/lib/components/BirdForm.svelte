@@ -13,7 +13,6 @@
 	import { label, type Labels } from '#lib/labels';
 	import type { PictureItem } from '#lib/picture-list';
 	import { postForm } from '#lib/post-form';
-	import type { ListValue } from '#lib/server/catalog/types';
 	import PictureList from './PictureList.svelte';
 	import SimilarNames from './SimilarNames.svelte';
 
@@ -36,8 +35,8 @@
 	}: {
 		labels: Labels;
 		/** Habitat and Songs come from the Admin lists only: pick, never type. */
-		habitats: ListValue[];
-		songs: ListValue[];
+		habitats: { id: number; name: string }[];
+		songs: { id: number; name: string }[];
 		/** The form action of the current page that takes the form data. */
 		action?: string;
 		initial?: BirdFormState;

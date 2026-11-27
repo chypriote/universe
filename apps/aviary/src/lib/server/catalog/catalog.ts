@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/d1';
 import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@universe/owner/auth';
-import { and, asc, count, eq, inArray, or, sql } from 'drizzle-orm';
-import { birds, birdSongs, habitats, labels, pictures, songs } from '../db/schema';
+import { and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
+import { birds, birdSongs, habitats, labels, pictures, sightings, songs } from '../db/schema';
 import { arrivalPrecision } from '../../arrival';
 import { MAX_PICTURE_BYTES, MIN_SIMILAR_CHARS } from './rules';
 import type { Catalog, PictureUpload, ValueKind } from './types';
@@ -61,6 +61,13 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		)`
 	};
 
+	/** A real calendar day as `YYYY-MM-DD`. */
+	const isDay = (day: string) => {
+		const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(day);
+		if (!m) return false;
+		return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toISOString().slice(0, 10) === day;
+	};
+
 	return {
 		async login(password) {
 			if (
@@ -82,7 +89,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return Object.fromEntries(rows.map((row) => [row.codeName, row.word]));
 		},
 
-		async listBirds(token, { view }) {
+		async listBirds(token, { view, habitat, song, nest, search }) {
 			await owner(token);
 			const grounded = or(eq(birds.flown, true), eq(birds.lost, true));
 			const inView = {
@@ -90,12 +97,22 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				grounded,
 				nest: eq(birds.nest, true)
 			}[view];
+			const needle = search?.trim().toLowerCase();
+			const filters = [
+				habitat === undefined ? undefined : eq(birds.habitatId, habitat),
+				song === undefined
+					? undefined
+					: sql`EXISTS (SELECT 1 FROM bird_song bs WHERE bs.bird_id = bird.id AND bs.song_id = ${song})`,
+				nest === 'only' ? eq(birds.nest, true) : undefined,
+				nest === 'not' ? eq(birds.nest, false) : undefined,
+				needle ? sql`instr(lower(${birds.name}), ${needle}) > 0` : undefined
+			];
 			// A year-only Arrival counts as the first day of that year, so it sorts with day Arrivals.
 			const arrivalKey = sql`CASE ${birds.arrivalPrecision} WHEN 'year' THEN ${birds.arrival} || '-01-01' ELSE ${birds.arrival} END`;
 			const rows = await db
 				.select(tileColumns)
 				.from(birds)
-				.where(and(eq(birds.archived, false), inView))
+				.where(and(eq(birds.archived, false), inView, ...filters))
 				.orderBy(
 					sql`${arrivalKey} IS NULL`,
 					sql`${arrivalKey} DESC`,
@@ -189,6 +206,87 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				.from(birds)
 				.where(sql`instr(lower(${birds.name}), ${needle}) > 0`)
 				.orderBy(asc(birds.name), asc(birds.id));
+		},
+
+		async getBird(token, id) {
+			await owner(token);
+			const [row] = await db
+				.select({
+					id: birds.id,
+					name: birds.name,
+					arrival: birds.arrival,
+					habitat: habitats.name,
+					notes: birds.notes,
+					seen: birds.seen,
+					flown: birds.flown,
+					lost: birds.lost,
+					roosted: birds.roosted,
+					nest: birds.nest
+				})
+				.from(birds)
+				.leftJoin(habitats, eq(habitats.id, birds.habitatId))
+				.where(eq(birds.id, id));
+			if (!row) return null;
+			const [songRows, pictureRows, sightingRows] = await Promise.all([
+				db
+					.select({ name: songs.name })
+					.from(birdSongs)
+					.innerJoin(songs, eq(songs.id, birdSongs.songId))
+					.where(eq(birdSongs.birdId, id))
+					.orderBy(songs.name),
+				db
+					.select({ id: pictures.id })
+					.from(pictures)
+					.where(eq(pictures.birdId, id))
+					.orderBy(pictures.position, pictures.id),
+				db
+					.select({ id: sightings.id, day: sightings.day })
+					.from(sightings)
+					.where(eq(sightings.birdId, id))
+					.orderBy(sql`${sightings.day} IS NULL`, desc(sightings.day), desc(sightings.id))
+			]);
+			return {
+				...row,
+				songs: songRows.map((s) => s.name),
+				pictureIds: pictureRows.map((p) => p.id),
+				sightings: sightingRows
+			};
+		},
+
+		async addSighting(token, birdId, day) {
+			await owner(token);
+			if (day !== undefined && !isDay(day)) return { ok: false, error: 'bad-day' };
+			const [bird] = await db.select({ id: birds.id }).from(birds).where(eq(birds.id, birdId));
+			if (!bird) return { ok: false, error: 'not-found' };
+			// One batch: the Sighting and the forced Seen go in together.
+			const [inserted] = await db.batch([
+				db
+					.insert(sightings)
+					.values({ birdId, day: day ?? null })
+					.returning({ id: sightings.id }),
+				db.update(birds).set({ seen: true }).where(eq(birds.id, birdId))
+			]);
+			return { ok: true, id: inserted[0].id };
+		},
+
+		async setSightingDay(token, id, day) {
+			await owner(token);
+			if (day !== null && !isDay(day)) return { ok: false, error: 'bad-day' };
+			const updated = await db
+				.update(sightings)
+				.set({ day })
+				.where(eq(sightings.id, id))
+				.returning({ id: sightings.id });
+			return updated.length ? { ok: true } : { ok: false, error: 'not-found' };
+		},
+
+		async deleteSighting(token, id) {
+			await owner(token);
+			const deleted = await db
+				.delete(sightings)
+				.where(eq(sightings.id, id))
+				.returning({ id: sightings.id });
+			return deleted.length ? { ok: true } : { ok: false, error: 'not-found' };
 		},
 
 		async getPicture(token, id) {
