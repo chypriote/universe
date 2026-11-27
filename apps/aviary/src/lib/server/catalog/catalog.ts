@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/d1';
 import type { BatchItem } from 'drizzle-orm/batch';
-import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@universe/owner/auth';
+import { issueToken, passwordMatches, tokenIsValid } from '@universe/owner/auth';
 import { and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { birds, birdSongs, habitats, labels, pictures, sightings, songs } from '../db/schema';
 import { arrivalPrecision } from '../../arrival';
@@ -19,11 +19,6 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 
 	const isOwner = async (token: string) =>
 		!!env.JWT_SECRET && !!token && (await tokenIsValid(token, env.JWT_SECRET));
-
-	/** Every operation but `login` and `verifyToken` starts here. */
-	async function owner(token: string) {
-		if (!(await isOwner(token))) throw new UnauthorizedError();
-	}
 
 	const table = (kind: ValueKind) => (kind === 'habitat' ? habitats : songs);
 	const exists = async (kind: ValueKind, id: number) =>
@@ -110,8 +105,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		return { ok: true, name, precision, songIds, uploads };
 	}
 
-	async function setArchived(token: string, id: number, archived: boolean) {
-		await owner(token);
+	async function setArchived(id: number, archived: boolean) {
 		const [bird] = await db.select({ id: birds.id }).from(birds).where(eq(birds.id, id));
 		if (!bird) return { ok: false, error: 'not-found' } as const;
 		await db.update(birds).set({ archived }).where(eq(birds.id, id));
@@ -133,14 +127,12 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 
 		verifyToken: isOwner,
 
-		async labels(token) {
-			await owner(token);
+		async labels() {
 			const rows = await db.select().from(labels);
 			return Object.fromEntries(rows.map((row) => [row.codeName, row.word]));
 		},
 
-		async listBirds(token, { view, habitat, song, seen, nest, roosted, search }) {
-			await owner(token);
+		async listBirds({ view, habitat, song, seen, nest, roosted, search }) {
 			const grounded = or(eq(birds.flown, true), eq(birds.lost, true));
 			const inView = {
 				aloft: sql`NOT (${birds.flown} OR ${birds.lost})`,
@@ -175,8 +167,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return needle ? rows.filter((row) => nameHas(row.name, needle)) : rows;
 		},
 
-		async listBatchBirds(token) {
-			await owner(token);
+		async listBatchBirds() {
 			return db
 				.select({ ...tileColumns, roosted: birds.roosted, habitatId: birds.habitatId })
 				.from(birds)
@@ -184,8 +175,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				.orderBy(asc(birds.name), asc(birds.id));
 		},
 
-		async addBird(token, input) {
-			await owner(token);
+		async addBird(input) {
 			const checked = await checkBirdInput(input);
 			if (!checked.ok) return checked;
 			const { name, precision, songIds, uploads } = checked;
@@ -237,8 +227,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			}
 		},
 
-		async editBird(token, id, input) {
-			await owner(token);
+		async editBird(id, input) {
 			const [bird] = await db.select({ id: birds.id }).from(birds).where(eq(birds.id, id));
 			if (!bird) return { ok: false, error: 'not-found' };
 			const checked = await checkBirdInput(input);
@@ -315,8 +304,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return { ok: true, pictureIds: rows.map((r) => r.id) };
 		},
 
-		async editBirds(token, ids, change) {
-			await owner(token);
+		async editBirds(ids, change) {
 			const unique = [...new Set(ids)];
 			if (unique.length === 0) return { ok: true, updated: 0 };
 			if (change.habitatId != null && !(await exists('habitat', change.habitatId))) {
@@ -356,16 +344,15 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return { ok: true, updated: unique.length };
 		},
 
-		async archiveBird(token, id) {
-			return setArchived(token, id, true);
+		async archiveBird(id) {
+			return setArchived(id, true);
 		},
 
-		async restoreBird(token, id) {
-			return setArchived(token, id, false);
+		async restoreBird(id) {
+			return setArchived(id, false);
 		},
 
-		async listArchivedBirds(token) {
-			await owner(token);
+		async listArchivedBirds() {
 			return db
 				.select(tileColumns)
 				.from(birds)
@@ -373,8 +360,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				.orderBy(asc(birds.name), asc(birds.id));
 		},
 
-		async deleteBirdForever(token, id) {
-			await owner(token);
+		async deleteBirdForever(id) {
 			const [bird] = await db
 				.select({ archived: birds.archived })
 				.from(birds)
@@ -402,8 +388,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return { ok: true };
 		},
 
-		async findSimilarNames(token, text) {
-			await owner(token);
+		async findSimilarNames(text) {
 			const needle = text.trim().toLowerCase();
 			if ([...needle].length < MIN_SIMILAR_CHARS) return [];
 			const rows = await db
@@ -413,8 +398,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return rows.filter((row) => nameHas(row.name, needle));
 		},
 
-		async getBird(token, id) {
-			await owner(token);
+		async getBird(id) {
 			const [row] = await db
 				.select({
 					id: birds.id,
@@ -460,8 +444,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			};
 		},
 
-		async addSighting(token, birdId, day) {
-			await owner(token);
+		async addSighting(birdId, day) {
 			if (day !== undefined && !isDay(day)) return { ok: false, error: 'bad-day' };
 			const [bird] = await db.select({ id: birds.id }).from(birds).where(eq(birds.id, birdId));
 			if (!bird) return { ok: false, error: 'not-found' };
@@ -476,8 +459,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return { ok: true, id: inserted[0].id };
 		},
 
-		async setSightingDay(token, id, day) {
-			await owner(token);
+		async setSightingDay(id, day) {
 			if (day !== null && !isDay(day)) return { ok: false, error: 'bad-day' };
 			const updated = await db
 				.update(sightings)
@@ -487,8 +469,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return updated.length ? { ok: true } : { ok: false, error: 'not-found' };
 		},
 
-		async deleteSighting(token, id) {
-			await owner(token);
+		async deleteSighting(id) {
 			const deleted = await db
 				.delete(sightings)
 				.where(eq(sightings.id, id))
@@ -496,8 +477,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return deleted.length ? { ok: true } : { ok: false, error: 'not-found' };
 		},
 
-		async putThumbnail(token, id, bytes) {
-			await owner(token);
+		async putThumbnail(id, bytes) {
 			const [row] = await db
 				.select({ key: pictures.key })
 				.from(pictures)
@@ -509,8 +489,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return true;
 		},
 
-		async getPicture(token, id, size) {
-			await owner(token);
+		async getPicture(id, size) {
 			const [row] = await db
 				.select({ key: pictures.key })
 				.from(pictures)
@@ -522,8 +501,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return { body: object.body, contentType: object.httpMetadata?.contentType ?? 'image/jpeg' };
 		},
 
-		async listValues(token, kind) {
-			await owner(token);
+		async listValues(kind) {
 			const t = table(kind);
 			const rows = await db.select().from(t).orderBy(t.name);
 			return Promise.all(
@@ -531,8 +509,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			);
 		},
 
-		async addValue(token, kind, name) {
-			await owner(token);
+		async addValue(kind, name) {
 			const clean = name.trim();
 			if (!clean) return { ok: false, error: 'empty' };
 			if (await nameTaken(kind, clean)) return { ok: false, error: 'duplicate' };
@@ -543,8 +520,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return { ok: true, id: row.id };
 		},
 
-		async renameValue(token, kind, id, name) {
-			await owner(token);
+		async renameValue(kind, id, name) {
 			const clean = name.trim();
 			if (!clean) return { ok: false, error: 'empty' };
 			if (!(await exists(kind, id))) return { ok: false, error: 'not-found' };
@@ -556,8 +532,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return { ok: true };
 		},
 
-		async removeValue(token, kind, id, moveTo) {
-			await owner(token);
+		async removeValue(kind, id, moveTo) {
 			if (!(await exists(kind, id))) return { ok: false, error: 'not-found' };
 			const inUse = (await usesOf(kind, id)) > 0;
 			if (moveTo === undefined) {

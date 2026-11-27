@@ -171,59 +171,54 @@ export type BatchEditResult =
 export interface Catalog {
 	login(password: string): Promise<LoginResult>;
 	verifyToken(token: string): Promise<boolean>;
-	/** The code-name to display-word map. Every operation but `login` and `verifyToken` takes the Owner token. */
-	labels(token: string): Promise<Labels>;
+	/** The code-name to display-word map. */
+	labels(): Promise<Labels>;
 	/** Tiles of one view, Archived excluded, Arrival newest first (a month or year sorts with days, none last). */
-	listBirds(token: string, query: ListBirdsQuery): Promise<BirdTile[]>;
+	listBirds(query: ListBirdsQuery): Promise<BirdTile[]>;
 	/** Every Bird not Archived, by name, with its Roosted flag (a tile never carries it): the Admin batch list. */
-	listBatchBirds(token: string): Promise<BatchBird[]>;
+	listBatchBirds(): Promise<BatchBird[]>;
 	/** Stores a new Bird with its ordered Pictures (bytes in R2 under random keys). */
-	addBird(token: string, input: BirdInput): Promise<AddBirdResult>;
+	addBird(input: BirdInput): Promise<AddBirdResult>;
 	/**
 	 * Replaces every field of a Bird. `pictures` is the whole ordered list: `{ id }` keeps a stored
 	 * Picture, an upload adds one, a Picture left out is deleted with its R2 object. At least one
 	 * Picture stays. Seen stays on while the Bird has a Sighting, whatever `flags.seen` says.
 	 */
-	editBird(token: string, id: number, input: BirdInput): Promise<EditBirdResult>;
+	editBird(id: number, input: BirdInput): Promise<EditBirdResult>;
 	/**
 	 * Applies one change to every listed Bird together, or to none. Seen cannot be cleared on a
 	 * Bird that has a Sighting: that Bird keeps Seen and gets the rest.
 	 */
-	editBirds(token: string, ids: number[], change: BirdBatchChange): Promise<BatchEditResult>;
+	editBirds(ids: number[], change: BirdBatchChange): Promise<BatchEditResult>;
 	/** Archives a Bird: it leaves every view, filter and search, and shows only in similar names. */
-	archiveBird(token: string, id: number): Promise<ArchiveResult>;
+	archiveBird(id: number): Promise<ArchiveResult>;
 	/** Brings an Archived Bird back to its view. */
-	restoreBird(token: string, id: number): Promise<ArchiveResult>;
+	restoreBird(id: number): Promise<ArchiveResult>;
 	/** Tiles of the Archived Birds, by name. */
-	listArchivedBirds(token: string): Promise<BirdTile[]>;
+	listArchivedBirds(): Promise<BirdTile[]>;
 	/**
 	 * Deletes a Bird with its Pictures (rows and R2 objects), Sightings and Song links. Refused
 	 * unless the Bird is Archived. The only delete of a Bird.
 	 */
-	deleteBirdForever(token: string, id: number): Promise<DeleteForeverResult>;
+	deleteBirdForever(id: number): Promise<DeleteForeverResult>;
 	/** Birds whose name contains `text` (ignoring case), Archived included. Empty under 3 characters. */
-	findSimilarNames(token: string, text: string): Promise<SimilarBird[]>;
+	findSimilarNames(text: string): Promise<SimilarBird[]>;
 	/** The popup view of a Bird, or null when there is no such Bird. */
-	getBird(token: string, id: number): Promise<BirdDetail | null>;
+	getBird(id: number): Promise<BirdDetail | null>;
 	/** Adds a Sighting (`YYYY-MM-DD`, or no day). The first Sighting turns Seen on. */
-	addSighting(token: string, birdId: number, day?: string): Promise<AddSightingResult>;
+	addSighting(birdId: number, day?: string): Promise<AddSightingResult>;
 	/** Changes a Sighting's day, or clears it with null. */
-	setSightingDay(
-		token: string,
-		id: number,
-		day: string | null
-	): Promise<ValueResult<'not-found' | 'bad-day'>>;
+	setSightingDay(id: number, day: string | null): Promise<ValueResult<'not-found' | 'bad-day'>>;
 	/** Deletes a Sighting. Seen stays on: it is only forced, never cleared. */
-	deleteSighting(token: string, id: number): Promise<ValueResult<'not-found'>>;
+	deleteSighting(id: number): Promise<ValueResult<'not-found'>>;
 	/** The R2 object of a Picture (or its small thumbnail), or null when the Picture or that object is gone. */
-	getPicture(token: string, id: number, size?: 'thumb'): Promise<PictureObject | null>;
+	getPicture(id: number, size?: 'thumb'): Promise<PictureObject | null>;
 	/** Stores the thumbnail the browser made of a Picture. False when the Picture is unknown. */
-	putThumbnail(token: string, id: number, bytes: ArrayBuffer): Promise<boolean>;
+	putThumbnail(id: number, bytes: ArrayBuffer): Promise<boolean>;
 	/** Every value of a list, by name, with its usage. */
-	listValues(token: string, kind: ValueKind): Promise<ListValue[]>;
-	addValue(token: string, kind: ValueKind, name: string): Promise<AddValueResult>;
+	listValues(kind: ValueKind): Promise<ListValue[]>;
+	addValue(kind: ValueKind, name: string): Promise<AddValueResult>;
 	renameValue(
-		token: string,
 		kind: ValueKind,
 		id: number,
 		name: string
@@ -233,7 +228,6 @@ export interface Catalog {
 	 * moves to that value first (a Bird that has both gets it once).
 	 */
 	removeValue(
-		token: string,
 		kind: ValueKind,
 		id: number,
 		moveTo?: number

@@ -1,16 +1,12 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { createCatalog, UnauthorizedError } from './index';
+import { createCatalog } from './index';
 import type { Catalog } from './types';
 
 let catalog: Catalog;
-let token: string;
 
 beforeEach(async () => {
 	catalog = createCatalog(env);
-	const login = await catalog.login('test-password');
-	if (!login.ok) throw new Error('login failed in setup');
-	token = login.token;
 	await env.DB.batch([
 		env.DB.prepare('DELETE FROM bird_song'),
 		env.DB.prepare('DELETE FROM sighting'),
@@ -75,16 +71,11 @@ async function seedBird(
 	return bird;
 }
 
-const seenOf = async (id: number) => (await catalog.getBird(token, id))!.seen;
+const seenOf = async (id: number) => (await catalog.getBird(id))!.seen;
 
 describe('getBird', () => {
-	it('rejects a bad token with UnauthorizedError', async () => {
-		const id = await seedBird();
-		await expect(catalog.getBird('nope', id)).rejects.toBeInstanceOf(UnauthorizedError);
-	});
-
 	it('answers null for an unknown Bird', async () => {
-		expect(await catalog.getBird(token, 999999)).toBeNull();
+		expect(await catalog.getBird(999999)).toBeNull();
 	});
 
 	it('returns the whole popup view', async () => {
@@ -99,7 +90,7 @@ describe('getBird', () => {
 			nest: true,
 			pictures: ['key-one', 'key-two']
 		});
-		const bird = (await catalog.getBird(token, id))!;
+		const bird = (await catalog.getBird(id))!;
 		expect(bird).toMatchObject({
 			id,
 			name: 'Bird A',
@@ -120,7 +111,7 @@ describe('getBird', () => {
 	it('lists Pictures in order', async () => {
 		const id = await seedBird({ pictures: ['k1', 'k2', 'k3'] });
 		await env.DB.prepare("UPDATE picture SET position = 9 WHERE key = 'k1'").run();
-		const bird = (await catalog.getBird(token, id))!;
+		const bird = (await catalog.getBird(id))!;
 		const rows = await env.DB.prepare('SELECT id, key FROM picture').all<{
 			id: number;
 			key: string;
@@ -131,7 +122,7 @@ describe('getBird', () => {
 
 	it('has no Habitat, Arrival or Songs when the Bird has none', async () => {
 		const id = await seedBird();
-		expect(await catalog.getBird(token, id)).toMatchObject({
+		expect(await catalog.getBird(id)).toMatchObject({
 			arrival: null,
 			habitat: null,
 			songs: [],
@@ -141,59 +132,50 @@ describe('getBird', () => {
 });
 
 describe('addSighting', () => {
-	it('rejects a bad token with UnauthorizedError', async () => {
-		const id = await seedBird();
-		await expect(catalog.addSighting('nope', id, '2024-01-02')).rejects.toBeInstanceOf(
-			UnauthorizedError
-		);
-	});
-
 	it('adds a Sighting with a day', async () => {
 		const id = await seedBird();
-		const result = await catalog.addSighting(token, id, '2024-01-02');
+		const result = await catalog.addSighting(id, '2024-01-02');
 		expect(result.ok).toBe(true);
-		const { sightings } = (await catalog.getBird(token, id))!;
+		const { sightings } = (await catalog.getBird(id))!;
 		expect(sightings).toEqual([{ id: expect.any(Number), day: '2024-01-02' }]);
 	});
 
 	it('adds a Sighting without a day', async () => {
 		const id = await seedBird();
-		await catalog.addSighting(token, id);
-		expect((await catalog.getBird(token, id))!.sightings).toEqual([
-			{ id: expect.any(Number), day: null }
-		]);
+		await catalog.addSighting(id);
+		expect((await catalog.getBird(id))!.sightings).toEqual([{ id: expect.any(Number), day: null }]);
 	});
 
 	it('refuses an unknown Bird and a bad day', async () => {
 		const id = await seedBird();
-		expect(await catalog.addSighting(token, 999999, '2024-01-02')).toEqual({
+		expect(await catalog.addSighting(999999, '2024-01-02')).toEqual({
 			ok: false,
 			error: 'not-found'
 		});
-		expect(await catalog.addSighting(token, id, 'yesterday')).toEqual({
+		expect(await catalog.addSighting(id, 'yesterday')).toEqual({
 			ok: false,
 			error: 'bad-day'
 		});
-		expect(await catalog.addSighting(token, id, '2024-02-31')).toEqual({
+		expect(await catalog.addSighting(id, '2024-02-31')).toEqual({
 			ok: false,
 			error: 'bad-day'
 		});
-		expect((await catalog.getBird(token, id))!.sightings).toEqual([]);
+		expect((await catalog.getBird(id))!.sightings).toEqual([]);
 	});
 
 	it('sets Seen on the first Sighting', async () => {
 		const id = await seedBird();
 		expect(await seenOf(id)).toBe(false);
-		await catalog.addSighting(token, id);
+		await catalog.addSighting(id);
 		expect(await seenOf(id)).toBe(true);
 	});
 
 	it('lists the newest day first and the unknown days last', async () => {
 		const id = await seedBird();
-		await catalog.addSighting(token, id);
-		await catalog.addSighting(token, id, '2023-01-01');
-		await catalog.addSighting(token, id, '2024-06-01');
-		expect((await catalog.getBird(token, id))!.sightings.map((s) => s.day)).toEqual([
+		await catalog.addSighting(id);
+		await catalog.addSighting(id, '2023-01-01');
+		await catalog.addSighting(id, '2024-06-01');
+		expect((await catalog.getBird(id))!.sightings.map((s) => s.day)).toEqual([
 			'2024-06-01',
 			'2023-01-01',
 			null
@@ -204,65 +186,54 @@ describe('addSighting', () => {
 describe('setSightingDay', () => {
 	async function oneSighting(day?: string) {
 		const id = await seedBird();
-		const added = await catalog.addSighting(token, id, day);
+		const added = await catalog.addSighting(id, day);
 		if (!added.ok) throw new Error('setup');
 		return { birdId: id, id: added.id };
 	}
 
-	it('rejects a bad token with UnauthorizedError', async () => {
-		const s = await oneSighting();
-		await expect(catalog.setSightingDay('nope', s.id, '2024-01-02')).rejects.toBeInstanceOf(
-			UnauthorizedError
-		);
-	});
-
 	it('changes the day', async () => {
 		const s = await oneSighting('2024-01-02');
-		expect(await catalog.setSightingDay(token, s.id, '2022-03-04')).toEqual({ ok: true });
-		expect((await catalog.getBird(token, s.birdId))!.sightings[0].day).toBe('2022-03-04');
+		expect(await catalog.setSightingDay(s.id, '2022-03-04')).toEqual({ ok: true });
+		expect((await catalog.getBird(s.birdId))!.sightings[0].day).toBe('2022-03-04');
 	});
 
 	it('fills in an unknown day and clears a day', async () => {
 		const s = await oneSighting();
-		await catalog.setSightingDay(token, s.id, '2022-03-04');
-		expect((await catalog.getBird(token, s.birdId))!.sightings[0].day).toBe('2022-03-04');
-		await catalog.setSightingDay(token, s.id, null);
-		expect((await catalog.getBird(token, s.birdId))!.sightings[0].day).toBeNull();
+		await catalog.setSightingDay(s.id, '2022-03-04');
+		expect((await catalog.getBird(s.birdId))!.sightings[0].day).toBe('2022-03-04');
+		await catalog.setSightingDay(s.id, null);
+		expect((await catalog.getBird(s.birdId))!.sightings[0].day).toBeNull();
 	});
 
 	it('refuses an unknown Sighting and a bad day', async () => {
 		const s = await oneSighting('2024-01-02');
-		expect(await catalog.setSightingDay(token, 999999, null)).toEqual({
+		expect(await catalog.setSightingDay(999999, null)).toEqual({
 			ok: false,
 			error: 'not-found'
 		});
-		expect(await catalog.setSightingDay(token, s.id, '2024-13-01')).toEqual({
+		expect(await catalog.setSightingDay(s.id, '2024-13-01')).toEqual({
 			ok: false,
 			error: 'bad-day'
 		});
-		expect((await catalog.getBird(token, s.birdId))!.sightings[0].day).toBe('2024-01-02');
+		expect((await catalog.getBird(s.birdId))!.sightings[0].day).toBe('2024-01-02');
 	});
 });
 
 describe('deleteSighting', () => {
-	it('rejects a bad token with UnauthorizedError', async () => {
-		await expect(catalog.deleteSighting('nope', 1)).rejects.toBeInstanceOf(UnauthorizedError);
-	});
-
 	it('deletes the Sighting and keeps Seen on, even after the last one', async () => {
 		const id = await seedBird();
-		const a = await catalog.addSighting(token, id, '2024-01-02');
-		const b = await catalog.addSighting(token, id, '2024-02-02');
+		const a = await catalog.addSighting(id, '2024-01-02');
+		const b = await catalog.addSighting(id, '2024-02-02');
 		if (!a.ok || !b.ok) throw new Error('setup');
-		expect(await catalog.deleteSighting(token, a.id)).toEqual({ ok: true });
-		expect((await catalog.getBird(token, id))!.sightings.map((s) => s.id)).toEqual([b.id]);
-		await catalog.deleteSighting(token, b.id);
-		const bird = (await catalog.getBird(token, id))!;
+		expect(await catalog.deleteSighting(a.id)).toEqual({ ok: true });
+		expect((await catalog.getBird(id))!.sightings.map((s) => s.id)).toEqual([b.id]);
+		await catalog.deleteSighting(b.id);
+		const bird = (await catalog.getBird(id))!;
 		expect(bird.sightings).toEqual([]);
 		expect(bird.seen).toBe(true);
 	});
 
 	it('refuses an unknown Sighting', async () => {
-		expect(await catalog.deleteSighting(token, 999999)).toEqual({ ok: false, error: 'not-found' });
+		expect(await catalog.deleteSighting(999999)).toEqual({ ok: false, error: 'not-found' });
 	});
 });

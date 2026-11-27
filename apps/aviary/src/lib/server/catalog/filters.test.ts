@@ -4,7 +4,6 @@ import { createCatalog } from './index';
 import type { Catalog } from './types';
 
 let catalog: Catalog;
-let token: string;
 let habitatA: number;
 let habitatB: number;
 let songX: number;
@@ -64,13 +63,10 @@ beforeEach(async () => {
 	songX = await insertValue('song', 'Song X');
 	songY = await insertValue('song', 'Song Y');
 	catalog = createCatalog(env);
-	const login = await catalog.login('test-password');
-	if (!login.ok) throw new Error('login failed in setup');
-	token = login.token;
 });
 
-const names = async (query: Parameters<Catalog['listBirds']>[1]) =>
-	(await catalog.listBirds(token, query)).map((t) => t.name).sort();
+const names = async (query: Parameters<Catalog['listBirds']>[0]) =>
+	(await catalog.listBirds(query)).map((t) => t.name).sort();
 
 describe('listBirds filters', () => {
 	it('filters by Habitat', async () => {

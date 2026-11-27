@@ -1,7 +1,5 @@
 import { catalogFromPlatform } from '#lib/server/catalog';
 import type { BirdView, NestFilter, RoostedFilter, SeenFilter } from '#lib/server/catalog';
-import { ownerToken } from '@universe/owner/cookie';
-import type { Cookies } from '@sveltejs/kit';
 
 const positiveInt = (value: string | null) => {
 	const n = Number(value);
@@ -23,14 +21,13 @@ export function parseFilters(params: URLSearchParams) {
 }
 
 /** The load of one tab page: its tiles under the URL's filters, and the filter options. */
-export async function loadView(cookies: Cookies, url: URL, view: BirdView) {
+export async function loadView(url: URL, view: BirdView) {
 	const catalog = catalogFromPlatform();
-	const token = ownerToken(cookies);
 	const filters = parseFilters(url.searchParams);
 	const [birds, habitats, songs] = await Promise.all([
-		catalog.listBirds(token, { view, ...filters }),
-		catalog.listValues(token, 'habitat'),
-		catalog.listValues(token, 'song')
+		catalog.listBirds({ view, ...filters }),
+		catalog.listValues('habitat'),
+		catalog.listValues('song')
 	]);
 	return {
 		view,
