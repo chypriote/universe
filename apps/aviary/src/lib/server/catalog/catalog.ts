@@ -1,8 +1,10 @@
 import { drizzle } from 'drizzle-orm/d1';
 import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@universe/owner/auth';
-import { and, asc, count, eq, or, sql } from 'drizzle-orm';
+import { and, asc, count, eq, inArray, or, sql } from 'drizzle-orm';
 import { birds, birdSongs, habitats, labels, pictures, songs } from '../db/schema';
-import type { Catalog, ValueKind } from './types';
+import { arrivalPrecision } from '../../arrival';
+import { MAX_PICTURE_BYTES, MIN_SIMILAR_CHARS } from './rules';
+import type { Catalog, PictureUpload, ValueKind } from './types';
 
 export interface CatalogEnv {
 	DB: D1Database;
@@ -45,6 +47,20 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		return row.n;
 	};
 
+	/** The tile columns shared by every list of Birds. */
+	const tileColumns = {
+		id: birds.id,
+		name: birds.name,
+		arrival: birds.arrival,
+		seen: birds.seen,
+		flown: birds.flown,
+		lost: birds.lost,
+		nest: birds.nest,
+		pictureId: sql<number | null>`(
+			SELECT p.id FROM picture p WHERE p.bird_id = bird.id ORDER BY p.position, p.id LIMIT 1
+		)`
+	};
+
 	return {
 		async login(password) {
 			if (
@@ -77,18 +93,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			// A year-only Arrival counts as the first day of that year, so it sorts with day Arrivals.
 			const arrivalKey = sql`CASE ${birds.arrivalPrecision} WHEN 'year' THEN ${birds.arrival} || '-01-01' ELSE ${birds.arrival} END`;
 			const rows = await db
-				.select({
-					id: birds.id,
-					name: birds.name,
-					arrival: birds.arrival,
-					seen: birds.seen,
-					flown: birds.flown,
-					lost: birds.lost,
-					nest: birds.nest,
-					pictureId: sql<number | null>`(
-						SELECT p.id FROM picture p WHERE p.bird_id = bird.id ORDER BY p.position, p.id LIMIT 1
-					)`
-				})
+				.select(tileColumns)
 				.from(birds)
 				.where(and(eq(birds.archived, false), inView))
 				.orderBy(
@@ -98,6 +103,92 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 					asc(birds.id)
 				);
 			return rows;
+		},
+
+		async addBird(token, input) {
+			await owner(token);
+			const name = input.name.trim();
+			if (!name) return { ok: false, error: 'name-required' };
+			const uploads = input.pictures.filter((p): p is PictureUpload => 'bytes' in p);
+			if (uploads.length !== input.pictures.length) return { ok: false, error: 'picture-required' };
+			if (uploads.length === 0 || uploads.some((p) => p.bytes.byteLength === 0)) {
+				return { ok: false, error: 'picture-required' };
+			}
+			if (uploads.some((p) => p.contentType !== 'image/jpeg')) {
+				return { ok: false, error: 'picture-bad-type' };
+			}
+			if (uploads.some((p) => p.bytes.byteLength > MAX_PICTURE_BYTES)) {
+				return { ok: false, error: 'picture-too-large' };
+			}
+			const precision = input.arrival === null ? null : arrivalPrecision(input.arrival);
+			if (input.arrival !== null && !precision) return { ok: false, error: 'bad-arrival' };
+			if (input.habitatId !== null && !(await exists('habitat', input.habitatId))) {
+				return { ok: false, error: 'bad-habitat' };
+			}
+			const songIds = [...new Set(input.songIds)];
+			if (songIds.length > 0) {
+				const found = await db
+					.select({ id: songs.id })
+					.from(songs)
+					.where(inArray(songs.id, songIds));
+				if (found.length !== songIds.length) return { ok: false, error: 'bad-song' };
+			}
+
+			// R2 first, then the rows; a failure removes what was stored.
+			const keys = uploads.map(() => crypto.randomUUID());
+			await Promise.all(
+				uploads.map((p, i) =>
+					env.PICTURES.put(keys[i], p.bytes, { httpMetadata: { contentType: p.contentType } })
+				)
+			);
+			try {
+				const [bird] = await db
+					.insert(birds)
+					.values({
+						name,
+						arrival: input.arrival,
+						arrivalPrecision: precision,
+						habitatId: input.habitatId,
+						notes: input.notes.trim(),
+						...input.flags
+					})
+					.returning({ id: birds.id });
+				try {
+					await db
+						.insert(pictures)
+						.values(keys.map((key, position) => ({ birdId: bird.id, key, position })));
+					if (songIds.length > 0) {
+						await db
+							.insert(birdSongs)
+							.values(songIds.map((songId) => ({ birdId: bird.id, songId })));
+					}
+				} catch (error) {
+					await db.delete(birdSongs).where(eq(birdSongs.birdId, bird.id));
+					await db.delete(pictures).where(eq(pictures.birdId, bird.id));
+					await db.delete(birds).where(eq(birds.id, bird.id));
+					throw error;
+				}
+				const rows = await db
+					.select({ id: pictures.id })
+					.from(pictures)
+					.where(eq(pictures.birdId, bird.id))
+					.orderBy(asc(pictures.position));
+				return { ok: true, id: bird.id, pictureIds: rows.map((r) => r.id) };
+			} catch (error) {
+				await env.PICTURES.delete(keys);
+				throw error;
+			}
+		},
+
+		async findSimilarNames(token, text) {
+			await owner(token);
+			const needle = text.trim().toLowerCase();
+			if ([...needle].length < MIN_SIMILAR_CHARS) return [];
+			return db
+				.select({ ...tileColumns, archived: birds.archived })
+				.from(birds)
+				.where(sql`instr(lower(${birds.name}), ${needle}) > 0`)
+				.orderBy(asc(birds.name), asc(birds.id));
 		},
 
 		async getPicture(token, id) {

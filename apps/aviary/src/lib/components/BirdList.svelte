@@ -1,4 +1,5 @@
 <script lang="ts">
+	import AddBird from './AddBird.svelte';
 	import AdminLink from './AdminLink.svelte';
 	import EmptyState from '@universe/showcase/components/EmptyState.svelte';
 	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
@@ -19,6 +20,7 @@
 <svelte:head><title>{appLabel} | {viewLabel}</title></svelte:head>
 
 <StickyBar current={view} links={lists(labels)}>
+	{#snippet action()}<AddBird {labels} />{/snippet}
 	{#snippet login()}<AdminLink label={label(labels, 'Admin')} />{/snippet}
 	{#snippet title()}{appLabel}<span class="text-icon-accent">.</span>{/snippet}
 </StickyBar>
