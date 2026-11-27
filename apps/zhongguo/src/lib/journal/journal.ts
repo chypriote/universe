@@ -1,6 +1,7 @@
 import { issueToken, passwordMatches, tokenIsValid } from '@universe/owner/auth';
 import { buildAdmin } from './admin';
 import { buildActivities } from './activities';
+import { PLAN_TABLES, TRIP_TABLES, type TripTables } from './tables';
 import { buildFares } from './fares';
 import { buildPlanAdmin } from './plan-admin';
 import { buildPlanPhotos } from './plan-photos';
@@ -99,7 +100,7 @@ type VisibleDay = DayRow & { number: number; stops: DayStopRow[] };
 
 /** A visible Trip with what pages need from it, numbered and ready. */
 type LoadedTrip = TripRow & {
-  source: Source;
+  source: TripTables;
   type: TripType;
   /** The visible Days, numbered from 1. */
   days: VisibleDay[];
@@ -109,72 +110,6 @@ type LoadedTrip = TripRow & {
 };
 
 const PHOTOGRAPHER = 'Nico';
-
-/**
- * Where a kind of Trip lives in D1. A Trip plan has the same shape as a Trip (Days, Cities, Photos) in tables of its own
- * (ADR 0003): no dates, no hidden Days, no food, so those columns are constants.
- */
-type Source = {
-  type: TripType;
-  trips: string;
-  /** The Trip id column of the other tables. */
-  fk: string;
-  days: string;
-  dayCities: string;
-  dayPhotos: string;
-  photos: string;
-  highlights: string;
-  dayActivities: string;
-  rides: string;
-  /** SQL for the columns plans do not have. */
-  startDate: string;
-  endDate: string;
-  description: string;
-  dayDate: string;
-  dayVisible: string;
-  photoDate: string;
-  base: string;
-};
-
-const TRIPS: Source = {
-  type: 'report',
-  trips: 'trips',
-  fk: 'trip_id',
-  days: 'days',
-  dayCities: 'day_cities',
-  dayPhotos: 'day_photos',
-  photos: 'photos',
-  highlights: 'highlight_photos',
-  dayActivities: 'day_activities',
-  rides: 'day_train_rides',
-  startDate: 'trips.start_date',
-  endDate: 'trips.end_date',
-  description: 'description',
-  dayDate: 'days.date',
-  dayVisible: 'days.visible',
-  photoDate: 'photos.date',
-  base: '/trips',
-};
-
-const PLANS: Source = {
-  type: 'plan',
-  trips: 'plans',
-  fk: 'plan_id',
-  days: 'plan_days',
-  dayCities: 'plan_day_cities',
-  dayPhotos: 'plan_day_photos',
-  photos: 'plan_photos',
-  highlights: 'plan_highlight_photos',
-  dayActivities: 'plan_day_activities',
-  rides: 'plan_day_train_rides',
-  startDate: 'NULL',
-  endDate: 'NULL',
-  description: 'NULL',
-  dayDate: "''",
-  dayVisible: '1',
-  photoDate: "''",
-  base: '/plans',
-};
 
 export function buildJournal(env: JournalEnv): Journal {
   const photosUrl = (env.PHOTOS_URL ?? '').replace(/\/$/, '');
@@ -201,7 +136,7 @@ export function buildJournal(env: JournalEnv): Journal {
   }
 
   /** The visible Trips or plans (one of them when a slug is given), newest first. */
-  async function loadTrips(slug?: string, source: Source = TRIPS): Promise<LoadedTrip[]> {
+  async function loadTrips(slug?: string, source: TripTables = TRIP_TABLES): Promise<LoadedTrip[]> {
     const S = source;
     const trips = await all<TripRow>(
       `SELECT id, slug, title, ${S.startDate} AS start_date, ${S.endDate} AS end_date, cover_photo_id, cover_focus_x, cover_focus_y, ${S.description} AS description
@@ -392,7 +327,7 @@ export function buildJournal(env: JournalEnv): Journal {
     return new Set(rows.map((row) => row.id));
   }
 
-  async function cardsOf(source: Source): Promise<TripCard[]> {
+  async function cardsOf(source: TripTables): Promise<TripCard[]> {
     const trips = await loadTrips(undefined, source);
     const majors = await majorCityIds();
     const highlights = await all<{ trip_id: number; position: number; photo_id: number }>(
@@ -432,7 +367,7 @@ export function buildJournal(env: JournalEnv): Journal {
     });
   }
 
-  async function pageOf(slug: string, source: Source): Promise<TripPage | null> {
+  async function pageOf(slug: string, source: TripTables): Promise<TripPage | null> {
     const S = source;
     const [trip] = await loadTrips(slug, S);
     if (!trip) return null;
@@ -555,10 +490,10 @@ export function buildJournal(env: JournalEnv): Journal {
     };
   }
 
-  const listTripCards = () => cardsOf(TRIPS);
-  const listPlanCards = () => cardsOf(PLANS);
-  const getTrip = (slug: string) => pageOf(slug, TRIPS);
-  const getPlan = (slug: string) => pageOf(slug, PLANS);
+  const listTripCards = () => cardsOf(TRIP_TABLES);
+  const listPlanCards = () => cardsOf(PLAN_TABLES);
+  const getTrip = (slug: string) => pageOf(slug, TRIP_TABLES);
+  const getPlan = (slug: string) => pageOf(slug, PLAN_TABLES);
 
   /** The Photos of the Gallery, newest Trip first: none of a Hidden Day. */
   function galleryPhotos(trips: LoadedTrip[]) {

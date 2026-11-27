@@ -19,6 +19,8 @@ import type {
   UploadActivityPictureResult,
 } from './types';
 
+import { PLAN_TABLES, TRIP_TABLES, type TripTables } from './tables';
+
 type ActivityMethods = Pick<
   Journal,
   | 'listAdminActivities'
@@ -224,17 +226,17 @@ export function buildActivities(env: AdminEnv, urls: ActivityPictureUrls): Activ
     return { ok: true };
   }
 
-  async function setActivities(days: string, listed: string, dayId: number, activityIds: number[]): Promise<SetDayActivitiesResult> {
-    if (!(await env.DB.prepare(`SELECT id FROM ${days} WHERE id = ?`).bind(dayId).first())) return { ok: false, error: 'unknown-day' };
+  async function setActivities(t: TripTables, dayId: number, activityIds: number[]): Promise<SetDayActivitiesResult> {
+    if (!(await env.DB.prepare(`SELECT id FROM ${t.days} WHERE id = ?`).bind(dayId).first())) return { ok: false, error: 'unknown-day' };
     if (new Set(activityIds).size !== activityIds.length) return { ok: false, error: 'duplicate-activity' };
     const known = activityIds.length
       ? await all<{ id: number }>(`SELECT id FROM activities WHERE id IN (${activityIds.map(() => '?').join(',')})`, ...activityIds)
       : [];
     if (known.length !== activityIds.length) return { ok: false, error: 'unknown-activity' };
     await env.DB.batch([
-      env.DB.prepare(`DELETE FROM ${listed} WHERE day_id = ?`).bind(dayId),
+      env.DB.prepare(`DELETE FROM ${t.dayActivities} WHERE day_id = ?`).bind(dayId),
       ...activityIds.map((activityId, index) =>
-        env.DB.prepare(`INSERT INTO ${listed} (day_id, position, activity_id) VALUES (?, ?, ?)`).bind(dayId, index + 1, activityId),
+        env.DB.prepare(`INSERT INTO ${t.dayActivities} (day_id, position, activity_id) VALUES (?, ?, ?)`).bind(dayId, index + 1, activityId),
       ),
     ]);
     return { ok: true };
@@ -339,7 +341,7 @@ export function buildActivities(env: AdminEnv, urls: ActivityPictureUrls): Activ
     editActivity,
     editActivities,
     deleteActivity,
-    setDayActivities: (dayId, activityIds) => setActivities('days', 'day_activities', dayId, activityIds),
-    setPlanDayActivities: (dayId, activityIds) => setActivities('plan_days', 'plan_day_activities', dayId, activityIds),
+    setDayActivities: (dayId, activityIds) => setActivities(TRIP_TABLES, dayId, activityIds),
+    setPlanDayActivities: (dayId, activityIds) => setActivities(PLAN_TABLES, dayId, activityIds),
   };
 }

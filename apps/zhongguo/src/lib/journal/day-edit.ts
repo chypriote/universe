@@ -1,13 +1,8 @@
+import type { TripTables } from './tables';
 import type { EditDayInput, EditDayResult } from './types';
 
-/** The tables of a kind of Day: a Trip's or a plan's. */
-export type DayTables = { days: string; dayCities: string };
-
-export const TRIP_DAY_TABLES: DayTables = { days: 'days', dayCities: 'day_cities' };
-export const PLAN_DAY_TABLES: DayTables = { days: 'plan_days', dayCities: 'plan_day_cities' };
-
 /** Edits the text, main City and route of a Day. The same rules for Trips and plans. */
-export async function editDayRows(env: { DB: D1Database }, t: DayTables, input: EditDayInput): Promise<EditDayResult> {
+export async function editDayRows(env: { DB: D1Database }, t: TripTables, input: EditDayInput): Promise<EditDayResult> {
   const all = async <T>(sql: string, ...params: (string | number)[]): Promise<T[]> =>
     (await env.DB.prepare(sql).bind(...params).all<T>()).results;
 
