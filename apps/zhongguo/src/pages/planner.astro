@@ -20,6 +20,17 @@ const { first, last, plans: lanes } = flightPrices(
   today,
 );
 
+// Up to 3 pictures per plan: its Highlight Photos, else the first pictures of its Activities.
+const pictures = new Map<string, string[]>();
+for (const plan of lanes) {
+  let urls = covers.get(plan.slug)?.highlights ?? [];
+  if (urls.length === 0) {
+    const page = await journalFromEnv().getPlan(plan.slug);
+    urls = [...new Set(page?.days.flatMap((day) => day.activities.map((activity) => activity.picture)).filter((url): url is string => url !== null))];
+  }
+  pictures.set(plan.slug, urls.slice(0, 3));
+}
+
 const utc = (date: string) => Date.parse(`${date}T00:00:00Z`);
 const start = utc(`${first.slice(0, 7)}-01`);
 const lastMonth = new Date(`${last.slice(0, 7)}-01T00:00:00Z`);
@@ -54,7 +65,7 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
             <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 mb-4">
               <p class="eyebrow">{range}</p>
               <p class="text-xs text-muted-foreground">
-                <span class="inline-block w-3 h-3 bg-gold/45 align-middle mr-1" /> good dates to leave ·{' '}
+                <span class="inline-block w-3 h-3 bg-gold/45 align-middle mr-1" /> Recommended dates ·{' '}
                 <span class="inline-block w-5 h-1.5 bg-primary align-middle mx-1" /> cheapest flights
               </p>
             </div>
@@ -90,7 +101,7 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                 </span>
                 <span class="relative block h-16 lg:h-auto opacity-60 group-aria-pressed:opacity-100 transition-opacity" aria-hidden="true">
                   {plan.fits.map((fit) => (
-                    <span class="absolute inset-y-0 bg-gold/45" title={`Good dates to leave: ${run(fit)}`} style={`left:${x(fit.from)}%;width:${x(fit.to) - x(fit.from) + (100 / ((end - start) / 864e5))}%`} />
+                    <span class="absolute inset-y-0 bg-gold/45" title={`Recommended dates: ${run(fit)}`} style={`left:${x(fit.from)}%;width:${x(fit.to) - x(fit.from) + (100 / ((end - start) / 864e5))}%`} />
                   ))}
                   {plan.windows.map((window, rank) => (
                     <span class="absolute" title={`${day(window.outbound, true)} – ${day(window.return)} · ${euros(window.price)}`} style={`left:${x(window.outbound)}%;width:${x(window.return) - x(window.outbound)}%;top:${30 + rank * 18}%`}>
@@ -103,21 +114,33 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                 </span>
               </button>
             ))}
-            <div class="mt-10 grid lg:grid-cols-[13rem_1fr] gap-x-6 gap-y-3">
-              <p class="eyebrow">Cheapest dates</p>
-              <div aria-live="polite">
-                {lanes.map((plan, index) => {
-                  return (
-                    <div id={`fares-${plan.slug}`} data-fares={plan.slug} class:list={[index > 0 && 'hidden']}>
+            <div class="mt-10 grid lg:grid-cols-[13rem_1fr] gap-x-6 gap-y-3" aria-live="polite">
+              {lanes.map((plan, index) => {
+                const urls = pictures.get(plan.slug) ?? [];
+                return (
+                  <>
+                    {urls.length > 0 && (
+                    <div data-fares={plan.slug} class:list={['max-lg:hidden relative', index > 0 && 'hidden']} aria-hidden="true">
+                      {urls.map((url, rank) => (
+                        <img
+                          src={url}
+                          alt=""
+                          loading="lazy"
+                          class="relative aspect-[4/3] w-full object-cover border-[3px] border-background"
+                          style={`margin-top:${rank === 0 ? 0 : -1.5}rem;margin-left:${rank % 2}rem;width:calc(100% - 1rem)`}
+                        />
+                      ))}
+                    </div>
+                    )}
+                    <div id={`fares-${plan.slug}`} data-fares={plan.slug} class:list={[index > 0 && 'hidden', urls.length === 0 && 'lg:col-start-2']}>
                       <div class="flex flex-wrap items-baseline justify-between gap-x-6 pb-1">
-                        <h3 class="font-serif text-xl">{plan.title}</h3>
+                        <h3 class="font-script text-4xl leading-[1.05] pb-3 lg:text-5xl">{plan.title}</h3>
                         <a href={`/plans/${plan.slug}`} class="text-sm text-primary underline-offset-4 hover:underline">
                           See the plan <span aria-hidden="true">→</span>
                         </a>
                       </div>
-                      {plan.fits.length > 0 && (
-                        <p class="pb-3 text-sm text-muted-foreground">Good dates to leave: {plan.fits.map(run).join(', ')}.</p>
-                      )}
+                      {plan.fits.length > 0 && <p class="text-sm text-muted-foreground">Recommended dates: {plan.fits.map(run).join(', ')}.</p>}
+                      <p class="eyebrow mt-5 mb-2">Cheapest dates</p>
                       <ol class="divide-y divide-border/70 border-t border-border">
                         {plan.note && <li class="py-3 text-sm text-muted-foreground">No prices yet ({plan.note}).</li>}
                         {plan.windows.map((window, rank) => (
@@ -135,9 +158,9 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                         ))}
                       </ol>
                     </div>
-                  );
-                })}
-              </div>
+                  </>
+                );
+              })}
             </div>
           </>
         )
