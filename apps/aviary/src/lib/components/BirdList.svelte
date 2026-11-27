@@ -6,9 +6,22 @@
 	import { label, type Labels } from '#lib/labels';
 	import { lists } from '#lib/lists';
 	import type { BirdTile, BirdView } from '#lib/server/catalog/types';
+	import BirdPopup from './BirdPopup.svelte';
 	import BirdTileCard from './BirdTile.svelte';
+	import { invalidateAll } from '$app/navigation';
 
 	let { view, birds, labels }: { view: BirdView; birds: BirdTile[]; labels: Labels } = $props();
+
+	let open = $state(false);
+	let anchor = $state<HTMLElement | null>(null);
+	let selectedId = $state<number | null>(null);
+	const selected = $derived(birds.find((bird) => bird.id === selectedId) ?? null);
+
+	function select(bird: BirdTile, el: HTMLElement) {
+		selectedId = bird.id;
+		anchor = el;
+		open = true;
+	}
 
 	const appLabel = $derived(label(labels, 'Aviary'));
 	const viewLabel = $derived(
@@ -29,8 +42,19 @@
 	{:else}
 		<TileGrid>
 			{#each birds as bird (bird.id)}
-				<BirdTileCard {bird} {labels} />
+				<BirdTileCard {bird} {labels} onSelect={(el) => select(bird, el)} />
 			{/each}
 		</TileGrid>
 	{/if}
 </main>
+
+{#if selected}
+	<BirdPopup
+		bind:open
+		{anchor}
+		birdId={selected.id}
+		name={selected.name}
+		{labels}
+		onChanged={() => invalidateAll()}
+	/>
+{/if}

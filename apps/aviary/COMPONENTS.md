@@ -34,3 +34,17 @@ Props: `bird` (id, name, arrival, seen, flown, lost, nest, pictureId), `labels`.
 
 - **Login:** `h1` "Log in", Field "Password", Button `success` "Log in", Parakeets. A wrong password shows the Field error. After login the Owner returns to the page in `next`.
 - **Aloft, Grounded, Nest:** StickyBar with three tabs, then a TileGrid of BirdTiles (Arrival newest first), or the Showcase EmptyState when the tab has no Bird. Pictures come only through the authenticated `/pictures/:id` route (`Cache-Control: private`).
+
+## BirdPopup
+
+**Hierarchy:** Pattern
+**Purpose:** The whole Bird, opened over its tile (Showcase Popup).
+
+Props: `birdId`, `name`, `labels`, `anchor`. Loads the Bird from `/api/birds/:id`. Pictures as squares on the left (a thumbnail row when there are several). Right: name, then Habitat and Arrival; flags (Roosted included) and Songs as read-only tags with no section labels; the SightingList; the notes.
+
+## SightingList
+
+**Hierarchy:** Pattern
+**Purpose:** The Sightings of a Bird, in the popup.
+
+One row per Sighting: a date input (empty means no day; changing or clearing it saves) and a delete Button that asks first. "Add a sighting" adds one with today's day. Changes go to `/api/sightings`; the first Sighting turns Seen on, and Seen stays on after the last is deleted.

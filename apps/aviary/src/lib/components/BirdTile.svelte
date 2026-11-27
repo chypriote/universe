@@ -9,7 +9,16 @@
 	import { initials, tintClass } from '#lib/tile';
 	import type { BirdTile } from '#lib/server/catalog/types';
 
-	let { bird, labels }: { bird: BirdTile; labels: Labels } = $props();
+	let {
+		bird,
+		labels,
+		onSelect
+	}: {
+		bird: BirdTile;
+		labels: Labels;
+		/** Gives the Popup the tile to focus on close. */
+		onSelect?: (el: HTMLElement) => void;
+	} = $props();
 
 	let failed = $state(false);
 	let img = $state<HTMLImageElement | null>(null);
@@ -31,37 +40,43 @@
 	);
 </script>
 
-<li class="group flex min-w-0 flex-col">
-	<span
-		class="relative block aspect-square w-full overflow-hidden rounded-(--cover-radius) shadow-(--shadow-raised) motion-safe:transition-transform motion-safe:duration-150 motion-safe:ease-(--easing-out) motion-safe:group-hover:translate-y-(--tile-hover-lift) motion-safe:group-hover:rotate-(--tile-hover-tilt)"
+<li class="min-w-0">
+	<button
+		type="button"
+		class="group flex w-full min-w-0 cursor-pointer flex-col rounded-md text-start outline-ring outline-offset-3 focus-visible:outline-3 focus-visible:outline-solid"
+		onclick={(e) => onSelect?.(e.currentTarget)}
 	>
-		{#if showImage}
-			<img
-				bind:this={img}
-				src="/pictures/{bird.pictureId}"
-				alt=""
-				loading="lazy"
-				class="size-full object-cover"
-				onerror={() => (failed = true)}
-			/>
-		{:else}
-			<span
-				class="flex size-full items-center justify-center text-2xl font-extrabold text-primary-foreground {tintClass(
-					bird.name
-				)}"
-				aria-hidden="true"
-			>
-				{initials(bird.name)}
-			</span>
-		{/if}
-		{#if flags.length > 0}
-			<span class="absolute start-1 top-1 flex gap-0.5 drop-shadow-[0_1px_3px_rgb(0_0_0/0.55)]">
-				{#each flags as flag (flag.code)}
-					<flag.icon class="size-4 {flag.color}" aria-hidden="true" />
-					<span class="sr-only">{label(labels, flag.code)}</span>
-				{/each}
-			</span>
-		{/if}
-	</span>
-	<TileCaption title={bird.name} subtitle={bird.arrival ? formatDate(bird.arrival) : ''} />
+		<span
+			class="relative block aspect-square w-full overflow-hidden rounded-(--cover-radius) shadow-(--shadow-raised) motion-safe:transition-transform motion-safe:duration-150 motion-safe:ease-(--easing-out) motion-safe:group-hover:translate-y-(--tile-hover-lift) motion-safe:group-hover:rotate-(--tile-hover-tilt) motion-safe:group-focus-visible:translate-y-(--tile-hover-lift) motion-safe:group-focus-visible:rotate-(--tile-hover-tilt)"
+		>
+			{#if showImage}
+				<img
+					bind:this={img}
+					src="/pictures/{bird.pictureId}"
+					alt=""
+					loading="lazy"
+					class="size-full object-cover"
+					onerror={() => (failed = true)}
+				/>
+			{:else}
+				<span
+					class="flex size-full items-center justify-center text-2xl font-extrabold text-primary-foreground {tintClass(
+						bird.name
+					)}"
+					aria-hidden="true"
+				>
+					{initials(bird.name)}
+				</span>
+			{/if}
+			{#if flags.length > 0}
+				<span class="absolute start-1 top-1 flex gap-0.5 drop-shadow-[0_1px_3px_rgb(0_0_0/0.55)]">
+					{#each flags as flag (flag.code)}
+						<flag.icon class="size-4 {flag.color}" aria-hidden="true" />
+						<span class="sr-only">{label(labels, flag.code)}</span>
+					{/each}
+				</span>
+			{/if}
+		</span>
+		<TileCaption title={bird.name} subtitle={bird.arrival ? formatDate(bird.arrival) : ''} />
+	</button>
 </li>

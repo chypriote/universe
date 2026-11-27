@@ -1,0 +1,157 @@
+<script lang="ts">
+	import { Badge } from '@universe/showcase/ui/badge';
+	import ShowcasePopup from '@universe/showcase/components/Popup.svelte';
+	import { formatDate } from '@universe/universe/format';
+	import { label, type Labels } from '#lib/labels';
+	import type { BirdDetail } from '#lib/server/catalog/types';
+	import { initials, tintClass } from '#lib/tile';
+	import SightingList from './SightingList.svelte';
+
+	let {
+		open = $bindable(false),
+		anchor = null,
+		birdId,
+		name,
+		labels,
+		onChanged
+	}: {
+		open?: boolean;
+		anchor?: HTMLElement | null;
+		birdId: number;
+		/** The tile's name, shown while the Bird loads. */
+		name: string;
+		labels: Labels;
+		/** A Sighting changed Seen: the grid reloads. */
+		onChanged?: () => void;
+	} = $props();
+
+	let bird = $state<BirdDetail | null>(null);
+	let loadError = $state(false);
+	let shown = $state(0);
+
+	async function load() {
+		const response = await fetch(`/api/birds/${birdId}`);
+		if (response.status === 401) {
+			window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+			return;
+		}
+		if (!response.ok) {
+			loadError = true;
+			return;
+		}
+		bird = await response.json();
+		loadError = false;
+	}
+
+	$effect(() => {
+		void birdId;
+		bird = null;
+		shown = 0;
+		load();
+	});
+
+	async function change(body: Record<string, unknown>): Promise<string | null> {
+		const response = await fetch('/api/sightings', {
+			method: 'POST',
+			headers: { 'content-type': 'application/json' },
+			body: JSON.stringify({ ...body, birdId })
+		});
+		if (response.status === 401) {
+			window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+			return 'Unauthorized';
+		}
+		if (response.ok) return null;
+		const failure = (await response.json().catch(() => null)) as { error?: string } | null;
+		return failure?.error ?? 'bad-request';
+	}
+
+	async function changed() {
+		await load();
+		onChanged?.();
+	}
+
+	// Flags as read-only tags. Roosted shows here, though never on a tile.
+	const flags = $derived(
+		bird
+			? [
+					{ on: bird.seen, code: 'Seen', variant: 'info' },
+					{ on: bird.flown, code: 'Flown', variant: 'success' },
+					{ on: bird.lost, code: 'Lost', variant: 'default' },
+					{ on: bird.roosted, code: 'Roosted', variant: 'default' },
+					{ on: bird.nest, code: 'Nest', variant: 'highlight' }
+				].filter((flag) => flag.on)
+			: []
+	);
+	const facts = $derived(
+		[bird?.habitat, bird?.arrival ? formatDate(bird.arrival) : null].filter(Boolean).join(' · ')
+	);
+</script>
+
+{#snippet media()}
+	{#if bird && bird.pictureIds.length > 0}
+		<span class="block aspect-square overflow-hidden rounded-md bg-background">
+			<img src="/pictures/{bird.pictureIds[shown]}" alt="" class="size-full object-cover" />
+		</span>
+		{#if bird.pictureIds.length > 1}
+			<div class="flex flex-wrap gap-1" role="group">
+				{#each bird.pictureIds as pictureId, index (pictureId)}
+					<button
+						type="button"
+						class="size-(--control-size-min) cursor-pointer overflow-hidden rounded-md bg-background outline-ring focus-visible:outline-3 focus-visible:outline-solid aria-pressed:outline-3 aria-pressed:outline-solid"
+						aria-pressed={shown === index}
+						aria-label={`${label(labels, 'Picture')} ${index + 1}`}
+						onclick={() => (shown = index)}
+					>
+						<img src="/pictures/{pictureId}" alt="" class="size-full object-cover" />
+					</button>
+				{/each}
+			</div>
+		{/if}
+	{:else}
+		<span
+			class="flex aspect-square items-center justify-center rounded-md text-2xl font-extrabold text-primary-foreground {tintClass(
+				name
+			)}"
+			aria-hidden="true"
+		>
+			{initials(name)}
+		</span>
+	{/if}
+{/snippet}
+
+{#snippet details()}
+	{#if loadError}
+		<p class="font-bold text-destructive" role="alert">! {label(labels, 'BirdLoadError')}</p>
+	{:else if bird}
+		<div class="flex flex-col gap-3">
+			{#if flags.length || bird.songs.length}
+				<ul class="flex flex-wrap gap-1.5" aria-label={label(labels, 'Tags')}>
+					{#each flags as flag (flag.code)}
+						<li>
+							<Badge variant={flag.variant as 'default' | 'highlight' | 'success' | 'info'}>
+								{label(labels, flag.code)}
+							</Badge>
+						</li>
+					{/each}
+					{#each bird.songs as song (song)}
+						<li><Badge>{song}</Badge></li>
+					{/each}
+				</ul>
+			{/if}
+			<SightingList sightings={bird.sightings} {labels} {change} onChange={changed} />
+			{#if bird.notes}
+				<p class="text-md [overflow-wrap:anywhere] whitespace-pre-line">{bird.notes}</p>
+			{/if}
+		</div>
+	{/if}
+{/snippet}
+
+<ShowcasePopup
+	bind:open
+	{anchor}
+	title={bird?.name ?? name}
+	subtitle={facts}
+	mediaWidth="min(var(--popup-picture-size), 40%)"
+	{media}
+	{details}
+/>
