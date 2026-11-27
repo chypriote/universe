@@ -145,6 +145,9 @@ export interface SimilarBird extends BirdTile {
 	archived: boolean;
 }
 
+export type ArchiveResult = { ok: true } | { ok: false; error: 'not-found' };
+export type DeleteForeverResult = { ok: true } | { ok: false; error: 'not-found' | 'not-archived' };
+
 export interface Catalog {
 	login(password: string): Promise<LoginResult>;
 	verifyToken(token: string): Promise<boolean>;
@@ -160,6 +163,17 @@ export interface Catalog {
 	 * Picture stays. Seen stays on while the Bird has a Sighting, whatever `flags.seen` says.
 	 */
 	editBird(token: string, id: number, input: BirdInput): Promise<EditBirdResult>;
+	/** Archives a Bird: it leaves every view, filter and search, and shows only in similar names. */
+	archiveBird(token: string, id: number): Promise<ArchiveResult>;
+	/** Brings an Archived Bird back to its view. */
+	restoreBird(token: string, id: number): Promise<ArchiveResult>;
+	/** Tiles of the Archived Birds, by name. */
+	listArchivedBirds(token: string): Promise<BirdTile[]>;
+	/**
+	 * Deletes a Bird with its Pictures (rows and R2 objects), Sightings and Song links. Refused
+	 * unless the Bird is Archived. The only delete of a Bird.
+	 */
+	deleteBirdForever(token: string, id: number): Promise<DeleteForeverResult>;
 	/** Birds whose name contains `text` (ignoring case), Archived included. Empty under 3 characters. */
 	findSimilarNames(token: string, text: string): Promise<SimilarBird[]>;
 	/** The popup view of a Bird, or null when there is no such Bird. */

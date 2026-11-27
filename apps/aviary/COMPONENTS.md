@@ -9,7 +9,7 @@ Shared components (StickyBar, EmptyState, Field, Button, Popup, TileGrid and the
 | Level | Components |
 | --- | --- |
 | Component | BirdTile, BirdPopup |
-| Pattern | Parakeets (login art), BirdList, SightingList, AddBird, BirdForm, PictureList, SimilarNames, ValueList, AdminLink |
+| Pattern | Parakeets (login art), BirdList, SightingList, AddBird, BirdForm, PictureList, SimilarNames, ValueList, ArchivedList, AdminLink |
 
 The shared StickyBar, TileGrid, Popup, EmptyState, ConfirmDialog, Field and Select are used as Showcase defines them.
 
@@ -51,11 +51,7 @@ Props: `view`, `birds`, `labels`, `filters`, `habitats`, `songs`. StickyBar with
 **Hierarchy:** Pattern
 **Purpose:** The whole Bird, opened over its tile (Showcase Popup).
 
-<<<<<<< HEAD
-Props: `birdId`, `name`, `labels`, `anchor`. Loads the Bird from `/api/birds/:id`. Pictures as squares on the left (a thumbnail row when there are several). Right: name, then Habitat and Arrival; flags (Roosted included) and Songs as read-only tags with no section labels; the SightingList; the notes. An Edit Button in the actions row opens a wide Popup with the BirdForm filled from the Bird (`birdToForm`), posting to `?/editBird&id=` with `seenLocked` while the Bird has a Sighting; saving reloads the popup and the grid.
-=======
-Props: `open` (bindable), `anchor`, `birdId`, `name` (shown while the Bird loads), `labels`, `onChanged` (a Sighting changed Seen: the grid reloads). Loads the Bird from `/api/birds/:id`; a 401 sends the Owner to login. Media column (Showcase Popup `mediaWidth`, `min(popup-picture-size, 40%)`): the shown Picture as a square, then a thumbnail row when there are several (each a toggle Button); with no Picture, the initials square. Subtitle: Habitat and Arrival. Details: flags (Roosted included) and Songs as read-only Badges with no section labels, the SightingList, the notes. A failed load shows an error line.
->>>>>>> claude/project-thread-t1p0iy
+Props: `open` (bindable), `anchor`, `birdId`, `name` (shown while the Bird loads), `labels`, `onChanged` (a Sighting changed Seen: the grid reloads). Loads the Bird from `/api/birds/:id`; a 401 sends the Owner to login. Media column (Showcase Popup `mediaWidth`, `min(popup-picture-size, 40%)`): the shown Picture as a square, then a thumbnail row when there are several (each a toggle Button); with no Picture, the initials square. Subtitle: Habitat and Arrival. Details: flags (Roosted included) and Songs as read-only Badges with no section labels, the SightingList, the notes. A failed load shows an error line. An Edit Button in the actions row opens a wide Popup with the BirdForm filled from the Bird (`birdToForm`), posting to `?/editBird&id=` with `seenLocked` while the Bird has a Sighting; saving reloads the popup and the grid. The form's `start` holds a danger Archive Button: it posts `?/archiveBird&id=`, then closes the form and the popup and reloads the grid (a refusal shows beside the button).
 
 ## SightingList
 
@@ -69,7 +65,7 @@ One row per Sighting: a date input (empty means no day; changing or clearing it 
 **Hierarchy:** Pattern
 **Purpose:** The one form for Add and Edit.
 
-Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `action` (default `?/addBird`), `initial`, `initialPictures`, `seenLocked`, `similar`, `onDone`, `start` (snippet, for Edit's Archive). Fields: name, PictureList, Habitat (pick one or none), Songs (multi-pick), Arrival (a day, a year or empty), the five flags, notes. It posts `buildBirdFormData` to the action and shows a refusal as a Field-style error. Edit reuses it with `?/editBird&id=`, the Bird's values and Pictures, and `similar` off.
+Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `action` (default `?/addBird`), `initial`, `initialPictures`, `seenLocked`, `similar`, `onDone`, `start` (snippet left of Save: Edit puts the Archive Button there). Fields: name, PictureList, Habitat (pick one or none), Songs (multi-pick), Arrival (a day, a year or empty), the five flags, notes. It posts `buildBirdFormData` to the action and shows a refusal as a Field-style error. Edit reuses it with `?/editBird&id=`, the Bird's values and Pictures, and `similar` off.
 
 ## PictureList
 
@@ -98,6 +94,13 @@ Props: `labels`. Reads the Habitat and Songs lists from the page data.
 **Purpose:** One Admin list, Habitat or Songs.
 
 Props: `kind` (`habitat` or `song`), `heading`, `values` (name and number of Birds using it), `labels`, `error` (label code name of the last refusal). One row per value: a rename Field with the use count and a Rename Button, and a danger Remove Button. A value nobody uses is removed at once. A value in use opens a ConfirmDialog with a Select of the other values: removing moves every Bird there first. A last Field and Button add a value.
+
+## ArchivedList
+
+**Hierarchy:** Pattern
+**Purpose:** The Archived Birds on the Admin page.
+
+Props: `birds` (tiles), `labels`, `error` (label code name of the last refusal). One row per Archived Bird: the name, a Restore Button (`?/restore`) and a danger Delete forever Button. Delete forever opens a ConfirmDialog naming the Bird and saying its Pictures and Sightings go too; confirming posts `?/deleteForever`. The Catalog refuses it for a Bird that is not Archived. With none, a quiet empty line.
 
 ## AdminLink
 

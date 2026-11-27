@@ -12,17 +12,21 @@ const REFUSALS = {
 	'bad-target': 'ValueBadTarget'
 } as const;
 
+/** Refusals of the Archived list. */
+const BIRD_REFUSALS = { 'not-found': 'SomethingWrong', 'not-archived': 'BirdNotArchived' } as const;
+
 const asKind = (value: FormDataEntryValue | null): ValueKind | null =>
 	value === 'habitat' || value === 'song' ? value : null;
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const catalog = catalogFromPlatform();
 	const token = ownerToken(cookies);
-	const [habitats, songs] = await Promise.all([
+	const [habitats, songs, archived] = await Promise.all([
 		catalog.listValues(token, 'habitat'),
-		catalog.listValues(token, 'song')
+		catalog.listValues(token, 'song'),
+		catalog.listArchivedBirds(token)
 	]);
-	return { habitats, songs };
+	return { habitats, songs, archived };
 };
 
 /** Runs one list change; a refusal comes back as a code name for the page to label. */
@@ -50,7 +54,36 @@ async function change(
 
 const id = (form: FormData, key: string) => Number(form.get(key));
 
+/** Runs one change of an Archived Bird; a refusal comes back as a code name for the page to label. */
+async function changeBird(
+	request: Request,
+	cookies: Parameters<typeof ownerToken>[0],
+	run: (
+		id: number,
+		token: string
+	) => Promise<{ ok: true } | { ok: false; error: keyof typeof BIRD_REFUSALS }>
+) {
+	const birdId = Number((await request.formData()).get('id'));
+	if (!Number.isInteger(birdId)) return fail(400, { archivedError: 'SomethingWrong' });
+	try {
+		const result = await run(birdId, ownerToken(cookies));
+		if (!result.ok) return fail(400, { archivedError: BIRD_REFUSALS[result.error] });
+		return { archivedError: null };
+	} catch (error) {
+		if (error instanceof UnauthorizedError) return fail(401, { archivedError: 'Unauthorized' });
+		throw error;
+	}
+}
+
 export const actions: Actions = {
+	restore: ({ request, cookies }) =>
+		changeBird(request, cookies, (birdId, token) =>
+			catalogFromPlatform().restoreBird(token, birdId)
+		),
+	deleteForever: ({ request, cookies }) =>
+		changeBird(request, cookies, (birdId, token) =>
+			catalogFromPlatform().deleteBirdForever(token, birdId)
+		),
 	add: ({ request, cookies }) =>
 		change(request, cookies, (kind, form, token) =>
 			catalogFromPlatform().addValue(token, kind, String(form.get('name') ?? ''))

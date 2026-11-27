@@ -44,7 +44,8 @@ Display face: Lilita One at weight 400, never a faux bold (`font-synthesis-weigh
 - **Tile:** a square Picture that fills the tile, or the initials on a tinted square. Flag icons top left with a soft shadow and no circle. Roosted is never shown on a tile.
 - **Popup:** Pictures as squares in the media column on the left (a thumbnail row when there are several). Right: name, Habitat and Arrival, flags and Songs as read-only tags with no section labels, Sightings, notes.
 - **Forms:** one Bird form for Add and Edit. Habitat and Songs are picked, never typed; new values live on the Admin page.
-- **Admin:** the Habitat and Songs lists. A value in use is removed only after another value is picked and every Bird moves to it.
+- **Archive:** the Edit form has a danger Archive Button left of Save. An Archived Bird leaves every tab, filter and search, and shows only, marked, in similar names while a name is typed.
+- **Admin:** the Habitat and Songs lists, then the Archived Birds. A value in use is removed only after another value is picked and every Bird moves to it. An Archived Bird is restored at once, or deleted for good after a confirm that says its Pictures and Sightings go too. This is the only delete of a Bird.
 
 ## Login page
 

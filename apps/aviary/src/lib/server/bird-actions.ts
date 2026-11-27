@@ -49,3 +49,17 @@ export async function editBirdAction({ request, cookies, url }: RequestEvent) {
 		throw error;
 	}
 }
+
+/** The `archiveBird` form action, the same on every tab page. The Bird is `?id=` of the action URL. */
+export async function archiveBirdAction({ cookies, url }: RequestEvent) {
+	const id = Number(url.searchParams.get('id'));
+	if (!Number.isInteger(id)) return fail(400, { error: REFUSALS['bad-form'] });
+	try {
+		const result = await catalogFromPlatform().archiveBird(ownerToken(cookies), id);
+		if (!result.ok) return fail(400, { error: REFUSALS[result.error] });
+		return { archived: id };
+	} catch (error) {
+		if (error instanceof UnauthorizedError) return fail(401, { error: 'SessionExpired' });
+		throw error;
+	}
+}

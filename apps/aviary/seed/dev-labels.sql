@@ -44,4 +44,10 @@ INSERT OR REPLACE INTO labels (code_name, word) VALUES
 	('NestAll', 'NestAll'),
 	('NestOnly', 'NestOnly'),
 	('NestNot', 'NestNot'),
+	('ArchiveBird', 'ArchiveBird'),
+	('Restore', 'Restore'),
+	('DeleteForever', 'DeleteForever'),
+	('DeleteForeverText', 'DeleteForeverText'),
+	('NoArchived', 'NoArchived'),
+	('BirdNotArchived', 'BirdNotArchived'),
 	('Admin', 'Admin');

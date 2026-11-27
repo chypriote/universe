@@ -107,6 +107,14 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		return { ok: true, name, precision, songIds, uploads };
 	}
 
+	async function setArchived(token: string, id: number, archived: boolean) {
+		await owner(token);
+		const [bird] = await db.select({ id: birds.id }).from(birds).where(eq(birds.id, id));
+		if (!bird) return { ok: false, error: 'not-found' } as const;
+		await db.update(birds).set({ archived }).where(eq(birds.id, id));
+		return { ok: true } as const;
+	}
+
 	return {
 		async login(password) {
 			if (
@@ -290,6 +298,46 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				.where(eq(pictures.birdId, id))
 				.orderBy(asc(pictures.position));
 			return { ok: true, pictureIds: rows.map((r) => r.id) };
+		},
+
+		async archiveBird(token, id) {
+			return setArchived(token, id, true);
+		},
+
+		async restoreBird(token, id) {
+			return setArchived(token, id, false);
+		},
+
+		async listArchivedBirds(token) {
+			await owner(token);
+			return db
+				.select(tileColumns)
+				.from(birds)
+				.where(eq(birds.archived, true))
+				.orderBy(asc(birds.name), asc(birds.id));
+		},
+
+		async deleteBirdForever(token, id) {
+			await owner(token);
+			const [bird] = await db
+				.select({ archived: birds.archived })
+				.from(birds)
+				.where(eq(birds.id, id));
+			if (!bird) return { ok: false, error: 'not-found' };
+			if (!bird.archived) return { ok: false, error: 'not-archived' };
+			const stored = await db
+				.select({ key: pictures.key })
+				.from(pictures)
+				.where(eq(pictures.birdId, id));
+			// One batch: the rows go together or not at all. The R2 objects follow.
+			await db.batch([
+				db.delete(birdSongs).where(eq(birdSongs.birdId, id)),
+				db.delete(sightings).where(eq(sightings.birdId, id)),
+				db.delete(pictures).where(eq(pictures.birdId, id)),
+				db.delete(birds).where(and(eq(birds.id, id), eq(birds.archived, true)))
+			]);
+			if (stored.length > 0) await env.PICTURES.delete(stored.map((p) => p.key));
+			return { ok: true };
 		},
 
 		async findSimilarNames(token, text) {

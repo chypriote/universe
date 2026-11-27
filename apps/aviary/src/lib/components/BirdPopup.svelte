@@ -5,7 +5,9 @@
 	import ShowcasePopup from '@universe/showcase/components/Popup.svelte';
 	import { formatDate } from '@universe/universe/format';
 	import { birdToForm } from '#lib/bird-form';
+	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { label, type Labels } from '#lib/labels';
+	import { postForm } from '#lib/post-form';
 	import type { PictureItem } from '#lib/picture-list';
 	import type { BirdDetail } from '#lib/server/catalog/types';
 	import { initials, tintClass } from '#lib/tile';
@@ -48,6 +50,24 @@
 		await changed();
 	}
 
+	let archiveError = $state<string | null>(null);
+	let archiving = $state(false);
+
+	/** The Bird leaves every tab: the form and the popup close, the grid reloads. */
+	async function archive() {
+		archiving = true;
+		archiveError = null;
+		const outcome = await postForm(`?/archiveBird&id=${birdId}`, new FormData());
+		archiving = false;
+		if (!outcome.ok) {
+			archiveError = outcome.error;
+			return;
+		}
+		editing = false;
+		open = false;
+		onChanged?.();
+	}
+
 	async function load() {
 		const response = await fetch(`/api/birds/${birdId}`);
 		if (response.status === 401) {
@@ -66,6 +86,7 @@
 		void birdId;
 		bird = null;
 		shown = 0;
+		archiveError = null;
 		load();
 	});
 
@@ -197,7 +218,14 @@
 				seenLocked={bird.sightings.length > 0}
 				similar={false}
 				onDone={doneEditing}
-			/>
+			>
+				{#snippet start()}
+					<Button intent="danger" loading={archiving} onclick={archive}>
+						{label(labels, 'ArchiveBird')}
+					</Button>
+					{#if archiveError}<ErrorMessage message={label(labels, archiveError)} />{/if}
+				{/snippet}
+			</BirdForm>
 		{/if}
 	{/snippet}
 </ShowcasePopup>

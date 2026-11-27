@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { label } from '#lib/labels';
 	import { lists } from '#lib/lists';
+	import ArchivedList from '#lib/components/ArchivedList.svelte';
 	import ValueList from '#lib/components/ValueList.svelte';
 	import StickyBar from '@universe/showcase/components/StickyBar.svelte';
 	import type { PageProps } from './$types';
@@ -31,5 +32,10 @@
 		values={data.songs}
 		labels={data.labels}
 		error={refusal('song')}
+	/>
+	<ArchivedList
+		birds={data.archived}
+		labels={data.labels}
+		error={form && 'archivedError' in form ? (form.archivedError ?? null) : null}
 	/>
 </main>
