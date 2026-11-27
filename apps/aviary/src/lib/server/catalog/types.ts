@@ -8,11 +8,14 @@ export type LoginResult = { ok: true; token: string } | { ok: false; error: 'wro
 /** Code name to display word. A missing word falls back to the code name in the UI. */
 export type Labels = Record<string, string>;
 
-/** The three tabs. Grounded is computed from Flown or Lost; Nest is the Nest flag. */
-export type BirdView = 'aloft' | 'grounded' | 'nest';
+/** The three tabs. Grounded is computed from Flown or Lost; Seen is the Seen flag. */
+export type BirdView = 'aloft' | 'grounded' | 'seen';
 
 /** The Nest filter: every Bird, only Nest Birds, or only Birds not in the Nest. */
 export type NestFilter = 'all' | 'only' | 'not';
+
+/** The Roosted filter: every Bird, or only Roosted Birds. */
+export type RoostedFilter = 'all' | 'only';
 
 export interface ListBirdsQuery {
 	view: BirdView;
@@ -21,6 +24,7 @@ export interface ListBirdsQuery {
 	/** Song id. */
 	song?: number;
 	nest?: NestFilter;
+	roosted?: RoostedFilter;
 	/** Part of the name, ignoring case. Blank means no search. */
 	search?: string;
 }

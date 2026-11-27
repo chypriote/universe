@@ -39,7 +39,7 @@ The Bird left, or the Owner let it go. The app does not record who.
 The Bird still exists but the Owner cannot reach it any more. It is not Flown.
 
 **Roosted**:
-A flag the Owner sets by hand.
+A flag the Owner sets by hand. Never shown on a tile; it only drives the Roosted filter.
 
 **Nest**:
 The Owner saw the Bird many times in a short span. The Owner sets it by hand; it is not worked out from the Sightings.
@@ -48,6 +48,9 @@ The Owner saw the Bird many times in a short span. The Owner sets it by hand; it
 
 **Aloft**:
 Every Bird that is neither Flown nor Lost, and not Archived.
+
+**Seen** (tab):
+Every Seen Bird that is not Archived, whether Aloft or Grounded. The Nest and Roosted filters narrow it.
 
 **Grounded**:
 Every Bird that is Flown or Lost, and not Archived. Not stored: it follows from the two flags.
