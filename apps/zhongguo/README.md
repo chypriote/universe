@@ -1,6 +1,6 @@
 # Zhongguo
 
-Nico's travel site about China and nearby Asia: trips day by day, guides, a photo gallery and a flight price planner. Astro 7 with React islands and Tailwind CSS v4, served by the `zhongguo` Cloudflare Worker (`zhongguo.nicolastemeni.workers.dev`). Home, `/trips`, `/trips/<slug>`, `/gallery` and the Plan page (`/planner`) render on each request from D1 through the Journal (`src/lib/journal`); guides are prerendered. Domain: GLOSSARY.md. Design: DESIGN.md. Decision: `docs/adr/0001-d1-and-on-request-pages.md`.
+Nico's travel site about China and nearby Asia: trips day by day, guides, a photo gallery and a flight price planner. Astro 7 with React islands and Tailwind CSS v4, served by the `zhongguo` Cloudflare Worker (`zhongguo.nicolastemeni.workers.dev`). Home, `/trips`, `/trips/<slug>`, `/gallery` and the Plan page (`/planner`) render on each request from D1 through the Journal (`src/lib/journal`); guides are prerendered. Domain: GLOSSARY.md. Design: DESIGN.md. Decisions: `docs/adr/0001-d1-and-on-request-pages.md`, `docs/adr/0004-page-snapshots-in-the-photo-bucket.md`.
 
 ## Commands
 
@@ -36,7 +36,7 @@ Photos: `docs/photos.md`.
 
 ## Trips and Photos
 
-They live in the `zhongguo` D1 database (`migrations/0002_journal.sql`; `0003_journal_data.sql` holds the content moved from the old JSON files). After a deploy that adds a migration, run `npm run db:migrate:remote -w apps/zhongguo`. The Journal (`src/lib/journal`) is the only reader and writer: pages and API routes hold no rules. Its tests seed their own rows (`src/lib/journal/seed.test-helper.ts`) and leave out the data migration.
+They live in the `zhongguo` D1 database (`migrations/0002_journal.sql`; `0003_journal_data.sql` holds the content moved from the old JSON files). After a deploy that adds a migration, run `npm run db:migrate:remote -w apps/zhongguo`. The Journal (`src/lib/journal`) is the only reader and writer: pages and API routes hold no rules. `journalFromEnv()` serves Trip and plan pages from JSON snapshots in the photo bucket (`snapshots/`, ADR 0004); an admin write drops them. Its tests seed their own rows (`src/lib/journal/seed.test-helper.ts`) and leave out the data migration.
 
 ## Flight searches
 

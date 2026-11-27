@@ -8,6 +8,7 @@ export default defineConfig(async () => {
     (migration) => !migration.name.includes('journal_data'),
   );
   return {
+    define: { __BUILD_ID__: JSON.stringify('test') },
     resolve: { alias: { '@': new URL('./src', import.meta.url).pathname } },
     plugins: [
       cloudflareTest({
