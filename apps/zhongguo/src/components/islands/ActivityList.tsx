@@ -16,10 +16,13 @@ type Props = {
   onNotice: (text: string) => void;
   /** Leaves the City out of each row: the list is already under it. */
   hideCity?: boolean;
+  /** With these, each row gets a checkbox for batch actions. */
+  selected?: Set<number>;
+  onToggle?: (activity: AdminActivity) => void;
 };
 
 /** Activities as rows: each opens to its form and a Delete. Shared by the Activities, City and Province pages. */
-export function ActivityList({ activities, cities, onSaved, onDeleted, onNotice, hideCity }: Props) {
+export function ActivityList({ activities, cities, onSaved, onDeleted, onNotice, hideCity, selected, onToggle }: Props) {
   async function remove(activity: AdminActivity) {
     if (!confirm(`Delete ${activity.name} for good?`)) return;
     const response = await fetch(`/api/admin/activities/${activity.id}`, { method: 'DELETE' });
@@ -35,15 +38,31 @@ export function ActivityList({ activities, cities, onSaved, onDeleted, onNotice,
   return (
     <ul className="flex flex-col gap-3">
       {activities.map((activity) => (
-        <li key={activity.id} className="border border-border">
-          <details>
-            <summary className="flex cursor-pointer flex-wrap items-baseline gap-x-3 gap-y-1 p-4">
-              <span className="font-serif text-xl">{activity.name}</span>
-              <span lang="zh">{activity.nameZh}</span>
-              <span className="text-sm text-muted-foreground">
-                {!hideCity && `${activity.city} · `}
-                {label(ACTIVITY_KINDS, activity.kind)}
-                {activity.rating && ` · ${label(ACTIVITY_RATINGS, activity.rating)}`} · {activity.days} Days
+        <li key={activity.id} className={`flex items-start border ${selected?.has(activity.id) ? 'border-primary' : 'border-border'}`}>
+          {onToggle && (
+            <input
+              type="checkbox"
+              className="mt-5 ml-4 size-4 shrink-0 cursor-pointer accent-primary"
+              aria-label={`Select ${activity.name}`}
+              checked={selected?.has(activity.id) ?? false}
+              onChange={() => onToggle(activity)}
+            />
+          )}
+          <details className="min-w-0 flex-1">
+            <summary className="flex cursor-pointer items-center gap-4 p-4">
+              <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="flex flex-wrap items-baseline gap-x-3">
+                  <span className="font-serif text-xl">{activity.name}</span>
+                  <span lang="zh">{activity.nameZh}</span>
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {!hideCity && `${activity.city} · `}
+                  {label(ACTIVITY_KINDS, activity.kind)}
+                  {activity.rating ? ` · ${label(ACTIVITY_RATINGS, activity.rating)}` : ' · No rating'}
+                </span>
+              </span>
+              <span className="shrink-0 text-sm text-muted-foreground">
+                {activity.days} {activity.days === 1 ? 'Day' : 'Days'}
               </span>
             </summary>
             <div className="flex flex-col gap-4 border-t border-border p-4">
