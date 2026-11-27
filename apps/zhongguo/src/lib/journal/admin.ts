@@ -1,4 +1,5 @@
-import { editDayRows, TRIP_DAY_TABLES } from './day-edit';
+import { editDayRows } from './day-edit';
+import { TRIP_TABLES } from './tables';
 import { fileNameDate, isDate, readPhotoFile } from './photo-file';
 import type {
   PhotoTime,
@@ -348,7 +349,7 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
   }
 
   async function editDay(input: EditDayInput): Promise<EditDayResult> {
-    return editDayRows(env, TRIP_DAY_TABLES, input);
+    return editDayRows(env, TRIP_TABLES, input);
   }
 
   async function addDay(tripSlug: string, input: AddDayInput): Promise<AddDayResult> {

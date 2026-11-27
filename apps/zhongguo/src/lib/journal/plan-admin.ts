@@ -1,5 +1,6 @@
 import type { AdminEnv, PhotoUrls } from './admin';
-import { editDayRows, PLAN_DAY_TABLES } from './day-edit';
+import { editDayRows } from './day-edit';
+import { PLAN_TABLES } from './tables';
 import { loadPlanPhotos } from './plan-photos';
 import { slugOf, slugTaken } from './slug';
 import type {
@@ -155,7 +156,7 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
     return { ok: true, dayId: row!.id };
   }
 
-  const editPlanDay = (input: EditDayInput): Promise<EditDayResult> => editDayRows(env, PLAN_DAY_TABLES, input);
+  const editPlanDay = (input: EditDayInput): Promise<EditDayResult> => editDayRows(env, PLAN_TABLES, input);
 
   async function deletePlanDay(dayId: number): Promise<PlanDayResult> {
     const day = await env.DB.prepare('SELECT plan_id FROM plan_days WHERE id = ?').bind(dayId).first<{ plan_id: number }>();
