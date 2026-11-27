@@ -7,17 +7,20 @@ A private list of Birds, for the Owner alone.
 ### Birds
 
 **Bird**:
-One individual, with a name and a picture. One Bird per person. It has an Arrival, an optional Habitat, Songs, notes and five flags: Seen, Flown, Lost, Roosted, Nest.
+One individual, with a name and one or more pictures. One Bird per person. It has an Arrival, an optional Habitat, Songs, notes and five flags: Seen, Flown, Lost, Roosted, Nest.
 _Avoid_: Entry, item
+
+**Pictures**:
+The ordered pictures of a Bird, at least one. The first is the tile picture. Each is cropped square and resized in the browser before upload.
 
 **Arrival**:
 When the Bird came, optional. A full day, or only a year when the day is unknown.
 
 **Habitat**:
-Where the Bird came from, optional, one per Bird.
+Where the Bird came from, optional, one per Bird. The values come from a list kept on the Admin page.
 
 **Songs**:
-The set of channels the Owner shares with a Bird. It can be empty.
+The set of channels the Owner shares with a Bird. It can be empty. The values come from a list kept on the Admin page.
 
 **Sighting**:
 One time the Owner saw a Bird, with an optional day. A Bird has any number of Sightings. Notes live on the Bird, not on a Sighting.
@@ -44,10 +47,20 @@ The Owner saw the Bird many times in a short span. The Owner sets it by hand; it
 ### Views
 
 **Aloft**:
-Every Bird that is neither Flown nor Lost.
+Every Bird that is neither Flown nor Lost, and not Archived.
 
 **Grounded**:
-Every Bird that is Flown or Lost. Not stored: it follows from the two flags.
+Every Bird that is Flown or Lost, and not Archived. Not stored: it follows from the two flags.
+
+### Archive
+
+**Archived**:
+A Bird the Owner does not want to see on the pages, for any reason. It is stored on the Bird. An Archived Bird is in no tab and no filter. It is not the same as Flown or Lost. It can be restored, or deleted for good, from the Admin page only.
+
+### Admin
+
+**Admin page**:
+The page, behind the Owner login, where the Owner keeps the Habitat and Songs lists and the Archived Birds. A value can be added, renamed, or removed after moving every Bird that uses it to another value.
 
 ### People
 
