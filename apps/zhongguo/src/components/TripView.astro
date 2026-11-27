@@ -42,16 +42,15 @@ const jsonLd = {
 
 <BaseLayout title={trip.title} description={trip.description} jsonLd={jsonLd} pandas>
   <article>
-    <header class="snap-start relative isolate flex justify-center overflow-hidden text-center">
+    <header class="snap-start relative isolate flex min-h-[30rem] items-end overflow-hidden lg:min-h-[33rem]">
       {cover && <img src={cover} alt="" class="absolute inset-0 -z-10 h-full w-full object-cover mist-bottom" style={`object-position: ${card.coverFocus.x}% ${card.coverFocus.y}%`} />}
-      <div class="flex flex-col items-center gap-5 px-4 pt-14 pb-24 lg:pt-20 lg:pb-32">
-        <h1 class="font-script text-6xl leading-[1.05] pb-2 lg:text-[9rem] animate-fade-in">{trip.title}</h1>
-        <p class="max-w-lg font-serif text-lg text-foreground/80">{trip.description}</p>
-        <div class="mt-4 flex flex-col items-center gap-2 border-t border-foreground/30 pt-5 eyebrow text-foreground">
-          {trip.dates && <span>{trip.dates}</span>}
-          <span>{trip.days.length} days</span>
+      <Container class="pt-14 pb-12 lg:pt-20 lg:pb-14">
+        <div class="mx-auto max-w-6xl">
+          <h1 class="max-w-[48rem] text-balance pb-[0.2em] font-script text-5xl leading-[0.98] lg:text-[5.5rem] animate-fade-in">{trip.title}</h1>
+          {trip.dates && <p class="eyebrow mt-3 text-foreground">{trip.dates}</p>}
+          <p class="mt-4 max-w-xl leading-relaxed text-foreground/85">{trip.description}</p>
         </div>
-      </div>
+      </Container>
     </header>
 
     <TripRouteSection route={trip.route} regions={card.provinces} />
