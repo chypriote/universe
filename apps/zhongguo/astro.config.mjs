@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import remarkGfm from 'remark-gfm';
 
 import remarkToc from './src/plugins/remark-toc.mjs';
+import remarkTableZh from './src/plugins/remark-table-zh.mjs';
 
 const siteUrl = process.env.SITE_URL || 'https://zhongguo.nicolastemeni.workers.dev';
 const projectRoot = dirname(fileURLToPath(import.meta.url));
@@ -173,7 +174,7 @@ export default defineConfig({
       theme: 'github-dark',
     },
     processor: unified({
-      remarkPlugins: [remarkGfm, remarkToc],
+      remarkPlugins: [remarkGfm, remarkToc, remarkTableZh],
     }),
   },
   build: {

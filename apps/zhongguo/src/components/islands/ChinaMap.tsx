@@ -39,6 +39,8 @@ interface ChinaMapProps {
   idleText?: string;
   /** The photo and name beside the map; off, the map takes the full width. */
   preview?: boolean;
+  /** Off, touch screens hide the preview and the map takes the full width. */
+  previewOnTouch?: boolean;
   /** Hovering a region shows a tooltip with its name and detail at the pointer. */
   regionTooltip?: boolean;
   /** Zooms the map to these regions; null or none shows all of China. */
@@ -120,6 +122,7 @@ export function ChinaMap({
   tone = 'light',
   idleText = 'Hover a region',
   preview = true,
+  previewOnTouch = true,
   regionTooltip = false,
   zoomTo = null,
   route = [],
@@ -231,7 +234,7 @@ export function ChinaMap({
   return (
     <div className={preview ? 'grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start' : undefined}>
       <div
-        className={`relative ${preview ? 'lg:col-span-6' : 'lg:col-span-12'}`}
+        className={`relative ${preview ? 'lg:col-span-6' : 'lg:col-span-12'} ${previewOnTouch ? '' : 'pointer-coarse:lg:col-span-12'}`}
         onPointerMove={(event) => {
           if (!regionTooltip) return;
           const box = event.currentTarget.getBoundingClientRect();
@@ -399,7 +402,7 @@ export function ChinaMap({
       </div>
 
       {preview && (
-      <div className="lg:col-span-6" aria-live="polite">
+      <div className={`lg:col-span-6 ${previewOnTouch ? '' : 'pointer-coarse:hidden'}`} aria-live="polite">
         {/* The frame and text block keep a fixed size, so changing the preview never moves the map or the page. */}
         <div className={`w-full aspect-[4/3] border ${t.border}`}>
           {shown?.photo ? (

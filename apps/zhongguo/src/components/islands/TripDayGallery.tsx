@@ -91,7 +91,7 @@ export function TripDayGallery({ photos, day, tripTitle }: TripDayGalleryProps) 
       </div>
 
       {overflows && (
-        <div className="mt-3 flex items-center gap-4">
+        <div data-covers-back-to-top className="mt-3 flex items-center gap-4">
           <span className="eyebrow tabular-nums text-muted-foreground">
             {pad(current + 1)} / {pad(photos.length)}
           </span>

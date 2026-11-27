@@ -1,3 +1,4 @@
+import { formatDayMonth } from '@universe/universe/format';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { AdminCityDetail, AdminPhoto, AdminProvince, DeletePhotosResult, KeptPhoto, PhotoTime } from '@/lib/journal';
 import { button, field, makeThumb, MESSAGES } from './admin-form';
@@ -22,7 +23,7 @@ const ERRORS: Record<string, string> = {
 };
 const message = (error = '') => ERRORS[error] ?? error;
 
-const dayLabel = (date: string) => new Date(`${date}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const dayLabel = formatDayMonth;
 
 /** The place a Photo has, as the inspector edits it: a City id, or `way` for On the way. */
 const placeOf = (photo: AdminPhoto) => (photo.city ? `city:${photo.city.id}` : 'way');

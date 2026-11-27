@@ -6,6 +6,6 @@ export interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div class:list={['mx-auto w-full max-w-screen-xl px-4 md:px-8', className]} data-ps="src/components/Container.astro:qsz1db">
+<div class:list={['mx-auto w-full max-w-screen-xl px-4 md:px-8 min-[1400px]:pr-[max(2rem,calc(176px-(100vw-80rem)/2))]', className]} data-ps="src/components/Container.astro:qsz1db">
   <slot />
 </div>
