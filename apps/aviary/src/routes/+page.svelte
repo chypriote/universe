@@ -5,4 +5,4 @@
 	let { data }: PageProps = $props();
 </script>
 
-<BirdList view={data.view} birds={data.birds} labels={data.labels} />
+<BirdList {...data} />
