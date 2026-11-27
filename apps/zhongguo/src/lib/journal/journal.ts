@@ -4,7 +4,7 @@ import { buildActivities } from './activities';
 import { buildPlanAdmin } from './plan-admin';
 import { buildPlanPhotos } from './plan-photos';
 import { buildTripCreate } from './trip-create';
-import { formatDateRange } from '../plan-calendar';
+import { formatTripDates } from '../plan-calendar';
 import type { ActivityKind, ActivityRating } from './activity-kinds';
 import type {
   Activity,
@@ -372,7 +372,7 @@ export function buildJournal(env: JournalEnv): Journal {
 
   function formatDates(trip: TripRow): string {
     if (!trip.start_date || !trip.end_date) return 'Dates to be decided';
-    return formatDateRange(trip.start_date, trip.end_date);
+    return formatTripDates(trip.start_date, trip.end_date);
   }
 
   /** The names of the Major Cities of the visible Days, in order of first visit. */

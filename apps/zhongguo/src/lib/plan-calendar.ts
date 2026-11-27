@@ -40,6 +40,13 @@ export function formatDateRange(startDate: string, endDate: string): string {
   return `${formatDate(startDate)} — ${formatDate(endDate)}`;
 }
 
+/** "27 Mar — 21 Apr 2025": the year shows once when both dates share it. */
+export function formatTripDates(startDate: string, endDate: string): string {
+  const start = formatDate(startDate);
+  const sameYear = startDate.slice(0, 4) === endDate.slice(0, 4);
+  return `${sameYear ? start.replace(/ \d{4}$/, '') : start} — ${formatDate(endDate)}`;
+}
+
 export function buildCityCalendarDays(days: PlanDay[], startDate: string): CityCalendarCell[] {
   return [...days]
     .sort((a, b) => a.day - b.day)
