@@ -21,8 +21,6 @@ INSERT OR REPLACE INTO labels (code_name, word) VALUES
 	('BirdPictureRequired', 'BirdPictureRequired'),
 	('BirdSongInvalid', 'BirdSongInvalid'),
 	('Habitat', 'Habitat'),
-	('MoveEarlier', 'MoveEarlier'),
-	('MoveLater', 'MoveLater'),
 	('Name', 'Name'),
 	('NetworkError', 'NetworkError'),
 	('NoHabitat', 'NoHabitat'),
