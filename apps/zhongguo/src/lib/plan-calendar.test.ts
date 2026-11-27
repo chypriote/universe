@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatTripDates } from './plan-calendar';
+import { buildCityCalendarDays, formatTripDates } from './plan-calendar';
 
 describe('formatTripDates', () => {
   it('shows the year once when both dates share it', () => {
@@ -8,5 +8,13 @@ describe('formatTripDates', () => {
 
   it('shows both years when the trip crosses a year', () => {
     expect(formatTripDates('2025-12-28', '2026-01-05')).toBe('28 Dec 2025 — 5 Jan 2026');
+  });
+});
+
+describe('buildCityCalendarDays', () => {
+  it('gives a City its Chinese name and the pinyin of that name', () => {
+    const [cell] = buildCityCalendarDays([{ day: 1, city: 'Hotan', cityZh: '和田' }], '2025-03-01');
+
+    expect(cell).toMatchObject({ city: 'Hotan', cityZh: '和田', cityPinyin: 'Hétián' });
   });
 });

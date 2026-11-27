@@ -42,6 +42,19 @@ describe('Trip page', () => {
   });
 });
 
+describe('Calendar days', () => {
+  it('carry the Chinese name that D1 holds for the City of each Day', async () => {
+    const gansu = await addProvince('Gansu');
+    const lanzhou = await addCity('Lanzhou', gansu, { nameZh: '兰州' });
+    const trip = await addTrip({ slug: 'gansu' });
+    await addDay(trip, lanzhou, '2025-03-01', { position: 1 });
+
+    const page = await journal.getTrip('gansu');
+
+    expect(page!.planDays).toEqual([{ day: 1, city: 'Lanzhou', cityZh: '兰州' }]);
+  });
+});
+
 describe('Hidden Trip', () => {
   it('is absent from every read', async () => {
     const sichuan = await addProvince('Sichuan');
