@@ -8,6 +8,7 @@
 	import { label, type Labels } from '#lib/labels';
 	import { initials, tintClass } from '#lib/tile';
 	import type { BatchBird, ListValue } from '#lib/server/catalog/types';
+	import BirdPicture from './BirdPicture.svelte';
 	import Button from '@universe/showcase/components/Button.svelte';
 	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import Select from '@universe/showcase/components/Select.svelte';
@@ -113,14 +114,10 @@
 							class="size-5 shrink-0 accent-icon-accent"
 						/>
 						{#if bird.pictureId !== null && !failed.includes(bird.id)}
-							<img
-								src="/pictures/{bird.pictureId}"
-								alt=""
-								width="32"
-								height="32"
-								loading="lazy"
+							<BirdPicture
+								pictureId={bird.pictureId}
 								class="size-8 shrink-0 rounded-sm object-cover"
-								onerror={() => (failed = [...failed, bird.id])}
+								onFail={() => (failed = [...failed, bird.id])}
 							/>
 						{:else}
 							<span

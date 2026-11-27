@@ -4,7 +4,7 @@ import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@u
 import { and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { birds, birdSongs, habitats, labels, pictures, sightings, songs } from '../db/schema';
 import { arrivalPrecision } from '../../arrival';
-import { MAX_PICTURE_BYTES, MIN_SIMILAR_CHARS } from './rules';
+import { MAX_PICTURE_BYTES, MIN_SIMILAR_CHARS, thumbKey, withThumbs } from './rules';
 import type { BirdInput, BirdInputError, Catalog, PictureUpload, ValueKind } from './types';
 
 export interface CatalogEnv {
@@ -232,7 +232,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 					.orderBy(asc(pictures.position));
 				return { ok: true, id: bird.id, pictureIds: rows.map((r) => r.id) };
 			} catch (error) {
-				await env.PICTURES.delete(keys);
+				await env.PICTURES.delete(withThumbs(keys));
 				throw error;
 			}
 		},
@@ -303,10 +303,10 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				];
 				await db.batch(statements as [BatchItem<'sqlite'>, ...BatchItem<'sqlite'>[]]);
 			} catch (error) {
-				await env.PICTURES.delete([...newKeys.values()]);
+				await env.PICTURES.delete(withThumbs([...newKeys.values()]));
 				throw error;
 			}
-			if (removed.length > 0) await env.PICTURES.delete(removed.map((r) => r.key));
+			if (removed.length > 0) await env.PICTURES.delete(withThumbs(removed.map((r) => r.key)));
 			const rows = await db
 				.select({ id: pictures.id })
 				.from(pictures)
@@ -398,7 +398,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 					.returning({ id: birds.id })
 			]);
 			if (removed.length === 0) return { ok: false, error: 'not-archived' };
-			if (stored.length > 0) await env.PICTURES.delete(stored.map((p) => p.key));
+			if (stored.length > 0) await env.PICTURES.delete(withThumbs(stored.map((p) => p.key)));
 			return { ok: true };
 		},
 
@@ -496,14 +496,27 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return deleted.length ? { ok: true } : { ok: false, error: 'not-found' };
 		},
 
-		async getPicture(token, id) {
+		async putThumbnail(token, id, bytes) {
+			await owner(token);
+			const [row] = await db
+				.select({ key: pictures.key })
+				.from(pictures)
+				.where(eq(pictures.id, id));
+			if (!row) return false;
+			await env.PICTURES.put(thumbKey(row.key), bytes, {
+				httpMetadata: { contentType: 'image/jpeg' }
+			});
+			return true;
+		},
+
+		async getPicture(token, id, size) {
 			await owner(token);
 			const [row] = await db
 				.select({ key: pictures.key })
 				.from(pictures)
 				.where(eq(pictures.id, id));
 			if (!row) return null;
-			const object = await env.PICTURES.get(row.key);
+			const object = await env.PICTURES.get(size === 'thumb' ? thumbKey(row.key) : row.key);
 			if (!object) return null;
 			// The browser resizes every Picture to JPEG before upload.
 			return { body: object.body, contentType: object.httpMetadata?.contentType ?? 'image/jpeg' };

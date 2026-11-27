@@ -215,8 +215,10 @@ export interface Catalog {
 	): Promise<ValueResult<'not-found' | 'bad-day'>>;
 	/** Deletes a Sighting. Seen stays on: it is only forced, never cleared. */
 	deleteSighting(token: string, id: number): Promise<ValueResult<'not-found'>>;
-	/** The R2 object of a Picture, or null when the Picture or its object is gone. */
-	getPicture(token: string, id: number): Promise<PictureObject | null>;
+	/** The R2 object of a Picture (or its small thumbnail), or null when the Picture or that object is gone. */
+	getPicture(token: string, id: number, size?: 'thumb'): Promise<PictureObject | null>;
+	/** Stores the thumbnail the browser made of a Picture. False when the Picture is unknown. */
+	putThumbnail(token: string, id: number, bytes: ArrayBuffer): Promise<boolean>;
 	/** Every value of a list, by name, with its usage. */
 	listValues(token: string, kind: ValueKind): Promise<ListValue[]>;
 	addValue(token: string, kind: ValueKind, name: string): Promise<AddValueResult>;
