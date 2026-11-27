@@ -94,7 +94,7 @@
 	{#if links.length}
 		<ul class="flex flex-col gap-2">
 			{#each links as link (link.store.id)}
-				<li class="flex flex-col gap-2 text-[15px]">
+				<li class="flex flex-col gap-2 text-md">
 					<div class="flex items-center justify-between gap-2">
 						<span class="font-extrabold [overflow-wrap:anywhere]">{link.store.name}</span>
 						<Button loading={removing === link.store.id} onclick={() => remove(link.store.id)}>
