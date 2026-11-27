@@ -28,11 +28,14 @@
 	let error = $state<string | null>(null);
 	let deleting = $state<Sighting | null>(null);
 	let confirming = $state(false);
+	let busy = $state(false);
 
 	async function run(body: Record<string, unknown>) {
+		busy = true;
 		const code = await change(body);
 		error = code ? label(labels, `Sighting.${code}`) : null;
 		if (!code) await onChange();
+		busy = false;
 	}
 </script>
 
@@ -74,7 +77,7 @@
 		</ul>
 	{/if}
 	<div class="flex justify-end">
-		<Button size="icon-sm" onclick={() => run({ op: 'add', day: today() })}>
+		<Button size="icon-sm" disabled={busy} onclick={() => run({ op: 'add', day: today() })}>
 			<PlusIcon class="size-4" aria-hidden="true" />
 			<span class="sr-only">{label(labels, 'SightingAdd')}</span>
 		</Button>

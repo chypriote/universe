@@ -139,6 +139,7 @@
 		{/if}
 
 		<fieldset class="flex flex-col gap-1">
+			<legend class="sr-only">{label(labels, 'Tags')}</legend>
 			{#each FLAGS as [key, code, Icon, color] (key)}
 				{@const locked = key === 'seen' && seenLocked}
 				<label class="flex min-h-11 cursor-pointer items-center gap-2 text-sm">
