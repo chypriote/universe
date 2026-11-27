@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildBirdFormData, emptyBirdForm, validateBirdForm } from './bird-form';
+import { birdToForm, buildBirdFormData, emptyBirdForm, validateBirdForm } from './bird-form';
 import { parseBirdForm } from './server/bird-input';
 
 const blob = (text: string) => new Blob([text], { type: 'image/jpeg' });
@@ -75,5 +75,47 @@ describe('form data round trip', () => {
 
 	it('rejects a form without a readable payload', async () => {
 		expect(await parseBirdForm(new FormData())).toEqual({ error: 'bad-form' });
+	});
+});
+
+describe('birdToForm', () => {
+	const detail = {
+		id: 7,
+		name: 'Bird One',
+		arrival: '2024-05-06',
+		habitat: 'H1',
+		habitatId: 3,
+		songs: ['S1', 'S2'],
+		songIds: [4, 5],
+		notes: 'notes',
+		seen: true,
+		flown: false,
+		lost: true,
+		roosted: false,
+		nest: true,
+		pictureIds: [11, 12],
+		sightings: []
+	};
+
+	it('fills the form from a Bird', () => {
+		expect(birdToForm(detail)).toEqual({
+			name: 'Bird One',
+			habitatId: '3',
+			songIds: ['4', '5'],
+			arrival: '2024-05-06',
+			notes: 'notes',
+			flags: { seen: true, flown: false, lost: true, roosted: false, nest: true }
+		});
+	});
+
+	it('uses empty strings for a Bird with no Habitat and no Arrival', () => {
+		const form = birdToForm({ ...detail, habitat: null, habitatId: null, arrival: null });
+		expect(form).toMatchObject({ habitatId: '', arrival: '' });
+	});
+
+	it('sends kept Pictures by id, in order', () => {
+		const items = detail.pictureIds.map((id) => ({ key: String(id), id, url: `/pictures/${id}` }));
+		const data = buildBirdFormData(birdToForm(detail), items);
+		expect(JSON.parse(String(data.get('payload'))).pictures).toEqual([{ id: 11 }, { id: 12 }]);
 	});
 });

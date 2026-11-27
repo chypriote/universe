@@ -1,7 +1,8 @@
 import { arrivalPrecision } from './arrival';
 import type { PictureItem } from './picture-list';
+import type { BirdDetail } from './server/catalog/types';
 
-/** The Bird form as the fields hold it. Add starts empty; Edit (#285) starts from a Bird. */
+/** The Bird form as the fields hold it. Add starts empty; Edit starts from a Bird (`birdToForm`). */
 export interface BirdFormState {
 	name: string;
 	/** A Habitat id, or '' for none. */
@@ -21,6 +22,24 @@ export function emptyBirdForm(): BirdFormState {
 		arrival: '',
 		notes: '',
 		flags: { seen: false, flown: false, lost: false, roosted: false, nest: false }
+	};
+}
+
+/** The Edit form starts from the Bird the popup shows. */
+export function birdToForm(bird: BirdDetail): BirdFormState {
+	return {
+		name: bird.name,
+		habitatId: bird.habitatId === null ? '' : String(bird.habitatId),
+		songIds: bird.songIds.map(String),
+		arrival: bird.arrival ?? '',
+		notes: bird.notes,
+		flags: {
+			seen: bird.seen,
+			flown: bird.flown,
+			lost: bird.lost,
+			roosted: bird.roosted,
+			nest: bird.nest
+		}
 	};
 }
 

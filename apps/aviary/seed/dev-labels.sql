@@ -13,6 +13,7 @@ INSERT OR REPLACE INTO labels (code_name, word) VALUES
 	('AddBird', 'AddBird'),
 	('AddPictures', 'AddPictures'),
 	('Archived', 'Archived'),
+	('EditBird', 'EditBird'),
 	('Arrival', 'Arrival'),
 	('BirdArrivalInvalid', 'BirdArrivalInvalid'),
 	('BirdHabitatInvalid', 'BirdHabitatInvalid'),

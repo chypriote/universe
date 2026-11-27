@@ -53,8 +53,11 @@ export interface BirdDetail {
 	arrival: string | null;
 	/** The Habitat name, or null. */
 	habitat: string | null;
+	habitatId: number | null;
 	/** Song names, by name. */
 	songs: string[];
+	/** The same Songs by id, for the Edit form. */
+	songIds: number[];
 	notes: string;
 	seen: boolean;
 	flown: boolean;
@@ -104,8 +107,7 @@ export interface PictureUpload {
 }
 
 /**
- * One entry of the ordered Picture list of a form. `{ id }` keeps a stored Picture (Edit only,
- * #285); an upload is stored under a new random key. The first entry is the tile Picture.
+ * One entry of the ordered Picture list of a form. `{ id }` keeps a stored Picture (Edit only); an upload is stored under a new random key. The first entry is the tile Picture.
  */
 export type PictureInput = PictureUpload | { id: number };
 
@@ -131,6 +133,10 @@ export type BirdInputError =
 	| 'bad-song'
 	| 'bad-arrival';
 
+export type EditBirdResult =
+	| { ok: true; pictureIds: number[] }
+	| { ok: false; error: BirdInputError | 'not-found' | 'bad-picture' };
+
 export type AddBirdResult =
 	{ ok: true; id: number; pictureIds: number[] } | { ok: false; error: BirdInputError };
 
@@ -148,6 +154,12 @@ export interface Catalog {
 	listBirds(token: string, query: ListBirdsQuery): Promise<BirdTile[]>;
 	/** Stores a new Bird with its ordered Pictures (bytes in R2 under random keys). */
 	addBird(token: string, input: BirdInput): Promise<AddBirdResult>;
+	/**
+	 * Replaces every field of a Bird. `pictures` is the whole ordered list: `{ id }` keeps a stored
+	 * Picture, an upload adds one, a Picture left out is deleted with its R2 object. At least one
+	 * Picture stays. Seen stays on while the Bird has a Sighting, whatever `flags.seen` says.
+	 */
+	editBird(token: string, id: number, input: BirdInput): Promise<EditBirdResult>;
 	/** Birds whose name contains `text` (ignoring case), Archived included. Empty under 3 characters. */
 	findSimilarNames(token: string, text: string): Promise<SimilarBird[]>;
 	/** The popup view of a Bird, or null when there is no such Bird. */

@@ -1,10 +1,15 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { Badge } from '@universe/showcase/ui/badge';
+	import Button from '@universe/showcase/components/Button.svelte';
 	import ShowcasePopup from '@universe/showcase/components/Popup.svelte';
 	import { formatDate } from '@universe/universe/format';
+	import { birdToForm } from '#lib/bird-form';
 	import { label, type Labels } from '#lib/labels';
+	import type { PictureItem } from '#lib/picture-list';
 	import type { BirdDetail } from '#lib/server/catalog/types';
 	import { initials, tintClass } from '#lib/tile';
+	import BirdForm from './BirdForm.svelte';
 	import SightingList from './SightingList.svelte';
 
 	let {
@@ -28,6 +33,20 @@
 	let bird = $state<BirdDetail | null>(null);
 	let loadError = $state(false);
 	let shown = $state(0);
+	let editing = $state(false);
+
+	// Every tab page loads the two lists, as for Add.
+	const habitats = $derived((page.data.habitats ?? []) as { id: number; name: string }[]);
+	const songs = $derived((page.data.songs ?? []) as { id: number; name: string }[]);
+	const storedPictures = $derived<PictureItem[]>(
+		(bird?.pictureIds ?? []).map((id) => ({ key: `stored-${id}`, id, url: `/pictures/${id}` }))
+	);
+
+	/** The form closes, the Bird and the grid reload, the popup shows the change. */
+	async function doneEditing() {
+		editing = false;
+		await changed();
+	}
 
 	async function load() {
 		const response = await fetch(`/api/birds/${birdId}`);
@@ -119,6 +138,10 @@
 	{/if}
 {/snippet}
 
+{#snippet actions()}
+	{#if bird}<Button onclick={() => (editing = true)}>{label(labels, 'EditBird')}</Button>{/if}
+{/snippet}
+
 {#snippet details()}
 	{#if loadError}
 		<p class="font-bold text-destructive" role="alert">! {label(labels, 'BirdLoadError')}</p>
@@ -147,11 +170,34 @@
 {/snippet}
 
 <ShowcasePopup
-	bind:open
+	bind:open={() => open && !editing, (value) => (open = value)}
 	{anchor}
 	title={bird?.name ?? name}
 	subtitle={facts}
 	mediaWidth="min(var(--popup-picture-size), 40%)"
 	{media}
 	{details}
+	{actions}
 />
+
+<ShowcasePopup
+	bind:open={() => open && editing, (value) => (editing = value)}
+	title={label(labels, 'EditBird')}
+	wide
+>
+	{#snippet details()}
+		{#if editing && bird}
+			<BirdForm
+				{labels}
+				{habitats}
+				{songs}
+				action="?/editBird&id={birdId}"
+				initial={birdToForm(bird)}
+				initialPictures={storedPictures}
+				seenLocked={bird.sightings.length > 0}
+				similar={false}
+				onDone={doneEditing}
+			/>
+		{/if}
+	{/snippet}
+</ShowcasePopup>

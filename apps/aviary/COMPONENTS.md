@@ -40,7 +40,7 @@ Props: `bird` (id, name, arrival, seen, flown, lost, nest, pictureId), `labels`.
 **Hierarchy:** Pattern
 **Purpose:** The whole Bird, opened over its tile (Showcase Popup).
 
-Props: `birdId`, `name`, `labels`, `anchor`. Loads the Bird from `/api/birds/:id`. Pictures as squares on the left (a thumbnail row when there are several). Right: name, then Habitat and Arrival; flags (Roosted included) and Songs as read-only tags with no section labels; the SightingList; the notes.
+Props: `birdId`, `name`, `labels`, `anchor`. Loads the Bird from `/api/birds/:id`. Pictures as squares on the left (a thumbnail row when there are several). Right: name, then Habitat and Arrival; flags (Roosted included) and Songs as read-only tags with no section labels; the SightingList; the notes. An Edit Button in the actions row opens a wide Popup with the BirdForm filled from the Bird (`birdToForm`), posting to `?/editBird&id=` with `seenLocked` while the Bird has a Sighting; saving reloads the popup and the grid.
 
 ## SightingList
 
@@ -54,7 +54,7 @@ One row per Sighting: a date input (empty means no day; changing or clearing it 
 **Hierarchy:** Pattern
 **Purpose:** The one form for Add and Edit.
 
-Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `action` (default `?/addBird`), `initial`, `initialPictures`, `seenLocked`, `similar`, `onDone`, `start` (snippet, for Edit's Archive). Fields: name, PictureList, Habitat (pick one or none), Songs (multi-pick), Arrival (a day, a year or empty), the five flags, notes. It posts `buildBirdFormData` to the action and shows a refusal as a Field-style error. Edit (#285) reuses it with its own action and starting values.
+Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `action` (default `?/addBird`), `initial`, `initialPictures`, `seenLocked`, `similar`, `onDone`, `start` (snippet, for Edit's Archive). Fields: name, PictureList, Habitat (pick one or none), Songs (multi-pick), Arrival (a day, a year or empty), the five flags, notes. It posts `buildBirdFormData` to the action and shows a refusal as a Field-style error. Edit reuses it with `?/editBird&id=`, the Bird's values and Pictures, and `similar` off.
 
 ## PictureList
 

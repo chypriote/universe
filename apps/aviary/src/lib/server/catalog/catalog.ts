@@ -1,10 +1,11 @@
 import { drizzle } from 'drizzle-orm/d1';
+import type { BatchItem } from 'drizzle-orm/batch';
 import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@universe/owner/auth';
 import { and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { birds, birdSongs, habitats, labels, pictures, sightings, songs } from '../db/schema';
 import { arrivalPrecision } from '../../arrival';
 import { MAX_PICTURE_BYTES, MIN_SIMILAR_CHARS } from './rules';
-import type { Catalog, PictureUpload, ValueKind } from './types';
+import type { BirdInput, BirdInputError, Catalog, PictureUpload, ValueKind } from './types';
 
 export interface CatalogEnv {
 	DB: D1Database;
@@ -68,6 +69,44 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toISOString().slice(0, 10) === day;
 	};
 
+	type Checked =
+		| { ok: false; error: BirdInputError }
+		| {
+				ok: true;
+				name: string;
+				precision: 'day' | 'year' | null;
+				songIds: number[];
+				uploads: PictureUpload[];
+		  };
+
+	/** The checks Add and Edit share. Kept Pictures (`{ id }`) are for the caller to check. */
+	async function checkBirdInput(input: BirdInput): Promise<Checked> {
+		const name = input.name.trim();
+		if (!name) return { ok: false, error: 'name-required' };
+		if (input.pictures.length === 0) return { ok: false, error: 'picture-required' };
+		const uploads = input.pictures.filter((p): p is PictureUpload => 'bytes' in p);
+		if (uploads.some((p) => p.bytes.byteLength === 0)) {
+			return { ok: false, error: 'picture-required' };
+		}
+		if (uploads.some((p) => p.contentType !== 'image/jpeg')) {
+			return { ok: false, error: 'picture-bad-type' };
+		}
+		if (uploads.some((p) => p.bytes.byteLength > MAX_PICTURE_BYTES)) {
+			return { ok: false, error: 'picture-too-large' };
+		}
+		const precision = input.arrival === null ? null : arrivalPrecision(input.arrival);
+		if (input.arrival !== null && !precision) return { ok: false, error: 'bad-arrival' };
+		if (input.habitatId !== null && !(await exists('habitat', input.habitatId))) {
+			return { ok: false, error: 'bad-habitat' };
+		}
+		const songIds = [...new Set(input.songIds)];
+		if (songIds.length > 0) {
+			const found = await db.select({ id: songs.id }).from(songs).where(inArray(songs.id, songIds));
+			if (found.length !== songIds.length) return { ok: false, error: 'bad-song' };
+		}
+		return { ok: true, name, precision, songIds, uploads };
+	}
+
 	return {
 		async login(password) {
 			if (
@@ -124,32 +163,10 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 
 		async addBird(token, input) {
 			await owner(token);
-			const name = input.name.trim();
-			if (!name) return { ok: false, error: 'name-required' };
-			const uploads = input.pictures.filter((p): p is PictureUpload => 'bytes' in p);
+			const checked = await checkBirdInput(input);
+			if (!checked.ok) return checked;
+			const { name, precision, songIds, uploads } = checked;
 			if (uploads.length !== input.pictures.length) return { ok: false, error: 'picture-required' };
-			if (uploads.length === 0 || uploads.some((p) => p.bytes.byteLength === 0)) {
-				return { ok: false, error: 'picture-required' };
-			}
-			if (uploads.some((p) => p.contentType !== 'image/jpeg')) {
-				return { ok: false, error: 'picture-bad-type' };
-			}
-			if (uploads.some((p) => p.bytes.byteLength > MAX_PICTURE_BYTES)) {
-				return { ok: false, error: 'picture-too-large' };
-			}
-			const precision = input.arrival === null ? null : arrivalPrecision(input.arrival);
-			if (input.arrival !== null && !precision) return { ok: false, error: 'bad-arrival' };
-			if (input.habitatId !== null && !(await exists('habitat', input.habitatId))) {
-				return { ok: false, error: 'bad-habitat' };
-			}
-			const songIds = [...new Set(input.songIds)];
-			if (songIds.length > 0) {
-				const found = await db
-					.select({ id: songs.id })
-					.from(songs)
-					.where(inArray(songs.id, songIds));
-				if (found.length !== songIds.length) return { ok: false, error: 'bad-song' };
-			}
 
 			// R2 first, then the rows; a failure removes what was stored.
 			const keys = uploads.map(() => crypto.randomUUID());
@@ -197,6 +214,84 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			}
 		},
 
+		async editBird(token, id, input) {
+			await owner(token);
+			const [bird] = await db.select({ id: birds.id }).from(birds).where(eq(birds.id, id));
+			if (!bird) return { ok: false, error: 'not-found' };
+			const checked = await checkBirdInput(input);
+			if (!checked.ok) return checked;
+			const { name, precision, songIds } = checked;
+
+			const stored = await db
+				.select({ id: pictures.id, key: pictures.key })
+				.from(pictures)
+				.where(eq(pictures.birdId, id));
+			const kept = input.pictures.filter((p): p is { id: number } => 'id' in p).map((p) => p.id);
+			if (new Set(kept).size !== kept.length || kept.some((k) => !stored.some((s) => s.id === k))) {
+				return { ok: false, error: 'bad-picture' };
+			}
+			const removed = stored.filter((s) => !kept.includes(s.id));
+
+			const newKeys = new Map<PictureUpload, string>();
+			for (const p of checked.uploads) newKeys.set(p, crypto.randomUUID());
+			await Promise.all(
+				checked.uploads.map((p) =>
+					env.PICTURES.put(newKeys.get(p)!, p.bytes, {
+						httpMetadata: { contentType: p.contentType }
+					})
+				)
+			);
+			try {
+				// One batch: the fields, Songs and Pictures change together or not at all.
+				const statements: BatchItem<'sqlite'>[] = [
+					db
+						.update(birds)
+						.set({
+							name,
+							arrival: input.arrival,
+							arrivalPrecision: precision,
+							habitatId: input.habitatId,
+							notes: input.notes.trim(),
+							...input.flags,
+							// Seen is forced on while the Bird has a Sighting.
+							seen: sql`${input.flags.seen ? 1 : 0} OR EXISTS (SELECT 1 FROM sighting s WHERE s.bird_id = ${id})`,
+							updatedAt: sql`strftime('%Y-%m-%dT%H:%M:%fZ', 'now')`
+						})
+						.where(eq(birds.id, id)),
+					db.delete(birdSongs).where(eq(birdSongs.birdId, id)),
+					...(songIds.length > 0
+						? [db.insert(birdSongs).values(songIds.map((songId) => ({ birdId: id, songId })))]
+						: []),
+					...(removed.length > 0
+						? [
+								db.delete(pictures).where(
+									inArray(
+										pictures.id,
+										removed.map((r) => r.id)
+									)
+								)
+							]
+						: []),
+					...input.pictures.map((p, position) =>
+						'id' in p
+							? db.update(pictures).set({ position }).where(eq(pictures.id, p.id))
+							: db.insert(pictures).values({ birdId: id, key: newKeys.get(p)!, position })
+					)
+				];
+				await db.batch(statements as [BatchItem<'sqlite'>, ...BatchItem<'sqlite'>[]]);
+			} catch (error) {
+				await env.PICTURES.delete([...newKeys.values()]);
+				throw error;
+			}
+			if (removed.length > 0) await env.PICTURES.delete(removed.map((r) => r.key));
+			const rows = await db
+				.select({ id: pictures.id })
+				.from(pictures)
+				.where(eq(pictures.birdId, id))
+				.orderBy(asc(pictures.position));
+			return { ok: true, pictureIds: rows.map((r) => r.id) };
+		},
+
 		async findSimilarNames(token, text) {
 			await owner(token);
 			const needle = text.trim().toLowerCase();
@@ -216,6 +311,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 					name: birds.name,
 					arrival: birds.arrival,
 					habitat: habitats.name,
+					habitatId: birds.habitatId,
 					notes: birds.notes,
 					seen: birds.seen,
 					flown: birds.flown,
@@ -229,7 +325,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			if (!row) return null;
 			const [songRows, pictureRows, sightingRows] = await Promise.all([
 				db
-					.select({ name: songs.name })
+					.select({ id: songs.id, name: songs.name })
 					.from(birdSongs)
 					.innerJoin(songs, eq(songs.id, birdSongs.songId))
 					.where(eq(birdSongs.birdId, id))
@@ -248,6 +344,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return {
 				...row,
 				songs: songRows.map((s) => s.name),
+				songIds: songRows.map((s) => s.id),
 				pictureIds: pictureRows.map((p) => p.id),
 				sightings: sightingRows
 			};
