@@ -30,7 +30,7 @@ describe('Adding a Day', () => {
       [1, '2027-05-10', 'Arrival', 'Rest', 'Lhasa'],
     ]);
     expect(page!.startDate).toBe('2027-05-10');
-    expect(page!.dates).toBe('10 May 2027 — 10 May 2027');
+    expect(page!.dates).toBe('10 May — 10 May 2027');
   });
 
   it('sets the Trip dates to the first and last Day and keeps Days in date order', async () => {
@@ -47,7 +47,7 @@ describe('Adding a Day', () => {
       [3, '2027-05-12', 'Third'],
     ]);
     expect((await journal.getTrip('tibet'))!.startDate).toBe('2027-05-10');
-    expect((await journal.getTrip('tibet'))!.dates).toBe('10 May 2027 — 12 May 2027');
+    expect((await journal.getTrip('tibet'))!.dates).toBe('10 May — 12 May 2027');
   });
 });
 
@@ -102,7 +102,7 @@ describe('Adding a Day to a Trip with Days', () => {
     await journal.addDay('tibet', { date: '2027-05-01', cityId: lhasa, title: 'Before' });
     await journal.addDay('tibet', { date: '2027-05-20', cityId: lhasa, title: 'After' });
 
-    expect((await journal.getTrip('tibet'))!.dates).toBe('1 May 2027 — 20 May 2027');
+    expect((await journal.getTrip('tibet'))!.dates).toBe('1 May — 20 May 2027');
     expect((await journal.getAdminTrip('tibet'))!.days.map((day) => day.title)).toEqual(['Before', 'Day on 2027-05-10', 'After']);
   });
 
