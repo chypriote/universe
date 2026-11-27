@@ -1,17 +1,19 @@
 // The visible Trip plans shown on the Plan page, with their Days' Seasons and their Gateways, read from D1 for `fareWindows`.
+// `query(sql)` runs a SELECT and returns its rows: the D1 REST API for `npm run china`, the `DB` binding for the Plan page.
 // `zh` is the Chinese name of the Province where the plan spends the most Days; `search` is its Search flights switch.
-import { d1Query } from './d1.js';
-
-/** @returns {Promise<import('./fare-windows.js').Plan[]>} */
-export async function loadPlans() {
+/**
+ * @param {(sql: string) => Promise<any[]>} query
+ * @returns {Promise<import('./fare-windows.js').Plan[]>}
+ */
+export async function loadPlans(query) {
   const [plans, days, airports] = await Promise.all([
-    d1Query(`SELECT id, slug, title, search_flights FROM plans WHERE visible = 1 ORDER BY id`),
-    d1Query(
+    query(`SELECT id, slug, title, search_flights FROM plans WHERE visible = 1 ORDER BY id`),
+    query(
       `SELECT plan_days.plan_id, provinces.season, provinces.name_zh FROM plan_days
        JOIN cities ON cities.id = plan_days.city_id JOIN provinces ON provinces.id = cities.province_id
        ORDER BY plan_days.plan_id, plan_days.position`,
     ),
-    d1Query(
+    query(
       `SELECT plan_days.plan_id, airports.code, airports.direct_weekdays FROM plan_days
        JOIN airports ON airports.city_id = plan_days.city_id
        UNION

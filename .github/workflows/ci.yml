@@ -22,4 +22,3 @@ jobs:
       - run: npm run ci --workspace ${{ matrix.workspace }}
         env:
           PHOTOS_URL: ${{ vars.PHOTOS_URL }}
-          D1_API_TOKEN: ${{ secrets.D1_API_TOKEN }}
