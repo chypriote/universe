@@ -155,6 +155,12 @@
 
 <StickyBar current={view} links={lists(labels)} {searchActive} {filtersActive}>
 	{#snippet action()}<AddBird {labels} />{/snippet}
+	{#snippet chips()}
+		<span class="px-1 text-sm font-bold text-muted-foreground tabular-nums">
+			<span class="sr-only">{viewLabel}</span>
+			{birds.length}
+		</span>
+	{/snippet}
 	{#snippet login()}<AdminLink label={label(labels, 'Admin')} />{/snippet}
 	{#snippet title()}{appLabel}<span class="text-icon-accent">.</span>{/snippet}
 	{#snippet searchBox()}
