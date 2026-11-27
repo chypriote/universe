@@ -47,7 +47,7 @@ States: default, hover and focus (lift and tilt, motion allowed only; focus also
 **Hierarchy:** Pattern
 **Purpose:** The body of the Aloft, Grounded and Seen pages.
 
-Props: `view`, `birds`, `labels`, `filters`, `habitats`, `songs`. StickyBar with the three tabs, the search, the Habitat and Songs selects, then Seen on Aloft and Grounded or Nest and Roosted on Seen, AddBird and AdminLink; then a TileGrid of BirdTiles (Arrival newest first). The filters live in the URL query and reload the tab after a short pause. With no Bird: the Showcase EmptyState; with a filter or search active, an EmptyState with a "clear filters" Button. A tile opens the BirdPopup. Pictures come only through the authenticated `/pictures/:id` route (`Cache-Control: private`).
+Props: `view`, `birds`, `labels`, `filters`, `habitats`, `songs`. StickyBar with the three tabs, the search, the Habitat and Songs selects, then Seen on Aloft and Grounded or Nest and Roosted on Seen, AddBird and AdminLink; then a TileGrid of BirdTiles (Arrival newest first). The title row ends with the number of Birds shown (the StickyBar `chips` slot, a live region, with the tab name hidden for screen readers). The filters live in the URL query and reload the tab after a short pause. With no Bird: the Showcase EmptyState; with a filter or search active, an EmptyState with a "clear filters" Button. A tile opens the BirdPopup. Pictures come only through the authenticated `/pictures/:id` route (`Cache-Control: private`).
 
 ## Fixed words
 
