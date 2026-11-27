@@ -67,4 +67,5 @@ INSERT OR REPLACE INTO labels (code_name, word) VALUES
 	('BatchClear', 'BatchClear'),
 	('BatchSelectAll', 'BatchSelectAll'),
 	('BatchApply', 'BatchApply'),
+	('BatchSortBy', 'BatchSortBy'),
 	('Admin', 'Admin');
