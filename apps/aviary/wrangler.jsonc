@@ -17,6 +17,8 @@
 			"binding": "PICTURES",
 			"bucket_name": "aviary"
 		}
-	]
-	// Secrets (not in this file): OWNER_PASSWORD and JWT_SECRET. See README.
+	],
+	"secrets": {
+		"required": ["OWNER_PASSWORD", "JWT_SECRET"]
+	}
 }
