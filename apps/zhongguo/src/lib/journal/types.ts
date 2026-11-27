@@ -528,6 +528,13 @@ export type AddActivityResult = { ok: true; activity: AdminActivity } | { ok: fa
 
 export type EditActivityInput = ActivityInput & { id: number };
 
+/** The same kind and/or rating for several Activities; a null rating clears it. */
+export type EditActivitiesInput = { ids: number[]; kind?: ActivityKind; rating?: ActivityRating | null };
+
+export type EditActivitiesResult =
+  | { ok: true; activities: AdminActivity[] }
+  | { ok: false; error: 'unknown-activity' | 'invalid-kind' | 'invalid-rating' | 'nothing-to-change' };
+
 export type EditActivityResult =
   | { ok: true; activity: AdminActivity }
   | { ok: false; error: ActivityProblem | 'unknown-activity' };
@@ -701,6 +708,7 @@ export type Journal = {
   /** One name per City. A name, a Chinese name and a pinyin are needed. */
   addActivity(input: ActivityInput): Promise<AddActivityResult>;
   editActivity(input: EditActivityInput): Promise<EditActivityResult>;
+  editActivities(input: EditActivitiesInput): Promise<EditActivitiesResult>;
   /** Refused while a Day or a Plan Day lists it. */
   deleteActivity(id: number): Promise<DeleteActivityResult>;
   /** The Activities of a Day in visit order, each once; replaces the old list. Any City: a day trip is allowed. */

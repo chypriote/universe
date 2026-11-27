@@ -110,6 +110,44 @@ describe('Activities admin', () => {
   });
 });
 
+describe('Activities admin: batch', () => {
+  it('sets one kind and one rating on several Activities, and leaves the other fields', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+    const temple = await addActivity('Temple', chengdu);
+    const other = await addActivity('Market', chengdu);
+
+    const result = await journal.editActivities({ ids: [pandas, temple], kind: 'nature', rating: 'recommended' });
+
+    expect(result.ok && result.activities.map((activity) => [activity.name, activity.kind, activity.rating])).toEqual([
+      ['Pandas', 'nature', 'recommended'],
+      ['Temple', 'nature', 'recommended'],
+    ]);
+    const market = (await journal.listAdminActivities()).find((activity) => activity.id === other)!;
+    expect([market.kind, market.rating]).toEqual(['heritage', null]);
+  });
+
+  it('changes only the field given, and clears the rating with null', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+    await journal.editActivities({ ids: [pandas], kind: 'show', rating: 'avoid' });
+
+    const result = await journal.editActivities({ ids: [pandas], rating: null });
+
+    expect(result.ok && [result.activities[0].kind, result.activities[0].rating]).toEqual(['show', null]);
+  });
+
+  it('refuses an unknown Activity, kind or rating, and an empty change', async () => {
+    const { chengdu } = await world();
+    const pandas = await addActivity('Pandas', chengdu);
+
+    expect(await journal.editActivities({ ids: [pandas, 9999], kind: 'show' })).toEqual({ ok: false, error: 'unknown-activity' });
+    expect(await journal.editActivities({ ids: [pandas], kind: 'food' as never })).toEqual({ ok: false, error: 'invalid-kind' });
+    expect(await journal.editActivities({ ids: [pandas], rating: 'meh' as never })).toEqual({ ok: false, error: 'invalid-rating' });
+    expect(await journal.editActivities({ ids: [pandas] })).toEqual({ ok: false, error: 'nothing-to-change' });
+  });
+});
+
 describe('Activities of a Day', () => {
   it('sets the Activities of a Day in order, from any City, and replaces the old list', async () => {
     const { chengdu, lanzhou } = await world();

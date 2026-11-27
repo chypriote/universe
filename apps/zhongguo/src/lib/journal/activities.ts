@@ -10,6 +10,8 @@ import type {
   AddActivityResult,
   AdminActivity,
   DeleteActivityResult,
+  EditActivitiesInput,
+  EditActivitiesResult,
   EditActivityInput,
   EditActivityResult,
   Journal,
@@ -22,6 +24,7 @@ type ActivityMethods = Pick<
   | 'listAdminActivities'
   | 'addActivity'
   | 'editActivity'
+  | 'editActivities'
   | 'deleteActivity'
   | 'setDayActivities'
   | 'setPlanDayActivities'
@@ -192,6 +195,22 @@ export function buildActivities(env: AdminEnv, urls: ActivityPictureUrls): Activ
     return { ok: true, activity: (await find(input.id))! };
   }
 
+  async function editActivities(input: EditActivitiesInput): Promise<EditActivitiesResult> {
+    const ids = [...new Set(input.ids)];
+    if (input.kind === undefined && input.rating === undefined) return { ok: false, error: 'nothing-to-change' };
+    if (input.kind !== undefined && !ACTIVITY_KINDS.some((kind) => kind.value === input.kind)) return { ok: false, error: 'invalid-kind' };
+    if (input.rating != null && !ACTIVITY_RATINGS.some((rating) => rating.value === input.rating)) return { ok: false, error: 'invalid-rating' };
+    const marks = ids.map(() => '?').join(',');
+    const known = ids.length > 0 && ids.length <= 90 ? await all<{ id: number }>(`SELECT id FROM activities WHERE id IN (${marks})`, ...ids) : [];
+    if (ids.length === 0 || known.length !== ids.length) return { ok: false, error: 'unknown-activity' };
+    const sets = [...(input.kind !== undefined ? ['kind = ?'] : []), ...(input.rating !== undefined ? ['rating = ?'] : [])];
+    const values = [...(input.kind !== undefined ? [input.kind] : []), ...(input.rating !== undefined ? [input.rating] : [])];
+    await env.DB.prepare(`UPDATE activities SET ${sets.join(', ')} WHERE id IN (${marks})`).bind(...values, ...ids).run();
+    const rows = await all<ActivityRow>(`${SELECT} WHERE activities.id IN (${marks}) ORDER BY cities.name, activities.name`, ...ids);
+    const pictures = await picturesOf(ids);
+    return { ok: true, activities: rows.map((row) => toActivity(row, pictures.get(row.id) ?? [])) };
+  }
+
   async function deleteActivity(id: number): Promise<DeleteActivityResult> {
     const activity = await find(id);
     if (!activity) return { ok: false, error: 'unknown-activity' };
@@ -318,6 +337,7 @@ export function buildActivities(env: AdminEnv, urls: ActivityPictureUrls): Activ
     listAdminActivities,
     addActivity,
     editActivity,
+    editActivities,
     deleteActivity,
     setDayActivities: (dayId, activityIds) => setActivities('days', 'day_activities', dayId, activityIds),
     setPlanDayActivities: (dayId, activityIds) => setActivities('plan_days', 'plan_day_activities', dayId, activityIds),
