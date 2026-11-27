@@ -58,7 +58,7 @@ Props: `open` (bindable), `anchor`, `birdId`, `name` (shown while the Bird loads
 **Hierarchy:** Pattern
 **Purpose:** The Sightings of a Bird, in the popup.
 
-One row per Sighting: a date input (empty means no day; changing or clearing it saves) and a delete Button that asks first. "Add a sighting" adds one with today's day. Changes go to `/api/sightings`; the first Sighting turns Seen on, and Seen stays on after the last is deleted.
+One row per Sighting: a date input (empty means no day; changing or clearing it saves) and a delete Button that asks first. A "+" icon Button under the delete Buttons, bottom right, adds one with today's day. Changes go to `/api/sightings`; the first Sighting turns Seen on, and Seen stays on after the last is deleted.
 
 ## BirdForm
 
