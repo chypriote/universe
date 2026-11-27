@@ -64,4 +64,4 @@ Done when: `npm run ci -w apps/<app>` passes and the app runs with `npm run dev 
 
 ## 6. Update the design-system page
 
-The [Showcase design-system page](https://claude.ai/artifact/Fdnc2AfpFDeiV5cE7gEVuo) shows every app as a theme (it holds at most 8: four apps, light and dark). Add the app's two themes to its `tokens.json`, its theme block (display face, title sizes, popup width) to `components/bundle.css`, its own components, and its mark under Logos. Ask Claude to do it from the new app's `app.css` and docs.
+The [Showcase design-system page](https://claude.ai/artifact/Fdnc2AfpFDeiV5cE7gEVuo) shows every app as a theme (it holds at most 8: four apps, light and dark). Its source is `packages/showcase/design-system/`. Add the app's two themes to its `tokens.json`, its theme block (display face, title sizes, popup width) to `components/bundle.css`, its own components, and its mark under Logos, then republish. See `docs/design-system-page.md`.

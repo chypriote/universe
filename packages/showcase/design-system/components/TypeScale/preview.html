@@ -1,0 +1,46 @@
+<!-- @dsCard group="Type" height=620 subtitle="One row per role; each column in its app's theme" -->
+<!doctype html><html lang="en"><head><meta charset="utf-8"><style>
+.ts{display:grid;grid-template-columns:minmax(90px,auto) 1fr 1fr 1fr;gap:0 16px;align-items:stretch}
+.ts>*{padding:10px 0;border-bottom:1px solid var(--border);min-width:0}
+.ts__head{font-size:11px;font-weight:800;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:.04em}
+.ts__role{font-size:12px;font-weight:700;color:var(--muted-foreground)}
+.ts__spec{display:block;margin-top:4px;color:var(--muted-foreground);font:500 11px/1.25 Nunito,ui-rounded,system-ui,sans-serif;font-style:normal;text-transform:none;letter-spacing:0}
+.ts__col{color:var(--foreground)}
+.ts__col[data-theme^=aviary] .d{font-weight:400;font-synthesis-weight:none}
+.d{font-family:var(--display-family);font-style:var(--display-style);text-transform:var(--display-transform)}
+.page{font-size:var(--heading-page-size);font-weight:800;line-height:1.1;letter-spacing:var(--tracking-heading)}
+.popup{font-size:var(--heading-popup-size);font-weight:800;line-height:1.1;letter-spacing:var(--tracking-heading)}
+.tab{font-size:14px;font-weight:700;line-height:1.1;letter-spacing:var(--tracking-label);font-style:normal}
+.cap1{font-size:14px;font-weight:800;line-height:1.25;letter-spacing:var(--tracking-caption)}
+.cap2{font-size:11px;font-weight:500;line-height:1.25;color:var(--muted-foreground)}
+.body{font-size:14px;font-weight:500}.detail{font-size:15px;font-weight:500}.ctl{font-size:14px;font-weight:800}
+.err{font-size:14px;font-weight:700;color:var(--destructive)}
+@media (max-width:520px){.ts{grid-template-columns:1fr 1fr 1fr}.ts__role{grid-column:1/-1;padding-bottom:0;border:0}.ts__blank{display:none}}
+</style></head><body>
+<div class="ts" id="ts">
+<span class="ts__head ts__blank"></span><span class="ts__head">Jerseys</span><span class="ts__head">Vinyles</span><span class="ts__head">Aviary</span><span class="ts__head">Aviary</span>
+</div>
+<script>
+const rows=[
+['Page title','d page',['JERSEYS','28 / 800 italic, uppercase'],['Vinyles.','24 / 800, -0.025em'],['Aviary','28 / 400, one weight']],
+['Popup title','d popup',['Olympique Lyonnais','24 / 800 italic, uppercase'],['Blue Train','22 / 800, -0.025em'],['Bird One','24 / 400']],
+['Tab','d tab',['Collection','14 / 700 uppercase, +0.03em'],['Collection','14 / 700'],['Aloft','14 / 400, +0.02em']],
+['Caption, line 1','d cap1',['Japan','14 / 800 italic, uppercase, +0.02em'],['A Love Supreme','14 / 800'],['Bird One','14 / 400, +0.02em']],
+['Caption, line 2','cap2',['2018 · Away','11 / 500 muted'],['John Coltrane','11 / 500 muted'],['12 Mar 2024','11 / 500 muted']],
+['Popup details','detail',['Bought at Kitbag for 89,00 €','15 / 500'],['Bought for 32,00 €','15 / 500'],['Habitat A · 12 Mar 2024','15 / 500']],
+['Body','body',['No match','14 / 500'],['No match','14 / 500'],['No match','14 / 500']],
+['Button','ctl',['Got it','14 / 800'],['Got it','14 / 800'],['Log in','14 / 800']],
+['Error','err',['! Wrong password','14 / 700 destructive'],['! Wrong password','14 / 700 destructive'],['! Wrong password','14 / 700 destructive']]];
+const mode=/dark/.test(document.documentElement.dataset.theme||'')?'dark':'light';
+const ts=document.getElementById('ts');
+for(const [role,cls,j,v,a] of rows){
+ const r=document.createElement('span');r.className='ts__role';r.textContent=role;ts.append(r);
+ for(const [app,[text,spec]] of [['jerseys',j],['vinyles',v],['aviary',a]]){
+  const c=document.createElement('div');c.className='ts__col';c.dataset.theme=app+'-'+mode;
+  const s=document.createElement('span');s.className=cls;s.textContent=text;
+  const p=document.createElement('span');p.className='ts__spec';p.textContent=spec;
+  c.append(s,p);ts.append(c);
+ }
+}
+</script>
+</body></html>
