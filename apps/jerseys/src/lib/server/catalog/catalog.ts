@@ -62,7 +62,7 @@ import {
 	type LookupContext
 } from './lookup';
 import { checkImage, MAX_UPLOAD_BYTES, readBody, tooBig } from './images';
-import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@universe/owner/auth';
+import { login, UnauthorizedError, verifyToken } from '@universe/owner/auth';
 import type {
 	Acquisition,
 	AcquisitionInput,
@@ -160,8 +160,7 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 	};
 
 	async function requireOwner(token: string) {
-		if (!env.JWT_SECRET || !(await tokenIsValid(token, env.JWT_SECRET)))
-			throw new UnauthorizedError();
+		if (!(await verifyToken(env, token))) throw new UnauthorizedError();
 	}
 
 	const lookup: LookupContext = { db, pictureBucket: env.COVERS, sportsDb };
@@ -1058,18 +1057,8 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 			return importRows(db, rows, { readCountries, readTeams });
 		},
 
-		async login(password) {
-			if (
-				!env.OWNER_PASSWORD ||
-				!env.JWT_SECRET ||
-				!password ||
-				!(await passwordMatches(password, env.OWNER_PASSWORD))
-			) {
-				return { ok: false, error: 'wrong-password' };
-			}
-			return { ok: true, token: await issueToken(env.JWT_SECRET) };
-		},
+		login: (password) => login(env, password),
 
-		verifyToken: async (token) => !!env.JWT_SECRET && (await tokenIsValid(token, env.JWT_SECRET))
+		verifyToken: (token) => verifyToken(env, token)
 	};
 }

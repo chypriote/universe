@@ -1,4 +1,4 @@
-import { issueToken, passwordMatches, tokenIsValid } from '@universe/owner/auth';
+import { login, verifyToken } from '@universe/owner/auth';
 import { buildAdmin } from './admin';
 import { buildAtlas } from './atlas';
 import { PLAN_TABLES, TRIP_TABLES, type TripTables } from './tables';
@@ -18,7 +18,6 @@ import type {
   FocalPoint,
   HomeProvince,
   Journal,
-  LoginResult,
   Orientation,
   Photo,
   Route,
@@ -720,21 +719,6 @@ export function buildJournal(env: JournalEnv): Journal {
     return { ok: true };
   }
 
-  async function login(password: string): Promise<LoginResult> {
-    if (
-      !env.OWNER_PASSWORD ||
-      !env.JWT_SECRET ||
-      !password ||
-      !(await passwordMatches(password, env.OWNER_PASSWORD))
-    ) {
-      return { ok: false, error: 'wrong-password' };
-    }
-    return { ok: true, token: await issueToken(env.JWT_SECRET) };
-  }
-
-  const verifyToken = async (token: string) =>
-    !!env.JWT_SECRET && (await tokenIsValid(token, env.JWT_SECRET));
-
   const admin = buildAdmin(env, { photoUrl, thumbUrl });
 
   return {
@@ -749,8 +733,8 @@ export function buildJournal(env: JournalEnv): Journal {
     setProvinceCover,
     setProvinceCoverFocus,
     clearProvinceCover,
-    login,
-    verifyToken,
+    login: (password: string) => login(env, password),
+    verifyToken: (token: string) => verifyToken(env, token),
     ...admin,
     ...buildAtlas(
       env,

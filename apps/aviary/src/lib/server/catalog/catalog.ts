@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/d1';
 import type { BatchItem } from 'drizzle-orm/batch';
-import { issueToken, passwordMatches, tokenIsValid } from '@universe/owner/auth';
+import { login, verifyToken } from '@universe/owner/auth';
 import { and, asc, count, desc, eq, inArray, or, sql } from 'drizzle-orm';
 import { birds, birdSongs, habitats, labels, pictures, sightings, songs } from '../db/schema';
 import { arrivalPrecision } from '../../arrival';
@@ -16,9 +16,6 @@ export interface CatalogEnv {
 
 export function buildCatalog(env: CatalogEnv): Catalog {
 	const db = drizzle(env.DB);
-
-	const isOwner = async (token: string) =>
-		!!env.JWT_SECRET && !!token && (await tokenIsValid(token, env.JWT_SECRET));
 
 	const table = (kind: ValueKind) => (kind === 'habitat' ? habitats : songs);
 	const exists = async (kind: ValueKind, id: number) =>
@@ -113,19 +110,9 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 	}
 
 	return {
-		async login(password) {
-			if (
-				!env.OWNER_PASSWORD ||
-				!env.JWT_SECRET ||
-				!password ||
-				!(await passwordMatches(password, env.OWNER_PASSWORD))
-			) {
-				return { ok: false, error: 'wrong-password' };
-			}
-			return { ok: true, token: await issueToken(env.JWT_SECRET) };
-		},
+		login: (password) => login(env, password),
 
-		verifyToken: isOwner,
+		verifyToken: (token) => verifyToken(env, token),
 
 		async labels() {
 			const rows = await db.select().from(labels);

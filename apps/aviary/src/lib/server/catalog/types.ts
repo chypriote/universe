@@ -1,9 +1,10 @@
+import type { LoginResult } from '@universe/owner/auth';
+
+export type { LoginResult };
 /**
  * Public interface of the Catalog module: the one test seam.
  * Types only. Domain names follow GLOSSARY.md.
  */
-
-export type LoginResult = { ok: true; token: string } | { ok: false; error: 'wrong-password' };
 
 /** Code name to display word. A missing word falls back to the code name in the UI. */
 export type Labels = Record<string, string>;
