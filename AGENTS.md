@@ -27,4 +27,5 @@ These rules override the same topics in the user's global rules.
 - UI used by more than one collection app goes in `packages/showcase`. A collection app keeps only its theme values and its domain components. See `packages/showcase/DESIGN.md`.
 - The Showcase design-system page is the files in `packages/showcase/design-system/`. Change them in the PR that changes a token, theme slot or Showcase component, then republish (`docs/design-system-page.md`).
 - To add an app, follow `docs/adding-an-app.md` in order: domain (`/grill-with-docs`), theme, scaffold, repo wiring, deploy, design-system page.
+- Review a PR against `CODING_STANDARDS.md`.
 - Run a workspace script with `-w`, for example `npm run ci -w apps/jerseys`. Install from the root only.
