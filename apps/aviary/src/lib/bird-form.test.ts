@@ -17,8 +17,8 @@ describe('validateBirdForm', () => {
 		const form = { ...emptyBirdForm(), name: 'X', arrival: '2024-02-30' };
 		expect(validateBirdForm(form, 1)).toBe('BirdArrivalInvalid');
 	});
-	it('accepts a day, a year, or nothing', () => {
-		for (const arrival of ['2024-05-12', '2024', '']) {
+	it('accepts a day, a month, a year, or nothing', () => {
+		for (const arrival of ['2024-05-12', '2024-05', '2024', '']) {
 			expect(validateBirdForm({ ...emptyBirdForm(), name: 'X', arrival }, 1)).toBeNull();
 		}
 	});

@@ -8,7 +8,7 @@ export interface BirdFormState {
 	/** A Habitat id, or '' for none. */
 	habitatId: string;
 	songIds: string[];
-	/** `YYYY-MM-DD`, `YYYY`, or ''. */
+	/** `YYYY-MM-DD`, `YYYY-MM`, `YYYY`, or ''. */
 	arrival: string;
 	notes: string;
 	flags: { seen: boolean; flown: boolean; lost: boolean; roosted: boolean; nest: boolean };

@@ -114,7 +114,12 @@
 		</fieldset>
 	{/if}
 
-	<Field label={label(labels, 'Arrival')} type="date" bind:value={form.arrival} />
+	<Field
+		label={label(labels, 'Arrival')}
+		type="date"
+		placeholder="2024, 2024-05 or 2024-05-12"
+		bind:value={form.arrival}
+	/>
 
 	<fieldset class="flex flex-wrap gap-x-4">
 		{#each FLAGS as [key, code] (key)}

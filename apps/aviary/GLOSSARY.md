@@ -14,7 +14,7 @@ _Avoid_: Entry, item
 The ordered pictures of a Bird, at least one. The first is the tile picture. Each is cropped square and resized in the browser before upload.
 
 **Arrival**:
-When the Bird came, optional. A full day, or only a year when the day is unknown.
+When the Bird came, optional. A full day, a month (when the day is unknown) or only a year.
 
 **Habitat**:
 Where the Bird came from, optional, one per Bird. The values come from a list kept on the Admin page.

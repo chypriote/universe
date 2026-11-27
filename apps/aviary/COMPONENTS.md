@@ -29,7 +29,7 @@ Static.
 **Hierarchy:** Pattern
 **Purpose:** One Bird in the grid.
 
-Props: `bird` (id, name, arrival, seen, flown, lost, nest, pictureId), `labels`. The first Picture fills a square, loaded from `/pictures/:id`; with none, or if it fails, the initials on a tinted square. One icon per set flag (Seen, Flown, Lost, Nest) top left, coloured by flag (Nest is sun), with a soft drop shadow and no circle; Roosted is never shown. Caption: name, then the Arrival as a day or a year. Hover tilt only.
+Props: `bird` (id, name, arrival, seen, flown, lost, nest, pictureId), `labels`. The first Picture fills a square, loaded from `/pictures/:id`; with none, or if it fails, the initials on a tinted square. One icon per set flag (Seen, Flown, Lost, Nest) top left, coloured by flag (Nest is sun), with a soft drop shadow and no circle; Roosted is never shown. Caption: name, then the Arrival as a day, a month or a year. Hover tilt only.
 
 Props `onSelect`: gives the Popup the tile to focus on close. The tile is one `<button>`; the image has `alt=""` and each flag icon has a visually hidden label. Flag icons use the `flag.*` tokens.
 
@@ -65,7 +65,7 @@ One row per Sighting: a date input (empty means no day; changing or clearing it 
 **Hierarchy:** Pattern
 **Purpose:** The one form for Add and Edit.
 
-Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `action` (default `?/addBird`), `initial`, `initialPictures`, `seenLocked`, `similar`, `onDone`, `start` (snippet left of Save: Edit puts the Archive Button there). Fields: name, PictureList, Habitat (pick one or none), Songs (multi-pick), Arrival (a day, a year or empty), the five flags, notes. It posts `buildBirdFormData` to the action and shows a refusal as a Field-style error. Edit reuses it with `?/editBird&id=`, the Bird's values and Pictures, and `similar` off.
+Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `action` (default `?/addBird`), `initial`, `initialPictures`, `seenLocked`, `similar`, `onDone`, `start` (snippet left of Save: Edit puts the Archive Button there). Fields: name, PictureList, Habitat (pick one or none), Songs (multi-pick), Arrival (a day, a month, a year or empty), the five flags, notes. It posts `buildBirdFormData` to the action and shows a refusal as a Field-style error. Edit reuses it with `?/editBird&id=`, the Bird's values and Pictures, and `similar` off.
 
 ## PictureList
 

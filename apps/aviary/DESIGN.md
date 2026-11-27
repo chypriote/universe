@@ -36,7 +36,7 @@ Display face: Lilita One at weight 400, never a faux bold (`font-synthesis-weigh
 ## Layout
 
 - Sticky bar: title, tabs (Aloft, Grounded, Nest), search on the name, Habitat, Songs and Nest (all, only, not) selects, the "+" AddAction and the Admin link.
-- Caption under each tile: name, then the Arrival as a day or a year.
+- Caption under each tile: name, then the Arrival as a day, a month or a year.
 - Tiles are sorted by Arrival, newest first; Birds with no Arrival come last.
 
 ## Components

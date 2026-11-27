@@ -86,20 +86,30 @@ describe('addBird', () => {
 		expect(await catalog.listBirds(token, { view: 'aloft' })).toEqual([]);
 	});
 
-	it('keeps an Arrival as a day or as a year only', async () => {
+	it('keeps an Arrival as a day, a month or a year only', async () => {
 		await added({ name: 'Day', arrival: '2024-05-12' });
+		await added({ name: 'Month', arrival: '2023-08' });
 		await added({ name: 'Year', arrival: '2023' });
 		await added({ name: 'None' });
 		const tiles = await catalog.listBirds(token, { view: 'aloft' });
 		expect(tiles.map((t) => [t.name, t.arrival])).toEqual([
 			['Day', '2024-05-12'],
+			['Month', '2023-08'],
 			['Year', '2023'],
 			['None', null]
 		]);
 	});
 
 	it('refuses an invalid Arrival', async () => {
-		for (const arrival of ['2024-13-01', '2024-02-30', '24', 'abc', '2024-5-1']) {
+		for (const arrival of [
+			'2024-13-01',
+			'2024-02-30',
+			'2024-00',
+			'2024-13',
+			'24',
+			'abc',
+			'2024-5-1'
+		]) {
 			expect(await catalog.addBird(token, input({ arrival }))).toEqual({
 				ok: false,
 				error: 'bad-arrival'
