@@ -51,6 +51,25 @@ describe('Snapshots', () => {
     expect(calls).toEqual({ getTrip: 1, getPlan: 1 });
   });
 
+  it('serves the lists, the home map, the Gallery and the fare data from the bucket too', async () => {
+    await seed();
+    const { raw } = counted();
+    const spies = ['listTripCards', 'listPlanCards', 'getHomeMap', 'getGallery', 'getFareData'] as const;
+    const counts = Object.fromEntries(spies.map((name) => [name, 0]));
+    const wrapped = { ...raw };
+    for (const name of spies) {
+      const original = raw[name].bind(raw);
+      (wrapped as Record<string, unknown>)[name] = () => (counts[name]++, original());
+    }
+    const cached = withSnapshots(wrapped, env.PHOTOS);
+
+    const first = await Promise.all(spies.map((name) => cached[name]()));
+    const second = await Promise.all(spies.map((name) => cached[name]()));
+
+    expect(counts).toEqual({ listTripCards: 1, listPlanCards: 1, getHomeMap: 1, getGallery: 1, getFareData: 1 });
+    expect(second).toEqual(JSON.parse(JSON.stringify(first)));
+  });
+
   it('stores nothing for a page that does not exist', async () => {
     const { journal } = counted();
 
