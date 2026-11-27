@@ -38,6 +38,7 @@
 
 /* Lilita One has one weight, 400: never let the browser fake a bold on the display face. */
 h1,
+.font-display,
 .display-type,
 [data-slot='dialog-title'] {
 	font-weight: 400;

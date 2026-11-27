@@ -33,6 +33,7 @@
 				label="Password"
 				type="password"
 				required
+				autocomplete="current-password"
 				bind:value={password}
 				error={form?.error ?? null}
 			/>

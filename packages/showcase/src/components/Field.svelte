@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
+	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { Input } from './ui/input/index.js';
 	import { Label } from './ui/label/index.js';
 
@@ -10,12 +11,15 @@
 		required = false,
 		placeholder = undefined,
 		error = null,
-		list = undefined
+		list = undefined,
+		autocomplete = undefined
 	}: {
 		value?: string;
 		label: string;
 		/** id of a `<datalist>` with suggestions. */
 		list?: string;
+		/** HTML `autocomplete` token, e.g. `current-password`. Dates always use `off`. */
+		autocomplete?: HTMLInputAttributes['autocomplete'];
 		/** `date`: a text input for `YYYY` or `YYYY-MM-DD` (native date inputs cannot hold a year only). */
 		type?: 'text' | 'password' | 'number' | 'date';
 		required?: boolean;
@@ -45,7 +49,7 @@
 			{list}
 			bind:value
 			placeholder={placeholder ?? (isDate ? '2024 or 2024-05-12' : undefined)}
-			autocomplete={isDate ? 'off' : undefined}
+			autocomplete={isDate ? 'off' : autocomplete}
 			step={type === 'number' ? '0.01' : undefined}
 			class={isDate ? 'pe-12' : undefined}
 			aria-invalid={error ? true : undefined}

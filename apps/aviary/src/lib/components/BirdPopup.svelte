@@ -5,6 +5,7 @@
 	import ShowcasePopup from '@universe/showcase/components/Popup.svelte';
 	import { formatDate } from '@universe/universe/format';
 	import { birdToForm } from '#lib/bird-form';
+	import ConfirmDialog from '@universe/showcase/components/ConfirmDialog.svelte';
 	import ErrorMessage from '@universe/showcase/components/ErrorMessage.svelte';
 	import { label, type Labels } from '#lib/labels';
 	import { postForm } from '#lib/post-form';
@@ -52,6 +53,7 @@
 
 	let archiveError = $state<string | null>(null);
 	let archiving = $state(false);
+	let confirmingArchive = $state(false);
 
 	/** The Bird leaves every tab: the form and the popup close, the grid reloads. */
 	async function archive() {
@@ -151,7 +153,7 @@
 				{#each bird.pictureIds as pictureId, index (pictureId)}
 					<button
 						type="button"
-						class="size-(--control-size-min) cursor-pointer overflow-hidden rounded-md bg-background outline-ring focus-visible:outline-3 focus-visible:outline-solid aria-pressed:outline-3 aria-pressed:outline-solid"
+						class="size-(--control-size-min) cursor-pointer overflow-hidden rounded-md bg-background outline-ring focus-visible:outline-3 focus-visible:outline-solid aria-pressed:ring-3 aria-pressed:ring-icon-accent"
 						aria-pressed={shown === index}
 						aria-label={`${label(labels, 'Picture')} ${index + 1}`}
 						onclick={() => (shown = index)}
@@ -237,7 +239,7 @@
 				onDone={doneEditing}
 			>
 				{#snippet start()}
-					<Button intent="danger" loading={archiving} onclick={archive}>
+					<Button intent="danger" loading={archiving} onclick={() => (confirmingArchive = true)}>
 						{label(labels, 'ArchiveBird')}
 					</Button>
 					{#if archiveError}<ErrorMessage message={label(labels, archiveError)} />{/if}
@@ -246,3 +248,11 @@
 		{/if}
 	{/snippet}
 </ShowcasePopup>
+
+<ConfirmDialog
+	bind:open={confirmingArchive}
+	title={label(labels, 'ArchiveBird')}
+	text={bird?.name ?? name}
+	actionLabel={label(labels, 'ArchiveBird')}
+	onConfirm={archive}
+/>
