@@ -26,15 +26,12 @@ const asKind = (value: FormDataEntryValue | null): ValueKind | null =>
 export const load: PageServerLoad = async ({ cookies }) => {
 	const catalog = catalogFromPlatform();
 	const token = ownerToken(cookies);
-	const [habitats, songs, archived, aloft, grounded] = await Promise.all([
+	const [habitats, songs, archived, birds] = await Promise.all([
 		catalog.listValues(token, 'habitat'),
 		catalog.listValues(token, 'song'),
 		catalog.listArchivedBirds(token),
-		catalog.listBirds(token, { view: 'aloft' }),
-		catalog.listBirds(token, { view: 'grounded' })
+		catalog.listBatchBirds(token)
 	]);
-	// Aloft and Grounded together are every Bird that is not Archived.
-	const birds = [...aloft, ...grounded].sort((a, b) => a.name.localeCompare(b.name) || a.id - b.id);
 	return { habitats, songs, archived, birds };
 };
 
