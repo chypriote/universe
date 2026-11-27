@@ -1,14 +1,15 @@
-# 4. Trip and plan pages from JSON snapshots in the photo bucket
+# 4. Pages from JSON snapshots in the photo bucket
 
 Date: 2026-11-27. Nico asked for one JSON file per Trip and plan; Claude chose where it lives.
 
-A Trip or plan page runs about 50 D1 queries (Days, Cities, Photos, Activities, rides). The free D1 plan counts rows read, and these queries scan large tables, so a few refreshes and agent runs used the daily quota. A page now reads one stored JSON snapshot of the finished `TripPage`; D1 is read only to build it.
+A Trip or plan page runs about 50 D1 queries, and the home page, `/trips` and the Plan page load every Trip with all its Photos two or three times (Days, Cities, Photos, Activities, rides). The free D1 plan counts rows read, and these queries scan large tables, so a few refreshes and agent runs used the daily quota. A page now reads one stored JSON snapshot of the finished `TripPage`; D1 is read only to build it.
 
-- `getTrip` and `getPlan` go through `withSnapshots` (`src/lib/journal/snapshots.ts`). A miss builds the page from D1 and stores it at `snapshots/<build id>/<trip|plan>/<slug>.json`. A page that does not exist stores nothing.
+- The Journal reads that feed a public page go through `withSnapshots` (`src/lib/journal/snapshots.ts`): `getTrip`, `getPlan`, `listTripCards`, `listPlanCards`, `getHomeMap`, `getGallery` and `getFareData`. A miss builds the page from D1 and stores it at `snapshots/<build id>/<name>[/<slug>].json`. A page that does not exist stores nothing.
 - Any successful admin write (a non-GET request to `/api/admin`, in the middleware) deletes every snapshot. A Trip, a plan, an Activity, a City or a Province can change many pages, so one rule beats a map of what depends on what. The cost is a rebuild of each page after a save, which is the load before this ADR.
 - A snapshot is also stale after a deploy (the build id is in the key) and after one hour (`MAX_AGE_MS`), because a data migration run by hand does not pass through the admin.
 - A bucket error never breaks a page: it falls back to D1.
-- The Plan page, the home page, `/trips`, `/gallery` and the admin read D1 as before. Each can get the same snapshot later.
+- The flight searches are written by `npm run china`, not through the admin, so new prices show within an hour.
+- The admin reads D1 as before.
 
 ## Considered options
 
