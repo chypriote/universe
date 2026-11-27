@@ -77,7 +77,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		| {
 				ok: true;
 				name: string;
-				precision: 'day' | 'year' | null;
+				precision: 'day' | 'month' | 'year' | null;
 				songIds: number[];
 				uploads: PictureUpload[];
 		  };
@@ -156,8 +156,8 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				nest === 'only' ? eq(birds.nest, true) : undefined,
 				nest === 'not' ? eq(birds.nest, false) : undefined
 			];
-			// A year-only Arrival counts as the first day of that year, so it sorts with day Arrivals.
-			const arrivalKey = sql`CASE ${birds.arrivalPrecision} WHEN 'year' THEN ${birds.arrival} || '-01-01' ELSE ${birds.arrival} END`;
+			// A month or year Arrival counts as the first day of it, so it sorts with day Arrivals.
+			const arrivalKey = sql`CASE ${birds.arrivalPrecision} WHEN 'year' THEN ${birds.arrival} || '-01-01' WHEN 'month' THEN ${birds.arrival} || '-01' ELSE ${birds.arrival} END`;
 			const rows = await db
 				.select(tileColumns)
 				.from(birds)

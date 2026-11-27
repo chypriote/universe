@@ -153,7 +153,7 @@ export interface Catalog {
 	verifyToken(token: string): Promise<boolean>;
 	/** The code-name to display-word map. Every operation but `login` and `verifyToken` takes the Owner token. */
 	labels(token: string): Promise<Labels>;
-	/** Tiles of one view, Archived excluded, Arrival newest first (a year sorts with days, none last). */
+	/** Tiles of one view, Archived excluded, Arrival newest first (a month or year sorts with days, none last). */
 	listBirds(token: string, query: ListBirdsQuery): Promise<BirdTile[]>;
 	/** Stores a new Bird with its ordered Pictures (bytes in R2 under random keys). */
 	addBird(token: string, input: BirdInput): Promise<AddBirdResult>;

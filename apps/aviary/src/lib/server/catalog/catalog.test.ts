@@ -122,7 +122,14 @@ async function seedBird(
 	} = {}
 ) {
 	const arrival = opts.arrival ?? null;
-	const precision = arrival === null ? null : arrival.length === 4 ? 'year' : 'day';
+	const precision =
+		arrival === null
+			? null
+			: arrival.length === 4
+				? 'year'
+				: arrival.length === 7
+					? 'month'
+					: 'day';
 	const row = await env.DB.prepare(
 		`INSERT INTO bird (name, arrival, arrival_precision, seen, flown, lost, roosted, nest, archived)
 		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`
@@ -204,16 +211,18 @@ describe('listBirds', () => {
 		}
 	});
 
-	it('sorts by Arrival newest first, a year with the days, no Arrival last', async () => {
+	it('sorts by Arrival newest first, a month or year with the days, no Arrival last', async () => {
 		await seedBird('No arrival');
 		await seedBird('Old day', { arrival: '2019-06-01' });
 		await seedBird('Year only', { arrival: '2021' });
 		await seedBird('New day', { arrival: '2022-03-10' });
 		await seedBird('Mid day', { arrival: '2020-12-31' });
+		await seedBird('Month only', { arrival: '2020-12' });
 		expect(names(await catalog.listBirds(token, { view: 'aloft' }))).toEqual([
 			'New day',
 			'Year only',
 			'Mid day',
+			'Month only',
 			'Old day',
 			'No arrival'
 		]);

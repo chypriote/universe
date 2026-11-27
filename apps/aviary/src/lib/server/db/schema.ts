@@ -18,10 +18,10 @@ export const birds = sqliteTable(
 	{
 		id: integer('id').primaryKey({ autoIncrement: true }),
 		name: text('name').notNull(),
-		/** The Arrival: a day (`YYYY-MM-DD`) or only a year (`YYYY`). Null when unknown. */
+		/** The Arrival: a day (`YYYY-MM-DD`), a month (`YYYY-MM`) or only a year (`YYYY`). Null when unknown. */
 		arrival: text('arrival'),
-		/** `day` or `year`. Null with a null Arrival. Lets a year-only Arrival sort with day Arrivals. */
-		arrivalPrecision: text('arrival_precision', { enum: ['day', 'year'] }),
+		/** `day`, `month` or `year`. Null with a null Arrival. Lets a month or year Arrival sort with day Arrivals. */
+		arrivalPrecision: text('arrival_precision', { enum: ['day', 'month', 'year'] }),
 		habitatId: integer('habitat_id').references(() => habitats.id),
 		notes: text('notes').notNull().default(''),
 		seen: integer('seen', { mode: 'boolean' }).notNull().default(false),
