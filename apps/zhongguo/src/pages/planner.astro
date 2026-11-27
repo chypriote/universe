@@ -154,10 +154,9 @@ const jsonLd = { '@context': 'https://schema.org', '@type': 'WebPage', name: tit
                   src={card.cover}
                   alt=""
                   loading="lazy"
-                  class="absolute inset-0 -z-10 h-full w-full object-cover"
+                  class="absolute inset-0 -z-10 h-full w-full object-cover mist-bottom"
                   style={`object-position: ${card.coverFocus.x}% ${card.coverFocus.y}%`}
                 />
-                <div class="absolute inset-0 -z-10 bg-gradient-to-t from-background via-background/40 to-transparent" />
               </div>
             )
           );

@@ -42,7 +42,7 @@ const hasMap = trip.provinces.length > 0 || trip.route.stops.length > 0;
   </div>
 
   {landscape && (
-    <div class="relative flex flex-col gap-3 lg:flex-row lg:gap-1.5 lg:h-[clamp(200px,32svh,290px)] lg:mist-soft">
+    <div class="relative flex flex-col gap-3 lg:flex-row lg:gap-1.5 lg:h-[clamp(200px,32svh,290px)] lg:mist-strip">
       <img src={landscape} alt={`${trip.title}, landscape`} class="w-full aspect-video object-cover lg:order-3 lg:w-auto lg:h-full" loading="lazy" />
       {portraits.length > 0 && (
         <div class="grid grid-cols-4 gap-3 lg:contents">
