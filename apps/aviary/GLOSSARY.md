@@ -49,6 +49,9 @@ The Owner saw the Bird many times in a short span. The Owner sets it by hand; it
 **Aloft**:
 Every Bird that is neither Flown nor Lost, and not Archived.
 
+**Flock** (tab):
+Every Bird that is not Archived: all of Aloft and Grounded together. The Seen filter narrows it.
+
 **Seen** (tab):
 Every Seen Bird that is not Archived, whether Aloft or Grounded. The Nest and Roosted filters narrow it.
 

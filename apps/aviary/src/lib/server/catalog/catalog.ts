@@ -122,6 +122,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		async listBirds({ view, habitat, song, seen, nest, roosted, search }) {
 			const grounded = or(eq(birds.flown, true), eq(birds.lost, true));
 			const inView = {
+				flock: undefined,
 				aloft: sql`NOT (${birds.flown} OR ${birds.lost})`,
 				grounded,
 				seen: eq(birds.seen, true)

@@ -186,10 +186,22 @@ describe('listBirds', () => {
 		expect(names(await catalog.listBirds({ view: 'grounded' }))).toEqual(['Bird B']);
 	});
 
+	it('lists every Bird that is not Archived in Flock', async () => {
+		await seedBird('Bird A');
+		await seedBird('Bird B', { flown: true });
+		await seedBird('Bird C', { lost: true, seen: true });
+		await seedBird('Bird D', { archived: true });
+		expect(names(await catalog.listBirds({ view: 'flock' })).sort()).toEqual([
+			'Bird A',
+			'Bird B',
+			'Bird C'
+		]);
+	});
+
 	it('leaves Archived Birds out of every view', async () => {
 		await seedBird('Bird A', { archived: true, seen: true });
 		await seedBird('Bird B', { archived: true, flown: true });
-		for (const view of ['aloft', 'grounded', 'seen'] as const) {
+		for (const view of ['flock', 'aloft', 'grounded', 'seen'] as const) {
 			expect(await catalog.listBirds({ view })).toEqual([]);
 		}
 	});

@@ -148,7 +148,7 @@
 
 	const appLabel = $derived(label(labels, 'Aviary'));
 	const viewLabel = $derived(
-		label(labels, { aloft: 'Aloft', grounded: 'Grounded', seen: 'Seen' }[view])
+		label(labels, { flock: 'Flock', aloft: 'Aloft', grounded: 'Grounded', seen: 'Seen' }[view])
 	);
 </script>
 
