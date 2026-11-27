@@ -208,12 +208,12 @@
 }
 
 @utility mist-strip {
-  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
 }
 
-/* Shallower photo fade for the home journey teaser. */
-@utility mist-soft {
-  mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+/* The same shallow fade for a cover photo that meets the paper at its bottom edge. */
+@utility mist-bottom {
+  mask-image: linear-gradient(to bottom, black 96%, transparent);
 }
 
 /* Vertical calligraphy, read top to bottom. */

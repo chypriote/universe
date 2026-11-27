@@ -26,7 +26,7 @@ const { trips } = Astro.props;
           <article class:list={['snap-center group relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 lg:items-stretch', index > 0 && 'pt-10 lg:pt-16']}>
             {index > 0 && <div aria-hidden="true" class="bamboo-b absolute inset-x-0 top-0 after:right-auto after:left-[4%] after:-scale-x-100" />}
             {cover && (
-              <a href={trip.link} tabindex="-1" aria-hidden="true" class:list={['block overflow-hidden mist-soft lg:col-span-7', index % 2 === 1 && 'lg:order-2']}>
+              <a href={trip.link} tabindex="-1" aria-hidden="true" class:list={['block overflow-hidden mist-strip lg:col-span-7', index % 2 === 1 && 'lg:order-2']}>
                 <img src={cover} alt="" class="w-full aspect-[3/2] object-cover transition-transform duration-700 group-hover:scale-[1.03]" loading="lazy" />
               </a>
             )}
