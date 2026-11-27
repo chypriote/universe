@@ -9,7 +9,7 @@ Shared components (StickyBar, EmptyState, Field, Button, Popup, TileGrid and the
 | Level | Components |
 | --- | --- |
 | Component | BirdTile, BirdPopup |
-| Pattern | Parakeets (login art), BirdList, SightingList, AddBird, BirdForm, PictureList, SimilarNames, ValueList, ArchivedList, AdminLink |
+| Pattern | Parakeets (login art), BirdList, SightingList, AddBird, BirdForm, PictureList, CropPicture, SimilarNames, ValueList, ArchivedList, AdminLink |
 
 The shared StickyBar, TileGrid, Popup, EmptyState, ConfirmDialog, Field and Select are used as Showcase defines them.
 
@@ -72,7 +72,14 @@ Props: `labels`, `habitats`, `songs` (from the Admin lists: pick, never type), `
 **Hierarchy:** Pattern
 **Purpose:** The ordered Pictures of the form.
 
-Props: `items` (bindable `PictureItem[]`: a stored Picture has an `id`, a new one a `blob`), `labels`, `error`. Add files (each cropped to its centred square, resized to 1600 px at most, encoded as JPEG in `image-prep.ts`), move earlier or later, remove. The first Picture is outlined: it is the tile Picture. A file over 25 MB is refused with a clear error before resize.
+Props: `items` (bindable `PictureItem[]`: a stored Picture has an `id`, a new one a `blob`), `labels`, `error`. Add files: each opens in a CropPicture panel above the list (drag to move the square, slider to zoom 1 to 4, Cancel skips the file, Save adds it), then is resized to 1600 px at most and encoded as JPEG in `image-prep.ts`, move earlier or later, remove. The first Picture is outlined: it is the tile Picture. A file over 25 MB is refused with a clear error before resize.
+
+## CropPicture
+
+**Hierarchy:** Pattern
+**Purpose:** Pick the square cut of one new Picture.
+
+Props: `file`, `busy`, `onUse(crop)`, `onSkip`, `onUnreadable`. A square viewport with the file under it (starts on the centred square): drag to move, a range slider to zoom (1 shows the shorter side, 4 a quarter of it). Cancel and Save are the plain Buttons of FormActions. Used only inside PictureList.
 
 ## SimilarNames
 

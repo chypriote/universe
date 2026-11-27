@@ -84,7 +84,7 @@ Built in SvelteKit (Svelte 5) on shadcn-svelte and bits-ui with Tailwind 4. The 
 
 - Shared, in `packages/showcase`: Button, Chip, Tabs, ToggleGroup, Field, SearchField, Select, StoreSelect, MultiSelectFilter, ThemeToggle, LoginAction, AddAction, ConfirmDialog, EmptyState, ErrorMessage, FormActions, Popup, StickyBar, TileGrid, TileCaption.
 - Per app: the Collection and Wishlist forms (their fields are each app's own data; their buttons are FormActions, their errors ErrorMessage), AcquisitionFields (the shared ToggleGroup, then the app's fields) and the picture column each app passes to Popup.
-- Jerseys only: Tile, CoverageMap, TeamLookup, the admin pages. Vinyles only: AlbumCover, DesireDots, DesireSelect, the cover picker and import review. Aviary only: BirdTile, BirdPopup, Parakeets (login art), SightingList, and the Bird form, PictureList, SimilarNames and Admin lists, which are described in the repo, not shown.
+- Jerseys only: Tile, CoverageMap, TeamLookup, the admin pages. Vinyles only: AlbumCover, DesireDots, DesireSelect, the cover picker and import review. Aviary only: BirdTile, BirdPopup, Parakeets (login art), SightingList, and the Bird form, PictureList, CropPicture, SimilarNames and Admin lists, which are described in the repo, not shown.
 
 ## Not on this page
 
