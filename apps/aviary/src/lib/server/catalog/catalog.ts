@@ -306,6 +306,47 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return { ok: true, pictureIds: rows.map((r) => r.id) };
 		},
 
+		async editBirds(token, ids, change) {
+			await owner(token);
+			const unique = [...new Set(ids)];
+			if (unique.length === 0) return { ok: true, updated: 0 };
+			if (change.habitatId != null && !(await exists('habitat', change.habitatId))) {
+				return { ok: false, error: 'bad-habitat' };
+			}
+			// D1 allows 100 bound values per statement.
+			const chunks = Array.from({ length: Math.ceil(unique.length / 50) }, (_, i) =>
+				unique.slice(i * 50, i * 50 + 50)
+			);
+			let found = 0;
+			for (const chunk of chunks) {
+				const [row] = await db.select({ n: count() }).from(birds).where(inArray(birds.id, chunk));
+				found += row.n;
+			}
+			if (found !== unique.length) return { ok: false, error: 'not-found' };
+
+			const { seen, ...others } = change.flags ?? {};
+			const set = {
+				...(change.habitatId === undefined ? {} : { habitatId: change.habitatId }),
+				...others,
+				// Seen is forced on while a Bird has a Sighting.
+				...(seen === undefined
+					? {}
+					: {
+							seen: sql`${seen ? 1 : 0} OR EXISTS (SELECT 1 FROM sighting s WHERE s.bird_id = bird.id)`
+						})
+			};
+			if (Object.keys(set).length === 0) return { ok: true, updated: 0 };
+			const updatedAt = sql`strftime('%Y-%m-%dT%H:%M:%fZ', 'now')`;
+			const statements: BatchItem<'sqlite'>[] = chunks.map((chunk) =>
+				db
+					.update(birds)
+					.set({ ...set, updatedAt })
+					.where(inArray(birds.id, chunk))
+			);
+			await db.batch(statements as [BatchItem<'sqlite'>, ...BatchItem<'sqlite'>[]]);
+			return { ok: true, updated: unique.length };
+		},
+
 		async archiveBird(token, id) {
 			return setArchived(token, id, true);
 		},

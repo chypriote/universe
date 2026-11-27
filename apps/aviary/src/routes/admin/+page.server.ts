@@ -1,5 +1,10 @@
 import { fail } from '@sveltejs/kit';
-import { catalogFromPlatform, UnauthorizedError, type ValueKind } from '#lib/server/catalog';
+import {
+	catalogFromPlatform,
+	UnauthorizedError,
+	type BirdBatchChange,
+	type ValueKind
+} from '#lib/server/catalog';
 import { ownerToken } from '@universe/owner/cookie';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -21,12 +26,16 @@ const asKind = (value: FormDataEntryValue | null): ValueKind | null =>
 export const load: PageServerLoad = async ({ cookies }) => {
 	const catalog = catalogFromPlatform();
 	const token = ownerToken(cookies);
-	const [habitats, songs, archived] = await Promise.all([
+	const [habitats, songs, archived, aloft, grounded] = await Promise.all([
 		catalog.listValues(token, 'habitat'),
 		catalog.listValues(token, 'song'),
-		catalog.listArchivedBirds(token)
+		catalog.listArchivedBirds(token),
+		catalog.listBirds(token, { view: 'aloft' }),
+		catalog.listBirds(token, { view: 'grounded' })
 	]);
-	return { habitats, songs, archived };
+	// Aloft and Grounded together are every Bird that is not Archived.
+	const birds = [...aloft, ...grounded].sort((a, b) => a.name.localeCompare(b.name) || a.id - b.id);
+	return { habitats, songs, archived, birds };
 };
 
 /** Runs one list change; a refusal comes back as a code name for the page to label. */
@@ -75,7 +84,44 @@ async function changeBird(
 	}
 }
 
+const FLAG_KEYS = ['seen', 'flown', 'lost', 'roosted', 'nest'] as const;
+
+/** Reads the batch form: a blank field keeps the value, `on` and `off` set the flag, `none` clears the Habitat. */
+function batchChange(form: FormData): BirdBatchChange {
+	const change: BirdBatchChange = {};
+	const habitat = String(form.get('habitat') ?? '');
+	if (habitat === 'none') change.habitatId = null;
+	else if (habitat !== '') change.habitatId = Number(habitat);
+	for (const key of FLAG_KEYS) {
+		const value = form.get(key);
+		if (value === 'on' || value === 'off') (change.flags ??= {})[key] = value === 'on';
+	}
+	return change;
+}
+
+const BATCH_REFUSALS = {
+	'not-found': 'SomethingWrong',
+	'bad-habitat': 'BirdHabitatInvalid'
+} as const;
+
 export const actions: Actions = {
+	editBirds: async ({ request, cookies }) => {
+		const form = await request.formData();
+		const ids = form.getAll('ids').map(Number);
+		if (!ids.every(Number.isInteger)) return fail(400, { batchError: 'SomethingWrong' });
+		try {
+			const result = await catalogFromPlatform().editBirds(
+				ownerToken(cookies),
+				ids,
+				batchChange(form)
+			);
+			if (!result.ok) return fail(400, { batchError: BATCH_REFUSALS[result.error] });
+			return { batchError: null };
+		} catch (error) {
+			if (error instanceof UnauthorizedError) return fail(401, { batchError: 'Unauthorized' });
+			throw error;
+		}
+	},
 	restore: ({ request, cookies }) =>
 		changeBird(request, cookies, (birdId, token) =>
 			catalogFromPlatform().restoreBird(token, birdId)
