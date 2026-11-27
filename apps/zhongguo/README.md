@@ -1,6 +1,6 @@
 # Zhongguo
 
-Nico's travel site about China and nearby Asia: trips day by day, guides, a photo gallery and a flight price planner. Astro 7 with React islands and Tailwind CSS v4, served by the `zhongguo` Cloudflare Worker (`zhongguo.nicolastemeni.workers.dev`). Home, `/trips`, `/trips/<slug>` and `/gallery` render on each request from D1 through the Journal (`src/lib/journal`); guides and the Planner are prerendered. Domain: GLOSSARY.md. Design: DESIGN.md. Decision: `docs/adr/0001-d1-and-on-request-pages.md`.
+Nico's travel site about China and nearby Asia: trips day by day, guides, a photo gallery and a flight price planner. Astro 7 with React islands and Tailwind CSS v4, served by the `zhongguo` Cloudflare Worker (`zhongguo.nicolastemeni.workers.dev`). Home, `/trips`, `/trips/<slug>`, `/gallery` and the Plan page (`/planner`) render on each request from D1 through the Journal (`src/lib/journal`); guides are prerendered. Domain: GLOSSARY.md. Design: DESIGN.md. Decision: `docs/adr/0001-d1-and-on-request-pages.md`.
 
 ## Commands
 
@@ -26,7 +26,7 @@ Run from the repo root with `-w apps/zhongguo`, or from this folder.
 - `OWNER_PASSWORD` and `JWT_SECRET`: the Owner password and the key that signs the login token, the same values as in the other Universe apps so one login covers them all. Worker secrets (`npx wrangler secret put OWNER_PASSWORD`, `npx wrangler secret put JWT_SECRET`) and in `.dev.vars` for `npm run dev`. Without them nobody can log in.
 - `OWNER_COOKIE_DOMAIN`: a var in `wrangler.jsonc`, not a secret: the parent domain all the apps share. Empty keeps the login on this app only.
 - `API_KEY`: SerpApi key for `npm run china`.
-- `D1_API_TOKEN`: Cloudflare API token with Account · D1 · Edit. The build reads the flight searches from the `zhongguo` D1 database with it (the Planner is prerendered), and `npm run china` writes them. Only the Planner build needs it. CI reads the `D1_API_TOKEN` repository secret; Workers Builds needs it as a build variable.
+- `D1_API_TOKEN`: Cloudflare API token with Account · D1 · Edit. Only `npm run china` needs it, to write the flight searches. The build, the tests and CI call no remote D1.
 
 Photos: `docs/photos.md`.
 
@@ -40,4 +40,4 @@ They live in the `zhongguo` D1 database (`migrations/0002_journal.sql`; `0003_jo
 
 ## Flight searches
 
-They live in the `zhongguo` D1 database (`wrangler.jsonc`), table `flight_searches` (`migrations/`). `npm run china` reads the visible Trips (plans and past trips), their Days' Seasons and Gateways from D1, lists their Fare windows (`scripts/fare-windows.js`, rules in `docs/adr/0002-fare-windows-from-plans.md`) and searches them never-searched first, then oldest first, until the SerpApi account has no searches left. A window with no flight is stored without a price. The Plan page (`/planner`) shows the prices there at build time, so rebuild after a search; it reads the trip covers on request.
+They live in the `zhongguo` D1 database (`wrangler.jsonc`), table `flight_searches` (`migrations/`). `npm run china` reads the visible Trips (plans and past trips), their Days' Seasons and Gateways from D1, lists their Fare windows (`scripts/fare-windows.js`, rules in `docs/adr/0002-fare-windows-from-plans.md`) and searches them never-searched first, then oldest first, until the SerpApi account has no searches left. A window with no flight is stored without a price. The Plan page (`/planner`) reads the prices and the trip covers on request.

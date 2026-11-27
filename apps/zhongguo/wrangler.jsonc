@@ -11,7 +11,7 @@
   // Parent domain shared by every Universe app: one Owner login for all of them. Empty: this app only.
   "vars": { "OWNER_COOKIE_DOMAIN": "nicolastemeni.workers.dev" },
   // Trips, Days, Cities and Photos: the Journal reads them on each request (src/lib/journal).
-  // Flight searches: the build reads them through the D1 REST API (scripts/d1.js).
+  // Flight searches: the Plan page reads them on request; `npm run china` writes them through the D1 REST API (scripts/d1.js).
   "d1_databases": [
     {
       "binding": "DB",

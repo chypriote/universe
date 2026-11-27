@@ -1,3 +1,4 @@
+import type { Plan as FarePlan } from '../../../scripts/fare-windows.js';
 import type { ActivityKind, ActivityRating } from './activity-kinds';
 
 export type Orientation = 'landscape' | 'portrait' | 'square';
@@ -604,7 +605,25 @@ export type SetDayActivitiesResult =
   | { ok: true }
   | { ok: false; error: 'unknown-day' | 'unknown-activity' | 'duplicate-activity' };
 
+/** What the Plan page prices its plans from. */
+export type FareData = {
+  plans: FarePlan[];
+  /** Only the searches that found a price. */
+  searches: {
+    airport: string;
+    stops: 'stop' | 'nostop';
+    price: number;
+    outbound_date: string;
+    return_date: string;
+    searched_on: string;
+    created_at: string;
+  }[];
+  airports: { code: string; name: string }[];
+};
+
 export type Journal = {
+  /** The data behind the Plan page's flight prices. */
+  getFareData(): Promise<FareData>;
   /** The visible Trips, newest first. */
   listTripCards(): Promise<TripCard[]>;
   /** The visible Trip plans, by title. */
