@@ -16,9 +16,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const token = ownerToken(context.cookies);
   if (token && (await journalFromEnv().verifyToken(token))) {
     const response = await next();
-    // Any admin write may change a Trip or plan page: drop the snapshots (docs/adr/0004). A failure leaves them to expire.
+    // Any admin write may change a Trip or plan page: drop the snapshots it can change (docs/adr/0004). A failure leaves them to expire.
     if (isApi && !SAFE_METHODS.has(context.request.method) && response.status < 400) {
-      await dropSnapshotsFromEnv().catch((error) => console.error('Dropping snapshots failed', error));
+      await dropSnapshotsFromEnv(path).catch((error) => console.error('Dropping snapshots failed', error));
     }
     return response;
   }

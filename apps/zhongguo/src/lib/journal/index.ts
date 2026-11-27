@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:workers';
 import { buildJournal, type JournalEnv } from './journal';
-import { dropSnapshots, withSnapshots } from './snapshots';
+import { dropSnapshots, snapshotsChangedBy, withSnapshots } from './snapshots';
 import type { Journal } from './types';
 
 export type { JournalEnv } from './journal';
@@ -16,7 +16,7 @@ export function journalFromEnv(): Journal {
   return withSnapshots(createJournal(bindings), bindings.PHOTOS);
 }
 
-/** After an admin write: the next Trip or plan page load builds its snapshot again. */
-export function dropSnapshotsFromEnv() {
-  return dropSnapshots((env as unknown as JournalEnv).PHOTOS);
+/** After a write to an admin API path: the snapshots it can change are built again on the next load. */
+export function dropSnapshotsFromEnv(path: string) {
+  return dropSnapshots((env as unknown as JournalEnv).PHOTOS, snapshotsChangedBy(path));
 }
