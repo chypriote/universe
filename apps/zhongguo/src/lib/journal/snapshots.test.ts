@@ -2,7 +2,7 @@ import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createJournal } from './index';
 import { addCity, addDay, addPlan, addPlanDay, addProvince, addTrip, resetDatabase } from './seed.test-helper';
-import { dropSnapshots, withSnapshots } from './snapshots';
+import { dropSnapshots, snapshotsChangedBy, withSnapshots } from './snapshots';
 
 beforeEach(resetDatabase);
 
@@ -26,6 +26,24 @@ async function seed() {
   const plan = await addPlan({ slug: 'yunnan-plan', title: 'Yunnan plan' });
   await addPlanDay(plan, city, 1);
 }
+
+describe('Snapshots changed by an admin write', () => {
+  it.each([
+    ['/api/admin/trips/yunnan/days', ['trip/', 'trip-cards.json', 'home-map.json', 'gallery.json']],
+    ['/api/admin/photos', ['trip/', 'trip-cards.json', 'home-map.json', 'gallery.json']],
+    ['/api/admin/days/4/photos', ['trip/', 'trip-cards.json', 'home-map.json', 'gallery.json']],
+    ['/api/admin/plans/yunnan', ['plan/', 'plan-cards.json', 'fares.json']],
+    ['/api/admin/plan-days/4/activities', ['plan/', 'plan-cards.json', 'fares.json']],
+    ['/api/admin/seasons/3', ['fares.json']],
+    ['/api/admin/airports/KMG', ['fares.json']],
+    ['/api/admin/provinces/Yunnan/cover', ['home-map.json']],
+    ['/api/admin/cities/3', null],
+    ['/api/admin/activities', null],
+    ['/api/admin/something-new', null],
+  ])('%s', (path, expected) => {
+    expect(snapshotsChangedBy(path)).toEqual(expected);
+  });
+});
 
 describe('Snapshots', () => {
   it('builds a Trip page once, then serves the same page from the bucket', async () => {
@@ -91,12 +109,30 @@ describe('Snapshots', () => {
     expect(calls.getTrip).toBe(2);
   });
 
-  it('builds the page again when the snapshot is more than an hour old', async () => {
+  it('drops only the snapshots a write can change', async () => {
+    await seed();
+    const { journal, calls } = counted();
+    await journal.getTrip('yunnan-trip');
+    await journal.getPlan('yunnan-plan');
+    await journal.listPlanCards();
+
+    await dropSnapshots(env.PHOTOS, snapshotsChangedBy('/api/admin/plans/yunnan-plan/days')!);
+
+    await journal.getTrip('yunnan-trip');
+    await journal.getPlan('yunnan-plan');
+    expect(calls).toEqual({ getTrip: 1, getPlan: 2 });
+    expect((await env.PHOTOS.list({ prefix: 'snapshots/' })).objects.map((o) => o.key.split('/').slice(2).join('/')).sort()).toEqual([
+      'plan/yunnan-plan.json',
+      'trip/yunnan-trip.json',
+    ]);
+  });
+
+  it('builds the page again when the snapshot is more than a week old', async () => {
     await seed();
     const { journal, calls } = counted();
     await journal.getTrip('yunnan-trip');
 
-    vi.useFakeTimers({ toFake: ['Date'], now: Date.now() + 61 * 60 * 1000 });
+    vi.useFakeTimers({ toFake: ['Date'], now: Date.now() + 8 * 24 * 60 * 60 * 1000 });
     try {
       await journal.getTrip('yunnan-trip');
     } finally {
