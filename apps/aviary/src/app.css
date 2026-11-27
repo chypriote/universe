@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+@import '@universe/universe/universe.css';
+@import '@universe/showcase/showcase.css';
+@source '../../../packages/showcase/src';
+@source '../../../packages/universe/src';
+
+/* "Parakeet" theme (DESIGN.md): the Showcase theme slots, then the tokens only Aviary has. */
+:root {
+	--lime-50: #eef9dc;
+	--lime-200: #d6ecb6;
+	--lime-400: #a3e05f;
+	--lime-500: #8fd14f;
+	--lime-700: #3f7d0e;
+	--lime-800: #2f6209;
+
+	--theme-page: var(--lime-50);
+	--theme-line: var(--lime-200);
+	--theme-ink-dark: var(--lime-50);
+	--theme-accent: light-dark(var(--lime-500), var(--lime-400));
+	--theme-icon-accent: light-dark(var(--lime-700), var(--lime-400));
+	--theme-selected: var(--primary);
+	--theme-selected-foreground: var(--primary-foreground);
+	--display-family: 'Lilita One', 'Nunito', ui-rounded, system-ui, sans-serif;
+	--display-style: normal;
+	--display-transform: none;
+	--tracking-label-value: 0.02em;
+	--tracking-caption-value: 0.02em;
+	--tracking-heading-value: 0;
+	--heading-page-size: 28px;
+	--heading-popup-size: 24px;
+
+	/* The login parakeets: colours only, the shapes are static inline SVG. */
+	--parakeet-body: light-dark(var(--lime-500), var(--lime-400));
+	--parakeet-outline: light-dark(var(--lime-700), var(--lime-400));
+	--parakeet-wing: light-dark(var(--lime-800), var(--lime-700));
+	--parakeet-beak: light-dark(#1a2f6b, #101a3a);
+}
+
+/* Lilita One has one weight, 400: never let the browser fake a bold on the display face. */
+h1,
+.display-type,
+[data-slot='dialog-title'] {
+	font-weight: 400;
+	font-synthesis-weight: none;
+}
