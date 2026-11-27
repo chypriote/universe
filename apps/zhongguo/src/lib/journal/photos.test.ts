@@ -25,7 +25,11 @@ async function sichuanTrip() {
   return { province, trip };
 }
 
-async function upload(name: string, file: ArrayBuffer, options: { date?: string; title?: string; overwrite?: boolean } = {}) {
+async function upload(
+  name: string,
+  file: ArrayBuffer,
+  options: { date?: string; title?: string; overwrite?: boolean } = {},
+) {
   return journal.uploadPhoto({ trip: 'sichuan', name, file, thumb: thumb(), ...options });
 }
 
@@ -39,7 +43,11 @@ describe('Upload Photo: date', () => {
 
     const result = await upload('IMG_20250101_101010.jpg', landscapeExif(), { date: '2025-01-05' });
 
-    expect(result).toMatchObject({ ok: true, replaced: false, photo: { date: '2025-04-02', name: 'IMG_20250101_101010.jpg' } });
+    expect(result).toMatchObject({
+      ok: true,
+      replaced: false,
+      photo: { date: '2025-04-02', name: 'IMG_20250101_101010.jpg' },
+    });
   });
 });
 
@@ -102,7 +110,9 @@ describe('Upload Photo: time', () => {
     await upload('kept.jpg', landscapeExif(), { overwrite: true });
     await upload('empty.jpg', landscapeExif(), { overwrite: true });
 
-    expect((await journal.listAdminPhotos('sichuan'))!.map((photo) => [photo.name, photo.time])).toEqual([
+    expect(
+      (await journal.listAdminPhotos('sichuan'))!.map((photo) => [photo.name, photo.time]),
+    ).toEqual([
       ['empty.jpg', 'morning'],
       ['kept.jpg', 'evening'],
     ]);
@@ -115,7 +125,10 @@ describe('Upload Photo: storing', () => {
 
     const result = await upload('Café IMG (1).jpg', landscape(), { date: '2025-04-09' });
 
-    expect(await bucketKeys()).toEqual(['thumbs/sichuan/Café IMG (1).jpg.webp', 'trips/sichuan/Café IMG (1).jpg']);
+    expect(await bucketKeys()).toEqual([
+      'thumbs/sichuan/Café IMG (1).jpg.webp',
+      'trips/sichuan/Café IMG (1).jpg',
+    ]);
     expect(result).toMatchObject({
       ok: true,
       photo: {
@@ -144,14 +157,40 @@ describe('Upload Photo: storing', () => {
     await sichuanTrip();
     const date = '2025-04-09';
 
-    expect(await upload('a.jpg', new Uint8Array([1, 2, 3]).buffer, { date })).toEqual({ ok: false, error: 'unreadable' });
-    expect(await upload('a.gif', landscape(), { date })).toEqual({ ok: false, error: 'unsupported-type' });
-    expect(await upload('a/b.jpg', landscape(), { date })).toEqual({ ok: false, error: 'invalid-name' });
-    expect(await journal.uploadPhoto({ trip: 'nope', name: 'a.jpg', file: landscape(), thumb: thumb(), date })).toEqual({
+    expect(await upload('a.jpg', new Uint8Array([1, 2, 3]).buffer, { date })).toEqual({
+      ok: false,
+      error: 'unreadable',
+    });
+    expect(await upload('a.gif', landscape(), { date })).toEqual({
+      ok: false,
+      error: 'unsupported-type',
+    });
+    expect(await upload('a/b.jpg', landscape(), { date })).toEqual({
+      ok: false,
+      error: 'invalid-name',
+    });
+    expect(
+      await journal.uploadPhoto({
+        trip: 'nope',
+        name: 'a.jpg',
+        file: landscape(),
+        thumb: thumb(),
+        date,
+      }),
+    ).toEqual({
       ok: false,
       error: 'unknown-trip',
     });
-    expect(await journal.uploadPhoto({ trip: 'sichuan', name: 'a.jpg', file: landscape(), thumb: thumb(), date, cityId: 999 })).toEqual({
+    expect(
+      await journal.uploadPhoto({
+        trip: 'sichuan',
+        name: 'a.jpg',
+        file: landscape(),
+        thumb: thumb(),
+        date,
+        cityId: 999,
+      }),
+    ).toEqual({
       ok: false,
       error: 'unknown-city',
     });
@@ -175,9 +214,9 @@ describe('Upload Photo: storing', () => {
     const page = await journal.getTrip('sichuan');
     const gallery = await journal.getGallery();
     expect(page?.days[0].photos.map((photo) => photo.caption)).toEqual(['Panda breakfast']);
-    expect(gallery.photos.map((photo) => [photo.caption, photo.city, photo.province, photo.day])).toEqual([
-      ['Panda breakfast', 'Chengdu', 'Sichuan', 1],
-    ]);
+    expect(
+      gallery.photos.map((photo) => [photo.caption, photo.city, photo.province, photo.day]),
+    ).toEqual([['Panda breakfast', 'Chengdu', 'Sichuan', 1]]);
   });
 });
 
@@ -278,11 +317,19 @@ describe('Upload Photo: same file name in the Trip', () => {
     expect(await bytesOf('trips/sichuan/panda.jpg')).toEqual(before);
     expect((await journal.listAdminPhotos('sichuan'))![0].orientation).toBe('landscape');
 
-    const tall = await addPhoto(trip, '2025-04-09', { name: 'tall.jpg', width: 3000, height: 4000 });
+    const tall = await addPhoto(trip, '2025-04-09', {
+      name: 'tall.jpg',
+      width: 3000,
+      height: 4000,
+    });
     await setHighlight(trip, 1, tall);
     const asHighlight = await upload('tall.jpg', landscape(), { overwrite: true });
 
-    expect(asHighlight).toMatchObject({ ok: false, error: 'breaks-cover', covers: [{ kind: 'highlight' }] });
+    expect(asHighlight).toMatchObject({
+      ok: false,
+      error: 'breaks-cover',
+      covers: [{ kind: 'highlight' }],
+    });
   });
 });
 
@@ -293,7 +340,11 @@ describe('Edit Photos', () => {
     const chengdu = await addCity('Chengdu', sichuan);
     const xining = await addCity('Xining', qinghai);
     const trip = await addTrip({ slug: 'sichuan' });
-    const a = await addPhoto(trip, '2025-04-01', { name: 'a.jpg', title: 'Keep me', cityId: chengdu });
+    const a = await addPhoto(trip, '2025-04-01', {
+      name: 'a.jpg',
+      title: 'Keep me',
+      cityId: chengdu,
+    });
     const b = await addPhoto(trip, '2025-04-02', { name: 'b.jpg', provinceId: qinghai });
     const read = async () => (await journal.listAdminPhotos('sichuan'))!;
     return { sichuan, qinghai, chengdu, xining, a, b, read };
@@ -305,7 +356,9 @@ describe('Edit Photos', () => {
     const result = await journal.editPhotos({ ids: [a, b], place: { cityId: xining } });
 
     expect(result).toEqual({ ok: true, updated: 2 });
-    expect((await read()).map((photo) => [photo.city?.name, photo.province, photo.onTheWay])).toEqual([
+    expect(
+      (await read()).map((photo) => [photo.city?.name, photo.province, photo.onTheWay]),
+    ).toEqual([
       ['Xining', 'Qinghai', false],
       ['Xining', 'Qinghai', false],
     ]);
@@ -329,7 +382,9 @@ describe('Edit Photos', () => {
     await journal.editPhotos({ ids: [b], place: { cityId: chengdu } });
     await journal.editPhotos({ ids: [a], place: { onTheWay: true } });
 
-    expect((await read()).map((photo) => [photo.name, photo.city?.name ?? null, photo.onTheWay])).toEqual([
+    expect(
+      (await read()).map((photo) => [photo.name, photo.city?.name ?? null, photo.onTheWay]),
+    ).toEqual([
       ['a.jpg', null, true],
       ['b.jpg', 'Chengdu', false],
     ]);
@@ -340,7 +395,14 @@ describe('Edit Photos', () => {
 
     await journal.editPhotos({ ids: [a, b], date: '2025-04-05' });
 
-    expect((await read()).map((photo) => [photo.date, photo.title, photo.city?.name ?? null, photo.onTheWay])).toEqual([
+    expect(
+      (await read()).map((photo) => [
+        photo.date,
+        photo.title,
+        photo.city?.name ?? null,
+        photo.onTheWay,
+      ]),
+    ).toEqual([
       ['2025-04-05', 'Keep me', 'Chengdu', false],
       ['2025-04-05', null, null, true],
     ]);
@@ -389,14 +451,28 @@ describe('Edit Photos', () => {
     const { a, b, read } = await twoPhotos();
     const before = await read();
 
-    expect(await journal.editPhotos({ ids: [a, 999], title: 'x' })).toEqual({ ok: false, error: 'unknown-photo' });
-    expect(await journal.editPhotos({ ids: [a], place: { cityId: 999 } })).toEqual({ ok: false, error: 'unknown-city' });
-    expect(await journal.editPhotos({ ids: [b], place: { onTheWay: true, provinceId: 999 } })).toEqual({
+    expect(await journal.editPhotos({ ids: [a, 999], title: 'x' })).toEqual({
+      ok: false,
+      error: 'unknown-photo',
+    });
+    expect(await journal.editPhotos({ ids: [a], place: { cityId: 999 } })).toEqual({
+      ok: false,
+      error: 'unknown-city',
+    });
+    expect(
+      await journal.editPhotos({ ids: [b], place: { onTheWay: true, provinceId: 999 } }),
+    ).toEqual({
       ok: false,
       error: 'unknown-province',
     });
-    expect(await journal.editPhotos({ ids: [a], date: '2025-02-30' })).toEqual({ ok: false, error: 'invalid-date' });
-    expect(await journal.editPhotos({ ids: [a], time: 'night' as never })).toEqual({ ok: false, error: 'invalid-time' });
+    expect(await journal.editPhotos({ ids: [a], date: '2025-02-30' })).toEqual({
+      ok: false,
+      error: 'invalid-date',
+    });
+    expect(await journal.editPhotos({ ids: [a], time: 'night' as never })).toEqual({
+      ok: false,
+      error: 'invalid-time',
+    });
     expect(await read()).toEqual(before);
   });
 });
@@ -411,8 +487,15 @@ describe('Delete Photos', () => {
     const province = await addProvince('Sichuan', '四川');
     const chengdu = await addCity('Chengdu', province);
     const trip = await addTrip({ slug: 'sichuan', title: 'Sichuan' });
-    const photo = async (name: string, options: { width?: number; height?: number; tripId?: number } = {}) => {
-      const id = await addPhoto(options.tripId ?? trip, '2025-04-01', { name, cityId: chengdu, ...options });
+    const photo = async (
+      name: string,
+      options: { width?: number; height?: number; tripId?: number } = {},
+    ) => {
+      const id = await addPhoto(options.tripId ?? trip, '2025-04-01', {
+        name,
+        cityId: chengdu,
+        ...options,
+      });
       await put('sichuan', name);
       return id;
     };
@@ -453,7 +536,9 @@ describe('Delete Photos', () => {
             key: 'trip-cover:sichuan',
             kind: 'trip-cover',
             href: '/admin/trips/sichuan',
-            replacements: [{ name: 'other.jpg', thumb: 'https://photos.test/thumbs/sichuan/other.jpg.webp' }],
+            replacements: [
+              { name: 'other.jpg', thumb: 'https://photos.test/thumbs/sichuan/other.jpg.webp' },
+            ],
           },
         ],
       },
@@ -474,7 +559,12 @@ describe('Delete Photos', () => {
     const result = await journal.deletePhotos({ ids: [first] });
 
     expect(result.kept).toMatchObject([
-      { id: first, covers: [{ key: 'highlight:sichuan:1', kind: 'highlight', replacements: [{ name: 'free.jpg' }] }] },
+      {
+        id: first,
+        covers: [
+          { key: 'highlight:sichuan:1', kind: 'highlight', replacements: [{ name: 'free.jpg' }] },
+        ],
+      },
     ]);
   });
 
@@ -484,7 +574,9 @@ describe('Delete Photos', () => {
     await photo('here.jpg');
     const qinghai = await addProvince('Qinghai');
     const xining = await addCity('Xining', qinghai);
-    await photo('xining.jpg').then((id) => journal.editPhotos({ ids: [id], place: { cityId: xining } }));
+    await photo('xining.jpg').then((id) =>
+      journal.editPhotos({ ids: [id], place: { cityId: xining } }),
+    );
     const tibet = await addTrip({ slug: 'tibet' });
     await addPhoto(tibet, '2025-06-01', { name: 'later.jpg', cityId: chengdu });
     await addPhoto(tibet, '2025-06-01', { name: 'nowhere.jpg' });
@@ -513,7 +605,10 @@ describe('Delete Photos', () => {
     const next = await photo('next.jpg');
     await setTripCover(trip, cover);
 
-    const result = await journal.deletePhotos({ ids: [cover], replacements: { 'trip-cover:sichuan': next } });
+    const result = await journal.deletePhotos({
+      ids: [cover],
+      replacements: { 'trip-cover:sichuan': next },
+    });
 
     expect(result).toEqual({ deleted: [cover], kept: [] });
     expect(await names()).toEqual(['next.jpg']);
@@ -528,7 +623,10 @@ describe('Delete Photos', () => {
     const tall = await photo('tall.jpg', { width: 3000, height: 4000 });
     await setTripCover(trip, cover);
 
-    const result = await journal.deletePhotos({ ids: [cover], replacements: { 'trip-cover:sichuan': tall } });
+    const result = await journal.deletePhotos({
+      ids: [cover],
+      replacements: { 'trip-cover:sichuan': tall },
+    });
 
     expect(result.deleted).toEqual([]);
     expect(result.kept).toHaveLength(1);
@@ -576,26 +674,52 @@ describe('Add City', () => {
       major: true,
     });
 
-    expect(added).toMatchObject({ ok: true, city: { name: 'Leshan', nameZh: '乐山', province: 'Sichuan', major: true } });
+    expect(added).toMatchObject({
+      ok: true,
+      city: { name: 'Leshan', nameZh: '乐山', province: 'Sichuan', major: true },
+    });
     expect(await journal.listCities()).toEqual([
       expect.objectContaining({ name: 'Leshan', province: 'Sichuan', major: true }),
     ]);
     const cityId = (added as { city: { id: number } }).city.id;
     const [photo] = (await journal.listAdminPhotos('sichuan'))!;
-    expect(await journal.editPhotos({ ids: [photo.id], place: { cityId } })).toEqual({ ok: true, updated: 1 });
-    expect((await journal.getGallery()).photos.map((item) => [item.city, item.province])).toEqual([['Leshan', 'Sichuan']]);
-    expect((await journal.getGallery()).cities.map((city) => [city.name, city.lng, city.lat])).toEqual([['Leshan', 103.77, 29.55]]);
+    expect(await journal.editPhotos({ ids: [photo.id], place: { cityId } })).toEqual({
+      ok: true,
+      updated: 1,
+    });
+    expect((await journal.getGallery()).photos.map((item) => [item.city, item.province])).toEqual([
+      ['Leshan', 'Sichuan'],
+    ]);
+    expect(
+      (await journal.getGallery()).cities.map((city) => [city.name, city.lng, city.lat]),
+    ).toEqual([['Leshan', 103.77, 29.55]]);
   });
 
   it('is refused for a taken or blank name, an unknown Province or an impossible position', async () => {
     const { province } = await sichuanTrip();
-    const city = { name: 'Leshan', nameZh: '乐山', provinceId: province, lng: 103.77, lat: 29.55, major: false };
+    const city = {
+      name: 'Leshan',
+      nameZh: '乐山',
+      provinceId: province,
+      lng: 103.77,
+      lat: 29.55,
+      major: false,
+    };
     await journal.addCity(city);
 
     expect(await journal.addCity(city)).toEqual({ ok: false, error: 'name-taken' });
-    expect(await journal.addCity({ ...city, name: '  ' })).toEqual({ ok: false, error: 'invalid-name' });
-    expect(await journal.addCity({ ...city, name: 'Emei', provinceId: 999 })).toEqual({ ok: false, error: 'unknown-province' });
-    expect(await journal.addCity({ ...city, name: 'Emei', lat: 120 })).toEqual({ ok: false, error: 'invalid-position' });
+    expect(await journal.addCity({ ...city, name: '  ' })).toEqual({
+      ok: false,
+      error: 'invalid-name',
+    });
+    expect(await journal.addCity({ ...city, name: 'Emei', provinceId: 999 })).toEqual({
+      ok: false,
+      error: 'unknown-province',
+    });
+    expect(await journal.addCity({ ...city, name: 'Emei', lat: 120 })).toEqual({
+      ok: false,
+      error: 'invalid-position',
+    });
     expect(await journal.listCities()).toHaveLength(1);
   });
 
@@ -603,7 +727,10 @@ describe('Add City', () => {
     await addProvince('Sichuan');
     await addProvince('Qinghai');
 
-    expect((await journal.listProvinces()).map((province) => province.name)).toEqual(['Qinghai', 'Sichuan']);
+    expect((await journal.listProvinces()).map((province) => province.name)).toEqual([
+      'Qinghai',
+      'Sichuan',
+    ]);
   });
 });
 
@@ -612,7 +739,10 @@ describe('Photos: input the admin API passes through', () => {
     await sichuanTrip();
 
     for (const date of ['soon', '2025-13-40', '2025-02-30']) {
-      expect(await upload('market.jpg', landscape(), { date })).toEqual({ ok: false, error: 'invalid-date' });
+      expect(await upload('market.jpg', landscape(), { date })).toEqual({
+        ok: false,
+        error: 'invalid-date',
+      });
     }
     expect(await bucketKeys()).toEqual([]);
     expect(await journal.listAdminPhotos('sichuan')).toEqual([]);
@@ -628,7 +758,9 @@ describe('Photos: input the admin API passes through', () => {
     }
 
     expect(await journal.editPhotos({ ids, title: 'All' })).toEqual({ ok: true, updated: 120 });
-    expect((await journal.listAdminPhotos('sichuan'))!.every((photo) => photo.title === 'All')).toBe(true);
+    expect(
+      (await journal.listAdminPhotos('sichuan'))!.every((photo) => photo.title === 'All'),
+    ).toBe(true);
 
     const result = await journal.deletePhotos({ ids });
     expect(result.deleted).toHaveLength(120);

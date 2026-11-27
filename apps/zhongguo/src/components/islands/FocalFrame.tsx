@@ -4,7 +4,13 @@ import type { FocalPoint } from '@/lib/journal';
 const clamp = (value: number) => Math.min(100, Math.max(0, value));
 
 /** A frame that crops its Photo like the page does (`object-fit: cover`); with `onCommit`, dragging the Photo moves its focal point. */
-export function FocalFrame(props: { photo: string; focus: FocalPoint; className: string; disabled?: boolean; onCommit?: (focus: FocalPoint) => void }) {
+export function FocalFrame(props: {
+  photo: string;
+  focus: FocalPoint;
+  className: string;
+  disabled?: boolean;
+  onCommit?: (focus: FocalPoint) => void;
+}) {
   const { photo, focus, className, disabled = false, onCommit } = props;
   const [drag, setDrag] = useState<FocalPoint | null>(null);
   const start = useRef<{ x: number; y: number; focus: FocalPoint } | null>(null);
@@ -20,8 +26,14 @@ export function FocalFrame(props: { photo: string; focus: FocalPoint; className:
     const overflowY = image.naturalHeight * scale - frame.height;
     // The Photo follows the pointer, so the visible part moves the other way.
     setDrag({
-      x: overflowX > 0 ? clamp(origin.focus.x - ((event.clientX - origin.x) / overflowX) * 100) : origin.focus.x,
-      y: overflowY > 0 ? clamp(origin.focus.y - ((event.clientY - origin.y) / overflowY) * 100) : origin.focus.y,
+      x:
+        overflowX > 0
+          ? clamp(origin.focus.x - ((event.clientX - origin.x) / overflowX) * 100)
+          : origin.focus.x,
+      y:
+        overflowY > 0
+          ? clamp(origin.focus.y - ((event.clientY - origin.y) / overflowY) * 100)
+          : origin.focus.y,
     });
   }
 
@@ -29,7 +41,8 @@ export function FocalFrame(props: { photo: string; focus: FocalPoint; className:
     const moved = drag;
     start.current = null;
     setDrag(null);
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (event.currentTarget.hasPointerCapture(event.pointerId))
+      event.currentTarget.releasePointerCapture(event.pointerId);
     if (save && moved) onCommit?.({ x: Math.round(moved.x), y: Math.round(moved.y) });
   }
 

@@ -21,25 +21,48 @@ export function NewTripForm({ plans }: { plans: AdminPlanDetail[] }) {
   async function create(event: SyntheticEvent) {
     event.preventDefault();
     setBusy(true);
-    const result = await save('POST', '/api/admin/trips', { title, startDate, planDayIds: [...picked] });
-    if (result.ok) return window.location.assign(`/admin/trips/${encodeURIComponent(String(result.slug))}`);
+    const result = await save('POST', '/api/admin/trips', {
+      title,
+      startDate,
+      planDayIds: [...picked],
+    });
+    if (result.ok)
+      return window.location.assign(`/admin/trips/${encodeURIComponent(String(result.slug))}`);
     setNotice(message(result.error));
     setBusy(false);
   }
 
   return (
-    <form onSubmit={(event) => void create(event)} aria-label="New Trip" className="flex flex-col gap-4 border border-border p-6">
+    <form
+      onSubmit={(event) => void create(event)}
+      aria-label="New Trip"
+      className="flex flex-col gap-4 border border-border p-6"
+    >
       <label className="flex flex-col gap-1 text-sm">
         Title
-        <input type="text" required value={title} onChange={(event) => setTitle(event.target.value)} className={field} />
+        <input
+          type="text"
+          required
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          className={field}
+        />
       </label>
       <label className="flex flex-col gap-1 text-sm">
         Start date
-        <input type="date" required value={startDate} onChange={(event) => setStartDate(event.target.value)} className={field} />
+        <input
+          type="date"
+          required
+          value={startDate}
+          onChange={(event) => setStartDate(event.target.value)}
+          className={field}
+        />
       </label>
       {plans.some((plan) => plan.days.length > 0) && (
         <fieldset className="flex flex-col gap-3">
-          <legend className="text-sm">Copy Days from a plan (optional). They get one date after the other, without Photos.</legend>
+          <legend className="text-sm">
+            Copy Days from a plan (optional). They get one date after the other, without Photos.
+          </legend>
           {plans
             .filter((plan) => plan.days.length > 0)
             .map((plan) => {
@@ -51,14 +74,22 @@ export function NewTripForm({ plans }: { plans: AdminPlanDetail[] }) {
                     {plan.title} ({ids.filter((id) => picked.has(id)).length} of {ids.length})
                   </summary>
                   <label className="mt-2 flex items-center gap-2 text-sm">
-                    <input type="checkbox" checked={all} onChange={(event) => toggle(ids, event.target.checked)} />
+                    <input
+                      type="checkbox"
+                      checked={all}
+                      onChange={(event) => toggle(ids, event.target.checked)}
+                    />
                     All Days of {plan.title}
                   </label>
                   <ul className="mt-2 flex flex-col gap-1">
                     {plan.days.map((day) => (
                       <li key={day.id}>
                         <label className="flex items-center gap-2 text-sm">
-                          <input type="checkbox" checked={picked.has(day.id)} onChange={(event) => toggle([day.id], event.target.checked)} />
+                          <input
+                            type="checkbox"
+                            checked={picked.has(day.id)}
+                            onChange={(event) => toggle([day.id], event.target.checked)}
+                          />
                           Day {day.number}: {day.title} ({day.city.name})
                         </label>
                       </li>

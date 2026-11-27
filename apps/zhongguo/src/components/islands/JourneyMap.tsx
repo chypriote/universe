@@ -13,18 +13,29 @@ type Props = {
   active: JourneyDay | null;
 };
 
-const citiesOf = (day: JourneyDay) => (day.route.length > 0 ? day.route : [day.city]).map((city) => city.id);
+const citiesOf = (day: JourneyDay) =>
+  (day.route.length > 0 ? day.route : [day.city]).map((city) => city.id);
 
 /** The route of a Trip or plan on the China map, zoomed to its Provinces; a City opens in the Atlas. */
 export function JourneyMap({ cities, days, active }: Props) {
   const [allChina, setAllChina] = useState(false);
   const byId = new Map(cities.map((city) => [city.id, city]));
-  const route = days.flatMap(citiesOf).filter((id, index, list) => id !== list[index - 1] && byId.has(id));
+  const route = days
+    .flatMap(citiesOf)
+    .filter((id, index, list) => id !== list[index - 1] && byId.has(id));
   const stops = [...new Set(route)].map((id) => byId.get(id)!);
   const provinces = [...new Set(stops.map((city) => city.province))];
   const mapCities: ChinaMapCity[] = stops.map((city) => {
     const [x, y] = projectLngLat(city.lng, city.lat);
-    return { key: String(city.id), name: city.name, zh: city.nameZh, x, y, major: city.major, province: city.province };
+    return {
+      key: String(city.id),
+      name: city.name,
+      zh: city.nameZh,
+      x,
+      y,
+      major: city.major,
+      province: city.province,
+    };
   });
   const lit = active ? citiesOf(active) : [];
 
@@ -42,7 +53,12 @@ export function JourneyMap({ cities, days, active }: Props) {
             </>
           )}
         </span>
-        <button type="button" aria-pressed={allChina} className="shrink-0 cursor-pointer hover:text-primary" onClick={() => setAllChina(!allChina)}>
+        <button
+          type="button"
+          aria-pressed={allChina}
+          className="shrink-0 cursor-pointer hover:text-primary"
+          onClick={() => setAllChina(!allChina)}
+        >
           {allChina ? 'Zoom to the route' : 'All China'}
         </button>
       </div>
@@ -53,7 +69,9 @@ export function JourneyMap({ cities, days, active }: Props) {
         highlight={lit.map(String)}
         zoomTo={allChina ? null : provinces}
         cityLabels={!allChina}
-        onSelectRegion={(name) => window.open(`/admin/atlas?province=${encodeURIComponent(name)}`, '_blank')}
+        onSelectRegion={(name) =>
+          window.open(`/admin/atlas?province=${encodeURIComponent(name)}`, '_blank')
+        }
         onSelectCity={(key) => window.open(`/admin/atlas?city=${key}`, '_blank')}
         preview={false}
       />

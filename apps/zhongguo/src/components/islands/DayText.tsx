@@ -31,7 +31,8 @@ type Props = {
 export function DayText({ day, heading, label, url, cities, onChange, onNotice, actions }: Props) {
   const [title, setTitle] = useState(day.title);
   const [notes, setNotes] = useState(day.notes);
-  const initial = day.route.length > 0 ? day.route.map((city) => String(city.id)) : [String(day.city.id)];
+  const initial =
+    day.route.length > 0 ? day.route.map((city) => String(city.id)) : [String(day.city.id)];
   // The Cities of the Day in travel order, the last being where it ends, and which one is the main City.
   const [rows, setRows] = useState(initial);
   const [mainAt, setMainAt] = useState(Math.max(0, initial.indexOf(String(day.city.id))));
@@ -55,7 +56,13 @@ export function DayText({ day, heading, label, url, cities, onChange, onNotice, 
         title: title.trim(),
         notes,
         city: { id: city.id, name: city.name },
-        route: rows.length > 1 ? rows.map((id) => ({ id: Number(id), name: cities.find((candidate) => candidate.id === Number(id))!.name })) : [],
+        route:
+          rows.length > 1
+            ? rows.map((id) => ({
+                id: Number(id),
+                name: cities.find((candidate) => candidate.id === Number(id))!.name,
+              }))
+            : [],
         province: city.province,
       });
     }
@@ -67,21 +74,33 @@ export function DayText({ day, heading, label, url, cities, onChange, onNotice, 
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="font-serif text-xl">{heading}</h3>
         <div className="flex gap-3">
-          <button type="button" className={button} disabled={!dirty} onClick={() => void saveText()}>
+          <button
+            type="button"
+            className={button}
+            disabled={!dirty}
+            onClick={() => void saveText()}
+          >
             Save day
           </button>
           {actions}
         </div>
       </header>
       <div className="flex flex-col gap-3">
-        <input className={field} aria-label={`Title of ${label}`} value={title} onChange={(event) => setTitle(event.target.value)} />
+        <input
+          className={field}
+          aria-label={`Title of ${label}`}
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+        />
         {rows.map((id, index) => (
           <div key={index} className="flex flex-wrap items-center gap-3">
             <select
               className={`${field} min-w-48 flex-1`}
               aria-label={`City ${index + 1} of ${label}${index === rows.length - 1 && rows.length > 1 ? ', where the Day ends' : ''}`}
               value={id}
-              onChange={(event) => setRows(rows.map((value, i) => (i === index ? event.target.value : value)))}
+              onChange={(event) =>
+                setRows(rows.map((value, i) => (i === index ? event.target.value : value)))
+              }
             >
               {cities.map((city) => (
                 <option key={city.id} value={city.id}>
@@ -90,7 +109,12 @@ export function DayText({ day, heading, label, url, cities, onChange, onNotice, 
               ))}
             </select>
             <label className="flex items-center gap-2 text-sm">
-              <input type="radio" name={`main-${label}`} checked={mainAt === index} onChange={() => setMainAt(index)} />
+              <input
+                type="radio"
+                name={`main-${label}`}
+                checked={mainAt === index}
+                onChange={() => setMainAt(index)}
+              />
               Main City
             </label>
             <button
@@ -106,10 +130,19 @@ export function DayText({ day, heading, label, url, cities, onChange, onNotice, 
             </button>
           </div>
         ))}
-        <button type="button" className={`${button} self-start`} onClick={() => setRows([...rows, rows.at(-1)!])}>
+        <button
+          type="button"
+          className={`${button} self-start`}
+          onClick={() => setRows([...rows, rows.at(-1)!])}
+        >
           Add a City
         </button>
-        <textarea className={`${field} min-h-24`} aria-label={`Notes of ${label}`} value={notes} onChange={(event) => setNotes(event.target.value)} />
+        <textarea
+          className={`${field} min-h-24`}
+          aria-label={`Notes of ${label}`}
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+        />
       </div>
     </>
   );

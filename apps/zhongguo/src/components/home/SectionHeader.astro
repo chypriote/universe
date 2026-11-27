@@ -12,7 +12,9 @@ const { zh, eyebrow, title, lead, class: className } = Astro.props;
 ---
 
 <div class:list={['flex items-start gap-6 lg:gap-8 max-w-3xl', className]}>
-  <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">{zh}</span>
+  <span lang="zh" class="vertical font-brush text-5xl lg:text-6xl leading-none" aria-hidden="true">
+    {zh}
+  </span>
   <div>
     <span class="eyebrow">{eyebrow}</span>
     <h2 class="mt-4 text-h2 font-serif font-light">{title}</h2>

@@ -1,7 +1,16 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
-import { addActivity, addCity, addPlan, addPlanDay, addPlanPhoto, addProvince, addTrip, resetDatabase } from './seed.test-helper';
+import {
+  addActivity,
+  addCity,
+  addPlan,
+  addPlanDay,
+  addPlanPhoto,
+  addProvince,
+  addTrip,
+  resetDatabase,
+} from './seed.test-helper';
 
 const journal = createJournal(env);
 
@@ -17,8 +26,12 @@ async function plan() {
   const three = await addPlanDay(planId, dali, 3, { title: 'Lake' });
   const pagodas = await addActivity('Three Pagodas', dali);
   await env.DB.batch([
-    env.DB.prepare('INSERT INTO plan_day_cities (day_id, position, city_id, main) VALUES (?, 1, ?, 0), (?, 2, ?, 1)').bind(two, kunming, two, dali),
-    env.DB.prepare('INSERT INTO plan_day_activities (day_id, position, activity_id) VALUES (?, 1, ?)').bind(two, pagodas),
+    env.DB.prepare(
+      'INSERT INTO plan_day_cities (day_id, position, city_id, main) VALUES (?, 1, ?, 0), (?, 2, ?, 1)',
+    ).bind(two, kunming, two, dali),
+    env.DB.prepare(
+      'INSERT INTO plan_day_activities (day_id, position, activity_id) VALUES (?, 1, ?)',
+    ).bind(two, pagodas),
     env.DB.prepare(
       "INSERT INTO plan_day_train_rides (day_id, position, outgoing_city, destination_city, time_of_day, departure_time, arrival_time, duration_minutes) VALUES (?, 1, 'Kunming', 'Dali', 'morning', '08:00', '10:00', 120)",
     ).bind(two),
@@ -31,7 +44,11 @@ describe('Creating a Trip', () => {
   it('copies the ticked Plan Days as dated Days in plan order, with Cities, Activities and train rides', async () => {
     const { one, three, two } = await plan();
 
-    const result = await journal.createTrip({ title: 'Yunnan, my way', startDate: '2027-01-30', planDayIds: [three, one, two] });
+    const result = await journal.createTrip({
+      title: 'Yunnan, my way',
+      startDate: '2027-01-30',
+      planDayIds: [three, one, two],
+    });
 
     expect(result).toEqual({ ok: true, slug: 'yunnan-my-way' });
     const detail = (await journal.getAdminTrip('yunnan-my-way'))!;
@@ -43,12 +60,19 @@ describe('Creating a Trip', () => {
     ]);
     expect(detail.days[1].route.map((city) => city.name)).toEqual(['Kunming', 'Dali']);
     const rows = async (sql: string) => (await env.DB.prepare(sql).all()).results;
-    expect(await rows('SELECT activities.name FROM day_activities JOIN activities ON activities.id = activity_id')).toEqual([
-      { name: 'Three Pagodas' },
-    ]);
+    expect(
+      await rows(
+        'SELECT activities.name FROM day_activities JOIN activities ON activities.id = activity_id',
+      ),
+    ).toEqual([{ name: 'Three Pagodas' }]);
     expect(await rows('SELECT COUNT(*) AS total FROM activities')).toEqual([{ total: 1 }]);
-    expect(await rows('SELECT outgoing_city, duration_minutes FROM day_train_rides')).toEqual([{ outgoing_city: 'Kunming', duration_minutes: 120 }]);
-    expect(await rows('SELECT main FROM day_cities ORDER BY position')).toEqual([{ main: 0 }, { main: 1 }]);
+    expect(await rows('SELECT outgoing_city, duration_minutes FROM day_train_rides')).toEqual([
+      { outgoing_city: 'Kunming', duration_minutes: 120 },
+    ]);
+    expect(await rows('SELECT main FROM day_cities ORDER BY position')).toEqual([
+      { main: 0 },
+      { main: 1 },
+    ]);
   });
 
   it('sets the Trip dates, copies no Photos and leaves the plan as it was', async () => {
@@ -68,7 +92,9 @@ describe('Creating a Trip', () => {
   it('makes an empty Trip when no Day is ticked', async () => {
     await plan();
 
-    expect(await journal.createTrip({ title: 'Blank', startDate: '2027-03-01', planDayIds: [] })).toEqual({ ok: true, slug: 'blank' });
+    expect(
+      await journal.createTrip({ title: 'Blank', startDate: '2027-03-01', planDayIds: [] }),
+    ).toEqual({ ok: true, slug: 'blank' });
 
     expect((await journal.getAdminTrip('blank'))!.days).toEqual([]);
   });
@@ -77,11 +103,21 @@ describe('Creating a Trip', () => {
     await plan();
     await addTrip({ slug: 'taken' });
 
-    expect(await journal.createTrip({ title: '  ', startDate: '2027-03-01', planDayIds: [] })).toEqual({ ok: false, error: 'invalid-title' });
-    expect(await journal.createTrip({ title: 'X', startDate: '2027-02-30', planDayIds: [] })).toEqual({ ok: false, error: 'invalid-date' });
-    expect(await journal.createTrip({ title: 'Taken', startDate: '2027-03-01', planDayIds: [] })).toEqual({ ok: false, error: 'slug-taken' });
-    expect(await journal.createTrip({ title: 'Yunnan winter', startDate: '2027-03-01', planDayIds: [] })).toEqual({ ok: false, error: 'slug-taken' });
-    expect(await journal.createTrip({ title: 'New', startDate: '2027-03-01', planDayIds: [9999] })).toEqual({ ok: false, error: 'unknown-plan-day' });
+    expect(
+      await journal.createTrip({ title: '  ', startDate: '2027-03-01', planDayIds: [] }),
+    ).toEqual({ ok: false, error: 'invalid-title' });
+    expect(
+      await journal.createTrip({ title: 'X', startDate: '2027-02-30', planDayIds: [] }),
+    ).toEqual({ ok: false, error: 'invalid-date' });
+    expect(
+      await journal.createTrip({ title: 'Taken', startDate: '2027-03-01', planDayIds: [] }),
+    ).toEqual({ ok: false, error: 'slug-taken' });
+    expect(
+      await journal.createTrip({ title: 'Yunnan winter', startDate: '2027-03-01', planDayIds: [] }),
+    ).toEqual({ ok: false, error: 'slug-taken' });
+    expect(
+      await journal.createTrip({ title: 'New', startDate: '2027-03-01', planDayIds: [9999] }),
+    ).toEqual({ ok: false, error: 'unknown-plan-day' });
 
     expect((await journal.listAdminTrips()).map((trip) => trip.slug)).toEqual(['taken']);
   });

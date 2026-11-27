@@ -32,14 +32,27 @@ type PlanAdminMethods = Pick<
 /** The admin of Trip plans (ADR 0003): the plans, their switches and their numbered Days. */
 export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods {
   async function all<T>(sql: string, ...params: (string | number)[]): Promise<T[]> {
-    return (await env.DB.prepare(sql).bind(...params).all<T>()).results;
+    return (
+      await env.DB.prepare(sql)
+        .bind(...params)
+        .all<T>()
+    ).results;
   }
 
   const planBySlug = (slug: string) =>
-    env.DB.prepare('SELECT id, slug FROM plans WHERE slug = ?').bind(slug).first<{ id: number; slug: string }>();
+    env.DB.prepare('SELECT id, slug FROM plans WHERE slug = ?')
+      .bind(slug)
+      .first<{ id: number; slug: string }>();
 
   async function listAdminPlans(): Promise<AdminPlan[]> {
-    const rows = await all<{ slug: string; title: string; visible: number; search_flights: number; days: number; photos: number }>(
+    const rows = await all<{
+      slug: string;
+      title: string;
+      visible: number;
+      search_flights: number;
+      days: number;
+      photos: number;
+    }>(
       `SELECT slug, title, visible, search_flights, (SELECT COUNT(*) FROM plan_days WHERE plan_id = plans.id) AS days,
               (SELECT COUNT(*) FROM plan_photos WHERE plan_id = plans.id) AS photos
        FROM plans ORDER BY title`,
@@ -70,7 +83,16 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
         cover_focus_y: number;
       }>();
     if (!plan) return null;
-    const rows = await all<{ id: number; position: number; title: string; notes: string; city_id: number; city: string; province: string; season: number }>(
+    const rows = await all<{
+      id: number;
+      position: number;
+      title: string;
+      notes: string;
+      city_id: number;
+      city: string;
+      province: string;
+      season: number;
+    }>(
       `SELECT plan_days.id, plan_days.position, plan_days.title, plan_days.notes, cities.id AS city_id, cities.name AS city,
               provinces.name AS province, provinces.season
        FROM plan_days JOIN cities ON cities.id = plan_days.city_id JOIN provinces ON provinces.id = cities.province_id
@@ -114,10 +136,14 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
         title: row.title,
         notes: row.notes,
         city: { id: row.city_id, name: row.city },
-        route: route.filter((entry) => entry.day_id === row.id).map((entry) => ({ id: entry.id, name: entry.name })),
+        route: route
+          .filter((entry) => entry.day_id === row.id)
+          .map((entry) => ({ id: entry.id, name: entry.name })),
         province: row.province,
         photoIds: onDays.filter((entry) => entry.day_id === row.id).map((entry) => entry.photo_id),
-        activityIds: activities.filter((entry) => entry.day_id === row.id).map((entry) => entry.activity_id),
+        activityIds: activities
+          .filter((entry) => entry.day_id === row.id)
+          .map((entry) => entry.activity_id),
       })),
       seasons: rows.map((row) => row.season),
     };
@@ -132,10 +158,16 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
     return { ok: true, slug };
   }
 
-  async function setPlanColumn(slug: string, column: 'visible' | 'search_flights', value: boolean): Promise<SetPlanResult> {
+  async function setPlanColumn(
+    slug: string,
+    column: 'visible' | 'search_flights',
+    value: boolean,
+  ): Promise<SetPlanResult> {
     const plan = await planBySlug(slug);
     if (!plan) return { ok: false, error: 'unknown-plan' };
-    await env.DB.prepare(`UPDATE plans SET ${column} = ? WHERE id = ?`).bind(value ? 1 : 0, plan.id).run();
+    await env.DB.prepare(`UPDATE plans SET ${column} = ? WHERE id = ?`)
+      .bind(value ? 1 : 0, plan.id)
+      .run();
     return { ok: true };
   }
 
@@ -156,10 +188,13 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
     return { ok: true, dayId: row!.id };
   }
 
-  const editPlanDay = (input: EditDayInput): Promise<EditDayResult> => editDayRows(env, PLAN_TABLES, input);
+  const editPlanDay = (input: EditDayInput): Promise<EditDayResult> =>
+    editDayRows(env, PLAN_TABLES, input);
 
   async function deletePlanDay(dayId: number): Promise<PlanDayResult> {
-    const day = await env.DB.prepare('SELECT plan_id FROM plan_days WHERE id = ?').bind(dayId).first<{ plan_id: number }>();
+    const day = await env.DB.prepare('SELECT plan_id FROM plan_days WHERE id = ?')
+      .bind(dayId)
+      .first<{ plan_id: number }>();
     if (!day) return { ok: false, error: 'unknown-day' };
     await env.DB.batch([
       env.DB.prepare('DELETE FROM plan_day_cities WHERE day_id = ?').bind(dayId),
@@ -169,10 +204,17 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
       env.DB.prepare('DELETE FROM plan_days WHERE id = ?').bind(dayId),
     ]);
     // Positions are unique per plan: park them below zero, then number the Days that remain.
-    const left = await all<{ id: number }>('SELECT id FROM plan_days WHERE plan_id = ? ORDER BY position', day.plan_id);
+    const left = await all<{ id: number }>(
+      'SELECT id FROM plan_days WHERE plan_id = ? ORDER BY position',
+      day.plan_id,
+    );
     await env.DB.batch([
-      env.DB.prepare('UPDATE plan_days SET position = -position WHERE plan_id = ?').bind(day.plan_id),
-      ...left.map((row, index) => env.DB.prepare('UPDATE plan_days SET position = ? WHERE id = ?').bind(index + 1, row.id)),
+      env.DB.prepare('UPDATE plan_days SET position = -position WHERE plan_id = ?').bind(
+        day.plan_id,
+      ),
+      ...left.map((row, index) =>
+        env.DB.prepare('UPDATE plan_days SET position = ? WHERE id = ?').bind(index + 1, row.id),
+      ),
     ]);
     return { ok: true };
   }
@@ -182,14 +224,22 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
       .bind(dayId)
       .first<{ plan_id: number; position: number }>();
     if (!day) return { ok: false, error: 'unknown-day' };
-    const neighbour = await env.DB.prepare('SELECT id, position FROM plan_days WHERE plan_id = ? AND position = ?')
+    const neighbour = await env.DB.prepare(
+      'SELECT id, position FROM plan_days WHERE plan_id = ? AND position = ?',
+    )
       .bind(day.plan_id, day.position + (direction === 'up' ? -1 : 1))
       .first<{ id: number; position: number }>();
     if (!neighbour) return { ok: true };
     await env.DB.batch([
       env.DB.prepare('UPDATE plan_days SET position = -1 WHERE id = ?').bind(dayId),
-      env.DB.prepare('UPDATE plan_days SET position = ? WHERE id = ?').bind(day.position, neighbour.id),
-      env.DB.prepare('UPDATE plan_days SET position = ? WHERE id = ?').bind(neighbour.position, dayId),
+      env.DB.prepare('UPDATE plan_days SET position = ? WHERE id = ?').bind(
+        day.position,
+        neighbour.id,
+      ),
+      env.DB.prepare('UPDATE plan_days SET position = ? WHERE id = ?').bind(
+        neighbour.position,
+        dayId,
+      ),
     ]);
     return { ok: true };
   }
@@ -199,7 +249,8 @@ export function buildPlanAdmin(env: AdminEnv, urls: PhotoUrls): PlanAdminMethods
     getAdminPlan,
     createPlan,
     setPlanVisible: (slug, visible) => setPlanColumn(slug, 'visible', visible),
-    setPlanSearchFlights: (slug, searchFlights) => setPlanColumn(slug, 'search_flights', searchFlights),
+    setPlanSearchFlights: (slug, searchFlights) =>
+      setPlanColumn(slug, 'search_flights', searchFlights),
     addPlanDay,
     editPlanDay,
     deletePlanDay,

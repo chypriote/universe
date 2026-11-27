@@ -12,7 +12,6 @@ import { Toast } from './Toast';
 
 type Props = { plan: AdminPlanDetail; cities: AdminCityDetail[]; activities: AdminActivity[] };
 
-
 /** The numbered Days of a plan: edit, move, delete, and add one at the end. The page reloads after a change of order. */
 export function AdminPlanEditor({ plan, cities, activities }: Props) {
   const [days, setDays] = useState(plan.days);
@@ -45,7 +44,11 @@ export function AdminPlanEditor({ plan, cities, activities }: Props) {
   async function add(event: SyntheticEvent) {
     event.preventDefault();
     setBusy(true);
-    const result = await save('POST', `/api/admin/plans/${encodeURIComponent(plan.slug)}/days`, { cityId: Number(cityId), title, notes });
+    const result = await save('POST', `/api/admin/plans/${encodeURIComponent(plan.slug)}/days`, {
+      cityId: Number(cityId),
+      title,
+      notes,
+    });
     if (result.ok) return window.location.reload();
     setNotice(message(result.error));
     setBusy(false);
@@ -70,54 +73,91 @@ export function AdminPlanEditor({ plan, cities, activities }: Props) {
         onChange={setTab}
       />
       <p className="-mt-8 text-sm text-muted-foreground">
-        Upload the plan's Photos and set their City in the <a href={`/admin/gallery?plan=${encodeURIComponent(plan.slug)}`}>Gallery</a>.
+        Upload the plan's Photos and set their City in the{' '}
+        <a href={`/admin/gallery?plan=${encodeURIComponent(plan.slug)}`}>Gallery</a>.
       </p>
       {tab === 'covers' && (
         <>
-          <Cover base={base} label="Plan cover" photos={plan.photos} coverId={plan.coverId} coverFocus={plan.coverFocus} onNotice={setNotice} />
-          <Highlights base={base} photos={plan.photos} highlightIds={plan.highlightIds} onNotice={setNotice} />
+          <Cover
+            base={base}
+            label="Plan cover"
+            photos={plan.photos}
+            coverId={plan.coverId}
+            coverFocus={plan.coverFocus}
+            onNotice={setNotice}
+          />
+          <Highlights
+            base={base}
+            photos={plan.photos}
+            highlightIds={plan.highlightIds}
+            onNotice={setNotice}
+          />
         </>
       )}
       {tab === 'days' && (
-      <details className="border border-border p-6" open={days.length === 0}>
-        <summary className="cursor-pointer font-serif text-xl">Add a Day</summary>
-        <form onSubmit={(event) => void add(event)} className="mt-4 flex flex-col gap-3">
-          <label className="flex flex-col gap-1 text-sm">
-            Main City
-            <select required value={cityId} onChange={(event) => setCityId(event.target.value)} className={field}>
-              <option value="">Choose a City</option>
-              {cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.name}, {city.province}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            Title
-            <input type="text" required value={title} onChange={(event) => setTitle(event.target.value)} className={field} />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            Notes (optional)
-            <textarea rows={4} value={notes} onChange={(event) => setNotes(event.target.value)} className={field} />
-          </label>
-          <div>
-            <button type="submit" className={button} disabled={busy}>
-              Add Day
-            </button>
-          </div>
-        </form>
-      </details>
+        <details className="border border-border p-6" open={days.length === 0}>
+          <summary className="cursor-pointer font-serif text-xl">Add a Day</summary>
+          <form onSubmit={(event) => void add(event)} className="mt-4 flex flex-col gap-3">
+            <label className="flex flex-col gap-1 text-sm">
+              Main City
+              <select
+                required
+                value={cityId}
+                onChange={(event) => setCityId(event.target.value)}
+                className={field}
+              >
+                <option value="">Choose a City</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}, {city.province}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex flex-col gap-1 text-sm">
+              Title
+              <input
+                type="text"
+                required
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                className={field}
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-sm">
+              Notes (optional)
+              <textarea
+                rows={4}
+                value={notes}
+                onChange={(event) => setNotes(event.target.value)}
+                className={field}
+              />
+            </label>
+            <div>
+              <button type="submit" className={button} disabled={busy}>
+                Add Day
+              </button>
+            </div>
+          </form>
+        </details>
       )}
       {tab === 'days' && days.length > 0 && (
         <section aria-labelledby="days-title" className="flex flex-col gap-6">
-          <h2 id="days-title" className="sr-only">Days</h2>
+          <h2 id="days-title" className="sr-only">
+            Days
+          </h2>
           <PhotoBoard
             photos={plan.photos}
             days={plan.days}
             daysUrl="/api/admin/plan-days"
             onNotice={setNotice}
-            aside={<JourneyMap cities={cities} days={days.map((day) => ({ ...day, label: `Day ${day.number}` }))} active={active ? { ...active, label: `Day ${active.number}` } : null} />}
+            aside={
+              <JourneyMap
+                cities={cities}
+                days={days.map((day) => ({ ...day, label: `Day ${day.number}` }))}
+                active={active ? { ...active, label: `Day ${active.number}` } : null}
+              />
+            }
           >
             {(list) =>
               days.map((day, index) => (
@@ -137,13 +177,30 @@ export function AdminPlanEditor({ plan, cities, activities }: Props) {
                     onNotice={setNotice}
                     actions={
                       <>
-                        <button type="button" className={`${button} grid size-9 place-items-center !p-0`} aria-label={`Move Day ${day.number} up`} disabled={index === 0} onClick={() => void move(day, 'up')}>
+                        <button
+                          type="button"
+                          className={`${button} grid size-9 place-items-center !p-0`}
+                          aria-label={`Move Day ${day.number} up`}
+                          disabled={index === 0}
+                          onClick={() => void move(day, 'up')}
+                        >
                           <ArrowUp aria-hidden="true" className="size-4" />
                         </button>
-                        <button type="button" className={`${button} grid size-9 place-items-center !p-0`} aria-label={`Move Day ${day.number} down`} disabled={index === days.length - 1} onClick={() => void move(day, 'down')}>
+                        <button
+                          type="button"
+                          className={`${button} grid size-9 place-items-center !p-0`}
+                          aria-label={`Move Day ${day.number} down`}
+                          disabled={index === days.length - 1}
+                          onClick={() => void move(day, 'down')}
+                        >
                           <ArrowDown aria-hidden="true" className="size-4" />
                         </button>
-                        <button type="button" className={`${button} grid size-9 place-items-center !p-0`} aria-label={`Delete Day ${day.number}`} onClick={() => void remove(day)}>
+                        <button
+                          type="button"
+                          className={`${button} grid size-9 place-items-center !p-0`}
+                          aria-label={`Delete Day ${day.number}`}
+                          onClick={() => void remove(day)}
+                        >
                           <Trash2 aria-hidden="true" className="size-4" />
                         </button>
                       </>

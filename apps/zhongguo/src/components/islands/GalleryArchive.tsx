@@ -40,7 +40,12 @@ export function GalleryArchive({ photos, provinces, cities }: Gallery) {
     () =>
       provinces.map((name) => {
         const inRegion = photos.filter((photo) => photo.province === name);
-        return { name, zh: getRegionZh(name), photo: inRegion[0]?.thumb, detail: count(inRegion.length) };
+        return {
+          name,
+          zh: getRegionZh(name),
+          photo: inRegion[0]?.thumb,
+          detail: count(inRegion.length),
+        };
       }),
     [photos, provinces],
   );
@@ -50,7 +55,15 @@ export function GalleryArchive({ photos, provinces, cities }: Gallery) {
       cities.map((city) => {
         const inCity = photos.filter((photo) => photo.city === city.name);
         const [x, y] = projectLngLat(city.lng, city.lat);
-        return { key: city.name, name: city.name, zh: city.nameZh, x, y, photo: inCity[0]?.thumb, detail: count(inCity.length) };
+        return {
+          key: city.name,
+          name: city.name,
+          zh: city.nameZh,
+          x,
+          y,
+          photo: inCity[0]?.thumb,
+          detail: count(inCity.length),
+        };
       }),
     [photos, cities],
   );
@@ -61,7 +74,8 @@ export function GalleryArchive({ photos, provinces, cities }: Gallery) {
     setFilter({ region, city: null });
   };
 
-  const selectMapRegion = (region: string) => selectRegion(filter.region === region ? null : region);
+  const selectMapRegion = (region: string) =>
+    selectRegion(filter.region === region ? null : region);
 
   const selectMapCity = (key: string) => {
     const city = cities.find((item) => item.name === key);
@@ -92,11 +106,13 @@ export function GalleryArchive({ photos, provinces, cities }: Gallery) {
       <div>
         <div className="hidden space-y-6 md:block">
           <div>
-            <p className="mb-3 eyebrow">
-              Province
-            </p>
+            <p className="mb-3 eyebrow">Province</p>
             <div className="flex flex-wrap gap-2">
-              <button type="button" className={pillClass(filter.region === null)} onClick={() => selectRegion(null)}>
+              <button
+                type="button"
+                className={pillClass(filter.region === null)}
+                onClick={() => selectRegion(null)}
+              >
                 All
               </button>
               {provinces.map((region) => (
@@ -114,9 +130,7 @@ export function GalleryArchive({ photos, provinces, cities }: Gallery) {
 
           {visibleCities.length > 0 && (
             <div>
-              <p className="mb-3 eyebrow">
-                City
-              </p>
+              <p className="mb-3 eyebrow">City</p>
               <div className="flex flex-wrap gap-2">
                 {visibleCities.map((city) => (
                   <button
@@ -145,13 +159,23 @@ export function GalleryArchive({ photos, provinces, cities }: Gallery) {
             <span className="flex items-baseline gap-3">
               <span className="eyebrow">Filter</span>
               <span className="text-sm text-foreground">
-                {selectedCity ? `${selectedCity.name} · ${selectedCity.province}` : filter.region ?? 'All places'}
+                {selectedCity
+                  ? `${selectedCity.name} · ${selectedCity.province}`
+                  : (filter.region ?? 'All places')}
               </span>
             </span>
-            <ChevronDown size={18} aria-hidden="true" className="transition-transform group-open:rotate-180" />
+            <ChevronDown
+              size={18}
+              aria-hidden="true"
+              className="transition-transform group-open:rotate-180"
+            />
           </summary>
           <div className="space-y-5 border-t border-border p-4">
-            <button type="button" className={pillClass(filter.region === null)} onClick={() => selectRegion(null)}>
+            <button
+              type="button"
+              className={pillClass(filter.region === null)}
+              onClick={() => selectRegion(null)}
+            >
               All places
             </button>
             {provinces.map((region) => {
@@ -162,7 +186,9 @@ export function GalleryArchive({ photos, provinces, cities }: Gallery) {
                     type="button"
                     aria-pressed={filter.region === region && filter.city === null}
                     className={`eyebrow w-fit shrink-0 py-1.5 text-left sm:w-32 ${
-                      filter.region === region ? '!text-foreground underline underline-offset-4' : '!text-muted-foreground hover:!text-foreground'
+                      filter.region === region
+                        ? '!text-foreground underline underline-offset-4'
+                        : '!text-muted-foreground hover:!text-foreground'
                     }`}
                     onClick={() => selectRegion(region)}
                   >
@@ -198,7 +224,8 @@ export function GalleryArchive({ photos, provinces, cities }: Gallery) {
             href={selectedCity.href}
             className="mt-4 inline-flex items-center gap-3 eyebrow text-foreground hover:text-primary transition-colors"
           >
-            Open {selectedCity.day === null ? '' : `day ${selectedCity.day} in `}{selectedCity.tripTitle}
+            Open {selectedCity.day === null ? '' : `day ${selectedCity.day} in `}
+            {selectedCity.tripTitle}
             <ArrowRight size={16} aria-hidden="true" />
           </a>
         )}

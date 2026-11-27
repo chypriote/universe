@@ -15,10 +15,21 @@ type Props = { trip: AdminTripDetail; cities: AdminCityDetail[]; activities: Adm
 
 /* Days: each one has its text, a switch and its Photos. */
 
-function Days({ trip, cities, activities, onNotice }: { trip: AdminTripDetail; cities: AdminCityDetail[]; activities: AdminActivity[]; onNotice: (text: string) => void }) {
+function Days({
+  trip,
+  cities,
+  activities,
+  onNotice,
+}: {
+  trip: AdminTripDetail;
+  cities: AdminCityDetail[];
+  activities: AdminActivity[];
+  onNotice: (text: string) => void;
+}) {
   const [days, setDays] = useState(trip.days);
   const [activeId, setActiveId] = useState<number | null>(null);
-  const label = (day: AdminDay) => (day.number === null ? `Hidden ${day.date}` : `Day ${day.number}`);
+  const label = (day: AdminDay) =>
+    day.number === null ? `Hidden ${day.date}` : `Day ${day.number}`;
   const active = days.find((day) => day.id === activeId);
 
   async function toggle(day: AdminDay) {
@@ -39,7 +50,9 @@ function Days({ trip, cities, activities, onNotice }: { trip: AdminTripDetail; c
 
   return (
     <section aria-labelledby="days-title" className="flex flex-col gap-6">
-      <h2 id="days-title" className="sr-only">Days</h2>
+      <h2 id="days-title" className="sr-only">
+        Days
+      </h2>
       <PhotoBoard
         photos={trip.photos}
         days={trip.days}
@@ -79,7 +92,11 @@ function Days({ trip, cities, activities, onNotice }: { trip: AdminTripDetail; c
                     className={`${button} grid size-9 place-items-center !p-0`}
                     onClick={() => void toggle(day)}
                   >
-                    {day.visible ? <Eye aria-hidden="true" className="size-4" /> : <EyeOff aria-hidden="true" className="size-4" />}
+                    {day.visible ? (
+                      <Eye aria-hidden="true" className="size-4" />
+                    ) : (
+                      <EyeOff aria-hidden="true" className="size-4" />
+                    )}
                   </button>
                 }
               />
@@ -109,7 +126,10 @@ export function AdminTripEditor({ trip, cities, activities }: Props) {
   return (
     <div className="flex flex-col gap-8">
       <Toast text={notice} onDone={() => setNotice('')} />
-      <JournalSwitches url={base} switches={[{ key: 'visible', label: 'Visible', on: trip.visible }]} />
+      <JournalSwitches
+        url={base}
+        switches={[{ key: 'visible', label: 'Visible', on: trip.visible }]}
+      />
       <Tabs
         tabs={[
           { id: 'days', label: `Days ${trip.days.length}` },
@@ -126,12 +146,26 @@ export function AdminTripEditor({ trip, cities, activities }: Props) {
               <AddDayForm slug={trip.slug} cities={cities} />
             </div>
           </details>
-          {trip.days.length > 0 && <Days trip={trip} cities={cities} activities={activities} onNotice={setNotice} />}
+          {trip.days.length > 0 && (
+            <Days trip={trip} cities={cities} activities={activities} onNotice={setNotice} />
+          )}
         </>
       ) : (
         <>
-          <Cover base={base} label="Trip Cover" photos={trip.photos} coverId={trip.coverId} coverFocus={trip.coverFocus} onNotice={setNotice} />
-          <Highlights base={base} photos={trip.photos} highlightIds={trip.highlightIds} onNotice={setNotice} />
+          <Cover
+            base={base}
+            label="Trip Cover"
+            photos={trip.photos}
+            coverId={trip.coverId}
+            coverFocus={trip.coverFocus}
+            onNotice={setNotice}
+          />
+          <Highlights
+            base={base}
+            photos={trip.photos}
+            highlightIds={trip.highlightIds}
+            onNotice={setNotice}
+          />
         </>
       )}
     </div>

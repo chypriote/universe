@@ -31,51 +31,81 @@ const sections = headings
   });
 
 const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": guide.data.title,
-  "description": guide.data.description,
-  "url": `${SITE.url}/guides/${guide.id}`
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: guide.data.title,
+  description: guide.data.description,
+  url: `${SITE.url}/guides/${guide.id}`,
 };
 ---
 
 <BaseLayout title={guide.data.title} description={guide.data.description} jsonLd={jsonLd} pandas>
-  <TempleHeader zh={guideZh[guide.id]} title={guide.data.title}>{guide.data.description}</TempleHeader>
+  <TempleHeader zh={guideZh[guide.id]} title={guide.data.title}>
+    {guide.data.description}
+  </TempleHeader>
   <article class="py-12 lg:py-20">
     <Container>
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
         <aside class="lg:col-span-3">
-          <nav id="guide-nav" class="lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto" aria-label="Guides">
-            <a href="/guides" class="eyebrow hover:text-primary-hover hidden lg:inline">Guides</a>
+          <nav
+            id="guide-nav"
+            class="lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto"
+            aria-label="Guides"
+          >
+            <a href="/guides" class="eyebrow hover:text-primary-hover hidden lg:inline">
+              Guides
+            </a>
             <span class="eyebrow lg:hidden">On this page</span>
             <ol class="mt-4 lg:border-t border-border">
-              {guides.map((g) => g.id === guide.id ? (
-                <li class="lg:border-b border-border">
-                  <span class="hidden lg:flex items-baseline gap-3 py-3 font-serif text-lg text-primary">
-                    <span lang="zh" aria-hidden="true" class="font-brush text-gold-ink">{guideZh[g.id]}</span>{g.data.title}
-                  </span>
-                  <ol class="lg:mb-3 ml-1 border-l border-gold-ink/40">
-                    {sections.map((section) => (
-                      <li data-section={section.slug}>
-                        <a href={`#${section.slug}`} class="block -ml-px border-l border-transparent pl-4 py-2 text-sm hover:border-primary hover:text-primary transition-colors">{section.text}</a>
-                        {section.children.length > 0 && (
-                          <ol class="sub hidden pb-1">
-                            {section.children.map((child) => (
-                              <li><a href={`#${child.slug}`} class="block -ml-px border-l border-transparent pl-8 py-1 text-[0.8125rem] text-muted-foreground hover:border-primary hover:text-primary transition-colors" set:html={child.text} /></li>
-                            ))}
-                          </ol>
-                        )}
-                      </li>
-                    ))}
-                  </ol>
-                </li>
-              ) : (
-                <li class="hidden lg:block border-b border-border">
-                  <a href={`/guides/${g.id}`} class="flex items-baseline gap-3 py-3 text-sm text-muted-foreground hover:text-primary transition-colors">
-                    <span lang="zh" aria-hidden="true" class="font-brush text-gold-ink/60">{guideZh[g.id]}</span>{g.data.title}
-                  </a>
-                </li>
-              ))}
+              {guides.map((g) =>
+                g.id === guide.id ? (
+                  <li class="lg:border-b border-border">
+                    <span class="hidden lg:flex items-baseline gap-3 py-3 font-serif text-lg text-primary">
+                      <span lang="zh" aria-hidden="true" class="font-brush text-gold-ink">
+                        {guideZh[g.id]}
+                      </span>
+                      {g.data.title}
+                    </span>
+                    <ol class="lg:mb-3 ml-1 border-l border-gold-ink/40">
+                      {sections.map((section) => (
+                        <li data-section={section.slug}>
+                          <a
+                            href={`#${section.slug}`}
+                            class="block -ml-px border-l border-transparent pl-4 py-2 text-sm hover:border-primary hover:text-primary transition-colors"
+                          >
+                            {section.text}
+                          </a>
+                          {section.children.length > 0 && (
+                            <ol class="sub hidden pb-1">
+                              {section.children.map((child) => (
+                                <li>
+                                  <a
+                                    href={`#${child.slug}`}
+                                    class="block -ml-px border-l border-transparent pl-8 py-1 text-[0.8125rem] text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                                    set:html={child.text}
+                                  />
+                                </li>
+                              ))}
+                            </ol>
+                          )}
+                        </li>
+                      ))}
+                    </ol>
+                  </li>
+                ) : (
+                  <li class="hidden lg:block border-b border-border">
+                    <a
+                      href={`/guides/${g.id}`}
+                      class="flex items-baseline gap-3 py-3 text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <span lang="zh" aria-hidden="true" class="font-brush text-gold-ink/60">
+                        {guideZh[g.id]}
+                      </span>
+                      {g.data.title}
+                    </a>
+                  </li>
+                ),
+              )}
             </ol>
           </nav>
         </aside>
@@ -89,13 +119,31 @@ const jsonLd = {
           <footer class="mt-24 max-w-3xl">
             <div class="bamboo-t mb-20 after:right-auto after:left-[4%] after:-scale-x-100"></div>
             {next ? (
-              <a href={`/guides/${next.id}`} class="group relative ml-auto block w-fit pl-24 text-right">
-                <span lang="zh" aria-hidden="true" class="absolute top-6 right-0 font-brush text-[3.5rem] leading-none whitespace-nowrap text-gold-ink/[0.18] transition-colors group-hover:text-gold-ink/30">{guideZh[next.id]}</span>
-                <span class="relative eyebrow !text-muted-foreground block mb-2 pt-3">Next guide</span>
-                <span class="relative font-serif text-3xl transition-colors group-hover:text-primary">{next.data.title} →</span>
+              <a
+                href={`/guides/${next.id}`}
+                class="group relative ml-auto block w-fit pl-24 text-right"
+              >
+                <span
+                  lang="zh"
+                  aria-hidden="true"
+                  class="absolute top-6 right-0 font-brush text-[3.5rem] leading-none whitespace-nowrap text-gold-ink/[0.18] transition-colors group-hover:text-gold-ink/30"
+                >
+                  {guideZh[next.id]}
+                </span>
+                <span class="relative eyebrow !text-muted-foreground block mb-2 pt-3">
+                  Next guide
+                </span>
+                <span class="relative font-serif text-3xl transition-colors group-hover:text-primary">
+                  {next.data.title} →
+                </span>
               </a>
             ) : (
-              <a href="/guides" class="ml-auto block w-fit font-serif text-2xl transition-colors hover:text-primary">← All guides</a>
+              <a
+                href="/guides"
+                class="ml-auto block w-fit font-serif text-2xl transition-colors hover:text-primary"
+              >
+                ← All guides
+              </a>
             )}
           </footer>
         </div>
@@ -107,11 +155,14 @@ const jsonLd = {
 <script>
   // Open the sub-sections of the section being read and mark it. Without script they all stay shut.
   const items = [...document.querySelectorAll<HTMLElement>('#guide-nav li[data-section]')];
-  const headings = items.map((li) => document.getElementById(li.dataset.section!)).filter((h): h is HTMLElement => !!h);
+  const headings = items
+    .map((li) => document.getElementById(li.dataset.section!))
+    .filter((h): h is HTMLElement => !!h);
 
   function update() {
     let current = headings[0];
-    for (const heading of headings) if (heading.getBoundingClientRect().top < 160) current = heading;
+    for (const heading of headings)
+      if (heading.getBoundingClientRect().top < 160) current = heading;
     for (const li of items) {
       const on = li.dataset.section === current?.id;
       const link = li.querySelector(':scope > a');

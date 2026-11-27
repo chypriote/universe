@@ -23,7 +23,9 @@ export function buildTripCreate(env: { DB: D1Database }): Pick<Journal, 'createT
     if (ids.length > 0) {
       const marks = ids.map(() => '?').join(',');
       copied = (
-        await env.DB.prepare(`SELECT id FROM plan_days WHERE id IN (${marks}) ORDER BY plan_id, position`)
+        await env.DB.prepare(
+          `SELECT id FROM plan_days WHERE id IN (${marks}) ORDER BY plan_id, position`,
+        )
           .bind(...ids)
           .all<{ id: number }>()
       ).results;
@@ -36,7 +38,9 @@ export function buildTripCreate(env: { DB: D1Database }): Pick<Journal, 'createT
     // One batch: a Trip is never left with part of its Days.
     try {
       await env.DB.batch([
-        env.DB.prepare('INSERT INTO trips (slug, title, start_date, end_date, visible) VALUES (?, ?, ?, ?, 0)').bind(slug, title, input.startDate, last),
+        env.DB.prepare(
+          'INSERT INTO trips (slug, title, start_date, end_date, visible) VALUES (?, ?, ?, ?, 0)',
+        ).bind(slug, title, input.startDate, last),
         ...copied.flatMap((day, index) => {
           const position = index + 1;
           return [

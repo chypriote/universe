@@ -3,14 +3,23 @@
 // Inside the grove's box, so the coordinates are the grove's: 160px strip, page height. Poses: src/assets/pandas.
 import { leafPerches, climbX } from './groveGeometry';
 
-const files = import.meta.glob<{ default: ImageMetadata }>('@/assets/pandas/*.svg', { eager: true });
+const files = import.meta.glob<{ default: ImageMetadata }>('@/assets/pandas/*.svg', {
+  eager: true,
+});
 const poses: Record<string, string> = {};
-for (const [path, mod] of Object.entries(files)) poses[path.split('panda-')[1].replace('.svg', '')] = mod.default.src;
+for (const [path, mod] of Object.entries(files))
+  poses[path.split('panda-')[1].replace('.svg', '')] = mod.default.src;
 
 // Standing poses are taller (viewBox 200 × 270) than sitting ones (200 × 236). The jump is left out: it does not rest.
 const resting = [
-  ['sit', 236], ['hug', 236], ['drink', 236], ['shoot', 236], ['hat', 236],
-  ['backpack', 270], ['binoculars', 270], ['staff', 270],
+  ['sit', 236],
+  ['hug', 236],
+  ['drink', 236],
+  ['shoot', 236],
+  ['hat', 236],
+  ['backpack', 270],
+  ['binoculars', 270],
+  ['staff', 270],
 ].map(([name, height]) => ({ src: poses[name as string], height }));
 
 const data = { resting, hang: poses.hang, climbX, perches: leafPerches(10) };
@@ -27,7 +36,11 @@ const data = { resting, hang: poses.hang, climbX, perches: leafPerches(10) };
     const gap = 480;
     const picked = [];
     const free = (y) => picked.every((p) => Math.abs(p - y) >= gap);
-    const shuffle = (list) => list.map((v) => [Math.random(), v]).sort((a, b) => a[0] - b[0]).map((e) => e[1]);
+    const shuffle = (list) =>
+      list
+        .map((v) => [Math.random(), v])
+        .sort((a, b) => a[0] - b[0])
+        .map((e) => e[1]);
 
     const add = (src, left, top, width) => {
       const img = new Image();
@@ -58,6 +71,7 @@ const data = { resting, hang: poses.hang, climbX, perches: leafPerches(10) };
     // The hanging panda's stalk (centre at 177 of 200) lies over the grove's second stalk.
     const hangWidth = 70;
     const hangY = 500 + Math.random() * Math.max(0, limit - 800);
-    if (limit > 800 && free(hangY + 80)) add(hang, climbX - (177 * hangWidth) / 200, hangY, hangWidth);
+    if (limit > 800 && free(hangY + 80))
+      add(hang, climbX - (177 * hangWidth) / 200, hangY, hangWidth);
   })();
 </script>

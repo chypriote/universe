@@ -18,4 +18,9 @@ if (!trip) {
 const cards = await journal.listPlanCards();
 ---
 
-<TripView trip={trip} card={cards.find((entry) => entry.slug === slug)!} others={cards} base="/plans" />
+<TripView
+  trip={trip}
+  card={cards.find((entry) => entry.slug === slug)!}
+  others={cards}
+  base="/plans"
+/>

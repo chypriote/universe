@@ -1,5 +1,13 @@
 /** A row of tabs; the current one has a cinnabar underline. */
-export function Tabs<T extends string>({ tabs, current, onChange }: { tabs: { id: T; label: string }[]; current: T; onChange: (tab: T) => void }) {
+export function Tabs<T extends string>({
+  tabs,
+  current,
+  onChange,
+}: {
+  tabs: { id: T; label: string }[];
+  current: T;
+  onChange: (tab: T) => void;
+}) {
   return (
     <div role="tablist" className="flex flex-wrap gap-6 border-b border-border">
       {tabs.map((tab) => (

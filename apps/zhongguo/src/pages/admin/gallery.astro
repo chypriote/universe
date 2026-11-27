@@ -20,17 +20,50 @@ const [trips, plans, cities, activities] = await Promise.all([
 const params = Astro.url.searchParams;
 
 // Activity pictures, by Province: the Provinces with Activities and their picture counts.
-const activityProvinces = [...new Set(activities.map((activity) => activity.province))].sort((a, b) => a.localeCompare(b));
+const activityProvinces = [...new Set(activities.map((activity) => activity.province))].sort(
+  (a, b) => a.localeCompare(b),
+);
 const picturesIn = (province: string) =>
-  activities.filter((activity) => activity.province === province).reduce((sum, activity) => sum + activity.pictures.length, 0);
-const activityProvince = params.has('activities') ? (activityProvinces.find((name) => name === params.get('activities')) ?? activityProvinces[0] ?? '') : null;
+  activities
+    .filter((activity) => activity.province === province)
+    .reduce((sum, activity) => sum + activity.pictures.length, 0);
+const activityProvince = params.has('activities')
+  ? (activityProvinces.find((name) => name === params.get('activities')) ??
+    activityProvinces[0] ??
+    '')
+  : null;
 
-const plan = activityProvince === null && params.has('plan') ? await journal.getAdminPlan(params.get('plan') ?? '') : null;
-const trip = activityProvince !== null || plan ? undefined : (trips.find((item) => item.slug === params.get('trip')) ?? trips[0]);
-const [photos, provinces] = await Promise.all([trip ? gallery.listAdminPhotos(trip.slug) : null, atlasReads.listProvinces()]);
+const plan =
+  activityProvince === null && params.has('plan')
+    ? await journal.getAdminPlan(params.get('plan') ?? '')
+    : null;
+const trip =
+  activityProvince !== null || plan
+    ? undefined
+    : (trips.find((item) => item.slug === params.get('trip')) ?? trips[0]);
+const [photos, provinces] = await Promise.all([
+  trip ? gallery.listAdminPhotos(trip.slug) : null,
+  atlasReads.listProvinces(),
+]);
 const groups = [
-  { label: 'Trips', items: trips.map((item) => ({ key: `trip=${item.slug}`, title: item.title, count: item.photos, current: item.slug === trip?.slug })) },
-  { label: 'Plans', items: plans.map((item) => ({ key: `plan=${item.slug}`, title: item.title, count: item.photos, current: item.slug === plan?.slug })) },
+  {
+    label: 'Trips',
+    items: trips.map((item) => ({
+      key: `trip=${item.slug}`,
+      title: item.title,
+      count: item.photos,
+      current: item.slug === trip?.slug,
+    })),
+  },
+  {
+    label: 'Plans',
+    items: plans.map((item) => ({
+      key: `plan=${item.slug}`,
+      title: item.title,
+      count: item.photos,
+      current: item.slug === plan?.slug,
+    })),
+  },
 ];
 const allPictures = activities.reduce((sum, activity) => sum + activity.pictures.length, 0);
 const row =
@@ -39,68 +72,94 @@ const row =
 
 <AdminLayout title="Gallery" heading={false}>
   <div class="lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
-    <nav aria-label="Trips, plans and Activity pictures" class="mb-10 flex flex-col gap-6 lg:sticky lg:top-8 lg:mb-0 lg:self-start">
-      {
-        groups.map((group) => (
-          <div class="flex flex-col gap-2">
-            <p class="eyebrow text-muted-foreground">{group.label}</p>
-            <ul class="divide-y divide-border border border-border text-sm">
-              {group.items.length === 0 && <li class="px-3 py-2 text-muted-foreground">None yet</li>}
-              {group.items.map((item) => (
+    <nav
+      aria-label="Trips, plans and Activity pictures"
+      class="mb-10 flex flex-col gap-6 lg:sticky lg:top-8 lg:mb-0 lg:self-start"
+    >
+      {groups.map((group) => (
+        <div class="flex flex-col gap-2">
+          <p class="eyebrow text-muted-foreground">{group.label}</p>
+          <ul class="divide-y divide-border border border-border text-sm">
+            {group.items.length === 0 && <li class="px-3 py-2 text-muted-foreground">None yet</li>}
+            {group.items.map((item) => (
+              <li>
+                <a
+                  href={`/admin/gallery?${item.key}`}
+                  aria-current={item.current ? 'page' : undefined}
+                  class={row}
+                >
+                  <span class="truncate">{item.title}</span>
+                  <span class="text-xs text-muted-foreground">{item.count}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      <div class="flex flex-col gap-2">
+        <p class="eyebrow text-muted-foreground">Activity pictures</p>
+        {activityProvince === null ? (
+          <ul class="border border-border text-sm">
+            <li>
+              <a href="/admin/gallery?activities" class={row}>
+                <span>By Province</span>
+                <span class="text-xs text-muted-foreground">{allPictures}</span>
+              </a>
+            </li>
+          </ul>
+        ) : (
+          <>
+            <GalleryProvinceMap
+              client:load
+              provinces={activityProvinces}
+              current={activityProvince}
+            />
+            <ul class="max-h-80 divide-y divide-border overflow-y-auto border border-border text-sm">
+              {activityProvinces.map((name) => (
                 <li>
-                  <a href={`/admin/gallery?${item.key}`} aria-current={item.current ? 'page' : undefined} class={row}>
-                    <span class="truncate">{item.title}</span>
-                    <span class="text-xs text-muted-foreground">{item.count}</span>
+                  <a
+                    href={`/admin/gallery?activities=${encodeURIComponent(name)}`}
+                    aria-current={name === activityProvince ? 'page' : undefined}
+                    class={row}
+                  >
+                    <span class="truncate">{name}</span>
+                    <span class="text-xs text-muted-foreground">{picturesIn(name)}</span>
                   </a>
                 </li>
               ))}
             </ul>
-          </div>
-        ))
-      }
-      <div class="flex flex-col gap-2">
-        <p class="eyebrow text-muted-foreground">Activity pictures</p>
-        {
-          activityProvince === null ? (
-            <ul class="border border-border text-sm">
-              <li>
-                <a href="/admin/gallery?activities" class={row}>
-                  <span>By Province</span>
-                  <span class="text-xs text-muted-foreground">{allPictures}</span>
-                </a>
-              </li>
-            </ul>
-          ) : (
-            <>
-              <GalleryProvinceMap client:load provinces={activityProvinces} current={activityProvince} />
-              <ul class="max-h-80 divide-y divide-border overflow-y-auto border border-border text-sm">
-                {activityProvinces.map((name) => (
-                  <li>
-                    <a href={`/admin/gallery?activities=${encodeURIComponent(name)}`} aria-current={name === activityProvince ? 'page' : undefined} class={row}>
-                      <span class="truncate">{name}</span>
-                      <span class="text-xs text-muted-foreground">{picturesIn(name)}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )
-        }
+          </>
+        )}
       </div>
     </nav>
     <div class="min-w-0">
-      {
-        activityProvince !== null && (
-          <GalleryActivities client:load province={activityProvince} activities={activities.filter((activity) => activity.province === activityProvince)} />
-        )
-      }
-      {plan && <GalleryPlan client:load plan={{ slug: plan.slug, title: plan.title }} photos={plan.photos} cities={cities} />}
-      {
-        trip && photos && (
-          <GalleryTrip client:load trip={{ slug: trip.slug, title: trip.title }} photos={photos} cities={cities} provinces={provinces} />
-        )
-      }
-      {activityProvince === null && !plan && !trip && <p class="text-muted-foreground">There is no Trip yet.</p>}
+      {activityProvince !== null && (
+        <GalleryActivities
+          client:load
+          province={activityProvince}
+          activities={activities.filter((activity) => activity.province === activityProvince)}
+        />
+      )}
+      {plan && (
+        <GalleryPlan
+          client:load
+          plan={{ slug: plan.slug, title: plan.title }}
+          photos={plan.photos}
+          cities={cities}
+        />
+      )}
+      {trip && photos && (
+        <GalleryTrip
+          client:load
+          trip={{ slug: trip.slug, title: trip.title }}
+          photos={photos}
+          cities={cities}
+          provinces={provinces}
+        />
+      )}
+      {activityProvince === null && !plan && !trip && (
+        <p class="text-muted-foreground">There is no Trip yet.</p>
+      )}
     </div>
   </div>
 </AdminLayout>

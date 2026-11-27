@@ -13,7 +13,11 @@ const plan = (overrides = {}) => ({
   gateways: [{ code: 'PEK', directWeekdays: 0 }],
   ...overrides,
 });
-const search = (outbound: string, price: number | null, overrides: Partial<FlightSearch> = {}): FlightSearch => ({
+const search = (
+  outbound: string,
+  price: number | null,
+  overrides: Partial<FlightSearch> = {},
+): FlightSearch => ({
   airport: 'PEK',
   stops: 'stop',
   price,
@@ -28,13 +32,26 @@ describe('Plan page', () => {
   it('show the 3 cheapest Fare windows of a plan, cheapest first', () => {
     const result = flightPrices(
       [plan()],
-      [search('2027-04-02', 700), search('2027-04-09', 500, { stops: 'nostop' }), search('2027-04-16', 600), search('2027-04-23', 650)],
+      [
+        search('2027-04-02', 700),
+        search('2027-04-09', 500, { stops: 'nostop' }),
+        search('2027-04-16', 600),
+        search('2027-04-23', 650),
+      ],
       cities,
       TODAY,
     );
 
     expect(result.plans[0].windows).toEqual([
-      { airport: 'PEK', city: 'Beijing', outbound: '2027-04-09', return: '2027-04-16', price: 500, direct: true, searchedOn: '2027-01-05' },
+      {
+        airport: 'PEK',
+        city: 'Beijing',
+        outbound: '2027-04-09',
+        return: '2027-04-16',
+        price: 500,
+        direct: true,
+        searchedOn: '2027-01-05',
+      },
       expect.objectContaining({ outbound: '2027-04-16', price: 600, direct: false }),
       expect.objectContaining({ outbound: '2027-04-23', price: 650 }),
     ]);
@@ -42,7 +59,12 @@ describe('Plan page', () => {
   });
 
   it('show a plan with Search flights off without prices, even when prices are stored', () => {
-    const result = flightPrices([plan({ search: false })], [search('2027-04-09', 500)], cities, TODAY);
+    const result = flightPrices(
+      [plan({ search: false })],
+      [search('2027-04-09', 500)],
+      cities,
+      TODAY,
+    );
 
     expect(result.plans[0].windows).toEqual([]);
     expect(result.plans[0].note).toBe('flight search off');
@@ -62,7 +84,9 @@ describe('Plan page', () => {
       TODAY,
     );
 
-    expect(result.plans[0].windows.map((window) => [window.outbound, window.price])).toEqual([['2027-04-02', 800]]);
+    expect(result.plans[0].windows.map((window) => [window.outbound, window.price])).toEqual([
+      ['2027-04-02', 800],
+    ]);
   });
 
   it('order the plans by their cheapest window, plans with no price last by title', () => {
@@ -88,7 +112,12 @@ describe('Plan page', () => {
 
   it('give the runs of start dates that fit, inside the searched range', () => {
     // 5 April Days: one Day may fall outside April.
-    const result = flightPrices([plan({ seasons: Array(5).fill(APRIL) })], [search('2027-04-02', 500, { return_date: '2027-04-07' })], cities, TODAY);
+    const result = flightPrices(
+      [plan({ seasons: Array(5).fill(APRIL) })],
+      [search('2027-04-02', 500, { return_date: '2027-04-07' })],
+      cities,
+      TODAY,
+    );
 
     expect(result).toMatchObject({ first: '2027-03-27', last: '2027-11-10' });
     expect(result.plans[0].fits).toEqual([{ from: '2027-03-31', to: '2027-04-27' }]);

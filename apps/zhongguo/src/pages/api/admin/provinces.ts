@@ -5,4 +5,4 @@ export const prerender = false;
 
 /** The Visited Provinces with their Province Cover. */
 export const GET: APIRoute = async () =>
-	Response.json(await provinceCovers().listVisitedProvinces());
+  Response.json(await provinceCovers().listVisitedProvinces());

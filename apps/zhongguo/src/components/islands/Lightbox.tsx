@@ -2,7 +2,10 @@ import { useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import type { GalleryPhoto } from '@/lib/journal';
 
-export type LightboxPhoto = Pick<GalleryPhoto, 'url' | 'alt' | 'caption' | 'tripTitle' | 'photographer'> &
+export type LightboxPhoto = Pick<
+  GalleryPhoto,
+  'url' | 'alt' | 'caption' | 'tripTitle' | 'photographer'
+> &
   Partial<Pick<GalleryPhoto, 'day' | 'href'>>;
 
 interface LightboxProps {
@@ -102,9 +105,7 @@ export function Lightbox({ photos, index, onIndexChange, onClose }: LightboxProp
           />
         </div>
         <div className="text-center text-dark-foreground max-w-2xl">
-          <p className="font-serif text-2xl mb-2">
-            {selected.caption}
-          </p>
+          <p className="font-serif text-2xl mb-2">{selected.caption}</p>
           <p className="eyebrow text-dark-muted-foreground">
             Photograph by {selected.photographer}
             {selected.day != null && ` · Day ${selected.day}`}
@@ -114,7 +115,8 @@ export function Lightbox({ photos, index, onIndexChange, onClose }: LightboxProp
               href={selected.href}
               className="mt-4 inline-flex items-center gap-2 eyebrow text-primary hover:text-dark-foreground transition-colors"
             >
-              Open {selected.day != null ? `day ${selected.day}` : 'this journey'} in {selected.tripTitle}
+              Open {selected.day != null ? `day ${selected.day}` : 'this journey'} in{' '}
+              {selected.tripTitle}
             </a>
           )}
           <div className="mt-4 flex justify-center gap-1">

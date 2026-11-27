@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import type { AdminProvinceDetail, Airport, CoverCandidate, FocalPoint, VisitedProvince } from '@/lib/journal';
+import type {
+  AdminProvinceDetail,
+  Airport,
+  CoverCandidate,
+  FocalPoint,
+  VisitedProvince,
+} from '@/lib/journal';
 import { fieldClass as field } from './AddCityForm';
 import { FocalFrame } from './FocalFrame';
 
@@ -17,7 +23,8 @@ const ERRORS: Record<string, string> = {
   'no-cover': 'The Province has no chosen cover: reload the page',
   'invalid-focus': 'That position is not valid',
 };
-export const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
+export const button =
+  'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
 const toggle = (on: boolean) =>
   `cursor-pointer border px-2.5 py-1.5 text-sm ${on ? 'border-foreground bg-foreground text-background' : 'border-border bg-surface text-muted-foreground'}`;
 const error = (code?: string) => ERRORS[code ?? ''] ?? code ?? 'The request failed';
@@ -38,14 +45,32 @@ export async function send(url: string, method: string, body?: unknown): Promise
 }
 
 const flip = (list: number[], value: number) =>
-  (list.includes(value) ? list.filter((item) => item !== value) : [...list, value]).sort((a, b) => a - b);
+  (list.includes(value) ? list.filter((item) => item !== value) : [...list, value]).sort(
+    (a, b) => a - b,
+  );
 
 /** Buttons to pick numbers 1…labels.length, pressed when picked. */
-function Picker({ labels, value, onChange, name }: { labels: string[]; value: number[]; onChange: (next: number[]) => void; name: string }) {
+function Picker({
+  labels,
+  value,
+  onChange,
+  name,
+}: {
+  labels: string[];
+  value: number[];
+  onChange: (next: number[]) => void;
+  name: string;
+}) {
   return (
     <div role="group" aria-label={name} className="flex flex-wrap gap-1.5">
       {labels.map((label, index) => (
-        <button key={label} type="button" aria-pressed={value.includes(index + 1)} className={toggle(value.includes(index + 1))} onClick={() => onChange(flip(value, index + 1))}>
+        <button
+          key={label}
+          type="button"
+          aria-pressed={value.includes(index + 1)}
+          className={toggle(value.includes(index + 1))}
+          onClick={() => onChange(flip(value, index + 1))}
+        >
           {label}
         </button>
       ))}
@@ -53,7 +78,13 @@ function Picker({ labels, value, onChange, name }: { labels: string[]; value: nu
   );
 }
 
-function Season({ province, onNotice }: { province: AdminProvinceDetail; onNotice: (text: string) => void }) {
+function Season({
+  province,
+  onNotice,
+}: {
+  province: AdminProvinceDetail;
+  onNotice: (text: string) => void;
+}) {
   const [season, setSeason] = useState(province.season);
   const [busy, setBusy] = useState(false);
 
@@ -66,10 +97,19 @@ function Season({ province, onNotice }: { province: AdminProvinceDetail; onNotic
 
   return (
     <section aria-labelledby="season-title" className="flex flex-col gap-3">
-      <h3 id="season-title" className="eyebrow text-muted-foreground">Season</h3>
-      <p className="text-sm text-muted-foreground">The months when {province.name} is good to visit.</p>
+      <h3 id="season-title" className="eyebrow text-muted-foreground">
+        Season
+      </h3>
+      <p className="text-sm text-muted-foreground">
+        The months when {province.name} is good to visit.
+      </p>
       <Picker labels={MONTHS} value={season} onChange={setSeason} name="Season" />
-      <button type="button" className={`${button} self-start`} disabled={busy} onClick={() => void save()}>
+      <button
+        type="button"
+        className={`${button} self-start`}
+        disabled={busy}
+        onClick={() => void save()}
+      >
         Save Season
       </button>
     </section>
@@ -77,7 +117,13 @@ function Season({ province, onNotice }: { province: AdminProvinceDetail; onNotic
 }
 
 /** The Province Cover of a Visited Province: pick it from the Province's Photos, drag its focal point, or clear it. */
-function Cover({ initial, onNotice }: { initial: VisitedProvince; onNotice: (text: string) => void }) {
+function Cover({
+  initial,
+  onNotice,
+}: {
+  initial: VisitedProvince;
+  onNotice: (text: string) => void;
+}) {
   const [province, setProvince] = useState(initial);
   const [candidates, setCandidates] = useState<CoverCandidate[] | null>(null);
   const [busy, setBusy] = useState(false);
@@ -128,7 +174,9 @@ function Cover({ initial, onNotice }: { initial: VisitedProvince; onNotice: (tex
 
   return (
     <section aria-labelledby="cover-title" className="flex flex-col gap-3">
-      <h3 id="cover-title" className="eyebrow text-muted-foreground">Home cover</h3>
+      <h3 id="cover-title" className="eyebrow text-muted-foreground">
+        Home cover
+      </h3>
       <div className="flex flex-wrap items-start gap-4">
         {province.photo ? (
           <FocalFrame
@@ -145,12 +193,25 @@ function Cover({ initial, onNotice }: { initial: VisitedProvince; onNotice: (tex
           <p className={`eyebrow ${province.fallback ? 'text-muted-foreground' : 'text-gold-ink'}`}>
             {province.fallback ? 'Fallback: first Photo' : 'Chosen cover'}
           </p>
-          {!province.fallback && <p className="text-xs text-muted-foreground">Drag the Photo to choose what shows.</p>}
-          <button type="button" className={button} disabled={busy} aria-expanded={candidates !== null} onClick={() => void open()}>
+          {!province.fallback && (
+            <p className="text-xs text-muted-foreground">Drag the Photo to choose what shows.</p>
+          )}
+          <button
+            type="button"
+            className={button}
+            disabled={busy}
+            aria-expanded={candidates !== null}
+            onClick={() => void open()}
+          >
             {candidates ? 'Close' : 'Pick a cover'}
           </button>
           {!province.fallback && (
-            <button type="button" className={button} disabled={busy} onClick={() => void change('DELETE', 'cover')}>
+            <button
+              type="button"
+              className={button}
+              disabled={busy}
+              onClick={() => void change('DELETE', 'cover')}
+            >
               Clear
             </button>
           )}
@@ -158,7 +219,11 @@ function Cover({ initial, onNotice }: { initial: VisitedProvince; onNotice: (tex
       </div>
       {candidates && (
         <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4 xl:grid-cols-6">
-          {candidates.length === 0 && <li className="col-span-full text-sm text-muted-foreground">No Photo with a City in this Province.</li>}
+          {candidates.length === 0 && (
+            <li className="col-span-full text-sm text-muted-foreground">
+              No Photo with a City in this Province.
+            </li>
+          )}
           {candidates.map((photo) => (
             <li key={photo.id}>
               <button
@@ -169,8 +234,15 @@ function Cover({ initial, onNotice }: { initial: VisitedProvince; onNotice: (tex
                 className="block w-full cursor-pointer border-2 border-transparent text-left aria-pressed:border-primary disabled:cursor-not-allowed disabled:opacity-40"
                 onClick={() => void change('PUT', 'cover', { photoId: photo.id })}
               >
-                <img src={photo.thumb} alt="" loading="lazy" className="aspect-[4/3] w-full bg-surface object-cover" />
-                <span className="mt-1 block truncate text-xs text-muted-foreground">{photo.tripTitle}</span>
+                <img
+                  src={photo.thumb}
+                  alt=""
+                  loading="lazy"
+                  className="aspect-[4/3] w-full bg-surface object-cover"
+                />
+                <span className="mt-1 block truncate text-xs text-muted-foreground">
+                  {photo.tripTitle}
+                </span>
               </button>
             </li>
           ))}
@@ -181,13 +253,26 @@ function Cover({ initial, onNotice }: { initial: VisitedProvince; onNotice: (tex
 }
 
 /** One Airport of a City: its direct weekdays, saved or removed. */
-function AirportRow({ airport, cityId, onNotice, onRemoved }: { airport: Airport; cityId: number; onNotice: (text: string) => void; onRemoved: () => void }) {
+function AirportRow({
+  airport,
+  cityId,
+  onNotice,
+  onRemoved,
+}: {
+  airport: Airport;
+  cityId: number;
+  onNotice: (text: string) => void;
+  onRemoved: () => void;
+}) {
   const [weekdays, setWeekdays] = useState(airport.directWeekdays);
   const [busy, setBusy] = useState(false);
 
   async function save() {
     setBusy(true);
-    const result = await send(`/api/admin/airports/${airport.code}`, 'PUT', { cityId, directWeekdays: weekdays });
+    const result = await send(`/api/admin/airports/${airport.code}`, 'PUT', {
+      cityId,
+      directWeekdays: weekdays,
+    });
     onNotice(result.ok ? `${airport.code} saved` : error(result.error));
     setBusy(false);
   }
@@ -204,32 +289,60 @@ function AirportRow({ airport, cityId, onNotice, onRemoved }: { airport: Airport
   return (
     <li className="flex flex-wrap items-center gap-3">
       <span className="w-12 font-medium tabular-nums">{airport.code}</span>
-      <Picker labels={WEEKDAYS} value={weekdays} onChange={setWeekdays} name={`Direct flights to ${airport.code}`} />
+      <Picker
+        labels={WEEKDAYS}
+        value={weekdays}
+        onChange={setWeekdays}
+        name={`Direct flights to ${airport.code}`}
+      />
       <button type="button" className={button} disabled={busy} onClick={() => void save()}>
         Save
       </button>
-      <button type="button" className={`${button} text-error`} disabled={busy} onClick={() => void remove()}>
+      <button
+        type="button"
+        className={`${button} text-error`}
+        disabled={busy}
+        onClick={() => void remove()}
+      >
         Remove
       </button>
     </li>
   );
 }
 
-function Airports({ province, onNotice }: { province: AdminProvinceDetail; onNotice: (text: string) => void }) {
+function Airports({
+  province,
+  onNotice,
+}: {
+  province: AdminProvinceDetail;
+  onNotice: (text: string) => void;
+}) {
   const [cities, setCities] = useState(province.cities);
   const [drafts, setDrafts] = useState<Record<number, { code: string; weekdays: number[] }>>({});
   const [busy, setBusy] = useState(false);
 
   const setAirports = (cityId: number, change: (airports: Airport[]) => Airport[]) =>
-    setCities((list) => list.map((city) => (city.id === cityId ? { ...city, airports: change(city.airports) } : city)));
+    setCities((list) =>
+      list.map((city) =>
+        city.id === cityId ? { ...city, airports: change(city.airports) } : city,
+      ),
+    );
 
   async function add(cityId: number) {
     const draft = drafts[cityId] ?? { code: '', weekdays: [] };
     setBusy(true);
-    const result = await send(`/api/admin/airports/${encodeURIComponent(draft.code.trim())}`, 'PUT', { cityId, directWeekdays: draft.weekdays });
+    const result = await send(
+      `/api/admin/airports/${encodeURIComponent(draft.code.trim())}`,
+      'PUT',
+      { cityId, directWeekdays: draft.weekdays },
+    );
     if (result.ok && result.airport) {
       const added = result.airport;
-      setAirports(cityId, (airports) => [...airports.filter((item) => item.code !== added.code), added].sort((a, b) => a.code.localeCompare(b.code)));
+      setAirports(cityId, (airports) =>
+        [...airports.filter((item) => item.code !== added.code), added].sort((a, b) =>
+          a.code.localeCompare(b.code),
+        ),
+      );
       setDrafts((current) => ({ ...current, [cityId]: { code: '', weekdays: [] } }));
       onNotice(`${added.code} added`);
     } else {
@@ -240,18 +353,27 @@ function Airports({ province, onNotice }: { province: AdminProvinceDetail; onNot
 
   return (
     <section aria-labelledby="airports-title" className="flex flex-col gap-3">
-      <h3 id="airports-title" className="eyebrow text-muted-foreground">Cities and Airports</h3>
+      <h3 id="airports-title" className="eyebrow text-muted-foreground">
+        Cities and Airports
+      </h3>
       <p className="text-sm text-muted-foreground">
-        An Airport is one with flights from Paris. Pick the weekdays with a direct flight; none means flights with a stop only.
+        An Airport is one with flights from Paris. Pick the weekdays with a direct flight; none
+        means flights with a stop only.
       </p>
-      {cities.length === 0 && <p className="text-sm text-muted-foreground">No City in {province.name} yet.</p>}
+      {cities.length === 0 && (
+        <p className="text-sm text-muted-foreground">No City in {province.name} yet.</p>
+      )}
       <ul className="flex flex-col divide-y divide-border border border-border">
         {cities.map((city) => {
           const draft = drafts[city.id] ?? { code: '', weekdays: [] };
-          const setDraft = (next: Partial<typeof draft>) => setDrafts((current) => ({ ...current, [city.id]: { ...draft, ...next } }));
+          const setDraft = (next: Partial<typeof draft>) =>
+            setDrafts((current) => ({ ...current, [city.id]: { ...draft, ...next } }));
           return (
             <li key={city.id} className="flex flex-col gap-3 p-4">
-              <a href={`/admin/atlas?city=${city.id}`} className="font-serif text-xl hover:text-primary">
+              <a
+                href={`/admin/atlas?city=${city.id}`}
+                className="font-serif text-xl hover:text-primary"
+              >
                 {city.name} <span lang="zh">{city.nameZh}</span>
               </a>
               <ul className="flex flex-col gap-2">
@@ -262,7 +384,9 @@ function Airports({ province, onNotice }: { province: AdminProvinceDetail; onNot
                     cityId={city.id}
                     onNotice={onNotice}
                     onRemoved={() => {
-                      setAirports(city.id, (airports) => airports.filter((item) => item.code !== airport.code));
+                      setAirports(city.id, (airports) =>
+                        airports.filter((item) => item.code !== airport.code),
+                      );
                       onNotice(`${airport.code} removed`);
                     }}
                   />
@@ -284,7 +408,12 @@ function Airports({ province, onNotice }: { province: AdminProvinceDetail; onNot
                   onChange={(event) => setDraft({ code: event.target.value.toUpperCase() })}
                   className={`${field} w-20 uppercase`}
                 />
-                <Picker labels={WEEKDAYS} value={draft.weekdays} onChange={(weekdays) => setDraft({ weekdays })} name={`Direct flights to the new Airport of ${city.name}`} />
+                <Picker
+                  labels={WEEKDAYS}
+                  value={draft.weekdays}
+                  onChange={(weekdays) => setDraft({ weekdays })}
+                  name={`Direct flights to the new Airport of ${city.name}`}
+                />
                 <button type="submit" className={button} disabled={busy}>
                   Add Airport
                 </button>
@@ -298,12 +427,24 @@ function Airports({ province, onNotice }: { province: AdminProvinceDetail; onNot
 }
 
 /** The Overview of a Province in the Atlas: its Season, its home cover when visited, its Cities and their Airports. */
-export function ProvinceOverview({ province, visited, onNotice }: { province: AdminProvinceDetail; visited?: VisitedProvince; onNotice: (text: string) => void }) {
+export function ProvinceOverview({
+  province,
+  visited,
+  onNotice,
+}: {
+  province: AdminProvinceDetail;
+  visited?: VisitedProvince;
+  onNotice: (text: string) => void;
+}) {
   return (
     <div className="grid gap-10 xl:grid-cols-2">
       <div className="flex flex-col gap-10">
         <Season province={province} onNotice={onNotice} />
-        {visited ? <Cover initial={visited} onNotice={onNotice} /> : <p className="text-sm text-muted-foreground">Not a Visited Province: no home cover.</p>}
+        {visited ? (
+          <Cover initial={visited} onNotice={onNotice} />
+        ) : (
+          <p className="text-sm text-muted-foreground">Not a Visited Province: no home cover.</p>
+        )}
       </div>
       <Airports province={province} onNotice={onNotice} />
     </div>

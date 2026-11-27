@@ -1,5 +1,12 @@
 // What the Plan page shows: per plan, the start dates that fit it and its 3 cheapest Fare windows.
-import { addDays, fareWindows, fitsPlan, searchRange, windowKey, type Plan } from '../../scripts/fare-windows.js';
+import {
+  addDays,
+  fareWindows,
+  fitsPlan,
+  searchRange,
+  windowKey,
+  type Plan,
+} from '../../scripts/fare-windows.js';
 
 /** A stored Flight search, as `flight_searches` holds it. */
 export type FlightSearch = {
@@ -32,7 +39,11 @@ export type PlanLane = {
   /** Its 3 cheapest Fare windows, cheapest first; none until searched. */
   windows: PricedWindow[];
   /** Why it has no window yet. */
-  note?: 'no Airport in its Cities' | 'no start date in season' | 'not searched yet' | 'flight search off';
+  note?:
+    | 'no Airport in its Cities'
+    | 'no start date in season'
+    | 'not searched yet'
+    | 'flight search off';
 };
 
 export type FlightPrices = {
@@ -47,11 +58,20 @@ const SHOWN = 3;
  * @param cities City name by Airport code.
  * @param today YYYY-MM-DD.
  */
-export function flightPrices(trips: Plan[], searches: FlightSearch[], cities: Map<string, string>, today: string): FlightPrices {
+export function flightPrices(
+  trips: Plan[],
+  searches: FlightSearch[],
+  cities: Map<string, string>,
+  today: string,
+): FlightPrices {
   const { first, last } = searchRange(today);
   const latest = new Map<string, FlightSearch>();
   for (const search of searches) {
-    const key = windowKey({ airport: search.airport, outbound: search.outbound_date, return: search.return_date });
+    const key = windowKey({
+      airport: search.airport,
+      outbound: search.outbound_date,
+      return: search.return_date,
+    });
     const current = latest.get(key);
     if (!current || search.created_at > current.created_at) latest.set(key, search);
   }
@@ -61,11 +81,14 @@ export function flightPrices(trips: Plan[], searches: FlightSearch[], cities: Ma
     const title = plan.title ?? plan.slug;
     if (plan.seasons.length === 0) continue;
     const windows = fareWindows([plan], today);
-    const found = plan.search === false ? [] : windows
-      .map((window) => latest.get(windowKey(window)))
-      .filter((search): search is FlightSearch & { price: number } => search?.price != null)
-      .sort((a, b) => a.price - b.price || a.outbound_date.localeCompare(b.outbound_date))
-      .slice(0, SHOWN);
+    const found =
+      plan.search === false
+        ? []
+        : windows
+            .map((window) => latest.get(windowKey(window)))
+            .filter((search): search is FlightSearch & { price: number } => search?.price != null)
+            .sort((a, b) => a.price - b.price || a.outbound_date.localeCompare(b.outbound_date))
+            .slice(0, SHOWN);
     const lane: PlanLane = {
       slug: plan.slug,
       title,
@@ -96,7 +119,8 @@ export function flightPrices(trips: Plan[], searches: FlightSearch[], cities: Ma
   }
   plans.sort(
     (a, b) =>
-      (a.windows[0]?.price ?? Infinity) - (b.windows[0]?.price ?? Infinity) || a.title.localeCompare(b.title),
+      (a.windows[0]?.price ?? Infinity) - (b.windows[0]?.price ?? Infinity) ||
+      a.title.localeCompare(b.title),
   );
   return { first, last, plans };
 }

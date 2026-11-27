@@ -6,7 +6,9 @@ const wranglerConfig = new URL('../wrangler.jsonc', import.meta.url);
 const envFile = new URL('../.env', import.meta.url);
 
 function configValue(key) {
-  const value = readFileSync(wranglerConfig, 'utf8').match(new RegExp(`"${key}":\\s*"([^"]+)"`))?.[1];
+  const value = readFileSync(wranglerConfig, 'utf8').match(
+    new RegExp(`"${key}":\\s*"([^"]+)"`),
+  )?.[1];
   if (!value) throw new Error(`${key} is missing from wrangler.jsonc.`);
   return value;
 }
@@ -15,7 +17,9 @@ export async function d1Query(sql, params = []) {
   if (!process.env.D1_API_TOKEN && existsSync(envFile)) process.loadEnvFile(envFile);
   const token = process.env.D1_API_TOKEN;
   if (!token) {
-    throw new Error('D1_API_TOKEN is not set. It is the Cloudflare API token with D1 access (README.md).');
+    throw new Error(
+      'D1_API_TOKEN is not set. It is the Cloudflare API token with D1 access (README.md).',
+    );
   }
   const url = `https://api.cloudflare.com/client/v4/accounts/${configValue('account_id')}/d1/database/${configValue('database_id')}/query`;
   const res = await fetch(url, {

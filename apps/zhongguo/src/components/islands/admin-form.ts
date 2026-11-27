@@ -28,9 +28,17 @@ export const MESSAGES: Record<string, string> = {
 
 export const message = (error = '') => MESSAGES[error] ?? error ?? 'Not saved';
 
-export async function save(method: string, url: string, body: unknown): Promise<{ ok: boolean; error?: string; [key: string]: unknown }> {
+export async function save(
+  method: string,
+  url: string,
+  body: unknown,
+): Promise<{ ok: boolean; error?: string; [key: string]: unknown }> {
   try {
-    const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
     return await response.json();
   } catch {
     return { ok: false, error: 'The request failed' };
@@ -38,7 +46,8 @@ export async function save(method: string, url: string, body: unknown): Promise<
 }
 
 export const field = 'border border-border bg-surface px-3 py-2 text-sm text-foreground';
-export const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:pointer-events-none disabled:opacity-40';
+export const button =
+  'btn btn-outline cursor-pointer !px-4 !py-2 disabled:pointer-events-none disabled:opacity-40';
 
 /** A .webp thumbnail: 960 px wide for a landscape Photo, 480 px otherwise, never enlarged. */
 export async function makeThumb(file: File): Promise<Blob> {
@@ -50,6 +59,10 @@ export async function makeThumb(file: File): Promise<Blob> {
   canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
   return new Promise((resolve, reject) =>
-    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('The browser cannot make a thumbnail'))), 'image/webp', 0.8),
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error('The browser cannot make a thumbnail'))),
+      'image/webp',
+      0.8,
+    ),
   );
 }

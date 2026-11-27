@@ -1,6 +1,7 @@
 import { tableTitleZh } from '../data/guide-zh.ts';
 
-const text = (node) => (node.type === 'text' ? node.value : (node.children ?? []).map(text).join(''));
+const text = (node) =>
+  node.type === 'text' ? node.value : (node.children ?? []).map(text).join('');
 
 /**
  * Remark plugin: gives the guide title (h2 or h3) right above each table a `data-zh` attribute
@@ -15,7 +16,8 @@ export default function remarkTableZh() {
       if (node.type === 'heading' && node.depth <= 3) title = node;
       if (node.type !== 'table' || !title) continue;
       const zh = tableTitleZh[text(title).trim()];
-      if (zh) title.data = { ...title.data, hProperties: { ...title.data?.hProperties, 'data-zh': zh } };
+      if (zh)
+        title.data = { ...title.data, hProperties: { ...title.data?.hProperties, 'data-zh': zh } };
     }
   };
 }

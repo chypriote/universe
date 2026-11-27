@@ -5,7 +5,9 @@ type Switch = { key: string; label: string; on: boolean };
 
 /** The on/off switches of a Trip or plan, saved one at a time to its API path. */
 export function JournalSwitches({ url, switches }: { url: string; switches: Switch[] }) {
-  const [values, setValues] = useState(Object.fromEntries(switches.map((item) => [item.key, item.on])));
+  const [values, setValues] = useState(
+    Object.fromEntries(switches.map((item) => [item.key, item.on])),
+  );
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
 

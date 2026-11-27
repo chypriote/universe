@@ -78,8 +78,14 @@ describe('Day Photos', () => {
     const a = await addPhoto(trip, '2025-03-01', { name: 'a.jpg' });
     const foreign = await addPhoto(other, '2025-03-01', { name: 'f.jpg' });
 
-    expect(await journal.setDayPhotos(day1, [a, foreign])).toEqual({ ok: false, error: 'unknown-photo' });
-    expect(await journal.setDayPhotos(day1, [a, a])).toEqual({ ok: false, error: 'duplicate-photo' });
+    expect(await journal.setDayPhotos(day1, [a, foreign])).toEqual({
+      ok: false,
+      error: 'unknown-photo',
+    });
+    expect(await journal.setDayPhotos(day1, [a, a])).toEqual({
+      ok: false,
+      error: 'duplicate-photo',
+    });
     expect(await journal.setDayPhotos(9999, [a])).toEqual({ ok: false, error: 'unknown-day' });
     const page = await journal.getTrip('sichuan');
     expect(names(page!.days[0].photos)).toEqual(['a.jpg']);
@@ -150,7 +156,9 @@ describe('Trip on or off', () => {
     await addPhoto(hidden, '2025-04-01');
     await addTrip({ slug: 'empty', start: null, end: null });
 
-    const photos = Object.fromEntries((await journal.listAdminTrips()).map((item) => [item.slug, item.photos]));
+    const photos = Object.fromEntries(
+      (await journal.listAdminTrips()).map((item) => [item.slug, item.photos]),
+    );
 
     expect(photos).toEqual({ sichuan: 3, hidden: 1, empty: 0 });
   });
@@ -175,7 +183,10 @@ describe('Trip on or off', () => {
   });
 
   it('refuses an unknown Trip', async () => {
-    expect(await journal.setTripVisible('nope', false)).toEqual({ ok: false, error: 'unknown-trip' });
+    expect(await journal.setTripVisible('nope', false)).toEqual({
+      ok: false,
+      error: 'unknown-trip',
+    });
   });
 });
 
@@ -186,7 +197,8 @@ describe('Day on or off', () => {
     const photo = await addPhoto(trip, '2025-03-02', { name: 'rain.jpg', cityId: chengdu });
     return { trip, chengdu, day3, photo };
   }
-  const numbers = async () => (await journal.getTrip('sichuan'))!.days.map((day) => [day.number, day.date]);
+  const numbers = async () =>
+    (await journal.getTrip('sichuan'))!.days.map((day) => [day.number, day.date]);
 
   it('renumbers the other Days when hidden, keeps its date and Photos, and numbers back when shown', async () => {
     const { photo } = await threeDays();
@@ -200,7 +212,12 @@ describe('Day on or off', () => {
       [2, '2025-03-03'],
     ]);
     const hidden = (await journal.getAdminTrip('sichuan'))!.days[1];
-    expect(hidden).toMatchObject({ date: '2025-03-02', visible: false, number: null, photoIds: [photo] });
+    expect(hidden).toMatchObject({
+      date: '2025-03-02',
+      visible: false,
+      number: null,
+      photoIds: [photo],
+    });
     expect((await journal.getGallery()).photos).toEqual([]);
 
     await journal.setDayVisible(pandas, true);
@@ -226,7 +243,9 @@ describe('Trip Cover', () => {
     expect(await journal.setTripCover('sichuan', photo)).toEqual({ ok: true });
 
     expect((await journal.getAdminTrip('sichuan'))?.coverId).toBe(photo);
-    expect((await journal.listTripCards())[0].cover).toBe('https://photos.test/thumbs/sichuan/wide.jpg.webp');
+    expect((await journal.listTripCards())[0].cover).toBe(
+      'https://photos.test/thumbs/sichuan/wide.jpg.webp',
+    );
   });
 
   it('refuses a portrait or square Photo, a Photo of another Trip and an unknown Trip', async () => {
@@ -236,9 +255,18 @@ describe('Trip Cover', () => {
     const square = await addPhoto(trip, '2025-03-01', { width: 3000, height: 3000 });
     const foreign = await addPhoto(other, '2025-03-01');
 
-    expect(await journal.setTripCover('sichuan', tall)).toEqual({ ok: false, error: 'not-landscape' });
-    expect(await journal.setTripCover('sichuan', square)).toEqual({ ok: false, error: 'not-landscape' });
-    expect(await journal.setTripCover('sichuan', foreign)).toEqual({ ok: false, error: 'unknown-photo' });
+    expect(await journal.setTripCover('sichuan', tall)).toEqual({
+      ok: false,
+      error: 'not-landscape',
+    });
+    expect(await journal.setTripCover('sichuan', square)).toEqual({
+      ok: false,
+      error: 'not-landscape',
+    });
+    expect(await journal.setTripCover('sichuan', foreign)).toEqual({
+      ok: false,
+      error: 'unknown-photo',
+    });
     expect(await journal.setTripCover('nope', tall)).toEqual({ ok: false, error: 'unknown-trip' });
     expect((await journal.getAdminTrip('sichuan'))?.coverId).toBeNull();
   });
@@ -265,11 +293,23 @@ describe('Trip Cover position', () => {
     const { trip } = await sichuanTrip();
     const photo = await addPhoto(trip, '2025-03-01');
 
-    expect(await journal.setTripCoverFocus('sichuan', 10, 10)).toEqual({ ok: false, error: 'no-cover' });
+    expect(await journal.setTripCoverFocus('sichuan', 10, 10)).toEqual({
+      ok: false,
+      error: 'no-cover',
+    });
     await journal.setTripCover('sichuan', photo);
-    expect(await journal.setTripCoverFocus('sichuan', -1, 10)).toEqual({ ok: false, error: 'invalid-focus' });
-    expect(await journal.setTripCoverFocus('sichuan', 10, 101)).toEqual({ ok: false, error: 'invalid-focus' });
-    expect(await journal.setTripCoverFocus('nope', 10, 10)).toEqual({ ok: false, error: 'unknown-trip' });
+    expect(await journal.setTripCoverFocus('sichuan', -1, 10)).toEqual({
+      ok: false,
+      error: 'invalid-focus',
+    });
+    expect(await journal.setTripCoverFocus('sichuan', 10, 101)).toEqual({
+      ok: false,
+      error: 'invalid-focus',
+    });
+    expect(await journal.setTripCoverFocus('nope', 10, 10)).toEqual({
+      ok: false,
+      error: 'unknown-trip',
+    });
     expect((await journal.getAdminTrip('sichuan'))?.coverFocus).toEqual({ x: 50, y: 50 });
   });
 });
@@ -279,7 +319,9 @@ describe('Highlight Photos', () => {
     const { trip } = await sichuanTrip();
     const ids: number[] = [];
     for (let i = 1; i <= count; i++) {
-      ids.push(await addPhoto(trip, '2025-03-01', { name: `p${i}.jpg`, width: 3000, height: 4000 }));
+      ids.push(
+        await addPhoto(trip, '2025-03-01', { name: `p${i}.jpg`, width: 3000, height: 4000 }),
+      );
     }
     return { trip, ids };
   }
@@ -290,30 +332,57 @@ describe('Highlight Photos', () => {
 
     expect(await journal.setHighlightPhotos('sichuan', order)).toEqual({ ok: true });
     expect((await journal.getAdminTrip('sichuan'))?.highlightIds).toEqual(order);
-    expect((await journal.listTripCards())[0].highlights.map((url) => url.split('/').pop())).toEqual([
-      'p4.jpg.webp',
-      'p1.jpg.webp',
-      'p5.jpg.webp',
-      'p2.jpg.webp',
-    ]);
+    expect(
+      (await journal.listTripCards())[0].highlights.map((url) => url.split('/').pop()),
+    ).toEqual(['p4.jpg.webp', 'p1.jpg.webp', 'p5.jpg.webp', 'p2.jpg.webp']);
 
     await journal.setHighlightPhotos('sichuan', [ids[1], ids[2], ids[3], ids[4]]);
-    expect((await journal.getAdminTrip('sichuan'))?.highlightIds).toEqual([ids[1], ids[2], ids[3], ids[4]]);
+    expect((await journal.getAdminTrip('sichuan'))?.highlightIds).toEqual([
+      ids[1],
+      ids[2],
+      ids[3],
+      ids[4],
+    ]);
   });
 
   it('refuse a count other than 4, a duplicate, a landscape or square Photo, and keep the old ones', async () => {
     const { trip, ids } = await portraits(4);
     const wide = await addPhoto(trip, '2025-03-01', { name: 'wide.jpg' });
-    const square = await addPhoto(trip, '2025-03-01', { name: 'sq.jpg', width: 3000, height: 3000 });
+    const square = await addPhoto(trip, '2025-03-01', {
+      name: 'sq.jpg',
+      width: 3000,
+      height: 3000,
+    });
     await journal.setHighlightPhotos('sichuan', ids);
 
-    expect(await journal.setHighlightPhotos('sichuan', ids.slice(0, 3))).toEqual({ ok: false, error: 'wrong-count' });
-    expect(await journal.setHighlightPhotos('sichuan', [...ids, wide])).toEqual({ ok: false, error: 'wrong-count' });
-    expect(await journal.setHighlightPhotos('sichuan', [ids[0], ids[0], ids[1], ids[2]])).toEqual({ ok: false, error: 'duplicate-photo' });
-    expect(await journal.setHighlightPhotos('sichuan', [ids[0], ids[1], ids[2], wide])).toEqual({ ok: false, error: 'not-portrait' });
-    expect(await journal.setHighlightPhotos('sichuan', [ids[0], ids[1], ids[2], square])).toEqual({ ok: false, error: 'not-portrait' });
-    expect(await journal.setHighlightPhotos('sichuan', [ids[0], ids[1], ids[2], 9999])).toEqual({ ok: false, error: 'unknown-photo' });
-    expect(await journal.setHighlightPhotos('nope', ids)).toEqual({ ok: false, error: 'unknown-trip' });
+    expect(await journal.setHighlightPhotos('sichuan', ids.slice(0, 3))).toEqual({
+      ok: false,
+      error: 'wrong-count',
+    });
+    expect(await journal.setHighlightPhotos('sichuan', [...ids, wide])).toEqual({
+      ok: false,
+      error: 'wrong-count',
+    });
+    expect(await journal.setHighlightPhotos('sichuan', [ids[0], ids[0], ids[1], ids[2]])).toEqual({
+      ok: false,
+      error: 'duplicate-photo',
+    });
+    expect(await journal.setHighlightPhotos('sichuan', [ids[0], ids[1], ids[2], wide])).toEqual({
+      ok: false,
+      error: 'not-portrait',
+    });
+    expect(await journal.setHighlightPhotos('sichuan', [ids[0], ids[1], ids[2], square])).toEqual({
+      ok: false,
+      error: 'not-portrait',
+    });
+    expect(await journal.setHighlightPhotos('sichuan', [ids[0], ids[1], ids[2], 9999])).toEqual({
+      ok: false,
+      error: 'unknown-photo',
+    });
+    expect(await journal.setHighlightPhotos('nope', ids)).toEqual({
+      ok: false,
+      error: 'unknown-trip',
+    });
     expect((await journal.getAdminTrip('sichuan'))?.highlightIds).toEqual(ids);
   });
 });
@@ -322,7 +391,9 @@ describe('Edit Day', () => {
   it('changes the title and notes', async () => {
     const { day1 } = await sichuanTrip();
 
-    expect(await journal.editDay({ dayId: day1, title: '  Landing ', notes: 'Hotpot.' })).toEqual({ ok: true });
+    expect(await journal.editDay({ dayId: day1, title: '  Landing ', notes: 'Hotpot.' })).toEqual({
+      ok: true,
+    });
 
     const page = await journal.getTrip('sichuan');
     expect(page!.days[0]).toMatchObject({ title: 'Landing', notes: 'Hotpot.' });
@@ -336,15 +407,28 @@ describe('Edit Day', () => {
     await journal.editDay({ dayId: day2, cityId: lanzhou });
 
     expect((await journal.getHomeMap()).map((province) => province.name)).toEqual(['Gansu']);
-    expect((await journal.getAdminTrip('sichuan'))?.days[0]).toMatchObject({ city: { name: 'Lanzhou' }, province: 'Gansu' });
+    expect((await journal.getAdminTrip('sichuan'))?.days[0]).toMatchObject({
+      city: { name: 'Lanzhou' },
+      province: 'Gansu',
+    });
   });
 
   it('sets the Cities of the Day in travel order, one of them the main City', async () => {
     const { day1, lanzhou, chengdu } = await sichuanTrip();
 
-    expect(await journal.editDay({ dayId: day1, cityId: chengdu, routeCityIds: [lanzhou, chengdu, lanzhou] })).toEqual({ ok: true });
-    expect((await journal.getAdminTrip('sichuan'))?.days[0].route.map((city) => city.name)).toEqual(['Lanzhou', 'Chengdu', 'Lanzhou']);
-    expect((await journal.getTrip('sichuan'))?.days[0].cities.map((city) => [city.name, city.main])).toEqual([
+    expect(
+      await journal.editDay({
+        dayId: day1,
+        cityId: chengdu,
+        routeCityIds: [lanzhou, chengdu, lanzhou],
+      }),
+    ).toEqual({ ok: true });
+    expect((await journal.getAdminTrip('sichuan'))?.days[0].route.map((city) => city.name)).toEqual(
+      ['Lanzhou', 'Chengdu', 'Lanzhou'],
+    );
+    expect(
+      (await journal.getTrip('sichuan'))?.days[0].cities.map((city) => [city.name, city.main]),
+    ).toEqual([
       ['Lanzhou', false],
       ['Chengdu', true],
       ['Lanzhou', false],
@@ -352,7 +436,9 @@ describe('Edit Day', () => {
 
     await journal.editDay({ dayId: day1, routeCityIds: [] });
     expect((await journal.getAdminTrip('sichuan'))?.days[0].route).toEqual([]);
-    expect((await journal.getTrip('sichuan'))?.days[0].cities.map((city) => city.name)).toEqual(['Chengdu']);
+    expect((await journal.getTrip('sichuan'))?.days[0].cities.map((city) => city.name)).toEqual([
+      'Chengdu',
+    ]);
   });
 
   it('moves the main City along a route, and refuses one that is not on it', async () => {
@@ -360,21 +446,38 @@ describe('Edit Day', () => {
     await journal.editDay({ dayId: day1, cityId: chengdu, routeCityIds: [lanzhou, chengdu] });
 
     expect(await journal.editDay({ dayId: day1, cityId: lanzhou })).toEqual({ ok: true });
-    expect((await journal.getTrip('sichuan'))?.days[0].cities.map((city) => [city.name, city.main])).toEqual([
+    expect(
+      (await journal.getTrip('sichuan'))?.days[0].cities.map((city) => [city.name, city.main]),
+    ).toEqual([
       ['Lanzhou', true],
       ['Chengdu', false],
     ]);
 
-    expect(await journal.editDay({ dayId: day1, routeCityIds: [chengdu, chengdu] })).toEqual({ ok: false, error: 'main-not-on-route' });
-    expect(await journal.editDay({ dayId: day1, routeCityIds: [9999, lanzhou] })).toEqual({ ok: false, error: 'unknown-city' });
+    expect(await journal.editDay({ dayId: day1, routeCityIds: [chengdu, chengdu] })).toEqual({
+      ok: false,
+      error: 'main-not-on-route',
+    });
+    expect(await journal.editDay({ dayId: day1, routeCityIds: [9999, lanzhou] })).toEqual({
+      ok: false,
+      error: 'unknown-city',
+    });
   });
 
   it('refuses an unknown Day or City and a blank title, changing nothing', async () => {
     const { day1 } = await sichuanTrip();
 
-    expect(await journal.editDay({ dayId: 9999, title: 'x' })).toEqual({ ok: false, error: 'unknown-day' });
-    expect(await journal.editDay({ dayId: day1, title: 'x', cityId: 9999 })).toEqual({ ok: false, error: 'unknown-city' });
-    expect(await journal.editDay({ dayId: day1, title: '  ' })).toEqual({ ok: false, error: 'invalid-title' });
+    expect(await journal.editDay({ dayId: 9999, title: 'x' })).toEqual({
+      ok: false,
+      error: 'unknown-day',
+    });
+    expect(await journal.editDay({ dayId: day1, title: 'x', cityId: 9999 })).toEqual({
+      ok: false,
+      error: 'unknown-city',
+    });
+    expect(await journal.editDay({ dayId: day1, title: '  ' })).toEqual({
+      ok: false,
+      error: 'invalid-title',
+    });
     expect((await journal.getAdminTrip('sichuan'))?.days[0].title).toBe('Arrival');
   });
 });

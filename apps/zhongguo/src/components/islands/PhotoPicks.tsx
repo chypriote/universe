@@ -13,7 +13,13 @@ import {
   type DragOverEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
-import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
@@ -36,7 +42,14 @@ function useDndSensors() {
 }
 
 function Thumb({ photo, className = '' }: { photo: Tile; className?: string }) {
-  return <img src={photo.thumb} alt={photo.name} draggable={false} className={`pointer-events-none bg-surface object-cover ${className}`} />;
+  return (
+    <img
+      src={photo.thumb}
+      alt={photo.name}
+      draggable={false}
+      className={`pointer-events-none bg-surface object-cover ${className}`}
+    />
+  );
 }
 
 /* Highlight Photos: 4 slots, filled by dragging portrait Photos from the pool. */
@@ -44,13 +57,26 @@ function Thumb({ photo, className = '' }: { photo: Tile; className?: string }) {
 function Draggable({ id, children }: { id: string; children: ReactNode }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id });
   return (
-    <div ref={setNodeRef} {...attributes} {...listeners} className={`${handle} ${isDragging ? 'opacity-40' : ''}`}>
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      className={`${handle} ${isDragging ? 'opacity-40' : ''}`}
+    >
       {children}
     </div>
   );
 }
 
-function Droppable({ id, className, children }: { id: string; className: string; children: ReactNode }) {
+function Droppable({
+  id,
+  className,
+  children,
+}: {
+  id: string;
+  className: string;
+  children: ReactNode;
+}) {
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
     <div ref={setNodeRef} className={`${className} ${isOver ? 'border-primary' : ''}`}>
@@ -66,11 +92,18 @@ type PickProps = {
   onNotice: (text: string) => void;
 };
 
-export function Highlights({ base, photos, highlightIds, onNotice }: PickProps & { highlightIds: number[] }) {
+export function Highlights({
+  base,
+  photos,
+  highlightIds,
+  onNotice,
+}: PickProps & { highlightIds: number[] }) {
   const portraits = photos.filter((photo) => photo.orientation === 'portrait');
   const byId = new Map(portraits.map((photo) => [photo.id, photo]));
   const [slots, setSlots] = useState<(number | null)[]>(() =>
-    Array.from({ length: 4 }, (_, index) => (byId.has(highlightIds[index]) ? highlightIds[index] : null)),
+    Array.from({ length: 4 }, (_, index) =>
+      byId.has(highlightIds[index]) ? highlightIds[index] : null,
+    ),
   );
   const [active, setActive] = useState<number | null>(null);
   const sensors = useDndSensors();
@@ -94,7 +127,8 @@ export function Highlights({ base, photos, highlightIds, onNotice }: PickProps &
     const previous = slots;
     setSlots(next);
     const filled = next.filter((id): id is number => id !== null);
-    if (filled.length < 4) return onNotice(`${filled.length} of 4 Highlight Photos picked: pick 4 to save`);
+    if (filled.length < 4)
+      return onNotice(`${filled.length} of 4 Highlight Photos picked: pick 4 to save`);
     const result = await save('PUT', `${base}/highlights`, { photoIds: filled });
     if (!result.ok) setSlots(previous);
     onNotice(result.ok ? 'Highlight Photos saved' : message(result.error));
@@ -102,12 +136,18 @@ export function Highlights({ base, photos, highlightIds, onNotice }: PickProps &
 
   return (
     <section aria-labelledby="highlights-title" className="flex flex-col gap-4">
-      <h2 id="highlights-title" className="font-serif text-2xl">Highlight Photos</h2>
-      <p className="text-sm text-muted-foreground">Drag 4 portrait Photos into the slots. Drag between slots to reorder.</p>
+      <h2 id="highlights-title" className="font-serif text-2xl">
+        Highlight Photos
+      </h2>
+      <p className="text-sm text-muted-foreground">
+        Drag 4 portrait Photos into the slots. Drag between slots to reorder.
+      </p>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
-        onDragStart={({ active: dragged }: DragStartEvent) => setActive(Number(String(dragged.id).replace('photo-', '')))}
+        onDragStart={({ active: dragged }: DragStartEvent) =>
+          setActive(Number(String(dragged.id).replace('photo-', '')))
+        }
         onDragEnd={(event) => void onDragEnd(event)}
         onDragCancel={() => setActive(null)}
       >
@@ -115,7 +155,11 @@ export function Highlights({ base, photos, highlightIds, onNotice }: PickProps &
           {slots.map((photoId, index) => {
             const photo = photoId === null ? undefined : byId.get(photoId);
             return (
-              <Droppable key={index} id={`slot-${index}`} className="flex aspect-[3/4] items-center justify-center border border-dashed border-border">
+              <Droppable
+                key={index}
+                id={`slot-${index}`}
+                className="flex aspect-[3/4] items-center justify-center border border-dashed border-border"
+              >
                 {photo ? (
                   <Draggable id={`photo-${photo.id}`}>
                     <Thumb photo={photo} className="aspect-[3/4] w-full" />
@@ -136,10 +180,16 @@ export function Highlights({ base, photos, highlightIds, onNotice }: PickProps &
                 </Draggable>
               </li>
             ))}
-            {pool.length === 0 && <li className="text-sm text-muted-foreground">No other portrait Photo</li>}
+            {pool.length === 0 && (
+              <li className="text-sm text-muted-foreground">No other portrait Photo</li>
+            )}
           </ul>
         </Droppable>
-        <DragOverlay>{active !== null && byId.get(active) ? <Thumb photo={byId.get(active)!} className="aspect-[3/4] w-24" /> : null}</DragOverlay>
+        <DragOverlay>
+          {active !== null && byId.get(active) ? (
+            <Thumb photo={byId.get(active)!} className="aspect-[3/4] w-24" />
+          ) : null}
+        </DragOverlay>
       </DndContext>
     </section>
   );
@@ -147,7 +197,14 @@ export function Highlights({ base, photos, highlightIds, onNotice }: PickProps &
 
 /* The cover: one landscape Photo. */
 
-export function Cover({ base, label, photos, coverId: initialId, coverFocus, onNotice }: PickProps & { label: string; coverId: number | null; coverFocus: FocalPoint }) {
+export function Cover({
+  base,
+  label,
+  photos,
+  coverId: initialId,
+  coverFocus,
+  onNotice,
+}: PickProps & { label: string; coverId: number | null; coverFocus: FocalPoint }) {
   const [coverId, setCoverId] = useState(initialId);
   const [focus, setFocus] = useState<FocalPoint>(coverFocus);
   const landscapes = photos.filter((photo) => photo.orientation === 'landscape');
@@ -171,11 +228,20 @@ export function Cover({ base, label, photos, coverId: initialId, coverFocus, onN
 
   return (
     <section aria-labelledby="cover-title" className="flex flex-col gap-4">
-      <h2 id="cover-title" className="font-serif text-2xl">{label}</h2>
+      <h2 id="cover-title" className="font-serif text-2xl">
+        {label}
+      </h2>
       {cover && (
         <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground">Drag the Photo to choose the part the page shows.</p>
-          <FocalFrame className="aspect-[21/9] w-full max-w-3xl" photo={cover.thumb} focus={focus} onCommit={(next) => void reposition(next)} />
+          <p className="text-sm text-muted-foreground">
+            Drag the Photo to choose the part the page shows.
+          </p>
+          <FocalFrame
+            className="aspect-[21/9] w-full max-w-3xl"
+            photo={cover.thumb}
+            focus={focus}
+            onCommit={(next) => void reposition(next)}
+          />
         </div>
       )}
       <ul className="flex max-h-72 flex-wrap gap-3 overflow-y-auto border border-border p-3">
@@ -192,7 +258,9 @@ export function Cover({ base, label, photos, coverId: initialId, coverFocus, onN
             </button>
           </li>
         ))}
-        {landscapes.length === 0 && <li className="text-sm text-muted-foreground">No landscape Photo</li>}
+        {landscapes.length === 0 && (
+          <li className="text-sm text-muted-foreground">No landscape Photo</li>
+        )}
       </ul>
     </section>
   );
@@ -204,10 +272,16 @@ const TRAY = 'tray';
 const dayKey = (id: number) => `day-${id}`;
 
 // Tiles share one height; the width follows the Photo shape.
-const SHAPE = { landscape: 'aspect-[4/3]', portrait: 'aspect-[3/4]', square: 'aspect-square' } as const;
+const SHAPE = {
+  landscape: 'aspect-[4/3]',
+  portrait: 'aspect-[3/4]',
+  square: 'aspect-square',
+} as const;
 
 function SortablePhoto({ photo, onRemove }: { photo: Tile; onRemove?: () => void }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: photo.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: photo.id,
+  });
   return (
     <li
       ref={setNodeRef}
@@ -233,7 +307,19 @@ function SortablePhoto({ photo, onRemove }: { photo: Tile; onRemove?: () => void
   );
 }
 
-function PhotoList({ id, photoIds, photos, label, onRemove }: { id: string; photoIds: number[]; photos: Map<number, Tile>; label: string; onRemove?: (photoId: number) => void }) {
+function PhotoList({
+  id,
+  photoIds,
+  photos,
+  label,
+  onRemove,
+}: {
+  id: string;
+  photoIds: number[];
+  photos: Map<number, Tile>;
+  label: string;
+  onRemove?: (photoId: number) => void;
+}) {
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
     <SortableContext id={id} items={photoIds} strategy={rectSortingStrategy}>
@@ -243,9 +329,15 @@ function PhotoList({ id, photoIds, photos, label, onRemove }: { id: string; phot
         className={`flex min-h-28 flex-wrap gap-3 border p-3 ${isOver ? 'border-primary' : 'border-border'}`}
       >
         {photoIds.map((photoId) => (
-          <SortablePhoto key={photoId} photo={photos.get(photoId)!} onRemove={onRemove && (() => onRemove(photoId))} />
+          <SortablePhoto
+            key={photoId}
+            photo={photos.get(photoId)!}
+            onRemove={onRemove && (() => onRemove(photoId))}
+          />
         ))}
-        {photoIds.length === 0 && <li className="self-center text-sm text-muted-foreground">Drop Photos here</li>}
+        {photoIds.length === 0 && (
+          <li className="self-center text-sm text-muted-foreground">Drop Photos here</li>
+        )}
       </ul>
     </SortableContext>
   );
@@ -278,7 +370,9 @@ export function PhotoBoard({ photos: all, days, daysUrl, onNotice, aside, childr
   const sensors = useDndSensors();
 
   const containerOf = (id: string | number, from = items) =>
-    typeof id === 'string' && id in from ? id : Object.keys(from).find((key) => from[key].includes(Number(id)));
+    typeof id === 'string' && id in from
+      ? id
+      : Object.keys(from).find((key) => from[key].includes(Number(id)));
 
   function onDragOver({ active: dragged, over }: DragOverEvent) {
     if (!over) return;
@@ -291,7 +385,11 @@ export function PhotoBoard({ photos: all, days, daysUrl, onNotice, aside, childr
       return {
         ...current,
         [source]: current[source].filter((id) => id !== dragged.id),
-        [target]: [...current[target].slice(0, at), Number(dragged.id), ...current[target].slice(at)],
+        [target]: [
+          ...current[target].slice(0, at),
+          Number(dragged.id),
+          ...current[target].slice(at),
+        ],
       };
     });
   }
@@ -309,9 +407,13 @@ export function PhotoBoard({ photos: all, days, daysUrl, onNotice, aside, childr
       }
     }
     // A Photo that joins a Day leaves its old one in the Journal.
-    const changed = days.map((day) => dayKey(day.id)).filter((key) => next[key].join() !== before[key].join());
+    const changed = days
+      .map((day) => dayKey(day.id))
+      .filter((key) => next[key].join() !== before[key].join());
     for (const key of changed) {
-      const result = await save('PUT', `${daysUrl}/${key.replace('day-', '')}/photos`, { photoIds: next[key] });
+      const result = await save('PUT', `${daysUrl}/${key.replace('day-', '')}/photos`, {
+        photoIds: next[key],
+      });
       if (!result.ok) {
         setItems(before);
         return onNotice(message(result.error));
@@ -323,7 +425,11 @@ export function PhotoBoard({ photos: all, days, daysUrl, onNotice, aside, childr
 
   async function takeOff(dayId: number, photoId: number) {
     const key = dayKey(dayId);
-    const next = { ...items, [key]: items[key].filter((id) => id !== photoId), [TRAY]: [...items[TRAY], photoId] };
+    const next = {
+      ...items,
+      [key]: items[key].filter((id) => id !== photoId),
+      [TRAY]: [...items[TRAY], photoId],
+    };
     const result = await save('PUT', `${daysUrl}/${dayId}/photos`, { photoIds: next[key] });
     if (!result.ok) return onNotice(message(result.error));
     setItems(next);
@@ -354,11 +460,24 @@ export function PhotoBoard({ photos: all, days, daysUrl, onNotice, aside, childr
         </div>
         <div className="flex flex-col gap-6 lg:col-start-1 lg:row-start-1">
           {children((dayId, label) => (
-            <PhotoList id={dayKey(dayId)} photoIds={items[dayKey(dayId)] ?? []} photos={photos} label={label} onRemove={(photoId) => void takeOff(dayId, photoId)} />
+            <PhotoList
+              id={dayKey(dayId)}
+              photoIds={items[dayKey(dayId)] ?? []}
+              photos={photos}
+              label={label}
+              onRemove={(photoId) => void takeOff(dayId, photoId)}
+            />
           ))}
         </div>
       </div>
-      <DragOverlay>{active !== null && photos.get(active) ? <Thumb photo={photos.get(active)!} className={`h-24 ${SHAPE[photos.get(active)!.orientation]}`} /> : null}</DragOverlay>
+      <DragOverlay>
+        {active !== null && photos.get(active) ? (
+          <Thumb
+            photo={photos.get(active)!}
+            className={`h-24 ${SHAPE[photos.get(active)!.orientation]}`}
+          />
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }

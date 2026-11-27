@@ -18,8 +18,10 @@ export const dark = 'color-mix(in srgb, currentColor 72%, black)';
 const leaf = (l: number, w: number) =>
   `M0,0 Q${l * 0.35},${-w} ${l},0 Q${l * 0.35},${w * 0.5} 0,0Z`;
 
-const angleOf = (dir: 1 | -1, i: number, seed: number) => (dir === 1 ? 8 + i * 14 + (seed % 7) : 172 - i * 14 - (seed % 7));
-const lengthOf = (dir: 1 | -1, i: number, seed: number) => (dir === 1 ? 54 : 46) + ((seed * (i + 3)) % 22);
+const angleOf = (dir: 1 | -1, i: number, seed: number) =>
+  dir === 1 ? 8 + i * 14 + (seed % 7) : 172 - i * 14 - (seed % 7);
+const lengthOf = (dir: 1 | -1, i: number, seed: number) =>
+  (dir === 1 ? 54 : 46) + ((seed * (i + 3)) % 22);
 
 // A spray: leaves fanning from a node, pointing left or right and drooping.
 export function spray(cx: number, cy: number, dir: 1 | -1, seed: number) {
@@ -28,7 +30,11 @@ export function spray(cx: number, cy: number, dir: 1 | -1, seed: number) {
   for (let i = 0; i < count; i++) {
     const angle = angleOf(dir, i, seed);
     const length = lengthOf(dir, i, seed);
-    leaves.push({ d: leaf(length, 5 + (i % 2)), transform: `translate(${cx} ${cy}) rotate(${angle})`, fill: i % 2 ? dark : 'currentColor' });
+    leaves.push({
+      d: leaf(length, 5 + (i % 2)),
+      transform: `translate(${cx} ${cy}) rotate(${angle})`,
+      fill: i % 2 ? dark : 'currentColor',
+    });
   }
   return leaves;
 }
@@ -51,7 +57,10 @@ export function leafPerches(periods: number) {
       if (dir !== -1) continue;
       const a = (angleOf(dir, 0, seed) * Math.PI) / 180;
       const l = lengthOf(dir, 0, seed) * 0.3;
-      perches.push({ x: Math.round(cx + Math.cos(a) * l), y: Math.round(p * leafPeriod + cy + Math.sin(a) * l) });
+      perches.push({
+        x: Math.round(cx + Math.cos(a) * l),
+        y: Math.round(p * leafPeriod + cy + Math.sin(a) * l),
+      });
     }
   }
   return perches;

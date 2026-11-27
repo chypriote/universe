@@ -12,11 +12,7 @@ export function GalleryGrid({ photos }: GalleryGridProps) {
   const closeLightbox = useCallback(() => setSelectedIndex(null), []);
 
   if (photos.length === 0) {
-    return (
-      <p className="text-muted-foreground font-serif">
-        No photographs for this place yet.
-      </p>
-    );
+    return <p className="text-muted-foreground font-serif">No photographs for this place yet.</p>;
   }
 
   return (

@@ -1,7 +1,15 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { buildCoverPhotos } from './cover-photos';
-import { addCity, addDay, addPlan, addPlanDay, addProvince, addTrip, resetDatabase } from './seed.test-helper';
+import {
+  addCity,
+  addDay,
+  addPlan,
+  addPlanDay,
+  addProvince,
+  addTrip,
+  resetDatabase,
+} from './seed.test-helper';
 import { PLAN_TABLES, TRIP_TABLES, type TripTables } from './tables';
 
 beforeEach(resetDatabase);
@@ -16,14 +24,17 @@ async function setup(tables: TripTables) {
     const dayId = isPlan ? await addPlanDay(id, city, 1) : await addDay(id, city, '2025-03-01');
     return { id, dayId };
   };
-  const addSecondDay = (ownerId: number) => (isPlan ? addPlanDay(ownerId, city, 2) : addDay(ownerId, city, '2025-03-02'));
+  const addSecondDay = (ownerId: number) =>
+    isPlan ? addPlanDay(ownerId, city, 2) : addDay(ownerId, city, '2025-03-02');
   let next = 0;
   const photo = async (ownerId: number, width: number, height: number) => {
     const name = `photo-${next++}.jpg`;
     const sql = isPlan
       ? `INSERT INTO ${tables.photos} (${tables.fk}, name, width, height) VALUES (?, ?, ?, ?) RETURNING id`
       : `INSERT INTO ${tables.photos} (${tables.fk}, name, width, height, date) VALUES (?, ?, ?, ?, '2025-03-01') RETURNING id`;
-    const row = await env.DB.prepare(sql).bind(ownerId, name, width, height).first<{ id: number }>();
+    const row = await env.DB.prepare(sql)
+      .bind(ownerId, name, width, height)
+      .first<{ id: number }>();
     return row!.id;
   };
   const unknown = isPlan ? ('unknown-plan' as const) : ('unknown-trip' as const);
@@ -39,7 +50,9 @@ async function setup(tables: TripTables) {
 }
 
 const coverOf = (tables: TripTables, id: number) =>
-  env.DB.prepare(`SELECT cover_photo_id AS cover, cover_focus_x AS x, cover_focus_y AS y FROM ${tables.trips} WHERE id = ?`)
+  env.DB.prepare(
+    `SELECT cover_photo_id AS cover, cover_focus_x AS x, cover_focus_y AS y FROM ${tables.trips} WHERE id = ?`,
+  )
     .bind(id)
     .first<{ cover: number | null; x: number; y: number }>();
 
@@ -90,7 +103,12 @@ describe.each([
 
   it('takes exactly 4 distinct portrait Highlight Photos of its own, in order', async () => {
     const s = await setup(tables);
-    const ids = [await s.tall(s.main.id), await s.tall(s.main.id), await s.tall(s.main.id), await s.tall(s.main.id)];
+    const ids = [
+      await s.tall(s.main.id),
+      await s.tall(s.main.id),
+      await s.tall(s.main.id),
+      await s.tall(s.main.id),
+    ];
     const wide = await s.wide(s.main.id);
     const foreign = await s.tall(s.other.id);
 
@@ -119,7 +137,9 @@ describe.each([
     });
     expect(await s.rules.setHighlightPhotos('main', ids)).toEqual({ ok: true });
 
-    const { results } = await env.DB.prepare(`SELECT photo_id FROM ${tables.highlights} WHERE ${tables.fk} = ? ORDER BY position`)
+    const { results } = await env.DB.prepare(
+      `SELECT photo_id FROM ${tables.highlights} WHERE ${tables.fk} = ? ORDER BY position`,
+    )
       .bind(s.main.id)
       .all<{ photo_id: number }>();
     expect(results.map((row) => row.photo_id)).toEqual(ids);
@@ -145,9 +165,13 @@ describe.each([
     expect(await s.rules.setDayPhotos(second, [b])).toEqual({ ok: true });
 
     const onDay = async (dayId: number) =>
-      (await env.DB.prepare(`SELECT photo_id FROM ${tables.dayPhotos} WHERE day_id = ? ORDER BY position`).bind(dayId).all<{ photo_id: number }>()).results.map(
-        (row) => row.photo_id,
-      );
+      (
+        await env.DB.prepare(
+          `SELECT photo_id FROM ${tables.dayPhotos} WHERE day_id = ? ORDER BY position`,
+        )
+          .bind(dayId)
+          .all<{ photo_id: number }>()
+      ).results.map((row) => row.photo_id);
     expect(await onDay(s.main.dayId)).toEqual([a]);
     expect(await onDay(second)).toEqual([b]);
   });

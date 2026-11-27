@@ -19,7 +19,7 @@ const within = (href: string) => path === href || path.startsWith(`${href}/`);
 const workspace = ADMIN_WORKSPACES.find((item) => item.paths.some(within));
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <Font cssVariable="--font-inter" preload />
@@ -28,8 +28,13 @@ const workspace = ADMIN_WORKSPACES.find((item) => item.paths.some(within));
   <body class="min-h-svh">
     <header class="border-b border-border bg-background">
       <Container class="flex flex-wrap items-stretch gap-x-10 gap-y-2">
-        <a href={nav ? '/admin' : '/admin/login'} class="flex items-center gap-3 py-4 no-underline text-foreground">
-          <span class="seal w-8 text-base" aria-hidden="true">中</span>
+        <a
+          href={nav ? '/admin' : '/admin/login'}
+          class="flex items-center gap-3 py-4 no-underline text-foreground"
+        >
+          <span class="seal w-8 text-base" aria-hidden="true">
+            中
+          </span>
           <span class="font-serif text-xl tracking-tight">Admin</span>
         </a>
         {nav && (
@@ -47,7 +52,12 @@ const workspace = ADMIN_WORKSPACES.find((item) => item.paths.some(within));
         )}
         {nav && (
           <form method="post" action="/admin/logout" class="ml-auto flex items-center">
-            <button type="submit" class="eyebrow text-muted-foreground hover:text-primary cursor-pointer">Log out</button>
+            <button
+              type="submit"
+              class="eyebrow text-muted-foreground hover:text-primary cursor-pointer"
+            >
+              Log out
+            </button>
           </form>
         )}
       </Container>

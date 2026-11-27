@@ -3,7 +3,17 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
 import { landscape } from './jpeg.test-helper';
 import type { ActivityInput } from './index';
-import { addActivity, addCity, addDay, addPlan, addPlanDay, addProvince, addTrip, listActivity, resetDatabase } from './seed.test-helper';
+import {
+  addActivity,
+  addCity,
+  addDay,
+  addPlan,
+  addPlanDay,
+  addProvince,
+  addTrip,
+  listActivity,
+  resetDatabase,
+} from './seed.test-helper';
 
 const journal = createJournal(env);
 
@@ -36,16 +46,37 @@ describe('Activities admin', () => {
     const { chengdu, lanzhou } = await world();
 
     const added = await journal.addActivity(
-      input(chengdu, { name: ' Pandas ', rating: 'do-not-miss', price: 0, lat: 30.73, lng: 104.14, addressZh: '成都市' }),
+      input(chengdu, {
+        name: ' Pandas ',
+        rating: 'do-not-miss',
+        price: 0,
+        lat: 30.73,
+        lng: 104.14,
+        addressZh: '成都市',
+      }),
     );
-    await journal.addActivity(input(lanzhou, { name: 'Old street', nameZh: '老街', pinyin: 'Lǎojiē', kind: 'heritage' }));
-    await journal.addActivity(input(chengdu, { name: 'Archive', nameZh: '档案', pinyin: 'Dàng’àn', kind: 'show' }));
+    await journal.addActivity(
+      input(lanzhou, { name: 'Old street', nameZh: '老街', pinyin: 'Lǎojiē', kind: 'heritage' }),
+    );
+    await journal.addActivity(
+      input(chengdu, { name: 'Archive', nameZh: '档案', pinyin: 'Dàng’àn', kind: 'show' }),
+    );
 
     expect(added).toMatchObject({
       ok: true,
-      activity: { name: 'Pandas', city: 'Chengdu', province: 'Sichuan', rating: 'do-not-miss', price: 0, lat: 30.73, days: 0 },
+      activity: {
+        name: 'Pandas',
+        city: 'Chengdu',
+        province: 'Sichuan',
+        rating: 'do-not-miss',
+        price: 0,
+        lat: 30.73,
+        days: 0,
+      },
     });
-    expect((await journal.listAdminActivities()).map((activity) => [activity.city, activity.name])).toEqual([
+    expect(
+      (await journal.listAdminActivities()).map((activity) => [activity.city, activity.name]),
+    ).toEqual([
       ['Chengdu', 'Archive'],
       ['Chengdu', 'Pandas'],
       ['Lanzhou', 'Old street'],
@@ -57,7 +88,7 @@ describe('Activities admin', () => {
     await journal.addActivity(input(chengdu));
 
     const refused = async (changes: Partial<ActivityInput>, cityId = chengdu) =>
-      (await journal.addActivity(input(cityId, changes)) as { error: string }).error;
+      ((await journal.addActivity(input(cityId, changes))) as { error: string }).error;
 
     expect(await refused({ name: ' ' })).toBe('invalid-name');
     expect(await refused({ nameZh: '' })).toBe('invalid-name');
@@ -80,12 +111,27 @@ describe('Activities admin', () => {
     const id = (added as { activity: { id: number } }).activity.id;
     await journal.addActivity(input(chengdu, { name: 'Archive' }));
 
-    const edited = await journal.editActivity({ ...input(lanzhou, { rating: 'skippable', price: 40 }), id });
+    const edited = await journal.editActivity({
+      ...input(lanzhou, { rating: 'skippable', price: 40 }),
+      id,
+    });
 
-    expect(edited).toMatchObject({ ok: true, activity: { id, city: 'Lanzhou', rating: 'skippable', price: 40 } });
-    expect(await journal.editActivity({ ...input(chengdu, { name: 'Archive' }), id })).toEqual({ ok: false, error: 'name-taken' });
-    expect(await journal.editActivity({ ...input(chengdu), id: 9999 })).toEqual({ ok: false, error: 'unknown-activity' });
-    expect(await journal.editActivity({ ...input(chengdu, { price: -3 }), id })).toEqual({ ok: false, error: 'invalid-price' });
+    expect(edited).toMatchObject({
+      ok: true,
+      activity: { id, city: 'Lanzhou', rating: 'skippable', price: 40 },
+    });
+    expect(await journal.editActivity({ ...input(chengdu, { name: 'Archive' }), id })).toEqual({
+      ok: false,
+      error: 'name-taken',
+    });
+    expect(await journal.editActivity({ ...input(chengdu), id: 9999 })).toEqual({
+      ok: false,
+      error: 'unknown-activity',
+    });
+    expect(await journal.editActivity({ ...input(chengdu, { price: -3 }), id })).toEqual({
+      ok: false,
+      error: 'invalid-price',
+    });
   });
 
   it('counts the Days and Plan Days that list it, and deletes it only when none does', async () => {
@@ -99,7 +145,9 @@ describe('Activities admin', () => {
     await listActivity('day_activities', day, 1, used);
     await listActivity('plan_day_activities', planDay, 1, used);
 
-    expect((await journal.listAdminActivities()).map((activity) => [activity.name, activity.days])).toEqual([
+    expect(
+      (await journal.listAdminActivities()).map((activity) => [activity.name, activity.days]),
+    ).toEqual([
       ['Archive', 0],
       ['Pandas', 2],
     ]);
@@ -117,9 +165,16 @@ describe('Activities admin: batch', () => {
     const temple = await addActivity('Temple', chengdu);
     const other = await addActivity('Market', chengdu);
 
-    const result = await journal.editActivities({ ids: [pandas, temple], kind: 'nature', rating: 'recommended' });
+    const result = await journal.editActivities({
+      ids: [pandas, temple],
+      kind: 'nature',
+      rating: 'recommended',
+    });
 
-    expect(result.ok && result.activities.map((activity) => [activity.name, activity.kind, activity.rating])).toEqual([
+    expect(
+      result.ok &&
+        result.activities.map((activity) => [activity.name, activity.kind, activity.rating]),
+    ).toEqual([
       ['Pandas', 'nature', 'recommended'],
       ['Temple', 'nature', 'recommended'],
     ]);
@@ -134,17 +189,32 @@ describe('Activities admin: batch', () => {
 
     const result = await journal.editActivities({ ids: [pandas], rating: null });
 
-    expect(result.ok && [result.activities[0].kind, result.activities[0].rating]).toEqual(['show', null]);
+    expect(result.ok && [result.activities[0].kind, result.activities[0].rating]).toEqual([
+      'show',
+      null,
+    ]);
   });
 
   it('refuses an unknown Activity, kind or rating, and an empty change', async () => {
     const { chengdu } = await world();
     const pandas = await addActivity('Pandas', chengdu);
 
-    expect(await journal.editActivities({ ids: [pandas, 9999], kind: 'show' })).toEqual({ ok: false, error: 'unknown-activity' });
-    expect(await journal.editActivities({ ids: [pandas], kind: 'food' as never })).toEqual({ ok: false, error: 'invalid-kind' });
-    expect(await journal.editActivities({ ids: [pandas], rating: 'meh' as never })).toEqual({ ok: false, error: 'invalid-rating' });
-    expect(await journal.editActivities({ ids: [pandas] })).toEqual({ ok: false, error: 'nothing-to-change' });
+    expect(await journal.editActivities({ ids: [pandas, 9999], kind: 'show' })).toEqual({
+      ok: false,
+      error: 'unknown-activity',
+    });
+    expect(await journal.editActivities({ ids: [pandas], kind: 'food' as never })).toEqual({
+      ok: false,
+      error: 'invalid-kind',
+    });
+    expect(await journal.editActivities({ ids: [pandas], rating: 'meh' as never })).toEqual({
+      ok: false,
+      error: 'invalid-rating',
+    });
+    expect(await journal.editActivities({ ids: [pandas] })).toEqual({
+      ok: false,
+      error: 'nothing-to-change',
+    });
   });
 });
 
@@ -162,7 +232,9 @@ describe('Activities of a Day', () => {
 
     expect(await journal.setDayActivities(day, [archive, pandas])).toEqual({ ok: true });
     expect((await journal.getAdminTrip('sichuan'))!.days[0].activityIds).toEqual([archive, pandas]);
-    expect((await journal.getTrip('sichuan'))!.days[0].activities.map((activity) => activity.name)).toEqual(['Archive', 'Pandas']);
+    expect(
+      (await journal.getTrip('sichuan'))!.days[0].activities.map((activity) => activity.name),
+    ).toEqual(['Archive', 'Pandas']);
 
     expect(await journal.setDayActivities(day, [])).toEqual({ ok: true });
     expect((await journal.getAdminTrip('sichuan'))!.days[0].activityIds).toEqual([]);
@@ -175,9 +247,18 @@ describe('Activities of a Day', () => {
     const pandas = await addActivity('Pandas', chengdu);
     await journal.setDayActivities(day, [pandas]);
 
-    expect(await journal.setDayActivities(9999, [pandas])).toEqual({ ok: false, error: 'unknown-day' });
-    expect(await journal.setDayActivities(day, [pandas, 9999])).toEqual({ ok: false, error: 'unknown-activity' });
-    expect(await journal.setDayActivities(day, [pandas, pandas])).toEqual({ ok: false, error: 'duplicate-activity' });
+    expect(await journal.setDayActivities(9999, [pandas])).toEqual({
+      ok: false,
+      error: 'unknown-day',
+    });
+    expect(await journal.setDayActivities(day, [pandas, 9999])).toEqual({
+      ok: false,
+      error: 'unknown-activity',
+    });
+    expect(await journal.setDayActivities(day, [pandas, pandas])).toEqual({
+      ok: false,
+      error: 'duplicate-activity',
+    });
     expect((await journal.getAdminTrip('sichuan'))!.days[0].activityIds).toEqual([pandas]);
   });
 
@@ -191,7 +272,10 @@ describe('Activities of a Day', () => {
     expect(await journal.setPlanDayActivities(planDay, [pandas])).toEqual({ ok: true });
     expect(await journal.setDayActivities(day, [pandas])).toEqual({ ok: true });
     expect((await journal.getAdminPlan('sichuan-plan'))!.days[0].activityIds).toEqual([pandas]);
-    expect(await journal.setPlanDayActivities(9999, [pandas])).toEqual({ ok: false, error: 'unknown-day' });
+    expect(await journal.setPlanDayActivities(9999, [pandas])).toEqual({
+      ok: false,
+      error: 'unknown-day',
+    });
     expect((await journal.listAdminActivities())[0].days).toBe(2);
   });
 });
@@ -199,7 +283,13 @@ describe('Activities of a Day', () => {
 describe('Activity pictures', () => {
   const thumb = () => new Uint8Array([1, 2, 3]).buffer;
   const upload = (activityId: number, name: string, overwrite = false) =>
-    journal.uploadActivityPicture({ activityId, name, file: landscape(), thumb: thumb(), overwrite });
+    journal.uploadActivityPicture({
+      activityId,
+      name,
+      file: landscape(),
+      thumb: thumb(),
+      overwrite,
+    });
   const keys = async () => (await env.PHOTOS.list()).objects.map((object) => object.key).sort();
 
   it('stores the file and its thumbnail and keeps pictures in upload order', async () => {
@@ -209,7 +299,10 @@ describe('Activity pictures', () => {
     await upload(pandas, 'b.jpg');
     const result = await upload(pandas, 'a.jpg');
 
-    expect(result.ok && result.activity.pictures.map((picture) => picture.name)).toEqual(['b.jpg', 'a.jpg']);
+    expect(result.ok && result.activity.pictures.map((picture) => picture.name)).toEqual([
+      'b.jpg',
+      'a.jpg',
+    ]);
     expect(await keys()).toEqual([
       `activities/${pandas}/a.jpg`,
       `activities/${pandas}/b.jpg`,
@@ -231,7 +324,12 @@ describe('Activity pictures', () => {
     expect(await upload(pandas, 'x/a.jpg')).toEqual({ ok: false, error: 'invalid-name' });
     expect(await upload(9999, 'a.jpg')).toEqual({ ok: false, error: 'unknown-activity' });
     expect(
-      await journal.uploadActivityPicture({ activityId: pandas, name: 'bad.jpg', file: new Uint8Array([1]).buffer, thumb: thumb() }),
+      await journal.uploadActivityPicture({
+        activityId: pandas,
+        name: 'bad.jpg',
+        file: new Uint8Array([1]).buffer,
+        thumb: thumb(),
+      }),
     ).toEqual({ ok: false, error: 'unreadable' });
   });
 
@@ -244,10 +342,22 @@ describe('Activity pictures', () => {
 
     const result = await journal.setActivityPictures(pandas, [b, a]);
 
-    expect(result.ok && result.activity.pictures.map((picture) => picture.name)).toEqual(['b.jpg', 'a.jpg']);
-    expect(await journal.setActivityPictures(pandas, [a])).toEqual({ ok: false, error: 'unknown-picture' });
-    expect(await journal.setActivityPictures(pandas, [a, a])).toEqual({ ok: false, error: 'duplicate-picture' });
-    expect(await journal.setActivityPictures(9999, [])).toEqual({ ok: false, error: 'unknown-activity' });
+    expect(result.ok && result.activity.pictures.map((picture) => picture.name)).toEqual([
+      'b.jpg',
+      'a.jpg',
+    ]);
+    expect(await journal.setActivityPictures(pandas, [a])).toEqual({
+      ok: false,
+      error: 'unknown-picture',
+    });
+    expect(await journal.setActivityPictures(pandas, [a, a])).toEqual({
+      ok: false,
+      error: 'duplicate-picture',
+    });
+    expect(await journal.setActivityPictures(9999, [])).toEqual({
+      ok: false,
+      error: 'unknown-activity',
+    });
   });
 
   it('deletes a picture with its files and closes the gap', async () => {
@@ -260,7 +370,10 @@ describe('Activity pictures', () => {
     const result = await journal.deleteActivityPicture(a);
 
     expect(result.ok && result.activity.pictures.map((picture) => picture.name)).toEqual(['b.jpg']);
-    expect(await keys()).toEqual([`activities/${pandas}/b.jpg`, `thumbs/activities/${pandas}/b.jpg.webp`]);
+    expect(await keys()).toEqual([
+      `activities/${pandas}/b.jpg`,
+      `thumbs/activities/${pandas}/b.jpg.webp`,
+    ]);
     expect(await journal.deleteActivityPicture(a)).toEqual({ ok: false, error: 'unknown-picture' });
   });
 
@@ -276,7 +389,10 @@ describe('Activity pictures', () => {
     const result = await journal.moveActivityPicture(a, temple);
 
     expect(result.ok && result.from.pictures.map((picture) => picture.name)).toEqual(['b.jpg']);
-    expect(result.ok && result.to.pictures.map((picture) => picture.name)).toEqual(['c.jpg', 'a.jpg']);
+    expect(result.ok && result.to.pictures.map((picture) => picture.name)).toEqual([
+      'c.jpg',
+      'a.jpg',
+    ]);
     expect(await keys()).toEqual([
       `activities/${pandas}/b.jpg`,
       `activities/${temple}/a.jpg`,
@@ -296,8 +412,14 @@ describe('Activity pictures', () => {
     const [a] = first.ok ? first.activity.pictures.map((picture) => picture.id) : [];
 
     expect(await journal.moveActivityPicture(a, temple)).toEqual({ ok: false, error: 'exists' });
-    expect(await journal.moveActivityPicture(a, 9999)).toEqual({ ok: false, error: 'unknown-activity' });
-    expect(await journal.moveActivityPicture(9999, temple)).toEqual({ ok: false, error: 'unknown-picture' });
+    expect(await journal.moveActivityPicture(a, 9999)).toEqual({
+      ok: false,
+      error: 'unknown-activity',
+    });
+    expect(await journal.moveActivityPicture(9999, temple)).toEqual({
+      ok: false,
+      error: 'unknown-picture',
+    });
   });
 
   it('removes the pictures and their files when the Activity is deleted', async () => {
@@ -314,14 +436,25 @@ describe('Activity pictures', () => {
     const { chengdu } = await world();
     const pandas = await addActivity('Pandas', chengdu);
     const planDay = await addPlanDay(await addPlan({ slug: 'sichuan-plan' }), chengdu, 1);
-    await journal.editActivity({ ...input(chengdu), id: pandas, rating: 'do-not-miss', price: 55, addressZh: '成都市' });
+    await journal.editActivity({
+      ...input(chengdu),
+      id: pandas,
+      rating: 'do-not-miss',
+      price: 55,
+      addressZh: '成都市',
+    });
     await journal.setPlanDayActivities(planDay, [pandas]);
     expect((await journal.getPlan('sichuan-plan'))!.days[0].activities[0].picture).toBeNull();
     await upload(pandas, 'a.jpg');
 
     const [activity] = (await journal.getPlan('sichuan-plan'))!.days[0].activities;
 
-    expect(activity).toMatchObject({ kind: 'nature', rating: 'do-not-miss', price: 55, addressZh: '成都市' });
+    expect(activity).toMatchObject({
+      kind: 'nature',
+      rating: 'do-not-miss',
+      price: 55,
+      addressZh: '成都市',
+    });
     expect(activity.picture).toContain(`thumbs/activities/${pandas}/a.jpg.webp`);
   });
 });

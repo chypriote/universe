@@ -29,8 +29,22 @@ describe('Provinces of the admin', () => {
         nameZh: '四川',
         season: [4, 5, 10],
         cities: [
-          { id: chengdu, name: 'Chengdu', nameZh: '成都', lng: 100, lat: 30, airports: [{ code: 'TFU', directWeekdays: [1] }] },
-          { id: expect.any(Number), name: 'Leshan', nameZh: 'Leshan', lng: 100, lat: 30, airports: [] },
+          {
+            id: chengdu,
+            name: 'Chengdu',
+            nameZh: '成都',
+            lng: 100,
+            lat: 30,
+            airports: [{ code: 'TFU', directWeekdays: [1] }],
+          },
+          {
+            id: expect.any(Number),
+            name: 'Leshan',
+            nameZh: 'Leshan',
+            lng: 100,
+            lat: 30,
+            airports: [],
+          },
         ],
       },
     ]);
@@ -43,16 +57,30 @@ describe('Province Season', () => {
     await journal.setProvinceSeason(sichuan, [3, 4]);
 
     expect(await journal.setProvinceSeason(sichuan, [])).toEqual({ ok: true });
-    expect((await journal.listAdminProvinces()).find((province) => province.id === sichuan)?.season).toEqual([]);
+    expect(
+      (await journal.listAdminProvinces()).find((province) => province.id === sichuan)?.season,
+    ).toEqual([]);
   });
 
   it('refuses an unknown Province and a month out of range', async () => {
     const { sichuan } = await world();
 
-    expect(await journal.setProvinceSeason(9999, [1])).toEqual({ ok: false, error: 'unknown-province' });
-    expect(await journal.setProvinceSeason(sichuan, [13])).toEqual({ ok: false, error: 'invalid-months' });
-    expect(await journal.setProvinceSeason(sichuan, [0])).toEqual({ ok: false, error: 'invalid-months' });
-    expect(await journal.setProvinceSeason(sichuan, [1.5])).toEqual({ ok: false, error: 'invalid-months' });
+    expect(await journal.setProvinceSeason(9999, [1])).toEqual({
+      ok: false,
+      error: 'unknown-province',
+    });
+    expect(await journal.setProvinceSeason(sichuan, [13])).toEqual({
+      ok: false,
+      error: 'invalid-months',
+    });
+    expect(await journal.setProvinceSeason(sichuan, [0])).toEqual({
+      ok: false,
+      error: 'invalid-months',
+    });
+    expect(await journal.setProvinceSeason(sichuan, [1.5])).toEqual({
+      ok: false,
+      error: 'invalid-months',
+    });
   });
 });
 
@@ -60,11 +88,15 @@ describe('Airports', () => {
   it('adds an Airport, then saves its direct weekdays', async () => {
     const { chengdu } = await world();
 
-    expect(await journal.setAirport({ code: ' tfu ', cityId: chengdu, directWeekdays: [] })).toEqual({
+    expect(
+      await journal.setAirport({ code: ' tfu ', cityId: chengdu, directWeekdays: [] }),
+    ).toEqual({
       ok: true,
       airport: { code: 'TFU', directWeekdays: [] },
     });
-    expect(await journal.setAirport({ code: 'TFU', cityId: chengdu, directWeekdays: [4, 1] })).toEqual({
+    expect(
+      await journal.setAirport({ code: 'TFU', cityId: chengdu, directWeekdays: [4, 1] }),
+    ).toEqual({
       ok: true,
       airport: { code: 'TFU', directWeekdays: [1, 4] },
     });
@@ -74,10 +106,21 @@ describe('Airports', () => {
     const { chengdu, leshan } = await world();
     await journal.setAirport({ code: 'TFU', cityId: chengdu, directWeekdays: [] });
 
-    expect(await journal.setAirport({ code: 'TF', cityId: chengdu, directWeekdays: [] })).toEqual({ ok: false, error: 'invalid-code' });
-    expect(await journal.setAirport({ code: 'CTU', cityId: 9999, directWeekdays: [] })).toEqual({ ok: false, error: 'unknown-city' });
-    expect(await journal.setAirport({ code: 'TFU', cityId: leshan, directWeekdays: [] })).toEqual({ ok: false, error: 'code-taken' });
-    expect(await journal.setAirport({ code: 'CTU', cityId: chengdu, directWeekdays: [8] })).toEqual({ ok: false, error: 'invalid-weekdays' });
+    expect(await journal.setAirport({ code: 'TF', cityId: chengdu, directWeekdays: [] })).toEqual({
+      ok: false,
+      error: 'invalid-code',
+    });
+    expect(await journal.setAirport({ code: 'CTU', cityId: 9999, directWeekdays: [] })).toEqual({
+      ok: false,
+      error: 'unknown-city',
+    });
+    expect(await journal.setAirport({ code: 'TFU', cityId: leshan, directWeekdays: [] })).toEqual({
+      ok: false,
+      error: 'code-taken',
+    });
+    expect(await journal.setAirport({ code: 'CTU', cityId: chengdu, directWeekdays: [8] })).toEqual(
+      { ok: false, error: 'invalid-weekdays' },
+    );
   });
 
   it('removes an Airport, and refuses an unknown one', async () => {

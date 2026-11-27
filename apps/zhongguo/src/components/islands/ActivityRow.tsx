@@ -14,17 +14,29 @@ export function ActivityRow({ activity }: { activity: Activity }) {
   const rating = ACTIVITY_RATINGS.find((item) => item.value === activity.rating)?.label;
   const kind = ACTIVITY_KINDS.find((item) => item.value === activity.kind)?.label;
   const address = chinese ? activity.addressZh : activity.address;
-  const price = activity.price === null ? null : activity.price === 0 ? 'Free' : `¥${activity.price} per person`;
+  const price =
+    activity.price === null
+      ? null
+      : activity.price === 0
+        ? 'Free'
+        : `¥${activity.price} per person`;
 
   return (
     <article className="relative grid grid-cols-[88px_1fr] gap-3.5 py-4 sm:grid-cols-[132px_1fr] sm:gap-4.5">
       <div className="relative">
         {activity.picture ? (
-          <img src={activity.picture} alt="" loading="lazy" className="aspect-square w-full object-cover" />
+          <img
+            src={activity.picture}
+            alt=""
+            loading="lazy"
+            className="aspect-square w-full object-cover"
+          />
         ) : (
           <div className="aspect-square w-full bg-surface" aria-hidden="true"></div>
         )}
-        {(activity.rating === 'do-not-miss' || activity.rating === 'recommended' || activity.rating === 'avoid') && (
+        {(activity.rating === 'do-not-miss' ||
+          activity.rating === 'recommended' ||
+          activity.rating === 'avoid') && (
           <span
             tabIndex={0}
             role="img"
@@ -32,7 +44,10 @@ export function ActivityRow({ activity }: { activity: Activity }) {
             className="group absolute top-1.5 left-1.5 grid size-[30px] place-items-center rounded-full bg-background/95 shadow-sm sm:size-9"
           >
             {activity.rating === 'avoid' ? (
-              <CircleX className="size-[21px] text-muted-foreground sm:size-[26px]" strokeWidth={1.8} />
+              <CircleX
+                className="size-[21px] text-muted-foreground sm:size-[26px]"
+                strokeWidth={1.8}
+              />
             ) : (
               <Star
                 className="size-[21px] text-primary sm:size-[26px]"
@@ -59,15 +74,27 @@ export function ActivityRow({ activity }: { activity: Activity }) {
             {activity.pinyin}
           </span>
         </span>
-        {activity.description && <p className="mt-2 flex-1 text-sm leading-relaxed text-foreground/80">{activity.description}</p>}
+        {activity.description && (
+          <p className="mt-2 flex-1 text-sm leading-relaxed text-foreground/80">
+            {activity.description}
+          </p>
+        )}
         <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[11px] text-muted-foreground">
           {price && <span>{price}</span>}
           {(activity.address || activity.addressZh) && (
             <span className="ml-auto flex items-center gap-2 text-right">
-              <span lang={chinese ? 'zh' : 'en'} className={chinese ? 'text-xs text-foreground' : 'text-foreground'}>
+              <span
+                lang={chinese ? 'zh' : 'en'}
+                className={chinese ? 'text-xs text-foreground' : 'text-foreground'}
+              >
                 {address}
               </span>
-              <button type="button" className={square} title={chinese ? 'Show in English' : '显示中文'} onClick={() => setChinese(!chinese)}>
+              <button
+                type="button"
+                className={square}
+                title={chinese ? 'Show in English' : '显示中文'}
+                onClick={() => setChinese(!chinese)}
+              >
                 <Languages className="size-3.5" aria-label="Switch language" />
               </button>
               <button

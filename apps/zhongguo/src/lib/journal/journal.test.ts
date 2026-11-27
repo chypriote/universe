@@ -134,7 +134,9 @@ describe('Major Cities', () => {
 
   it('are replaced in the Trip Card and on the Trip page by the Trip description when it is set', async () => {
     await twoCityTrip();
-    await env.DB.prepare("UPDATE trips SET description = 'Pandas and mist.' WHERE slug = 'sichuan'").run();
+    await env.DB.prepare(
+      "UPDATE trips SET description = 'Pandas and mist.' WHERE slug = 'sichuan'",
+    ).run();
 
     const [card] = await journal.listTripCards();
     const page = await journal.getTrip('sichuan');
@@ -163,10 +165,18 @@ describe('Photo caption', () => {
     const chengdu = await addCity('Chengdu', sichuan);
     const trip = await addTrip({ slug: 'sichuan' });
     await addDay(trip, chengdu, '2025-03-01', { position: 1 });
-    await addPhoto(trip, '2025-03-01', { name: 'a.jpg', title: 'Panda breakfast', cityId: chengdu });
+    await addPhoto(trip, '2025-03-01', {
+      name: 'a.jpg',
+      title: 'Panda breakfast',
+      cityId: chengdu,
+    });
     await addPhoto(trip, '2025-03-01', { name: 'b.jpg', cityId: chengdu });
     await addPhoto(trip, '2025-03-01', { name: 'c.jpg', provinceId: qinghai });
-    await addPhoto(trip, '2025-03-01', { name: 'd.jpg', title: 'From the train', provinceId: qinghai });
+    await addPhoto(trip, '2025-03-01', {
+      name: 'd.jpg',
+      title: 'From the train',
+      provinceId: qinghai,
+    });
 
     const page = await journal.getTrip('sichuan');
 
@@ -192,9 +202,9 @@ describe('Photos and Days', () => {
     const gallery = await journal.getGallery();
 
     expect(page?.days[0].photos.map((photo) => photo.caption)).toEqual(['On the way, Qinghai']);
-    expect(gallery.photos.map((photo) => [photo.caption, photo.city, photo.province, photo.day])).toEqual([
-      ['On the way, Qinghai', null, null, 1],
-    ]);
+    expect(
+      gallery.photos.map((photo) => [photo.caption, photo.city, photo.province, photo.day]),
+    ).toEqual([['On the way, Qinghai', null, null, 1]]);
   });
 
   it('shows in the Gallery under its Trip only when no Day has its date', async () => {
@@ -223,8 +233,12 @@ describe('Photos and Days', () => {
     const { photos } = await journal.getGallery();
     const page = await journal.getTrip('sichuan');
 
-    expect(photos.map((photo) => [photo.url.split('/').pop(), photo.day])).toEqual([['shown.jpg', 1]]);
-    expect(page?.days.map((day) => [day.number, day.date, day.photos.length])).toEqual([[1, '2025-03-02', 1]]);
+    expect(photos.map((photo) => [photo.url.split('/').pop(), photo.day])).toEqual([
+      ['shown.jpg', 1],
+    ]);
+    expect(page?.days.map((day) => [day.number, day.date, day.photos.length])).toEqual([
+      [1, '2025-03-02', 1],
+    ]);
   });
 });
 
@@ -270,8 +284,16 @@ describe('Trip Card', () => {
     const trip = await addTrip({ slug: 'sichuan' });
     await addDay(trip, chengdu, '2025-03-01', { position: 1 });
     const cover = await addPhoto(trip, '2025-03-01', { name: 'cover.jpg' });
-    const tall = await addPhoto(trip, '2025-03-01', { name: 'tall.jpg', width: 3000, height: 4000 });
-    const taller = await addPhoto(trip, '2025-03-01', { name: 'taller.jpg', width: 3000, height: 4000 });
+    const tall = await addPhoto(trip, '2025-03-01', {
+      name: 'tall.jpg',
+      width: 3000,
+      height: 4000,
+    });
+    const taller = await addPhoto(trip, '2025-03-01', {
+      name: 'taller.jpg',
+      width: 3000,
+      height: 4000,
+    });
     await setTripCover(trip, cover);
     await setHighlight(trip, 2, taller);
     await setHighlight(trip, 1, tall);
@@ -307,7 +329,12 @@ describe('A Day in several Cities', () => {
     const shaanxi = await addProvince('Shaanxi');
     const qinghai = await addProvince('Qinghai');
     const xian = await addCity('Xian', shaanxi, { major: true, nameZh: '西安', lng: 109, lat: 34 });
-    const xining = await addCity('Xining', qinghai, { major: true, nameZh: '西宁', lng: 102, lat: 37 });
+    const xining = await addCity('Xining', qinghai, {
+      major: true,
+      nameZh: '西宁',
+      lng: 102,
+      lat: 37,
+    });
     const trip = await addTrip({ slug: 'west' });
     await addDay(trip, xian, '2025-03-01', { position: 1 });
     const travel = await addDay(trip, xining, '2025-03-02', { position: 2 });
@@ -325,7 +352,11 @@ describe('A Day in several Cities', () => {
 
     const page = await journal.getTrip('west');
 
-    expect(page!.days.map((day) => day.cities.map((city) => city.name))).toEqual([['Xian'], ['Xian', 'Xining'], ['Xining']]);
+    expect(page!.days.map((day) => day.cities.map((city) => city.name))).toEqual([
+      ['Xian'],
+      ['Xian', 'Xining'],
+      ['Xining'],
+    ]);
     expect(page!.days[1].cities[1]).toEqual({ name: 'Xining', nameZh: '西宁', main: true });
     expect(page!.days[1].cities[0].main).toBe(false);
   });
@@ -367,14 +398,22 @@ describe('A Day in several Cities', () => {
     const trip = await addTrip({ slug: 'sichuan' });
     const day = await addDay(trip, chengdu, '2025-03-01', { position: 1 });
     await addDay(trip, chengdu, '2025-03-02', { position: 2 });
-    const buddha = await addActivity('Leshan Grand Buddha', leshan, { nameZh: '乐山大佛', pinyin: 'Lèshān Dàfó' });
-    const pandas = await addActivity('Pandas', chengdu, { nameZh: '熊猫基地', pinyin: 'Xióngmāo Jīdì' });
+    const buddha = await addActivity('Leshan Grand Buddha', leshan, {
+      nameZh: '乐山大佛',
+      pinyin: 'Lèshān Dàfó',
+    });
+    const pandas = await addActivity('Pandas', chengdu, {
+      nameZh: '熊猫基地',
+      pinyin: 'Xióngmāo Jīdì',
+    });
     await listActivity('day_activities', day, 1, pandas);
     await listActivity('day_activities', day, 2, buddha);
 
     const days = (await journal.getTrip('sichuan'))!.days;
 
-    expect(days[0].activities.map(({ name, nameZh, pinyin }) => ({ name, nameZh, pinyin }))).toEqual([
+    expect(
+      days[0].activities.map(({ name, nameZh, pinyin }) => ({ name, nameZh, pinyin })),
+    ).toEqual([
       { name: 'Pandas', nameZh: '熊猫基地', pinyin: 'Xióngmāo Jīdì' },
       { name: 'Leshan Grand Buddha', nameZh: '乐山大佛', pinyin: 'Lèshān Dàfó' },
     ]);
@@ -388,7 +427,10 @@ describe('A Day in several Cities', () => {
     const tripDay = await addDay(trip, chengdu, '2025-03-01', { position: 1 });
     const plan = await addPlan({ slug: 'sichuan-plan' });
     const planDay = await addPlanDay(plan, chengdu, 1);
-    const pandas = await addActivity('Pandas', chengdu, { nameZh: '熊猫基地', pinyin: 'Xióngmāo Jīdì' });
+    const pandas = await addActivity('Pandas', chengdu, {
+      nameZh: '熊猫基地',
+      pinyin: 'Xióngmāo Jīdì',
+    });
     await listActivity('day_activities', tripDay, 1, pandas);
     await listActivity('plan_day_activities', planDay, 1, pandas);
 

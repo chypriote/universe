@@ -40,7 +40,11 @@ export function CityPhotos({ city, cities, provinces, onNotice, ...props }: Phot
 
   async function move(place: unknown) {
     setBusy(true);
-    const result = await send<{ ok: boolean; error?: string; updated?: number }>('/api/admin/photos', 'PATCH', { ids, place });
+    const result = await send<{ ok: boolean; error?: string; updated?: number }>(
+      '/api/admin/photos',
+      'PATCH',
+      { ids, place },
+    );
     onNotice(result.ok ? `${result.updated} Photo(s) moved` : cityError(result.error ?? ''));
     if (result.ok) {
       setPhotos(await send<CityPhoto[]>(`/api/admin/cities/${city.id}`, 'GET'));
@@ -51,8 +55,16 @@ export function CityPhotos({ city, cities, provinces, onNotice, ...props }: Phot
 
   async function makeCover() {
     setBusy(true);
-    const result = await send<{ ok: boolean; error?: string }>(`/api/admin/provinces/${encodeURIComponent(city.province)}/cover`, 'PUT', { photoId: ids[0] });
-    onNotice(result.ok ? `Home cover of ${city.province} saved` : (COVER_ERRORS[result.error ?? ''] ?? result.error ?? 'Not saved'));
+    const result = await send<{ ok: boolean; error?: string }>(
+      `/api/admin/provinces/${encodeURIComponent(city.province)}/cover`,
+      'PUT',
+      { photoId: ids[0] },
+    );
+    onNotice(
+      result.ok
+        ? `Home cover of ${city.province} saved`
+        : (COVER_ERRORS[result.error ?? ''] ?? result.error ?? 'Not saved'),
+    );
     setBusy(false);
   }
 
@@ -66,7 +78,12 @@ export function CityPhotos({ city, cities, provinces, onNotice, ...props }: Phot
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <button type="button" aria-pressed={trip === ''} className={`${button} aria-pressed:!border-primary aria-pressed:text-primary`} onClick={() => setTrip('')}>
+        <button
+          type="button"
+          aria-pressed={trip === ''}
+          className={`${button} aria-pressed:!border-primary aria-pressed:text-primary`}
+          onClick={() => setTrip('')}
+        >
           All Trips · {photos.length}
         </button>
         {trips.map((item) => (
@@ -83,16 +100,29 @@ export function CityPhotos({ city, cities, provinces, onNotice, ...props }: Phot
         <button
           type="button"
           className={`${button} ml-auto`}
-          onClick={() => setSelected(shown.every((photo) => selected.has(photo.id)) ? new Set() : new Set(shown.map((photo) => photo.id)))}
+          onClick={() =>
+            setSelected(
+              shown.every((photo) => selected.has(photo.id))
+                ? new Set()
+                : new Set(shown.map((photo) => photo.id)),
+            )
+          }
         >
-          {shown.length > 0 && shown.every((photo) => selected.has(photo.id)) ? 'Select none' : 'Select all'}
+          {shown.length > 0 && shown.every((photo) => selected.has(photo.id))
+            ? 'Select none'
+            : 'Select all'}
         </button>
       </div>
 
       {ids.length > 0 && (
         <div className="flex flex-wrap items-center gap-3 border border-border p-3">
           <span className="text-sm">{ids.length} selected</span>
-          <select className={field} aria-label="Move to City" value={target} onChange={(event) => setTarget(event.target.value)}>
+          <select
+            className={field}
+            aria-label="Move to City"
+            value={target}
+            onChange={(event) => setTarget(event.target.value)}
+          >
             <option value="">Move to City</option>
             {cities
               .filter((candidate) => candidate.id !== city.id)
@@ -102,10 +132,20 @@ export function CityPhotos({ city, cities, provinces, onNotice, ...props }: Phot
                 </option>
               ))}
           </select>
-          <button type="button" className={button} disabled={busy || !target} onClick={() => void move({ cityId: Number(target) })}>
+          <button
+            type="button"
+            className={button}
+            disabled={busy || !target}
+            onClick={() => void move({ cityId: Number(target) })}
+          >
             Move
           </button>
-          <select className={field} aria-label="Province of an On the way photo" value={onTheWayProvince} onChange={(event) => setOnTheWayProvince(event.target.value)}>
+          <select
+            className={field}
+            aria-label="Province of an On the way photo"
+            value={onTheWayProvince}
+            onChange={(event) => setOnTheWayProvince(event.target.value)}
+          >
             <option value="">No Province</option>
             {provinces.map((province) => (
               <option key={province.id} value={province.id}>
@@ -117,22 +157,37 @@ export function CityPhotos({ city, cities, provinces, onNotice, ...props }: Phot
             type="button"
             className={button}
             disabled={busy}
-            onClick={() => void move({ onTheWay: true, ...(onTheWayProvince && { provinceId: Number(onTheWayProvince) }) })}
+            onClick={() =>
+              void move({
+                onTheWay: true,
+                ...(onTheWayProvince && { provinceId: Number(onTheWayProvince) }),
+              })
+            }
           >
             Mark On the way
           </button>
           {ids.length === 1 && (
-            <button type="button" className={button} disabled={busy} onClick={() => void makeCover()}>
+            <button
+              type="button"
+              className={button}
+              disabled={busy}
+              onClick={() => void makeCover()}
+            >
               Set as {city.province} home cover
             </button>
           )}
         </div>
       )}
 
-      {shown.length === 0 && <p className="text-sm text-muted-foreground">No Photo of {city.name}.</p>}
+      {shown.length === 0 && (
+        <p className="text-sm text-muted-foreground">No Photo of {city.name}.</p>
+      )}
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
         {shown.map((photo) => (
-          <li key={photo.id} className={`border p-1.5 ${selected.has(photo.id) ? 'border-primary' : 'border-border'}`}>
+          <li
+            key={photo.id}
+            className={`border p-1.5 ${selected.has(photo.id) ? 'border-primary' : 'border-border'}`}
+          >
             <label className="flex cursor-pointer flex-col gap-1.5">
               <img
                 src={photo.thumb}
@@ -141,7 +196,12 @@ export function CityPhotos({ city, cities, provinces, onNotice, ...props }: Phot
                 className={`aspect-[3/2] w-full bg-surface ${photo.orientation === 'portrait' ? 'object-contain' : 'object-cover'}`}
               />
               <span className="flex items-center gap-2 text-xs">
-                <input type="checkbox" checked={selected.has(photo.id)} aria-label={`Select ${photo.name}`} onChange={() => toggle(photo.id)} />
+                <input
+                  type="checkbox"
+                  checked={selected.has(photo.id)}
+                  aria-label={`Select ${photo.name}`}
+                  onChange={() => toggle(photo.id)}
+                />
                 <span className="truncate">{photo.title ? `“${photo.title}”` : photo.name}</span>
               </span>
               <span className="text-xs text-muted-foreground">
@@ -171,7 +231,12 @@ export function CityDetails({ city, provinces, onNotice }: DetailsProps) {
     const data = new FormData(form);
     setBusy(true);
     setWarning('');
-    const result = await send<{ ok: boolean; error?: string; city?: AdminCityDetail; clearedCovers?: string[] }>(`/api/admin/cities/${city.id}`, 'PATCH', {
+    const result = await send<{
+      ok: boolean;
+      error?: string;
+      city?: AdminCityDetail;
+      clearedCovers?: string[];
+    }>(`/api/admin/cities/${city.id}`, 'PATCH', {
       name: data.get('name'),
       nameZh: data.get('nameZh'),
       provinceId: Number(data.get('provinceId')),
@@ -183,7 +248,9 @@ export function CityDetails({ city, provinces, onNotice }: DetailsProps) {
     if (!result.ok || !result.city) return onNotice(cityError(result.error ?? ''));
     const cleared = result.clearedCovers ?? [];
     if (cleared.length > 0) {
-      setWarning(`The Province Cover of ${cleared.join(', ')} was a Photo of this City. It is cleared: the home map shows the first Photo of the Province.`);
+      setWarning(
+        `The Province Cover of ${cleared.join(', ')} was a Photo of this City. It is cleared: the home map shows the first Photo of the Province.`,
+      );
       onNotice(`${result.city.name} saved`);
       return;
     }
@@ -194,7 +261,10 @@ export function CityDetails({ city, provinces, onNotice }: DetailsProps) {
   async function remove() {
     if (!confirm(`Delete ${city.name} for good?`)) return;
     setBusy(true);
-    const result = await send<{ ok: boolean; error?: string }>(`/api/admin/cities/${city.id}`, 'DELETE');
+    const result = await send<{ ok: boolean; error?: string }>(
+      `/api/admin/cities/${city.id}`,
+      'DELETE',
+    );
     if (result.ok) {
       window.location.href = `/admin/atlas?province=${encodeURIComponent(city.province)}`;
       return;
@@ -218,10 +288,28 @@ export function CityDetails({ city, provinces, onNotice }: DetailsProps) {
         }}
       >
         <div className="grid grid-cols-2 gap-3">
-          <input name="name" required defaultValue={city.name} aria-label="Name" className={field} />
-          <input name="nameZh" required defaultValue={city.nameZh} aria-label="Chinese name" className={field} />
+          <input
+            name="name"
+            required
+            defaultValue={city.name}
+            aria-label="Name"
+            className={field}
+          />
+          <input
+            name="nameZh"
+            required
+            defaultValue={city.nameZh}
+            aria-label="Chinese name"
+            className={field}
+          />
         </div>
-        <select name="provinceId" required defaultValue={city.provinceId} aria-label="Province" className={field}>
+        <select
+          name="provinceId"
+          required
+          defaultValue={city.provinceId}
+          aria-label="Province"
+          className={field}
+        >
           {provinces.map((province) => (
             <option key={province.id} value={province.id}>
               {province.name}
@@ -229,8 +317,24 @@ export function CityDetails({ city, provinces, onNotice }: DetailsProps) {
           ))}
         </select>
         <div className="grid grid-cols-2 gap-3">
-          <input name="lng" required type="number" step="any" defaultValue={city.lng} aria-label="Longitude" className={field} />
-          <input name="lat" required type="number" step="any" defaultValue={city.lat} aria-label="Latitude" className={field} />
+          <input
+            name="lng"
+            required
+            type="number"
+            step="any"
+            defaultValue={city.lng}
+            aria-label="Longitude"
+            className={field}
+          />
+          <input
+            name="lat"
+            required
+            type="number"
+            step="any"
+            defaultValue={city.lat}
+            aria-label="Latitude"
+            className={field}
+          />
         </div>
         <label className="flex items-center gap-2 text-sm">
           <input name="major" type="checkbox" defaultChecked={city.major} /> Major City
@@ -240,12 +344,22 @@ export function CityDetails({ city, provinces, onNotice }: DetailsProps) {
         </button>
       </form>
       <p className="text-sm text-muted-foreground">
-        Used by {city.photos} Photos, {city.days} Days, {city.activities} Activities, {city.stays} hotels and restaurants.
+        Used by {city.photos} Photos, {city.days} Days, {city.activities} Activities, {city.stays}{' '}
+        hotels and restaurants.
       </p>
-      <button type="button" className={`${button} self-start text-error`} disabled={busy || inUse > 0} onClick={() => void remove()}>
+      <button
+        type="button"
+        className={`${button} self-start text-error`}
+        disabled={busy || inUse > 0}
+        onClick={() => void remove()}
+      >
         Delete
       </button>
-      {inUse > 0 && <p className="text-sm text-muted-foreground">Move its Photos, Days and Activities to another City first.</p>}
+      {inUse > 0 && (
+        <p className="text-sm text-muted-foreground">
+          Move its Photos, Days and Activities to another City first.
+        </p>
+      )}
     </div>
   );
 }

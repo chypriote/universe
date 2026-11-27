@@ -11,22 +11,31 @@ export const prerender = false;
 const archive = await publicReads().getGallery();
 
 const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ImageGallery",
-  "name": `Photography Archive — ${SITE.name}`,
-  "description": "Photos from my trips in China, by province and city.",
-  "url": `${SITE.url}/gallery`
+  '@context': 'https://schema.org',
+  '@type': 'ImageGallery',
+  name: `Photography Archive — ${SITE.name}`,
+  description: 'Photos from my trips in China, by province and city.',
+  url: `${SITE.url}/gallery`,
 };
 ---
 
-<BaseLayout title="Photography" description="Photos from my trips in China, by province and city." jsonLd={jsonLd}>
+<BaseLayout
+  title="Photography"
+  description="Photos from my trips in China, by province and city."
+  jsonLd={jsonLd}
+>
   <TempleHeader zh="影集" title="Photos">
-    Photos from every trip. Filter by province or city, then open a city to read that day of the journal.
+    Photos from every trip. Filter by province or city, then open a city to read that day of the
+    journal.
   </TempleHeader>
   <div class="py-16 lg:py-24">
     <Container>
-
-      <GalleryArchive client:load photos={archive.photos} provinces={archive.provinces} cities={archive.cities} />
+      <GalleryArchive
+        client:load
+        photos={archive.photos}
+        provinces={archive.provinces}
+        cities={archive.cities}
+      />
     </Container>
   </div>
 </BaseLayout>

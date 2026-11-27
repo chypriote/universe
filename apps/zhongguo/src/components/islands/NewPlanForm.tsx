@@ -12,16 +12,26 @@ export function NewPlanForm() {
     setBusy(true);
     setNotice('');
     const result = await save('POST', '/api/admin/plans', { title });
-    if (result.ok) return window.location.assign(`/admin/plans/${encodeURIComponent(String(result.slug))}`);
+    if (result.ok)
+      return window.location.assign(`/admin/plans/${encodeURIComponent(String(result.slug))}`);
     setNotice(message(result.error));
     setBusy(false);
   }
 
   return (
-    <form onSubmit={(event) => void create(event)} className="flex flex-col gap-3 border border-border p-6">
+    <form
+      onSubmit={(event) => void create(event)}
+      className="flex flex-col gap-3 border border-border p-6"
+    >
       <label className="flex flex-col gap-1 text-sm">
         Title
-        <input required className={field} value={title} onChange={(event) => setTitle(event.target.value)} placeholder="For example Yunnan" />
+        <input
+          required
+          className={field}
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          placeholder="For example Yunnan"
+        />
       </label>
       {notice && (
         <p role="status" className="text-sm text-error">

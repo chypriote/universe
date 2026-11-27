@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "check": "astro check",
     "deploy": "astro build && wrangler deploy",
-    "ci": "astro check && npm test && astro build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "ci": "npm run format:check && astro check && npm test && astro build",
     "astro": "astro",
     "china": "node china.js",
     "test": "vitest run",
@@ -51,6 +53,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@cloudflare/vitest-plugin": "^1.9.2",
+    "prettier": "^3.10.1",
+    "prettier-plugin-astro": "^1.1.2",
     "typescript": "^6.0.3",
     "vitest": "^4.1.12",
     "wrangler": "^4.168.0"

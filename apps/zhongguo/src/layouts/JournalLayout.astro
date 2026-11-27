@@ -13,18 +13,52 @@ const journal = journalWorkspace();
 const [trips, plans] = await Promise.all([journal.listAdminTrips(), journal.listAdminPlans()]);
 const path = Astro.url.pathname;
 const groups = [
-  { label: 'Trips', kind: 'trip', items: trips.map((trip) => ({ slug: trip.slug, title: trip.title, visible: trip.visible, href: `/admin/trips/${trip.slug}` })) },
-  { label: 'Plans', kind: 'plan', items: plans.map((plan) => ({ slug: plan.slug, title: plan.title, visible: plan.visible, href: `/admin/plans/${plan.slug}` })) },
+  {
+    label: 'Trips',
+    kind: 'trip',
+    items: trips.map((trip) => ({
+      slug: trip.slug,
+      title: trip.title,
+      visible: trip.visible,
+      href: `/admin/trips/${trip.slug}`,
+    })),
+  },
+  {
+    label: 'Plans',
+    kind: 'plan',
+    items: plans.map((plan) => ({
+      slug: plan.slug,
+      title: plan.title,
+      visible: plan.visible,
+      href: `/admin/plans/${plan.slug}`,
+    })),
+  },
 ] as const;
-const newLink = 'btn btn-outline no-underline !px-4 !py-2 aria-[current=page]:!border-primary aria-[current=page]:text-primary';
+const newLink =
+  'btn btn-outline no-underline !px-4 !py-2 aria-[current=page]:!border-primary aria-[current=page]:text-primary';
 ---
 
 <AdminLayout title={title} heading={false}>
   <div class="lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
-    <nav aria-label="Trips and plans" class="mb-10 flex flex-col gap-6 lg:sticky lg:top-8 lg:mb-0 lg:self-start">
+    <nav
+      aria-label="Trips and plans"
+      class="mb-10 flex flex-col gap-6 lg:sticky lg:top-8 lg:mb-0 lg:self-start"
+    >
       <div class="flex gap-2">
-        <a href="/admin/trips" aria-current={path === '/admin/trips' ? 'page' : undefined} class={newLink}>+ Trip</a>
-        <a href="/admin/plans" aria-current={path === '/admin/plans' ? 'page' : undefined} class={newLink}>+ Plan</a>
+        <a
+          href="/admin/trips"
+          aria-current={path === '/admin/trips' ? 'page' : undefined}
+          class={newLink}
+        >
+          + Trip
+        </a>
+        <a
+          href="/admin/plans"
+          aria-current={path === '/admin/plans' ? 'page' : undefined}
+          class={newLink}
+        >
+          + Plan
+        </a>
       </div>
       {groups.map((group) => (
         <div class="flex flex-col gap-2">
@@ -35,12 +69,17 @@ const newLink = 'btn btn-outline no-underline !px-4 !py-2 aria-[current=page]:!b
               <li>
                 <a
                   href={item.href}
-                  aria-current={current?.kind === group.kind && current.slug === item.slug ? 'page' : undefined}
+                  aria-current={
+                    current?.kind === group.kind && current.slug === item.slug ? 'page' : undefined
+                  }
                   class="flex items-center justify-between gap-3 border-l-2 border-transparent px-3 py-2 no-underline text-foreground hover:text-primary aria-[current=page]:border-primary aria-[current=page]:bg-muted/40"
                 >
                   <span class="truncate">{item.title}</span>
                   <span
-                    class:list={['size-2.5 shrink-0 rounded-full border border-foreground', item.visible && 'bg-foreground']}
+                    class:list={[
+                      'size-2.5 shrink-0 rounded-full border border-foreground',
+                      item.visible && 'bg-foreground',
+                    ]}
                     title={item.visible ? 'Visible' : 'Hidden'}
                   ></span>
                 </a>
@@ -50,8 +89,12 @@ const newLink = 'btn btn-outline no-underline !px-4 !py-2 aria-[current=page]:!b
         </div>
       ))}
       <p class="flex gap-4 text-xs text-muted-foreground">
-        <span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full bg-foreground"></span>Visible</span>
-        <span class="flex items-center gap-1.5"><span class="size-2.5 rounded-full border border-foreground"></span>Hidden</span>
+        <span class="flex items-center gap-1.5">
+          <span class="size-2.5 rounded-full bg-foreground"></span>Visible
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="size-2.5 rounded-full border border-foreground"></span>Hidden
+        </span>
       </p>
     </nav>
     <div class="min-w-0">

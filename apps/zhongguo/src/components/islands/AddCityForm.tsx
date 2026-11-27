@@ -13,7 +13,8 @@ const ERRORS: Record<string, string> = {
 export const cityError = (error: string) => ERRORS[error] ?? error;
 
 export const fieldClass = 'border border-border bg-surface px-3 py-2 text-sm text-foreground';
-const button = 'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
+const button =
+  'btn btn-outline cursor-pointer !px-4 !py-2 disabled:cursor-not-allowed disabled:opacity-40';
 
 type Props = {
   provinces: AdminProvince[];
@@ -85,8 +86,20 @@ export function AddCityForm({ provinces, provinceId, onAdded, onError }: Props) 
       >
         <div className="flex flex-wrap gap-3">
           <input name="name" required placeholder="Name" aria-label="Name" className={fieldClass} />
-          <input name="nameZh" required placeholder="中文名" aria-label="Chinese name" className={fieldClass} />
-          <select name="provinceId" required aria-label="Province" className={fieldClass} defaultValue={provinceId ?? ''}>
+          <input
+            name="nameZh"
+            required
+            placeholder="中文名"
+            aria-label="Chinese name"
+            className={fieldClass}
+          />
+          <select
+            name="provinceId"
+            required
+            aria-label="Province"
+            className={fieldClass}
+            defaultValue={provinceId ?? ''}
+          >
             <option value="" disabled>
               Province
             </option>
@@ -98,9 +111,30 @@ export function AddCityForm({ provinces, provinceId, onAdded, onError }: Props) 
           </select>
         </div>
         <div className="flex flex-wrap gap-3">
-          <input name="lat" required type="number" step="any" placeholder="Latitude" aria-label="Latitude" className={fieldClass} />
-          <input name="lng" required type="number" step="any" placeholder="Longitude" aria-label="Longitude" className={fieldClass} />
-          <button type="button" disabled={looking} className={button} onClick={(event) => void lookUp(event.currentTarget.form!)}>
+          <input
+            name="lat"
+            required
+            type="number"
+            step="any"
+            placeholder="Latitude"
+            aria-label="Latitude"
+            className={fieldClass}
+          />
+          <input
+            name="lng"
+            required
+            type="number"
+            step="any"
+            placeholder="Longitude"
+            aria-label="Longitude"
+            className={fieldClass}
+          />
+          <button
+            type="button"
+            disabled={looking}
+            className={button}
+            onClick={(event) => void lookUp(event.currentTarget.form!)}
+          >
             {looking ? 'Looking up…' : 'Look up'}
           </button>
         </div>

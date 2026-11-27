@@ -1,7 +1,14 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
-import { addCity, addPlan, addPlanDay, addProvince, addTrip, resetDatabase } from './seed.test-helper';
+import {
+  addCity,
+  addPlan,
+  addPlanDay,
+  addProvince,
+  addTrip,
+  resetDatabase,
+} from './seed.test-helper';
 
 const journal = createJournal(env);
 
@@ -18,7 +25,8 @@ async function cities() {
   };
 }
 
-const titles = async (slug: string) => (await journal.getAdminPlan(slug))!.days.map((day) => [day.number, day.title]);
+const titles = async (slug: string) =>
+  (await journal.getAdminPlan(slug))!.days.map((day) => [day.number, day.title]);
 
 describe('Plans admin', () => {
   it('lists every plan, hidden ones too, with its switches and number of Days and Photos', async () => {
@@ -34,10 +42,20 @@ describe('Plans admin', () => {
   });
 
   it('creates a plan with a slug from its title, visible with Search flights on', async () => {
-    expect(await journal.createPlan('  Jiangnan Autumn!  ')).toEqual({ ok: true, slug: 'jiangnan-autumn' });
+    expect(await journal.createPlan('  Jiangnan Autumn!  ')).toEqual({
+      ok: true,
+      slug: 'jiangnan-autumn',
+    });
 
     expect(await journal.listAdminPlans()).toEqual([
-      { slug: 'jiangnan-autumn', title: 'Jiangnan Autumn!', visible: true, searchFlights: true, days: 0, photos: 0 },
+      {
+        slug: 'jiangnan-autumn',
+        title: 'Jiangnan Autumn!',
+        visible: true,
+        searchFlights: true,
+        days: 0,
+        photos: 0,
+      },
     ]);
   });
 
@@ -57,20 +75,35 @@ describe('Plans admin', () => {
     expect(await journal.setPlanVisible('yunnan', false)).toEqual({ ok: true });
     expect(await journal.getPlan('yunnan')).toBeNull();
     expect(await journal.setPlanSearchFlights('yunnan', false)).toEqual({ ok: true });
-    expect((await journal.listAdminPlans())[0]).toMatchObject({ visible: false, searchFlights: false });
-    expect(await journal.setPlanVisible('nope', true)).toEqual({ ok: false, error: 'unknown-plan' });
-    expect(await journal.setPlanSearchFlights('nope', true)).toEqual({ ok: false, error: 'unknown-plan' });
+    expect((await journal.listAdminPlans())[0]).toMatchObject({
+      visible: false,
+      searchFlights: false,
+    });
+    expect(await journal.setPlanVisible('nope', true)).toEqual({
+      ok: false,
+      error: 'unknown-plan',
+    });
+    expect(await journal.setPlanSearchFlights('nope', true)).toEqual({
+      ok: false,
+      error: 'unknown-plan',
+    });
   });
 
   it('adds Days at the end, numbered', async () => {
     const { kunming, dali } = await cities();
     await journal.createPlan('Yunnan');
 
-    expect(await journal.addPlanDay('yunnan', { cityId: kunming, title: 'Arrive' })).toMatchObject({ ok: true });
-    expect(await journal.addPlanDay('yunnan', { cityId: dali, title: 'Lake', notes: 'Erhai' })).toMatchObject({ ok: true });
+    expect(await journal.addPlanDay('yunnan', { cityId: kunming, title: 'Arrive' })).toMatchObject({
+      ok: true,
+    });
+    expect(
+      await journal.addPlanDay('yunnan', { cityId: dali, title: 'Lake', notes: 'Erhai' }),
+    ).toMatchObject({ ok: true });
 
     const plan = await journal.getAdminPlan('yunnan');
-    expect(plan!.days.map((day) => [day.number, day.title, day.notes, day.city.name, day.province])).toEqual([
+    expect(
+      plan!.days.map((day) => [day.number, day.title, day.notes, day.city.name, day.province]),
+    ).toEqual([
       [1, 'Arrive', '', 'Kunming', 'Yunnan'],
       [2, 'Lake', 'Erhai', 'Dali', 'Yunnan'],
     ]);
@@ -80,9 +113,18 @@ describe('Plans admin', () => {
     const { kunming } = await cities();
     await journal.createPlan('Yunnan');
 
-    expect(await journal.addPlanDay('yunnan', { cityId: kunming, title: ' ' })).toEqual({ ok: false, error: 'invalid-title' });
-    expect(await journal.addPlanDay('yunnan', { cityId: 999, title: 'x' })).toEqual({ ok: false, error: 'unknown-city' });
-    expect(await journal.addPlanDay('nope', { cityId: kunming, title: 'x' })).toEqual({ ok: false, error: 'unknown-plan' });
+    expect(await journal.addPlanDay('yunnan', { cityId: kunming, title: ' ' })).toEqual({
+      ok: false,
+      error: 'invalid-title',
+    });
+    expect(await journal.addPlanDay('yunnan', { cityId: 999, title: 'x' })).toEqual({
+      ok: false,
+      error: 'unknown-city',
+    });
+    expect(await journal.addPlanDay('nope', { cityId: kunming, title: 'x' })).toEqual({
+      ok: false,
+      error: 'unknown-plan',
+    });
   });
 
   it('edits the text, the main City and the route of a Day like a Trip Day', async () => {
@@ -90,20 +132,40 @@ describe('Plans admin', () => {
     const plan = await addPlan({ slug: 'yunnan' });
     const day = await addPlanDay(plan, kunming, 1, { title: 'Old' });
 
-    expect(await journal.editPlanDay({ dayId: day, title: ' New ', notes: 'Notes' })).toEqual({ ok: true });
-    expect(await journal.editPlanDay({ dayId: day, cityId: dali, routeCityIds: [kunming, dali, chengdu] })).toEqual({ ok: true });
+    expect(await journal.editPlanDay({ dayId: day, title: ' New ', notes: 'Notes' })).toEqual({
+      ok: true,
+    });
+    expect(
+      await journal.editPlanDay({
+        dayId: day,
+        cityId: dali,
+        routeCityIds: [kunming, dali, chengdu],
+      }),
+    ).toEqual({ ok: true });
 
     const [edited] = (await journal.getAdminPlan('yunnan'))!.days;
-    expect(edited).toMatchObject({ title: 'New', notes: 'Notes', city: { id: dali, name: 'Dali' } });
+    expect(edited).toMatchObject({
+      title: 'New',
+      notes: 'Notes',
+      city: { id: dali, name: 'Dali' },
+    });
     expect(edited.route.map((city) => city.name)).toEqual(['Kunming', 'Dali', 'Chengdu']);
-    expect((await journal.getPlan('yunnan'))!.days[0].cities.map((city) => [city.name, city.main])).toEqual([
+    expect(
+      (await journal.getPlan('yunnan'))!.days[0].cities.map((city) => [city.name, city.main]),
+    ).toEqual([
       ['Kunming', false],
       ['Dali', true],
       ['Chengdu', false],
     ]);
-    expect(await journal.editPlanDay({ dayId: day, title: '' })).toEqual({ ok: false, error: 'invalid-title' });
+    expect(await journal.editPlanDay({ dayId: day, title: '' })).toEqual({
+      ok: false,
+      error: 'invalid-title',
+    });
     expect(await journal.editPlanDay({ dayId: day, cityId: kunming })).toEqual({ ok: true });
-    expect(await journal.editPlanDay({ dayId: 999, title: 'x' })).toEqual({ ok: false, error: 'unknown-day' });
+    expect(await journal.editPlanDay({ dayId: 999, title: 'x' })).toEqual({
+      ok: false,
+      error: 'unknown-day',
+    });
   });
 
   it('deletes a Day with what hangs off it and numbers the others again', async () => {
@@ -116,8 +178,13 @@ describe('Plans admin', () => {
 
     expect(await journal.deletePlanDay(middle)).toEqual({ ok: true });
 
-    expect(await titles('yunnan')).toEqual([[1, 'A'], [2, 'C']]);
-    expect((await env.DB.prepare('SELECT COUNT(*) AS n FROM plan_day_cities').first<{ n: number }>())!.n).toBe(0);
+    expect(await titles('yunnan')).toEqual([
+      [1, 'A'],
+      [2, 'C'],
+    ]);
+    expect(
+      (await env.DB.prepare('SELECT COUNT(*) AS n FROM plan_day_cities').first<{ n: number }>())!.n,
+    ).toBe(0);
     expect(await journal.deletePlanDay(middle)).toEqual({ ok: false, error: 'unknown-day' });
   });
 
@@ -129,12 +196,24 @@ describe('Plans admin', () => {
     const c = await addPlanDay(plan, kunming, 3, { title: 'C' });
 
     await journal.movePlanDay(c, 'up');
-    expect(await titles('yunnan')).toEqual([[1, 'A'], [2, 'C'], [3, 'B']]);
+    expect(await titles('yunnan')).toEqual([
+      [1, 'A'],
+      [2, 'C'],
+      [3, 'B'],
+    ]);
     await journal.movePlanDay(a, 'down');
-    expect(await titles('yunnan')).toEqual([[1, 'C'], [2, 'A'], [3, 'B']]);
+    expect(await titles('yunnan')).toEqual([
+      [1, 'C'],
+      [2, 'A'],
+      [3, 'B'],
+    ]);
     expect(await journal.movePlanDay(c, 'up')).toEqual({ ok: true });
     expect(await journal.movePlanDay(b, 'down')).toEqual({ ok: true });
-    expect(await titles('yunnan')).toEqual([[1, 'C'], [2, 'A'], [3, 'B']]);
+    expect(await titles('yunnan')).toEqual([
+      [1, 'C'],
+      [2, 'A'],
+      [3, 'B'],
+    ]);
     expect(await journal.movePlanDay(999, 'up')).toEqual({ ok: false, error: 'unknown-day' });
   });
 

@@ -165,7 +165,9 @@ export async function addPhoto(
 }
 
 export async function setTripCover(tripId: number, photoId: number) {
-  await env.DB.prepare('UPDATE trips SET cover_photo_id = ? WHERE id = ?').bind(photoId, tripId).run();
+  await env.DB.prepare('UPDATE trips SET cover_photo_id = ? WHERE id = ?')
+    .bind(photoId, tripId)
+    .run();
 }
 
 export async function setHighlight(tripId: number, position: number, photoId: number) {
@@ -179,12 +181,19 @@ export async function setProvinceCover(provinceId: number, photoId: number) {
 /** The route of a Day: every City in travel order, `mainId` being its main City. */
 export async function setDayCities(dayId: number, cityIds: number[], mainId: number) {
   for (const [index, cityId] of cityIds.entries()) {
-    await insert('day_cities', { day_id: dayId, position: index + 1, city_id: cityId, main: cityId === mainId ? 1 : 0 });
+    await insert('day_cities', {
+      day_id: dayId,
+      position: index + 1,
+      city_id: cityId,
+      main: cityId === mainId ? 1 : 0,
+    });
   }
 }
 
 /** A Trip plan: numbered Days and no dates. */
-export async function addPlan(options: { slug?: string; title?: string; visible?: boolean; searchFlights?: boolean } = {}) {
+export async function addPlan(
+  options: { slug?: string; title?: string; visible?: boolean; searchFlights?: boolean } = {},
+) {
   const slug = options.slug ?? `plan-${nextId}`;
   const row = {
     id: id(),
@@ -197,7 +206,12 @@ export async function addPlan(options: { slug?: string; title?: string; visible?
   return row.id;
 }
 
-export async function addPlanDay(planId: number, cityId: number, position: number, options: { title?: string; notes?: string } = {}) {
+export async function addPlanDay(
+  planId: number,
+  cityId: number,
+  position: number,
+  options: { title?: string; notes?: string } = {},
+) {
   const row = {
     id: id(),
     plan_id: planId,
@@ -210,10 +224,25 @@ export async function addPlanDay(planId: number, cityId: number, position: numbe
   return row.id;
 }
 
-export async function addPlanPhoto(planId: number, dayId: number | null, name: string, cityId: number | null = null) {
-  const row = { id: id(), plan_id: planId, name, width: 4000, height: 3000, title: null, city_id: cityId, province_id: null };
+export async function addPlanPhoto(
+  planId: number,
+  dayId: number | null,
+  name: string,
+  cityId: number | null = null,
+) {
+  const row = {
+    id: id(),
+    plan_id: planId,
+    name,
+    width: 4000,
+    height: 3000,
+    title: null,
+    city_id: cityId,
+    province_id: null,
+  };
   await insert('plan_photos', row);
-  if (dayId !== null) await insert('plan_day_photos', { day_id: dayId, position: 1, photo_id: row.id });
+  if (dayId !== null)
+    await insert('plan_day_photos', { day_id: dayId, position: 1, photo_id: row.id });
   return row.id;
 }
 
@@ -235,6 +264,11 @@ export async function addActivity(
 }
 
 /** `table` is `day_activities` for a Trip Day, `plan_day_activities` for a Plan Day. */
-export async function listActivity(table: 'day_activities' | 'plan_day_activities', dayId: number, position: number, activityId: number) {
+export async function listActivity(
+  table: 'day_activities' | 'plan_day_activities',
+  dayId: number,
+  position: number,
+  activityId: number,
+) {
   await insert(table, { day_id: dayId, position, activity_id: activityId });
 }
