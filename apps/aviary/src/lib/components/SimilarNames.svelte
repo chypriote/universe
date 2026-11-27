@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BirdPicture from './BirdPicture.svelte';
 	import { label, type Labels } from '#lib/labels';
 	import { initials, tintClass } from '#lib/tile';
 	import type { SimilarBird } from '#lib/server/catalog/types';
@@ -40,9 +41,8 @@
 			{#each found as bird (bird.id)}
 				<li class="flex w-16 flex-col gap-0.5">
 					{#if bird.pictureId !== null}
-						<img
-							src="/pictures/{bird.pictureId}"
-							alt=""
+						<BirdPicture
+							pictureId={bird.pictureId}
 							class="aspect-square w-full rounded-md object-cover {bird.archived
 								? 'opacity-50'
 								: ''}"

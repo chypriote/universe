@@ -3,6 +3,7 @@
 	import EyeIcon from '@lucide/svelte/icons/eye';
 	import MapPinOffIcon from '@lucide/svelte/icons/map-pin-off';
 	import PlaneTakeoffIcon from '@lucide/svelte/icons/plane-takeoff';
+	import BirdPicture from './BirdPicture.svelte';
 	import TileCaption from '@universe/showcase/components/TileCaption.svelte';
 	import { formatDate } from '@universe/universe/format';
 	import { label, type Labels } from '#lib/labels';
@@ -21,13 +22,7 @@
 	} = $props();
 
 	let failed = $state(false);
-	let img = $state<HTMLImageElement | null>(null);
 	const showImage = $derived(bird.pictureId !== null && !failed);
-
-	// An image can fail before hydration, so the error event is already gone.
-	$effect(() => {
-		if (img && img.complete && img.naturalWidth === 0) failed = true;
-	});
 
 	// One colour-coded icon per flag. Roosted is never shown.
 	const flags = $derived(
@@ -50,13 +45,10 @@
 			class="relative block aspect-square w-full overflow-hidden rounded-(--cover-radius) shadow-(--shadow-raised) motion-safe:transition-transform motion-safe:duration-150 motion-safe:ease-(--easing-out) motion-safe:group-hover:translate-y-(--tile-hover-lift) motion-safe:group-hover:rotate-(--tile-hover-tilt) motion-safe:group-focus-visible:translate-y-(--tile-hover-lift) motion-safe:group-focus-visible:rotate-(--tile-hover-tilt)"
 		>
 			{#if showImage}
-				<img
-					bind:this={img}
-					src="/pictures/{bird.pictureId}"
-					alt=""
-					loading="lazy"
+				<BirdPicture
+					pictureId={bird.pictureId!}
 					class="size-full object-cover"
-					onerror={() => (failed = true)}
+					onFail={() => (failed = true)}
 				/>
 			{:else}
 				<span

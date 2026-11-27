@@ -12,6 +12,7 @@
 	import type { PictureItem } from '#lib/picture-list';
 	import type { BirdDetail } from '#lib/server/catalog/types';
 	import { initials, tintClass } from '#lib/tile';
+	import BirdPicture from './BirdPicture.svelte';
 	import BirdForm from './BirdForm.svelte';
 	import SightingList from './SightingList.svelte';
 
@@ -146,7 +147,7 @@
 {#snippet media()}
 	{#if bird && bird.pictureIds.length > 0}
 		<span class="block aspect-square overflow-hidden rounded-md bg-background">
-			<img src="/pictures/{bird.pictureIds[shown]}" alt="" class="size-full object-cover" />
+			<BirdPicture pictureId={bird.pictureIds[shown]} class="size-full object-cover" />
 		</span>
 		{#if bird.pictureIds.length > 1}
 			<div class="flex flex-wrap gap-1" role="group">
@@ -158,7 +159,7 @@
 						aria-label={`${label(labels, 'Picture')} ${index + 1}`}
 						onclick={() => (shown = index)}
 					>
-						<img src="/pictures/{pictureId}" alt="" class="size-full object-cover" />
+						<BirdPicture {pictureId} class="size-full object-cover" />
 					</button>
 				{/each}
 			</div>

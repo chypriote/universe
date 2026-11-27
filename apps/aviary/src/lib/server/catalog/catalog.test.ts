@@ -270,3 +270,35 @@ describe('getPicture', () => {
 		expect(await catalog.getPicture(token, 999999)).toBeNull();
 	});
 });
+
+describe('thumbnails', () => {
+	const bytes = new TextEncoder().encode('small').buffer as ArrayBuffer;
+
+	it('has none until the browser stores one, then streams it', async () => {
+		await seedBird('Bird A', { pictures: ['key-one'] });
+		const [tile] = await catalog.listBirds(token, { view: 'aloft' });
+		expect(await catalog.getPicture(token, tile.pictureId!, 'thumb')).toBeNull();
+
+		expect(await catalog.putThumbnail(token, tile.pictureId!, bytes)).toBe(true);
+		const thumb = await catalog.getPicture(token, tile.pictureId!, 'thumb');
+		expect(await new Response(thumb!.body).text()).toBe('small');
+		const full = await catalog.getPicture(token, tile.pictureId!);
+		expect(await new Response(full!.body).text()).toBe('bytes-of-key-one');
+	});
+
+	it('refuses a bad token and answers false for an unknown Picture', async () => {
+		await expect(catalog.putThumbnail('nope', 1, bytes)).rejects.toBeInstanceOf(UnauthorizedError);
+		expect(await catalog.putThumbnail(token, 999999, bytes)).toBe(false);
+	});
+
+	it('goes with its Picture when the Bird is deleted for good', async () => {
+		const id = await seedBird('Bird A', { pictures: ['key-one'], archived: true });
+		const [row] = (await env.DB.prepare('SELECT id FROM picture').all<{ id: number }>()).results;
+		await catalog.putThumbnail(token, row.id, bytes);
+		expect(await env.PICTURES.head('thumb/key-one')).not.toBeNull();
+
+		expect(await catalog.deleteBirdForever(token, id)).toEqual({ ok: true });
+		expect(await env.PICTURES.head('key-one')).toBeNull();
+		expect(await env.PICTURES.head('thumb/key-one')).toBeNull();
+	});
+});
