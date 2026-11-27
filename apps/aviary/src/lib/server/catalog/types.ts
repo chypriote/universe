@@ -14,6 +14,9 @@ export type BirdView = 'aloft' | 'grounded' | 'seen';
 /** The Nest filter: every Bird, only Nest Birds, or only Birds not in the Nest. */
 export type NestFilter = 'all' | 'only' | 'not';
 
+/** The Seen filter: every Bird, only Seen Birds, or only Birds not Seen. */
+export type SeenFilter = 'all' | 'only' | 'not';
+
 /** The Roosted filter: every Bird, or only Roosted Birds. */
 export type RoostedFilter = 'all' | 'only';
 
@@ -23,6 +26,7 @@ export interface ListBirdsQuery {
 	habitat?: number;
 	/** Song id. */
 	song?: number;
+	seen?: SeenFilter;
 	nest?: NestFilter;
 	roosted?: RoostedFilter;
 	/** Part of the name, ignoring case. Blank means no search. */

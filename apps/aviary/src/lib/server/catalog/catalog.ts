@@ -139,7 +139,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return Object.fromEntries(rows.map((row) => [row.codeName, row.word]));
 		},
 
-		async listBirds(token, { view, habitat, song, nest, roosted, search }) {
+		async listBirds(token, { view, habitat, song, seen, nest, roosted, search }) {
 			await owner(token);
 			const grounded = or(eq(birds.flown, true), eq(birds.lost, true));
 			const inView = {
@@ -153,6 +153,8 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				song === undefined
 					? undefined
 					: sql`EXISTS (SELECT 1 FROM bird_song bs WHERE bs.bird_id = bird.id AND bs.song_id = ${song})`,
+				seen === 'only' ? eq(birds.seen, true) : undefined,
+				seen === 'not' ? eq(birds.seen, false) : undefined,
 				nest === 'only' ? eq(birds.nest, true) : undefined,
 				nest === 'not' ? eq(birds.nest, false) : undefined,
 				roosted === 'only' ? eq(birds.roosted, true) : undefined

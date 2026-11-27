@@ -97,6 +97,14 @@ describe('listBirds filters', () => {
 		expect(await names({ view: 'aloft', nest: 'not' })).toEqual(['Bird B']);
 	});
 
+	it('filters by Seen: all, only, not', async () => {
+		await insertBird('Bird A', { seen: true });
+		await insertBird('Bird B');
+		expect(await names({ view: 'aloft', seen: 'all' })).toEqual(['Bird A', 'Bird B']);
+		expect(await names({ view: 'aloft', seen: 'only' })).toEqual(['Bird A']);
+		expect(await names({ view: 'aloft', seen: 'not' })).toEqual(['Bird B']);
+	});
+
 	it('filters by Roosted: all, only', async () => {
 		await insertBird('Bird A', { roosted: true });
 		await insertBird('Bird B');

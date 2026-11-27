@@ -22,6 +22,7 @@
 	type Filters = {
 		habitat?: number;
 		song?: number;
+		seen: 'all' | 'only' | 'not';
 		nest: 'all' | 'only' | 'not';
 		roosted: 'all' | 'only';
 		search: string;
@@ -47,12 +48,13 @@
 	let search = $state(untrack(() => filters.search));
 	let habitat = $state(untrack(() => String(filters.habitat ?? '')));
 	let song = $state(untrack(() => String(filters.song ?? '')));
+	let seen = $state<string>(untrack(() => filters.seen));
 	let nest = $state<string>(untrack(() => filters.nest));
 	let roosted = $state<string>(untrack(() => filters.roosted));
 
 	const searchActive = $derived(search.trim() !== '');
 	const filtersActive = $derived(
-		habitat !== '' || song !== '' || nest !== 'all' || roosted !== 'all'
+		habitat !== '' || song !== '' || seen !== 'all' || nest !== 'all' || roosted !== 'all'
 	);
 	const isFiltering = $derived(searchActive || filtersActive);
 
@@ -60,6 +62,7 @@
 		searchValue: string,
 		habitatValue: string | number | undefined,
 		songValue: string | number | undefined,
+		seenValue: string,
 		nestValue: string,
 		roostedValue: string
 	) {
@@ -67,13 +70,14 @@
 		if (searchValue.trim()) params.set('search', searchValue.trim());
 		if (habitatValue) params.set('habitat', String(habitatValue));
 		if (songValue) params.set('song', String(songValue));
+		if (seenValue !== 'all') params.set('seen', seenValue);
 		if (nestValue !== 'all') params.set('nest', nestValue);
 		if (roostedValue !== 'all') params.set('roosted', roostedValue);
 		return params.toString();
 	}
 
 	function apply() {
-		const query = queryOf(search, habitat, song, nest, roosted);
+		const query = queryOf(search, habitat, song, seen, nest, roosted);
 		// eslint-disable-next-line svelte/no-navigation-without-resolve -- same page, new query
 		void goto(`${page.url.pathname}${query ? `?${query}` : ''}`, {
 			replace: true,
@@ -84,11 +88,18 @@
 	// A change of any field reloads the tab; typing waits a moment.
 	let applied = $state(
 		untrack(() =>
-			queryOf(filters.search, filters.habitat, filters.song, filters.nest, filters.roosted)
+			queryOf(
+				filters.search,
+				filters.habitat,
+				filters.song,
+				filters.seen,
+				filters.nest,
+				filters.roosted
+			)
 		)
 	);
 	$effect(() => {
-		const wanted = queryOf(search, habitat, song, nest, roosted);
+		const wanted = queryOf(search, habitat, song, seen, nest, roosted);
 		if (wanted === untrack(() => applied)) return;
 		const timer = setTimeout(() => {
 			applied = wanted;
@@ -101,12 +112,18 @@
 		search = '';
 		habitat = '';
 		song = '';
+		seen = 'all';
 		nest = 'all';
 		roosted = 'all';
 	}
 
 	const all = (codeName: string) => [{ value: '', label: label(labels, codeName) }];
 	const options = (list: Option[]) => list.map((o) => ({ value: String(o.id), label: o.name }));
+	const seenOptions = $derived([
+		{ value: 'all', label: label(labels, 'SeenAll') },
+		{ value: 'only', label: label(labels, 'SeenOnly') },
+		{ value: 'not', label: label(labels, 'SeenNot') }
+	]);
 	const nestOptions = $derived([
 		{ value: 'all', label: label(labels, 'NestAll') },
 		{ value: 'only', label: label(labels, 'NestOnly') },
@@ -158,8 +175,12 @@
 			label={label(labels, 'Songs')}
 			options={[...all('AllSongs'), ...options(songs)]}
 		/>
-		<Select bind:value={nest} label={label(labels, 'Nest')} options={nestOptions} />
-		<Select bind:value={roosted} label={label(labels, 'Roosted')} options={roostedOptions} />
+		{#if view === 'seen'}
+			<Select bind:value={nest} label={label(labels, 'Nest')} options={nestOptions} />
+			<Select bind:value={roosted} label={label(labels, 'Roosted')} options={roostedOptions} />
+		{:else}
+			<Select bind:value={seen} label={label(labels, 'Seen')} options={seenOptions} />
+		{/if}
 	{/snippet}
 </StickyBar>
 

@@ -1,5 +1,5 @@
 import { catalogFromPlatform } from '#lib/server/catalog';
-import type { BirdView, NestFilter, RoostedFilter } from '#lib/server/catalog';
+import type { BirdView, NestFilter, RoostedFilter, SeenFilter } from '#lib/server/catalog';
 import { ownerToken } from '@universe/owner/cookie';
 import type { Cookies } from '@sveltejs/kit';
 
@@ -8,12 +8,14 @@ const positiveInt = (value: string | null) => {
 	return value !== null && Number.isInteger(n) && n > 0 ? n : undefined;
 };
 
-/** The filters in a tab URL: `habitat`, `song`, `nest` (only | not), `roosted` (only) and `search`. */
+/** The filters in a tab URL: `habitat`, `song`, `seen` (only | not), `nest` (only | not), `roosted` (only) and `search`. */
 export function parseFilters(params: URLSearchParams) {
 	const nest = params.get('nest');
+	const seen = params.get('seen');
 	return {
 		habitat: positiveInt(params.get('habitat')),
 		song: positiveInt(params.get('song')),
+		seen: (seen === 'only' || seen === 'not' ? seen : 'all') as SeenFilter,
 		nest: (nest === 'only' || nest === 'not' ? nest : 'all') as NestFilter,
 		roosted: (params.get('roosted') === 'only' ? 'only' : 'all') as RoostedFilter,
 		search: params.get('search')?.trim() ?? ''
