@@ -70,12 +70,10 @@ export function AdminAtlas(props: Props) {
   const provinceCities = cities.filter((item) => item.provinceId === province.id);
   const provinceActivities = activities.filter((item) => item.province === province.name);
   const cityActivities = city ? activities.filter((item) => item.cityId === city.id) : [];
-  const describe = (months: number[]) => (months.length === 0 ? 'no Season' : `${months.length} months of Season`);
 
   const regions = provinces.map((item) => ({
     name: item.name,
     zh: item.nameZh,
-    detail: describe(item.season),
     visited: visited.some((province) => province.name === item.name),
   }));
   const mapCities: ChinaMapCity[] = cities.map((item) => {

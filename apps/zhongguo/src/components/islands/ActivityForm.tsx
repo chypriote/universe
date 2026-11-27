@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { AdminActivity, AdminCity } from '@/lib/journal';
 import { ACTIVITY_KINDS, ACTIVITY_RATINGS } from '@/lib/journal/activity-kinds';
 
@@ -29,11 +29,31 @@ type Props = {
   onError: (message: string) => void;
 };
 
+const snapshot = (form: HTMLFormElement) => JSON.stringify([...new FormData(form)]);
 const number = (value: FormDataEntryValue | null) => (String(value ?? '').trim() === '' ? null : Number(value));
 
 /** The Activity form: adds one, or edits one. Shared by the Activities, City and Province pages. */
 export function ActivityForm({ cities, activity, cityId, onSaved, onError }: Props) {
   const [busy, setBusy] = useState(false);
+  /** The last pinyin filled in from the hanzi: typing hanzi replaces it, never a pinyin typed by hand. */
+  const autoPinyin = useRef(activity ? null : '');
+  const formRef = useRef<HTMLFormElement>(null);
+  const initial = useRef('');
+  const [dirty, setDirty] = useState(false);
+  const check = () => setDirty(snapshot(formRef.current!) !== initial.current);
+
+  useEffect(() => {
+    initial.current = snapshot(formRef.current!);
+  }, []);
+
+  async function fillPinyin(form: HTMLFormElement | null, hanzi: string) {
+    const input = form?.elements.namedItem('pinyin') as HTMLInputElement | null;
+    if (!input || (input.value !== '' && input.value !== autoPinyin.current)) return;
+    const { pinyinOf } = await import('@/lib/pinyin');
+    input.value = pinyinOf(hanzi);
+    autoPinyin.current = input.value;
+    check();
+  }
 
   /** Fills latitude and longitude from OpenStreetMap Nominatim (free, one request per click). */
   async function lookUp(form: HTMLFormElement) {
@@ -49,6 +69,7 @@ export function ActivityForm({ cities, activity, cityId, onSaved, onError }: Pro
       if (!found) return onError('No place found');
       (form.elements.namedItem('lat') as HTMLInputElement).value = Number(found.lat).toFixed(5);
       (form.elements.namedItem('lng') as HTMLInputElement).value = Number(found.lon).toFixed(5);
+      check();
     } catch {
       onError('Coordinate lookup failed');
     } finally {
@@ -81,7 +102,10 @@ export function ActivityForm({ cities, activity, cityId, onSaved, onError }: Pro
       const result = (await response.json()) as { ok: boolean; error?: string; activity?: AdminActivity };
       if (result.ok && result.activity) {
         onSaved(result.activity);
-        if (!activity) form.reset();
+        if (!activity) {
+          form.reset();
+          setDirty(false);
+        }
       } else {
         onError(activityError(result.error ?? ''));
       }
@@ -94,7 +118,9 @@ export function ActivityForm({ cities, activity, cityId, onSaved, onError }: Pro
 
   return (
     <form
+      ref={formRef}
       className="flex flex-col gap-3"
+      onInput={check}
       onSubmit={(event) => {
         event.preventDefault();
         void submit(event.currentTarget);
@@ -102,7 +128,15 @@ export function ActivityForm({ cities, activity, cityId, onSaved, onError }: Pro
     >
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <input name="name" required defaultValue={activity?.name} placeholder="Name" aria-label="Name" className={field} />
-        <input name="nameZh" required defaultValue={activity?.nameZh} placeholder="中文名" aria-label="Chinese name" className={field} />
+        <input
+          name="nameZh"
+          required
+          defaultValue={activity?.nameZh}
+          placeholder="中文名"
+          aria-label="Chinese name"
+          className={field}
+          onChange={(event) => void fillPinyin(event.currentTarget.form, event.currentTarget.value)}
+        />
         <input name="pinyin" required defaultValue={activity?.pinyin} placeholder="Pinyin" aria-label="Pinyin" className={field} />
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
@@ -147,7 +181,7 @@ export function ActivityForm({ cities, activity, cityId, onSaved, onError }: Pro
         <button type="button" disabled={busy} className={button} onClick={(event) => void lookUp(event.currentTarget.form!)}>
           Look up
         </button>
-        <button type="submit" disabled={busy} className={button}>
+        <button type="submit" disabled={busy || !dirty} className={`${button} ml-auto ${dirty ? 'border-foreground bg-foreground text-background' : ''}`}>
           {activity ? 'Save' : 'Add Activity'}
         </button>
       </div>

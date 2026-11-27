@@ -39,6 +39,7 @@
     "exifreader": "^4.55.1",
     "glob": "^14.0.6",
     "lucide-react": "^1.78.0",
+    "pinyin-pro": "3.29.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "remark-gfm": "^4.0.1",
