@@ -11,7 +11,7 @@ One individual, with a name and one or more pictures. One Bird per person. It ha
 _Avoid_: Entry, item
 
 **Pictures**:
-The ordered pictures of a Bird, at least one. The first is the tile picture. Each is cropped square and resized in the browser before upload.
+The ordered pictures of a Bird, at least one. The first is the tile picture. Each is cropped square by the user (move and zoom) and resized in the browser before upload.
 
 **Arrival**:
 When the Bird came, optional. A full day, a month (when the day is unknown) or only a year.
