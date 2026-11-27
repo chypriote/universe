@@ -30,7 +30,7 @@ const invalidation = () => snapshotInvalidation(bindings().PHOTOS);
 
 export const ownerLogin = (): OwnerLogin => createJournal(bindings());
 
-// Each write part tells the invalidation what a successful write changed (docs/adr/0004).
+// Each write part tells the invalidation what a successful write changed (docs/adr/0004). A write left out of a map drops every snapshot.
 
 export const provinceCovers = (): ProvinceCovers =>
 	invalidating(

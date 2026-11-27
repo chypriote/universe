@@ -9,8 +9,9 @@ import { publicReads } from '@/lib/journal';
 export const prerender = false;
 
 // Prices and covers are read on request.
-const covers = new Map((await publicReads().listPlanCards()).map((card) => [card.slug, card]));
-const { plans, searches, airports } = await publicReads().getFareData();
+const journal = publicReads();
+const covers = new Map((await journal.listPlanCards()).map((card) => [card.slug, card]));
+const { plans, searches, airports } = await journal.getFareData();
 const today = new Date().toISOString().slice(0, 10);
 const { first, last, plans: lanes } = flightPrices(
   plans,
@@ -24,7 +25,7 @@ const pictures = new Map<string, string[]>();
 for (const plan of lanes) {
   let urls = covers.get(plan.slug)?.highlights ?? [];
   if (urls.length === 0) {
-    const page = await publicReads().getPlan(plan.slug);
+    const page = await journal.getPlan(plan.slug);
     urls = [...new Set(page?.days.flatMap((day) => day.activities.map((activity) => activity.picture)).filter((url): url is string => url !== null))];
   }
   pictures.set(plan.slug, urls.slice(0, 3));

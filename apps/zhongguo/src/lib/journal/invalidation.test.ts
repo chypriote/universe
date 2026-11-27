@@ -115,4 +115,65 @@ describe('A write part that invalidates', () => {
 
 		expect(await left()).toContain(snapshot('fares.json'));
 	});
+
+	it('drops every snapshot after a write it was not told about', async () => {
+		const wrapped = invalidating(
+			{ ...part, rename: async () => ({ ok: true as const }) },
+			{ save: 'season' },
+			snapshotInvalidation(env.PHOTOS)
+		);
+
+		await wrapped.rename();
+
+		expect(await left()).toEqual(['trips/yunnan/photo.jpg']);
+	});
+
+	it('drops nothing after a refused unlisted write', async () => {
+		const wrapped = invalidating(
+			{ ...part, rename: async () => ({ ok: false as const }) },
+			{ save: 'season' },
+			snapshotInvalidation(env.PHOTOS)
+		);
+
+		await wrapped.rename();
+
+		expect(await left()).toEqual(allBut());
+	});
+
+	it('counts a write that answers without ok as a success', async () => {
+		const wrapped = invalidating(
+			{ removeAll: async () => ({ deleted: [1], kept: [] }) },
+			{ removeAll: 'trip' },
+			snapshotInvalidation(env.PHOTOS)
+		);
+
+		await wrapped.removeAll();
+
+		expect(await left()).not.toContain(snapshot('trip-cards.json'));
+	});
+
+	it('drops nothing when a delete deleted nothing', async () => {
+		const wrapped = invalidating(
+			{ removeAll: async () => ({ deleted: [] as number[], kept: [{ id: 2 }] }) },
+			{ removeAll: 'trip' },
+			snapshotInvalidation(env.PHOTOS)
+		);
+
+		await wrapped.removeAll();
+
+		expect(await left()).toEqual(allBut());
+	});
+
+	it('does not wrap a read', async () => {
+		const wrapped = invalidating(
+			{ ...part, listThings: async () => [1], getThing: async () => 2 },
+			{ save: 'season' },
+			snapshotInvalidation(env.PHOTOS)
+		);
+
+		await wrapped.listThings();
+		await wrapped.getThing();
+
+		expect(await left()).toEqual(allBut());
+	});
 });

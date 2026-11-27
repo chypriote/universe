@@ -17,4 +17,10 @@ describe('buildCityCalendarDays', () => {
 
     expect(cell).toMatchObject({ city: 'Hotan', cityZh: '和田', cityPinyin: 'Hétián' });
   });
+
+  it("writes 西安 as Xī'ān, with the apostrophe", () => {
+    const [cell] = buildCityCalendarDays([{ day: 1, city: "Xi'an", cityZh: '西安' }], '2025-03-01');
+
+    expect(cell.cityPinyin).toBe("Xī'ān");
+  });
 });

@@ -13,6 +13,12 @@ describe('pinyinOf', () => {
     expect(pinyinOf('大雁塔广场')).toBe('Dàyàn Tǎguǎngchǎng');
   });
 
+  it("separates a syllable that starts with a vowel from the one before with an apostrophe", () => {
+    expect(pinyinOf('西安')).toBe("Xī'ān");
+    expect(pinyinOf('平安')).toBe("Píng'ān");
+    expect(pinyinOf('天安门')).toBe("Tiān'ānmén");
+  });
+
   it('gives nothing for an empty name', () => {
     expect(pinyinOf('  ')).toBe('');
   });

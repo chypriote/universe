@@ -36,7 +36,7 @@ Photos: `docs/photos.md`.
 
 ## Trips and Photos
 
-They live in the `zhongguo` D1 database (`migrations/0002_journal.sql`; `0003_journal_data.sql` holds the content moved from the old JSON files). After a deploy that adds a migration, run `npm run db:migrate:remote -w apps/zhongguo`. The Journal (`src/lib/journal`) is the only reader and writer: pages and API routes hold no rules. `journalFromEnv()` serves every public page from JSON snapshots in the photo bucket (`snapshots/`, ADR 0004); an admin write drops the ones it can change. Its tests seed their own rows (`src/lib/journal/seed.test-helper.ts`) and leave out the data migration.
+They live in the `zhongguo` D1 database (`migrations/0002_journal.sql`; `0003_journal_data.sql` holds the content moved from the old JSON files). After a deploy that adds a migration, run `npm run db:migrate:remote -w apps/zhongguo`. The Journal (`src/lib/journal`) is the only reader and writer: pages and API routes hold no rules. `publicReads()` serves every public page from JSON snapshots in the photo bucket (`snapshots/`, ADR 0004); each write part tells the invalidation module (`src/lib/journal/invalidation.ts`) what a successful write changed, and the module drops the snapshots it can change (a write it was not told about drops them all). Its tests seed their own rows (`src/lib/journal/seed.test-helper.ts`) and leave out the data migration.
 
 ## Flight searches
 
