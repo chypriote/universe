@@ -83,3 +83,28 @@ export async function tokenIsValid(token: string, secret: string): Promise<boole
 		return false;
 	}
 }
+
+export interface OwnerEnv {
+	OWNER_PASSWORD: string;
+	JWT_SECRET: string;
+}
+
+export type LoginResult = { ok: true; token: string } | { ok: false; error: 'wrong-password' };
+
+/** The Owner login: a token for the right password. Refuses every login when a secret is unset. */
+export async function login(env: OwnerEnv, password: string): Promise<LoginResult> {
+	if (
+		!env.OWNER_PASSWORD ||
+		!env.JWT_SECRET ||
+		!password ||
+		!(await passwordMatches(password, env.OWNER_PASSWORD))
+	) {
+		return { ok: false, error: 'wrong-password' };
+	}
+	return { ok: true, token: await issueToken(env.JWT_SECRET) };
+}
+
+/** Whether a token is a valid Owner token. False when `JWT_SECRET` is unset. */
+export async function verifyToken(env: OwnerEnv, token: string): Promise<boolean> {
+	return !!env.JWT_SECRET && (await tokenIsValid(token, env.JWT_SECRET));
+}

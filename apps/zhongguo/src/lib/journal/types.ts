@@ -1,3 +1,4 @@
+import type { LoginResult } from '@universe/owner/auth';
 import type { Plan as FarePlan } from '../../../scripts/fare-windows.js';
 import type { ActivityKind, ActivityRating } from './activity-kinds';
 
@@ -172,7 +173,6 @@ export type SetProvinceCoverFocusResult =
 
 export type ClearProvinceCoverResult = { ok: true } | { ok: false; error: 'unknown-province' };
 
-export type LoginResult = { ok: true; token: string } | { ok: false; error: 'wrong-password' };
 
 /** Part of the day a Photo was taken: before noon, noon to 18:00, from 18:00. */
 export type PhotoTime = 'morning' | 'afternoon' | 'evening';
@@ -850,3 +850,5 @@ export type Journal = PublicReads &
   JournalWorkspace &
   AtlasWorkspace &
   GalleryWorkspace;
+
+export type { LoginResult };

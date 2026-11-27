@@ -35,7 +35,7 @@ import {
 	type AutomaticStore,
 	type Offer
 } from './store-prices';
-import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@universe/owner/auth';
+import { login, passwordMatches, UnauthorizedError, verifyToken } from '@universe/owner/auth';
 import {
 	findAlbum,
 	findCandidateImage,
@@ -257,8 +257,7 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 	}
 
 	async function owner(token: string) {
-		if (!env.JWT_SECRET || !(await tokenIsValid(token, env.JWT_SECRET)))
-			throw new UnauthorizedError();
+		if (!(await verifyToken(env, token))) throw new UnauthorizedError();
 	}
 
 	const run = (statements: unknown[]) =>
@@ -889,19 +888,9 @@ export function buildCatalog(env: CatalogEnv, options: CatalogOptions = {}): Cat
 			return rateImage(image.body);
 		},
 
-		async login(password) {
-			if (
-				!env.OWNER_PASSWORD ||
-				!env.JWT_SECRET ||
-				!password ||
-				!(await passwordMatches(password, env.OWNER_PASSWORD))
-			) {
-				return { ok: false, error: 'wrong-password' };
-			}
-			return { ok: true, token: await issueToken(env.JWT_SECRET) };
-		},
+		login: (password) => login(env, password),
 
-		verifyToken: async (token) => !!env.JWT_SECRET && (await tokenIsValid(token, env.JWT_SECRET)),
+		verifyToken: (token) => verifyToken(env, token),
 
 		verifyCronSecret: async (given) =>
 			!!env.CRON_SECRET && !!given && (await passwordMatches(given, env.CRON_SECRET)),

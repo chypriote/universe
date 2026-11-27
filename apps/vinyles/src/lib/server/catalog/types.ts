@@ -1,3 +1,6 @@
+import type { LoginResult } from '@universe/owner/auth';
+
+export type { LoginResult };
 /**
  * Public interface of the Catalog module: the one test seam.
  * Types only. Domain names follow GLOSSARY.md. Prices are integer euro cents.
@@ -235,8 +238,6 @@ export interface AddStoreInput {
 }
 
 // --- Owner login -------------------------------------------------------------
-
-export type LoginResult = { ok: true; token: string } | { ok: false; error: 'wrong-password' };
 
 // --- Import (once) -----------------------------------------------------------
 
