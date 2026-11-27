@@ -1,6 +1,7 @@
+import { and, asc, eq, or, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/d1';
 import { issueToken, passwordMatches, tokenIsValid, UnauthorizedError } from '@universe/owner/auth';
-import { labels } from '../db/schema';
+import { birds, labels, pictures } from '../db/schema';
 import type { Catalog } from './types';
 
 export interface CatalogEnv {
@@ -40,6 +41,53 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			await owner(token);
 			const rows = await db.select().from(labels);
 			return Object.fromEntries(rows.map((row) => [row.codeName, row.word]));
+		},
+
+		async listBirds(token, { view }) {
+			await owner(token);
+			const grounded = or(eq(birds.flown, true), eq(birds.lost, true));
+			const inView = {
+				aloft: sql`NOT (${birds.flown} OR ${birds.lost})`,
+				grounded,
+				nest: eq(birds.nest, true)
+			}[view];
+			// A year-only Arrival counts as the first day of that year, so it sorts with day Arrivals.
+			const arrivalKey = sql`CASE ${birds.arrivalPrecision} WHEN 'year' THEN ${birds.arrival} || '-01-01' ELSE ${birds.arrival} END`;
+			const rows = await db
+				.select({
+					id: birds.id,
+					name: birds.name,
+					arrival: birds.arrival,
+					seen: birds.seen,
+					flown: birds.flown,
+					lost: birds.lost,
+					nest: birds.nest,
+					pictureId: sql<number | null>`(
+						SELECT p.id FROM picture p WHERE p.bird_id = bird.id ORDER BY p.position, p.id LIMIT 1
+					)`
+				})
+				.from(birds)
+				.where(and(eq(birds.archived, false), inView))
+				.orderBy(
+					sql`${arrivalKey} IS NULL`,
+					sql`${arrivalKey} DESC`,
+					asc(birds.name),
+					asc(birds.id)
+				);
+			return rows;
+		},
+
+		async getPicture(token, id) {
+			await owner(token);
+			const [row] = await db
+				.select({ key: pictures.key })
+				.from(pictures)
+				.where(eq(pictures.id, id));
+			if (!row) return null;
+			const object = await env.PICTURES.get(row.key);
+			if (!object) return null;
+			// The browser resizes every Picture to JPEG before upload.
+			return { body: object.body, contentType: object.httpMetadata?.contentType ?? 'image/jpeg' };
 		}
 	};
 }

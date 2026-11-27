@@ -8,9 +8,9 @@ Shared components (StickyBar, EmptyState, Field, Button, Popup, TileGrid and the
 
 | Level | Components |
 | --- | --- |
-| Pattern | Parakeets (login art) |
+| Pattern | Parakeets (login art), BirdTile |
 
-BirdTile, the Popup media column, BirdForm, SightingList, SimilarNames and the Admin lists are named in the spec (#278) and described here when their slices land.
+The Popup media column, BirdForm, SightingList, SimilarNames and the Admin lists are named in the spec (#278) and described here when their slices land.
 
 ## Parakeets
 
@@ -23,7 +23,14 @@ No props. Five inline SVG parakeets, every second one mirrored, colours from the
 
 Static.
 
+## BirdTile
+
+**Hierarchy:** Pattern
+**Purpose:** One Bird in the grid.
+
+Props: `bird` (id, name, arrival, seen, flown, lost, nest, pictureId), `labels`. The first Picture fills a square, loaded from `/pictures/:id`; with none, or if it fails, the initials on a tinted square. One icon per set flag (Seen, Flown, Lost, Nest) top left, coloured by flag (Nest is sun), with a soft drop shadow and no circle; Roosted is never shown. Caption: name, then the Arrival as a day or a year. Hover tilt only.
+
 ## Pages in this slice
 
 - **Login:** `h1` "Log in", Field "Password", Button `success` "Log in", Parakeets. A wrong password shows the Field error. After login the Owner returns to the page in `next`.
-- **Aloft:** StickyBar (title from the app label, one tab) and the Showcase EmptyState. No login link, no Viewer branch.
+- **Aloft, Grounded, Nest:** StickyBar with three tabs, then a TileGrid of BirdTiles (Arrival newest first), or the Showcase EmptyState when the tab has no Bird. Pictures come only through the authenticated `/pictures/:id` route (`Cache-Control: private`).

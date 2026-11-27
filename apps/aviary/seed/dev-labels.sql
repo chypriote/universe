@@ -5,5 +5,8 @@ INSERT OR REPLACE INTO labels (code_name, word) VALUES
 	('Aloft', 'Aloft'),
 	('Grounded', 'Grounded'),
 	('Nest', 'Nest'),
+	('Seen', 'Seen'),
+	('Flown', 'Flown'),
+	('Lost', 'Lost'),
 	('NoBirds', 'NoBirds'),
 	('Signature', 'Signature');

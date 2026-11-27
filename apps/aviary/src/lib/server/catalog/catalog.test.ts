@@ -106,3 +106,158 @@ describe('labels', () => {
 		expect(await catalog.labels(token)).toEqual({});
 	});
 });
+
+/** Fixture helper: the add and edit operations come with another slice, so rows go in directly. */
+async function seedBird(
+	name: string,
+	opts: {
+		arrival?: string | null;
+		seen?: boolean;
+		flown?: boolean;
+		lost?: boolean;
+		roosted?: boolean;
+		nest?: boolean;
+		archived?: boolean;
+		pictures?: string[];
+	} = {}
+) {
+	const arrival = opts.arrival ?? null;
+	const precision = arrival === null ? null : arrival.length === 4 ? 'year' : 'day';
+	const row = await env.DB.prepare(
+		`INSERT INTO bird (name, arrival, arrival_precision, seen, flown, lost, roosted, nest, archived)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`
+	)
+		.bind(
+			name,
+			arrival,
+			precision,
+			+!!opts.seen,
+			+!!opts.flown,
+			+!!opts.lost,
+			+!!opts.roosted,
+			+!!opts.nest,
+			+!!opts.archived
+		)
+		.first<{ id: number }>();
+	const birdId = row!.id;
+	let position = 0;
+	for (const key of opts.pictures ?? []) {
+		await env.PICTURES.put(key, new TextEncoder().encode(`bytes-of-${key}`));
+		await env.DB.prepare('INSERT INTO picture (bird_id, key, position) VALUES (?, ?, ?)')
+			.bind(birdId, key, position++)
+			.run();
+	}
+	return birdId;
+}
+
+beforeEach(async () => {
+	await env.DB.batch([
+		env.DB.prepare('DELETE FROM bird_song'),
+		env.DB.prepare('DELETE FROM sighting'),
+		env.DB.prepare('DELETE FROM picture'),
+		env.DB.prepare('DELETE FROM bird')
+	]);
+});
+
+const names = (tiles: { name: string }[]) => tiles.map((t) => t.name);
+
+describe('listBirds', () => {
+	it('rejects a bad token with UnauthorizedError', async () => {
+		await expect(catalog.listBirds('nope', { view: 'aloft' })).rejects.toBeInstanceOf(
+			UnauthorizedError
+		);
+	});
+
+	it('puts Birds neither Flown nor Lost in Aloft, and Flown or Lost in Grounded', async () => {
+		await seedBird('Bird A');
+		await seedBird('Bird B', { flown: true });
+		await seedBird('Bird C', { lost: true });
+		await seedBird('Bird D', { flown: true, lost: true });
+		expect(names(await catalog.listBirds(token, { view: 'aloft' }))).toEqual(['Bird A']);
+		expect(names(await catalog.listBirds(token, { view: 'grounded' })).sort()).toEqual([
+			'Bird B',
+			'Bird C',
+			'Bird D'
+		]);
+	});
+
+	it('lists Nest Birds in Nest and keeps them in Aloft or Grounded too', async () => {
+		await seedBird('Bird A', { nest: true });
+		await seedBird('Bird B', { nest: true, lost: true });
+		await seedBird('Bird C');
+		expect(names(await catalog.listBirds(token, { view: 'nest' })).sort()).toEqual([
+			'Bird A',
+			'Bird B'
+		]);
+		expect(names(await catalog.listBirds(token, { view: 'aloft' })).sort()).toEqual([
+			'Bird A',
+			'Bird C'
+		]);
+		expect(names(await catalog.listBirds(token, { view: 'grounded' }))).toEqual(['Bird B']);
+	});
+
+	it('leaves Archived Birds out of every view', async () => {
+		await seedBird('Bird A', { archived: true, nest: true });
+		await seedBird('Bird B', { archived: true, flown: true });
+		for (const view of ['aloft', 'grounded', 'nest'] as const) {
+			expect(await catalog.listBirds(token, { view })).toEqual([]);
+		}
+	});
+
+	it('sorts by Arrival newest first, a year with the days, no Arrival last', async () => {
+		await seedBird('No arrival');
+		await seedBird('Old day', { arrival: '2019-06-01' });
+		await seedBird('Year only', { arrival: '2021' });
+		await seedBird('New day', { arrival: '2022-03-10' });
+		await seedBird('Mid day', { arrival: '2020-12-31' });
+		expect(names(await catalog.listBirds(token, { view: 'aloft' }))).toEqual([
+			'New day',
+			'Year only',
+			'Mid day',
+			'Old day',
+			'No arrival'
+		]);
+	});
+
+	it('returns what a tile shows: first Picture, the four flags, the Arrival', async () => {
+		const id = await seedBird('Bird A', {
+			arrival: '2020',
+			seen: true,
+			roosted: true,
+			pictures: ['key-one', 'key-two']
+		});
+		await seedBird('Bird B');
+		const tiles = await catalog.listBirds(token, { view: 'aloft' });
+		const a = tiles.find((t) => t.id === id)!;
+		expect(a).toMatchObject({
+			name: 'Bird A',
+			arrival: '2020',
+			seen: true,
+			flown: false,
+			lost: false,
+			nest: false
+		});
+		expect(a).not.toHaveProperty('roosted');
+		expect(a.pictureId).toEqual(expect.any(Number));
+		expect(tiles.find((t) => t.name === 'Bird B')!.pictureId).toBeNull();
+	});
+});
+
+describe('getPicture', () => {
+	it('refuses a bad token with UnauthorizedError', async () => {
+		await seedBird('Bird A', { pictures: ['key-one'] });
+		await expect(catalog.getPicture('nope', 1)).rejects.toBeInstanceOf(UnauthorizedError);
+	});
+
+	it('streams the R2 object', async () => {
+		await seedBird('Bird A', { pictures: ['key-one'] });
+		const [tile] = await catalog.listBirds(token, { view: 'aloft' });
+		const picture = await catalog.getPicture(token, tile.pictureId!);
+		expect(picture).not.toBeNull();
+		expect(await new Response(picture!.body).text()).toBe('bytes-of-key-one');
+	});
+
+	it('answers null for an unknown Picture', async () => {
+		expect(await catalog.getPicture(token, 999999)).toBeNull();
+	});
+});
