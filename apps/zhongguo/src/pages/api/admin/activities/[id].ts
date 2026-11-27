@@ -7,11 +7,11 @@ export const prerender = false;
 
 /** Edits the Activity: the same fields as adding one. */
 export const PATCH: APIRoute = async ({ params, request }) => {
-	const input = await jsonBody<ActivityInput>(request);
-	return input
-		? respond(await atlas().editActivity({ ...input, id: Number(params.id) }))
-		: badRequest('invalid-body');
+  const input = await jsonBody<ActivityInput>(request);
+  return input
+    ? respond(await atlas().editActivity({ ...input, id: Number(params.id) }))
+    : badRequest('invalid-body');
 };
 
 export const DELETE: APIRoute = async ({ params }) =>
-	respond(await atlas().deleteActivity(Number(params.id)));
+  respond(await atlas().deleteActivity(Number(params.id)));

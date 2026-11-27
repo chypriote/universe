@@ -18,7 +18,12 @@ export function timeOfHour(hour: number): PhotoTime {
 /** A real calendar date as YYYY-MM-DD, or null. */
 function isoDate(year: number, month: number, day: number): string | null {
   const date = new Date(Date.UTC(year, month - 1, day));
-  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  )
+    return null;
   return date.toISOString().slice(0, 10);
 }
 
@@ -60,11 +65,14 @@ export function readPhotoFile(file: ArrayBuffer): PhotoFile | null {
   if (!(width > 0) || !(height > 0)) return null;
 
   const turned = Number(tags.Orientation?.value) >= 5;
-  const taken = /^(\d{4})[:-](\d{2})[:-](\d{2})(?: (\d{2}):)?/.exec(String(tags.DateTimeOriginal?.description ?? ''));
+  const taken = /^(\d{4})[:-](\d{2})[:-](\d{2})(?: (\d{2}):)?/.exec(
+    String(tags.DateTimeOriginal?.description ?? ''),
+  );
   return {
     width: turned ? height : width,
     height: turned ? width : height,
     exifDate: taken ? isoDate(Number(taken[1]), Number(taken[2]), Number(taken[3])) : null,
-    exifTime: taken?.[4] !== undefined && Number(taken[4]) < 24 ? timeOfHour(Number(taken[4])) : null,
+    exifTime:
+      taken?.[4] !== undefined && Number(taken[4]) < 24 ? timeOfHour(Number(taken[4])) : null,
   };
 }

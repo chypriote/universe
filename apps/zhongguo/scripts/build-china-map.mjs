@@ -45,12 +45,17 @@ for (const f of load(unitsPath)) {
 const project = (ring) => ring.map(([lng, lat]) => albers(lng, lat));
 
 // Bounds from the mainland, so Taiwan and the islands never set the frame.
-let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+let minX = Infinity,
+  minY = Infinity,
+  maxX = -Infinity,
+  maxY = -Infinity;
 for (const e of entries) {
   for (const poly of e.polys) {
     for (const [x, y] of project(poly[0])) {
-      minX = Math.min(minX, x); maxX = Math.max(maxX, x);
-      minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+      minX = Math.min(minX, x);
+      maxX = Math.max(maxX, x);
+      minY = Math.min(minY, y);
+      maxY = Math.max(maxY, y);
     }
   }
 }
@@ -64,16 +69,24 @@ function simplify(points, tolerance) {
   const [ax, ay] = points[0];
   const [bx, by] = points[points.length - 1];
   const len = Math.hypot(bx - ax, by - ay);
-  let index = 0, max = 0;
+  let index = 0,
+    max = 0;
   for (let i = 1; i < points.length - 1; i++) {
     const [px, py] = points[i];
-    const d = len === 0
-      ? Math.hypot(px - ax, py - ay)
-      : Math.abs((by - ay) * px - (bx - ax) * py + bx * ay - by * ax) / len;
-    if (d > max) { max = d; index = i; }
+    const d =
+      len === 0
+        ? Math.hypot(px - ax, py - ay)
+        : Math.abs((by - ay) * px - (bx - ax) * py + bx * ay - by * ax) / len;
+    if (d > max) {
+      max = d;
+      index = i;
+    }
   }
   if (max <= tolerance) return [points[0], points[points.length - 1]];
-  return [...simplify(points.slice(0, index + 1), tolerance).slice(0, -1), ...simplify(points.slice(index), tolerance)];
+  return [
+    ...simplify(points.slice(0, index + 1), tolerance).slice(0, -1),
+    ...simplify(points.slice(index), tolerance),
+  ];
 }
 
 const fmt = (v) => Math.round(v * 10) / 10;
@@ -85,18 +98,36 @@ function pathData(polys) {
     // Keep tiny regions (Hong Kong, Macao) as at least a triangle.
     const pts = small.length >= 4 ? small : simplify(ring, 0.05);
     if (pts.length < 4) continue;
-    d += 'M' + pts.slice(0, -1).map(([x, y]) => `${fmt(x)} ${fmt(y)}`).join('L') + 'Z';
+    d +=
+      'M' +
+      pts
+        .slice(0, -1)
+        .map(([x, y]) => `${fmt(x)} ${fmt(y)}`)
+        .join('L') +
+      'Z';
   }
   return d;
 }
 
 const regions = entries
-  .map((e) => ({ name: e.name, zh: e.zh, ...(e.outline ? { outline: true } : {}), d: pathData(e.polys) }))
+  .map((e) => ({
+    name: e.name,
+    zh: e.zh,
+    ...(e.outline ? { outline: true } : {}),
+    d: pathData(e.polys),
+  }))
   .filter((r) => r.d)
   .sort((a, b) => a.name.localeCompare(b.name));
 
 writeFileSync(
   new URL('../src/data/china-map.json', import.meta.url),
-  JSON.stringify({ width: WIDTH, height, scale: +scale.toFixed(4), tx: +tx.toFixed(2), ty: +ty.toFixed(2), regions }) + '\n',
+  JSON.stringify({
+    width: WIDTH,
+    height,
+    scale: +scale.toFixed(4),
+    tx: +tx.toFixed(2),
+    ty: +ty.toFixed(2),
+    regions,
+  }) + '\n',
 );
 console.log(`${regions.length} regions, ${WIDTH}x${height}`);

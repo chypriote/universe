@@ -28,9 +28,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       return (
         this.props.fallback ?? (
           <div className="border border-border bg-surface p-8 text-center">
-            <h2 className="font-serif text-xl mb-2 text-foreground">
-              Something went wrong
-            </h2>
+            <h2 className="font-serif text-xl mb-2 text-foreground">Something went wrong</h2>
             <p className="text-sm text-muted-foreground">
               The flight planner could not be loaded. Please refresh the page and try again.
             </p>

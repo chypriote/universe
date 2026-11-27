@@ -12,15 +12,19 @@ const journal = publicReads();
 const trips = [...(await journal.listTripCards()), ...(await journal.listPlanCards())];
 
 const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": `Journeys — ${SITE.name}`,
-  "description": "Trip reports and trip plans from my travels in China.",
-  "url": `${SITE.url}/trips/`
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `Journeys — ${SITE.name}`,
+  description: 'Trip reports and trip plans from my travels in China.',
+  url: `${SITE.url}/trips/`,
 };
 ---
 
-<BaseLayout title="Journeys" description="Trip reports and trip plans from my travels in China." jsonLd={jsonLd}>
+<BaseLayout
+  title="Journeys"
+  description="Trip reports and trip plans from my travels in China."
+  jsonLd={jsonLd}
+>
   <TempleHeader zh="游记" title="Journeys">
     Trip reports from the road, day by day, and plans for the next trips.
   </TempleHeader>

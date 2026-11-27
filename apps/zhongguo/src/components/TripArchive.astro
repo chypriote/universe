@@ -18,9 +18,22 @@ const tabs = [
 <div class="space-y-12 lg:space-y-20" data-trip-archive data-view="report">
   <div class="flex justify-center gap-6 sm:gap-16 lg:gap-32" role="group" aria-label="Archive view">
     {tabs.map((tab) => (
-      <button type="button" data-view-button={tab.view} aria-pressed={tab.view === 'report' ? 'true' : 'false'} class="group relative px-2 sm:px-6 py-8 lg:py-10">
-        <span lang="zh" class="absolute inset-0 flex items-center justify-center whitespace-nowrap font-brush text-[4.5rem] sm:text-[6.5rem] lg:text-[8.5rem] leading-none pointer-events-none text-foreground/[0.07] group-aria-pressed:text-foreground/20 transition-colors" aria-hidden="true">{tab.zh}</span>
-        <span class="relative font-serif font-light text-2xl sm:text-3xl lg:text-5xl text-muted-foreground group-hover:text-foreground group-aria-pressed:text-foreground transition-colors">{tab.label}</span>
+      <button
+        type="button"
+        data-view-button={tab.view}
+        aria-pressed={tab.view === 'report' ? 'true' : 'false'}
+        class="group relative px-2 sm:px-6 py-8 lg:py-10"
+      >
+        <span
+          lang="zh"
+          class="absolute inset-0 flex items-center justify-center whitespace-nowrap font-brush text-[4.5rem] sm:text-[6.5rem] lg:text-[8.5rem] leading-none pointer-events-none text-foreground/[0.07] group-aria-pressed:text-foreground/20 transition-colors"
+          aria-hidden="true"
+        >
+          {tab.zh}
+        </span>
+        <span class="relative font-serif font-light text-2xl sm:text-3xl lg:text-5xl text-muted-foreground group-hover:text-foreground group-aria-pressed:text-foreground transition-colors">
+          {tab.label}
+        </span>
         <InkStroke class="absolute left-1/2 -translate-x-1/2 bottom-1 lg:bottom-2 w-[90%] h-4 lg:h-5 text-gold-ink opacity-0 group-aria-pressed:opacity-100 transition-opacity" />
       </button>
     ))}
@@ -31,10 +44,7 @@ const tabs = [
       if (trips.some((trip) => trip.type === view)) return null;
       return (
         <p
-          class:list={[
-            'text-muted-foreground font-serif',
-            view === 'plan' && 'hidden',
-          ]}
+          class:list={['text-muted-foreground font-serif', view === 'plan' && 'hidden']}
           data-empty={view}
         >
           No {view === 'report' ? 'trip reports' : 'trip plans'} in the archive yet.
@@ -44,7 +54,13 @@ const tabs = [
     {trips.map((trip, i) => {
       const firstOfType = trips.findIndex((t) => t.type === trip.type) === i;
 
-      return <TripCard trip={trip} firstOfType={firstOfType} class={trip.type === 'report' ? '' : 'hidden'} />;
+      return (
+        <TripCard
+          trip={trip}
+          firstOfType={firstOfType}
+          class={trip.type === 'report' ? '' : 'hidden'}
+        />
+      );
     })}
   </div>
 </div>
@@ -57,11 +73,13 @@ const tabs = [
     const articles = [...root.querySelectorAll('[data-trip-type]')];
     const empties = [...root.querySelectorAll('[data-empty]')];
 
-
     function setView(view: string) {
       root.dataset.view = view;
       for (const button of buttons) {
-        button.setAttribute('aria-pressed', String(button.getAttribute('data-view-button') === view));
+        button.setAttribute(
+          'aria-pressed',
+          String(button.getAttribute('data-view-button') === view),
+        );
       }
       for (const article of articles) {
         article.classList.toggle('hidden', article.getAttribute('data-trip-type') !== view);

@@ -15,17 +15,33 @@ const { route, regions } = Astro.props;
   <section class="snap-start bamboo-b py-20 lg:py-28">
     <Container>
       <div class="grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
-        <TripRegionsMap route={route} regions={regions} aspect={1.2} centered class="lg:col-span-7" />
+        <TripRegionsMap
+          route={route}
+          regions={regions}
+          aspect={1.2}
+          centered
+          class="lg:col-span-7"
+        />
         <div class="space-y-6 lg:col-span-5 lg:self-start xl:pr-16">
           <span class="eyebrow">The route</span>
           <ol class="space-y-4 border-l border-gold-ink/50 pl-6">
             {route.listed.map((stop) => (
               <li class="route-stop relative" data-route-city={stop.name}>
-                <span class="absolute -left-[1.85rem] top-2 h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true"></span>
-                <a href={`#day-${stop.days[0]}`} class="flex items-baseline gap-3 transition-colors hover:text-primary">
+                <span
+                  class="absolute -left-[1.85rem] top-2 h-2.5 w-2.5 rounded-full bg-primary"
+                  aria-hidden="true"
+                ></span>
+                <a
+                  href={`#day-${stop.days[0]}`}
+                  class="flex items-baseline gap-3 transition-colors hover:text-primary"
+                >
                   <span class="font-serif text-xl">{stop.name}</span>
-                  <span lang="zh" class="text-sm text-muted-foreground">{stop.nameZh}</span>
-                  <span class="ml-auto eyebrow text-[0.625rem] text-muted-foreground">{stop.dayLabel}</span>
+                  <span lang="zh" class="text-sm text-muted-foreground">
+                    {stop.nameZh}
+                  </span>
+                  <span class="ml-auto eyebrow text-[0.625rem] text-muted-foreground">
+                    {stop.dayLabel}
+                  </span>
                 </a>
               </li>
             ))}
@@ -42,7 +58,8 @@ const { route, regions } = Astro.props;
   for (const section of sections) {
     const items = section.querySelectorAll<HTMLElement>('[data-route-city]');
     const light = (city: string | null) => {
-      for (const item of items) item.toggleAttribute('data-active', item.dataset.routeCity === city);
+      for (const item of items)
+        item.toggleAttribute('data-active', item.dataset.routeCity === city);
     };
     for (const item of items) {
       item.addEventListener('mouseenter', () => light(item.dataset.routeCity ?? null));

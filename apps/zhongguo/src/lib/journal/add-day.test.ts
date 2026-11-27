@@ -22,13 +22,18 @@ describe('Adding a Day', () => {
   it('gives a plan its first Day, its dates and a place in the public Trip page', async () => {
     const { lhasa } = await planTrip();
 
-    const result = await journal.addDay('tibet', { date: '2027-05-10', cityId: lhasa, title: 'Arrival', notes: 'Rest' });
+    const result = await journal.addDay('tibet', {
+      date: '2027-05-10',
+      cityId: lhasa,
+      title: 'Arrival',
+      notes: 'Rest',
+    });
 
     expect(result).toEqual({ ok: true, dayId: expect.any(Number) });
     const page = await journal.getTrip('tibet');
-    expect(page!.days.map((day) => [day.number, day.date, day.title, day.notes, day.city])).toEqual([
-      [1, '2027-05-10', 'Arrival', 'Rest', 'Lhasa'],
-    ]);
+    expect(page!.days.map((day) => [day.number, day.date, day.title, day.notes, day.city])).toEqual(
+      [[1, '2027-05-10', 'Arrival', 'Rest', 'Lhasa']],
+    );
     expect(page!.startDate).toBe('2027-05-10');
     expect(page!.dates).toBe('10 May — 10 May 2027');
   });
@@ -56,12 +61,24 @@ describe('Adding a Day, refused', () => {
     const { lhasa } = await planTrip();
     await journal.addDay('tibet', { date: '2027-05-10', cityId: lhasa, title: 'Arrival' });
 
-    expect(await journal.addDay('tibet', { date: '2027-05-10', cityId: lhasa, title: 'Again' })).toEqual({ ok: false, error: 'date-taken' });
-    expect(await journal.addDay('tibet', { date: '2027-05-11', cityId: 9999, title: 'x' })).toEqual({ ok: false, error: 'unknown-city' });
-    expect(await journal.addDay('tibet', { date: '2027-05-11', cityId: lhasa, title: '  ' })).toEqual({ ok: false, error: 'invalid-title' });
-    expect(await journal.addDay('tibet', { date: '2027-02-30', cityId: lhasa, title: 'x' })).toEqual({ ok: false, error: 'invalid-date' });
-    expect(await journal.addDay('tibet', { date: '11/05/2027', cityId: lhasa, title: 'x' })).toEqual({ ok: false, error: 'invalid-date' });
-    expect(await journal.addDay('nope', { date: '2027-05-11', cityId: lhasa, title: 'x' })).toEqual({ ok: false, error: 'unknown-trip' });
+    expect(
+      await journal.addDay('tibet', { date: '2027-05-10', cityId: lhasa, title: 'Again' }),
+    ).toEqual({ ok: false, error: 'date-taken' });
+    expect(await journal.addDay('tibet', { date: '2027-05-11', cityId: 9999, title: 'x' })).toEqual(
+      { ok: false, error: 'unknown-city' },
+    );
+    expect(
+      await journal.addDay('tibet', { date: '2027-05-11', cityId: lhasa, title: '  ' }),
+    ).toEqual({ ok: false, error: 'invalid-title' });
+    expect(
+      await journal.addDay('tibet', { date: '2027-02-30', cityId: lhasa, title: 'x' }),
+    ).toEqual({ ok: false, error: 'invalid-date' });
+    expect(
+      await journal.addDay('tibet', { date: '11/05/2027', cityId: lhasa, title: 'x' }),
+    ).toEqual({ ok: false, error: 'invalid-date' });
+    expect(await journal.addDay('nope', { date: '2027-05-11', cityId: lhasa, title: 'x' })).toEqual(
+      { ok: false, error: 'unknown-trip' },
+    );
 
     const admin = (await journal.getAdminTrip('tibet'))!;
     expect(admin.days.map((day) => day.title)).toEqual(['Arrival']);
@@ -71,7 +88,9 @@ describe('Adding a Day, refused', () => {
     const { trip, lhasa } = await planTrip();
     await addDay(trip, lhasa, '2027-05-10', { position: 1, visible: false });
 
-    expect(await journal.addDay('tibet', { date: '2027-05-10', cityId: lhasa, title: 'x' })).toEqual({ ok: false, error: 'date-taken' });
+    expect(
+      await journal.addDay('tibet', { date: '2027-05-10', cityId: lhasa, title: 'x' }),
+    ).toEqual({ ok: false, error: 'date-taken' });
   });
 });
 
@@ -82,7 +101,11 @@ describe('Adding a Day to a Trip with Days', () => {
     await addDay(trip, lhasa, '2027-05-12', { position: 2, title: 'Last' });
     const kept = await addPhoto(trip, '2027-05-12', { name: 'last.jpg' });
 
-    const result = await journal.addDay('tibet', { date: '2027-05-11', cityId: chengdu, title: 'Middle' });
+    const result = await journal.addDay('tibet', {
+      date: '2027-05-11',
+      cityId: chengdu,
+      title: 'Middle',
+    });
 
     expect(result.ok).toBe(true);
     const admin = (await journal.getAdminTrip('tibet'))!;
@@ -103,7 +126,11 @@ describe('Adding a Day to a Trip with Days', () => {
     await journal.addDay('tibet', { date: '2027-05-20', cityId: lhasa, title: 'After' });
 
     expect((await journal.getTrip('tibet'))!.dates).toBe('1 May — 20 May 2027');
-    expect((await journal.getAdminTrip('tibet'))!.days.map((day) => day.title)).toEqual(['Before', 'Day on 2027-05-10', 'After']);
+    expect((await journal.getAdminTrip('tibet'))!.days.map((day) => day.title)).toEqual([
+      'Before',
+      'Day on 2027-05-10',
+      'After',
+    ]);
   });
 
   it('takes the Photos of the Trip with that date and no Day, and leaves the others alone', async () => {
@@ -116,7 +143,11 @@ describe('Adding a Day to a Trip with Days', () => {
     const other = await addTrip({ slug: 'other' });
     await addPhoto(other, '2027-05-11', { name: 'foreign.jpg' });
 
-    const result = await journal.addDay('tibet', { date: '2027-05-11', cityId: lhasa, title: 'New' });
+    const result = await journal.addDay('tibet', {
+      date: '2027-05-11',
+      cityId: lhasa,
+      title: 'New',
+    });
 
     const page = await journal.getTrip('tibet');
     expect(names(page!.days[1].photos)).toEqual(['a.jpg', 'b.jpg']);

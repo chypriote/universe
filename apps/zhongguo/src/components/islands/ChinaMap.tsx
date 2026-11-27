@@ -137,7 +137,9 @@ export function ChinaMap({
   const [box, setBox] = useState<Box>(FULL);
   /** Map units per unit of the full map: dots, strokes and labels shrink with it to keep their size on screen. */
   const k = box.w / CHINA_MAP.width;
-  const [labelPos, setLabelPos] = useState<Record<string, { x: number; y: number; cx: number; cy: number }>>({});
+  const [labelPos, setLabelPos] = useState<
+    Record<string, { x: number; y: number; cx: number; cy: number }>
+  >({});
 
   // Touch screens have no hover, so each clickable region carries its name, centred on its shape unless pinned.
   useLayoutEffect(() => {
@@ -160,7 +162,10 @@ export function ChinaMap({
       if (next[name]) continue;
       const w = width(name);
       let y = y0;
-      while (placed.some((p) => Math.abs(p.x - x) < (p.w + w) / 2 && Math.abs(p.y - y) < LABEL_SIZE)) y += LABEL_SIZE;
+      while (
+        placed.some((p) => Math.abs(p.x - x) < (p.w + w) / 2 && Math.abs(p.y - y) < LABEL_SIZE)
+      )
+        y += LABEL_SIZE;
       placed.push({ x, y, w });
       next[name] = { x, y, cx: x, cy: y0 };
     }
@@ -170,7 +175,9 @@ export function ChinaMap({
   const zoomKey = [zoomTo ?? []].flat().join('|');
   useLayoutEffect(() => {
     const shapes = (zoomKey ? zoomKey.split('|') : [])
-      .map((name) => svgRef.current?.querySelector<SVGPathElement>(`path[data-shape="${CSS.escape(name)}"]`))
+      .map((name) =>
+        svgRef.current?.querySelector<SVGPathElement>(`path[data-shape="${CSS.escape(name)}"]`),
+      )
       .filter((shape) => shape != null);
     setBox(shapes.length > 0 ? zoomBox(shapes.map((shape) => shape.getBBox())) : FULL);
   }, [zoomKey]);
@@ -187,7 +194,8 @@ export function ChinaMap({
     regionByName.get(selectedRegion ?? '');
 
   const dotClass = (city: ChinaMapCity, active: boolean) => {
-    if (city.major === false) return active ? `${t.hollow} stroke-primary` : `${t.hollow} ${t.minorStroke}`;
+    if (city.major === false)
+      return active ? `${t.hollow} stroke-primary` : `${t.hollow} ${t.minorStroke}`;
     return active ? 'fill-primary stroke-background' : t.dot;
   };
 
@@ -232,7 +240,11 @@ export function ChinaMap({
   });
 
   return (
-    <div className={preview ? 'grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start' : undefined}>
+    <div
+      className={
+        preview ? 'grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start' : undefined
+      }
+    >
       <div
         className={`relative ${preview ? 'lg:col-span-6' : 'lg:col-span-12'} ${previewOnTouch ? '' : 'pointer-coarse:lg:col-span-12'}`}
         onPointerMove={(event) => {
@@ -241,204 +253,245 @@ export function ChinaMap({
           setPointer({ x: event.clientX - box.left, y: event.clientY - box.top });
         }}
       >
-      <svg
-        viewBox={`${box.x} ${box.y} ${box.w} ${box.h}`}
-        ref={svgRef}
-        className="w-full h-auto overflow-hidden"
-        role="group"
-        aria-label="Map of China"
-      >
-        {CHINA_MAP.regions.map((shape) => {
-          const region = regionByName.get(shape.name);
-          if (!region || shape.outline) {
-            return <path key={shape.name} d={shape.d} data-shape={shape.name} className={t.land} style={{ strokeWidth: 1.5 * k }} />;
-          }
-          const path = (
-            <path d={shape.d} data-region={shape.name} data-shape={shape.name} className={`${regionClass(shape.name)} transition-colors`} style={{ strokeWidth: 1.5 * k }} />
-          );
-          return region.href ? (
-            <a key={shape.name} href={region.href} aria-label={`${region.name} ${region.zh}`} {...regionHandlers(region)}>
-              {path}
-            </a>
-          ) : (
-            <g
-              key={shape.name}
-              role="button"
-              tabIndex={0}
-              aria-label={`${region.name} ${region.zh}`}
-              aria-pressed={selectedRegion === shape.name}
-              className="cursor-pointer outline-none focus-visible:[&>path]:fill-primary"
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                  onSelectRegion?.(shape.name);
-                }
-              }}
-              {...regionHandlers(region)}
-            >
-              {path}
-            </g>
-          );
-        })}
-
-        {/* A label is a second hover and click target for its region; the shape keeps keyboard focus. */}
-        {regions.map((region) => {
-          const pos = labelPos[region.name];
-          if (!pos) return null;
-          const label = (
-            <>
-              {PINNED_LABELS[region.name]?.leader && (
-                <line
-                  x1={pos.cx}
-                  y1={pos.cy}
-                  x2={pos.x}
-                  y2={pos.y - LABEL_SIZE / 2}
-                  className={`${hoverRegion === region.name ? 'stroke-primary' : t.leader} pointer-events-none transition-colors`}
+        <svg
+          viewBox={`${box.x} ${box.y} ${box.w} ${box.h}`}
+          ref={svgRef}
+          className="w-full h-auto overflow-hidden"
+          role="group"
+          aria-label="Map of China"
+        >
+          {CHINA_MAP.regions.map((shape) => {
+            const region = regionByName.get(shape.name);
+            if (!region || shape.outline) {
+              return (
+                <path
+                  key={shape.name}
+                  d={shape.d}
+                  data-shape={shape.name}
+                  className={t.land}
                   style={{ strokeWidth: 1.5 * k }}
                 />
-              )}
-              <text
-                x={pos.x}
-                y={pos.y}
-                textAnchor="middle"
-                dominantBaseline="central"
-                className={`select-none font-medium ${t.label}`}
-                style={{ paintOrder: 'stroke', fontSize: LABEL_SIZE * k, strokeWidth: 4 * k }}
-              >
-                {region.name}
-              </text>
-            </>
-          );
-          return region.href ? (
-            <a key={region.name} href={region.href} tabIndex={-1} aria-hidden="true" {...regionHandlers(region)}>
-              {label}
-            </a>
-          ) : (
-            <g key={region.name} aria-hidden="true" className="cursor-pointer" {...regionHandlers(region)}>
-              {label}
-            </g>
-          );
-        })}
-
-        {route.length > 1 && (
-          <polyline
-            points={route
-              .map((key) => cityByKey.get(key))
-              .filter((city) => city !== undefined)
-              .map((city) => `${city.x},${city.y}`)
-              .join(' ')}
-            className="pointer-events-none fill-none stroke-gold-ink"
-            style={{ strokeWidth: 3 * k, strokeDasharray: `${8 * k} ${6 * k}` }}
-          />
-        )}
-
-        {cities.map((city) => {
-          const active = hoverCity === city.key || selectedCity === city.key || highlight.includes(city.key);
-          return (
-            <g
-              key={city.key}
-              role="button"
-              tabIndex={0}
-              aria-label={`${city.name} ${city.zh}`}
-              aria-pressed={selectedCity === city.key}
-              className="cursor-pointer outline-none"
-              onMouseEnter={() => setHoverCity(city.key)}
-              onMouseLeave={() => setHoverCity(null)}
-              onFocus={() => setHoverCity(city.key)}
-              onBlur={() => setHoverCity(null)}
-              onClick={() => onSelectCity?.(city.key)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
-                  onSelectCity?.(city.key);
-                }
-              }}
-            >
-              <circle cx={city.x} cy={city.y} r={16 * k} className="fill-transparent" />
-              <circle
-                cx={city.x}
-                cy={city.y}
-                r={(active ? 9 : 7) * k}
-                className={`${dotClass(city, active)} transition-all`}
-                style={{ strokeWidth: 2.5 * k }}
+              );
+            }
+            const path = (
+              <path
+                d={shape.d}
+                data-region={shape.name}
+                data-shape={shape.name}
+                className={`${regionClass(shape.name)} transition-colors`}
+                style={{ strokeWidth: 1.5 * k }}
               />
-              {cityLabels && (
+            );
+            return region.href ? (
+              <a
+                key={shape.name}
+                href={region.href}
+                aria-label={`${region.name} ${region.zh}`}
+                {...regionHandlers(region)}
+              >
+                {path}
+              </a>
+            ) : (
+              <g
+                key={shape.name}
+                role="button"
+                tabIndex={0}
+                aria-label={`${region.name} ${region.zh}`}
+                aria-pressed={selectedRegion === shape.name}
+                className="cursor-pointer outline-none focus-visible:[&>path]:fill-primary"
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    onSelectRegion?.(shape.name);
+                  }
+                }}
+                {...regionHandlers(region)}
+              >
+                {path}
+              </g>
+            );
+          })}
+
+          {/* A label is a second hover and click target for its region; the shape keeps keyboard focus. */}
+          {regions.map((region) => {
+            const pos = labelPos[region.name];
+            if (!pos) return null;
+            const label = (
+              <>
+                {PINNED_LABELS[region.name]?.leader && (
+                  <line
+                    x1={pos.cx}
+                    y1={pos.cy}
+                    x2={pos.x}
+                    y2={pos.y - LABEL_SIZE / 2}
+                    className={`${hoverRegion === region.name ? 'stroke-primary' : t.leader} pointer-events-none transition-colors`}
+                    style={{ strokeWidth: 1.5 * k }}
+                  />
+                )}
                 <text
-                  x={city.x + 14 * k}
-                  y={city.y}
+                  x={pos.x}
+                  y={pos.y}
+                  textAnchor="middle"
                   dominantBaseline="central"
-                  className={`select-none ${active ? 'fill-primary' : 'fill-foreground'} stroke-background`}
-                  style={{ paintOrder: 'stroke', fontSize: 26 * k, strokeWidth: 5 * k }}
+                  className={`select-none font-medium ${t.label}`}
+                  style={{ paintOrder: 'stroke', fontSize: LABEL_SIZE * k, strokeWidth: 4 * k }}
                 >
-                  {city.name}
+                  {region.name}
                 </text>
-              )}
-            </g>
-          );
-        })}
-      </svg>
-      {regionTooltip && !hoverCityData && hoverRegion && pointer && (
-        <div
-          role="tooltip"
-          className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-border bg-background px-3 py-1.5 text-sm text-foreground"
-          style={{ left: pointer.x, top: pointer.y - 14 }}
-        >
-          {regionByName.get(hoverRegion)?.name} <span lang="zh">{regionByName.get(hoverRegion)?.zh}</span>
-          {regionByName.get(hoverRegion)?.detail && ` · ${regionByName.get(hoverRegion)?.detail}`}
-        </div>
-      )}
-      {hoverCityData && (
-        <div
-          role="tooltip"
-          className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-border bg-background px-3 py-1.5 text-sm text-foreground"
-          style={{
-            left: `${((hoverCityData.x - box.x) / box.w) * 100}%`,
-            top: `calc(${((hoverCityData.y - box.y) / box.h) * 100}% - 14px)`,
-          }}
-        >
-          {hoverCityData.province ? `${hoverCityData.name}, ${hoverCityData.province}` : `${hoverCityData.name} ${hoverCityData.zh}`}
-        </div>
-      )}
+              </>
+            );
+            return region.href ? (
+              <a
+                key={region.name}
+                href={region.href}
+                tabIndex={-1}
+                aria-hidden="true"
+                {...regionHandlers(region)}
+              >
+                {label}
+              </a>
+            ) : (
+              <g
+                key={region.name}
+                aria-hidden="true"
+                className="cursor-pointer"
+                {...regionHandlers(region)}
+              >
+                {label}
+              </g>
+            );
+          })}
+
+          {route.length > 1 && (
+            <polyline
+              points={route
+                .map((key) => cityByKey.get(key))
+                .filter((city) => city !== undefined)
+                .map((city) => `${city.x},${city.y}`)
+                .join(' ')}
+              className="pointer-events-none fill-none stroke-gold-ink"
+              style={{ strokeWidth: 3 * k, strokeDasharray: `${8 * k} ${6 * k}` }}
+            />
+          )}
+
+          {cities.map((city) => {
+            const active =
+              hoverCity === city.key || selectedCity === city.key || highlight.includes(city.key);
+            return (
+              <g
+                key={city.key}
+                role="button"
+                tabIndex={0}
+                aria-label={`${city.name} ${city.zh}`}
+                aria-pressed={selectedCity === city.key}
+                className="cursor-pointer outline-none"
+                onMouseEnter={() => setHoverCity(city.key)}
+                onMouseLeave={() => setHoverCity(null)}
+                onFocus={() => setHoverCity(city.key)}
+                onBlur={() => setHoverCity(null)}
+                onClick={() => onSelectCity?.(city.key)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    onSelectCity?.(city.key);
+                  }
+                }}
+              >
+                <circle cx={city.x} cy={city.y} r={16 * k} className="fill-transparent" />
+                <circle
+                  cx={city.x}
+                  cy={city.y}
+                  r={(active ? 9 : 7) * k}
+                  className={`${dotClass(city, active)} transition-all`}
+                  style={{ strokeWidth: 2.5 * k }}
+                />
+                {cityLabels && (
+                  <text
+                    x={city.x + 14 * k}
+                    y={city.y}
+                    dominantBaseline="central"
+                    className={`select-none ${active ? 'fill-primary' : 'fill-foreground'} stroke-background`}
+                    style={{ paintOrder: 'stroke', fontSize: 26 * k, strokeWidth: 5 * k }}
+                  >
+                    {city.name}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+        {regionTooltip && !hoverCityData && hoverRegion && pointer && (
+          <div
+            role="tooltip"
+            className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+            style={{ left: pointer.x, top: pointer.y - 14 }}
+          >
+            {regionByName.get(hoverRegion)?.name}{' '}
+            <span lang="zh">{regionByName.get(hoverRegion)?.zh}</span>
+            {regionByName.get(hoverRegion)?.detail && ` · ${regionByName.get(hoverRegion)?.detail}`}
+          </div>
+        )}
+        {hoverCityData && (
+          <div
+            role="tooltip"
+            className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+            style={{
+              left: `${((hoverCityData.x - box.x) / box.w) * 100}%`,
+              top: `calc(${((hoverCityData.y - box.y) / box.h) * 100}% - 14px)`,
+            }}
+          >
+            {hoverCityData.province
+              ? `${hoverCityData.name}, ${hoverCityData.province}`
+              : `${hoverCityData.name} ${hoverCityData.zh}`}
+          </div>
+        )}
       </div>
 
       {preview && (
-      <div className={`lg:col-span-6 ${previewOnTouch ? '' : 'pointer-coarse:hidden'}`} aria-live="polite">
-        {/* The frame and text block keep a fixed size, so changing the preview never moves the map or the page. */}
-        <div className={`w-full aspect-[4/3] border ${t.border}`}>
-          {shown?.photo ? (
-            <img
-              src={shown.photo}
-              alt=""
-              className="size-full object-cover"
-              style={'focus' in shown && shown.focus ? { objectPosition: `${shown.focus.x}% ${shown.focus.y}%` } : undefined}
-              loading="lazy"
-            />
-          ) : (
-            <span
-              lang="zh"
-              aria-hidden="true"
-              className={`grid size-full place-items-center font-brush text-8xl opacity-40 ${t.muted}`}
-            >
-              中国
-            </span>
-          )}
+        <div
+          className={`lg:col-span-6 ${previewOnTouch ? '' : 'pointer-coarse:hidden'}`}
+          aria-live="polite"
+        >
+          {/* The frame and text block keep a fixed size, so changing the preview never moves the map or the page. */}
+          <div className={`w-full aspect-[4/3] border ${t.border}`}>
+            {shown?.photo ? (
+              <img
+                src={shown.photo}
+                alt=""
+                className="size-full object-cover"
+                style={
+                  'focus' in shown && shown.focus
+                    ? { objectPosition: `${shown.focus.x}% ${shown.focus.y}%` }
+                    : undefined
+                }
+                loading="lazy"
+              />
+            ) : (
+              <span
+                lang="zh"
+                aria-hidden="true"
+                className={`grid size-full place-items-center font-brush text-8xl opacity-40 ${t.muted}`}
+              >
+                中国
+              </span>
+            )}
+          </div>
+          <div className="mt-4 min-h-32">
+            {shown ? (
+              <>
+                <p className="font-serif text-3xl font-light">{shown.name}</p>
+                {shown.zh && (
+                  <p lang="zh" className={`mt-1 text-xl ${t.muted}`}>
+                    {shown.zh}
+                  </p>
+                )}
+                {shown.detail && <p className={`mt-3 eyebrow ${t.muted}`}>{shown.detail}</p>}
+              </>
+            ) : (
+              <p className={`eyebrow ${t.muted}`}>{idleText}</p>
+            )}
+          </div>
         </div>
-        <div className="mt-4 min-h-32">
-          {shown ? (
-            <>
-              <p className="font-serif text-3xl font-light">{shown.name}</p>
-              {shown.zh && (
-                <p lang="zh" className={`mt-1 text-xl ${t.muted}`}>
-                  {shown.zh}
-                </p>
-              )}
-              {shown.detail && <p className={`mt-3 eyebrow ${t.muted}`}>{shown.detail}</p>}
-            </>
-          ) : (
-            <p className={`eyebrow ${t.muted}`}>{idleText}</p>
-          )}
-        </div>
-      </div>
       )}
     </div>
   );

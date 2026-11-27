@@ -9,7 +9,10 @@ const journal = journalWorkspace();
 const atlasReads = atlas();
 const trip = await journal.getAdminTrip(Astro.params.slug ?? '');
 if (!trip) return Astro.redirect('/admin/trips');
-const [cities, activities] = await Promise.all([atlasReads.listAdminCities(), atlasReads.listAdminActivities()]);
+const [cities, activities] = await Promise.all([
+  atlasReads.listAdminCities(),
+  atlasReads.listAdminActivities(),
+]);
 ---
 
 <JournalLayout title={trip.title} current={{ kind: 'trip', slug: trip.slug }}>

@@ -1,7 +1,15 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
-import { addCity, addDay, addPhoto, addProvince, addTrip, resetDatabase, setProvinceCover } from './seed.test-helper';
+import {
+  addCity,
+  addDay,
+  addPhoto,
+  addProvince,
+  addTrip,
+  resetDatabase,
+  setProvinceCover,
+} from './seed.test-helper';
 
 const journal = createJournal(env);
 const thumb = (slug: string, name: string) => `https://photos.test/thumbs/${slug}/${name}.webp`;
@@ -17,8 +25,18 @@ async function world() {
   const qinghai = await addProvince('Qinghai', '青海');
   const chengdu = await addCity('Chengdu', sichuan);
   const lanzhou = await addCity('Lanzhou', gansu);
-  const first = await addTrip({ slug: 'first', title: 'First', start: '2024-03-01', end: '2024-03-31' });
-  const second = await addTrip({ slug: 'second', title: 'Second', start: '2025-03-01', end: '2025-03-31' });
+  const first = await addTrip({
+    slug: 'first',
+    title: 'First',
+    start: '2024-03-01',
+    end: '2024-03-31',
+  });
+  const second = await addTrip({
+    slug: 'second',
+    title: 'Second',
+    start: '2025-03-01',
+    end: '2025-03-31',
+  });
   await addDay(first, chengdu, '2024-03-01', { position: 1 });
   await addDay(first, lanzhou, '2024-03-02', { position: 2 });
   await addDay(second, chengdu, '2025-03-01', { position: 1 });
@@ -32,8 +50,20 @@ describe('Visited Provinces of the admin', () => {
     await addPhoto(first, '2024-03-02', { name: 'b.jpg', cityId: lanzhou });
 
     expect(await journal.listVisitedProvinces()).toEqual([
-      { name: 'Gansu', nameZh: '甘肃', photo: thumb('first', 'b.jpg'), coverId: null, fallback: true },
-      { name: 'Sichuan', nameZh: '四川', photo: thumb('first', 'a.jpg'), coverId: null, fallback: true },
+      {
+        name: 'Gansu',
+        nameZh: '甘肃',
+        photo: thumb('first', 'b.jpg'),
+        coverId: null,
+        fallback: true,
+      },
+      {
+        name: 'Sichuan',
+        nameZh: '四川',
+        photo: thumb('first', 'a.jpg'),
+        coverId: null,
+        fallback: true,
+      },
     ]);
   });
 
@@ -43,7 +73,9 @@ describe('Visited Provinces of the admin', () => {
     const picked = await addPhoto(second, '2025-03-01', { name: 'z.jpg', cityId: chengdu });
     await setProvinceCover(sichuan, picked);
 
-    const sichuanRow = (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
+    const sichuanRow = (await journal.listVisitedProvinces()).find(
+      (province) => province.name === 'Sichuan',
+    );
 
     expect(sichuanRow).toEqual({
       name: 'Sichuan',
@@ -119,8 +151,12 @@ describe('Province Cover', () => {
     expect(await journal.setProvinceCover('Sichuan', picked)).toEqual({ ok: true });
 
     const home = await journal.getHomeMap();
-    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(full('first', 'b.jpg'));
-    const row = (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
+    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(
+      full('first', 'b.jpg'),
+    );
+    const row = (await journal.listVisitedProvinces()).find(
+      (province) => province.name === 'Sichuan',
+    );
     expect(row).toMatchObject({ coverId: picked, fallback: false });
   });
 
@@ -133,7 +169,9 @@ describe('Province Cover', () => {
     await journal.setProvinceCover('Sichuan', a);
 
     const home = await journal.getHomeMap();
-    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(full('first', 'a.jpg'));
+    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(
+      full('first', 'a.jpg'),
+    );
   });
 
   it('clear brings back the first Photo', async () => {
@@ -145,8 +183,12 @@ describe('Province Cover', () => {
     expect(await journal.clearProvinceCover('Sichuan')).toEqual({ ok: true });
 
     const home = await journal.getHomeMap();
-    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(full('first', 'a.jpg'));
-    const row = (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
+    expect(home.find((province) => province.name === 'Sichuan')?.photo).toBe(
+      full('first', 'a.jpg'),
+    );
+    const row = (await journal.listVisitedProvinces()).find(
+      (province) => province.name === 'Sichuan',
+    );
     expect(row).toMatchObject({ coverId: null, fallback: true });
   });
 
@@ -161,16 +203,27 @@ describe('Province Cover', () => {
     const kept = await addPhoto(first, '2024-03-01', { name: 'kept.jpg', cityId: chengdu });
     await setProvinceCover(sichuan, kept);
     const gansuPhoto = await addPhoto(first, '2024-03-02', { name: 'gansu.jpg', cityId: lanzhou });
-    const onTheWay = await addPhoto(first, '2024-03-01', { name: 'train.jpg', provinceId: sichuan });
+    const onTheWay = await addPhoto(first, '2024-03-01', {
+      name: 'train.jpg',
+      provinceId: sichuan,
+    });
     const hiddenTrip = await addTrip({ slug: 'hidden', visible: false });
     await addDay(hiddenTrip, chengdu, '2025-05-01', { position: 1 });
-    const secret = await addPhoto(hiddenTrip, '2025-05-01', { name: 'secret.jpg', cityId: chengdu });
+    const secret = await addPhoto(hiddenTrip, '2025-05-01', {
+      name: 'secret.jpg',
+      cityId: chengdu,
+    });
 
     for (const photoId of [gansuPhoto, onTheWay, secret, 999999]) {
-      expect(await journal.setProvinceCover('Sichuan', photoId)).toEqual({ ok: false, error: 'unknown-photo' });
+      expect(await journal.setProvinceCover('Sichuan', photoId)).toEqual({
+        ok: false,
+        error: 'unknown-photo',
+      });
     }
 
-    const row = (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
+    const row = (await journal.listVisitedProvinces()).find(
+      (province) => province.name === 'Sichuan',
+    );
     expect(row?.coverId).toBe(kept);
   });
 
@@ -178,8 +231,14 @@ describe('Province Cover', () => {
     const { chengdu, first } = await world();
     const photo = await addPhoto(first, '2024-03-01', { cityId: chengdu });
 
-    expect(await journal.setProvinceCover('Qinghai', photo)).toEqual({ ok: false, error: 'unknown-province' });
-    expect(await journal.clearProvinceCover('Qinghai')).toEqual({ ok: false, error: 'unknown-province' });
+    expect(await journal.setProvinceCover('Qinghai', photo)).toEqual({
+      ok: false,
+      error: 'unknown-province',
+    });
+    expect(await journal.clearProvinceCover('Qinghai')).toEqual({
+      ok: false,
+      error: 'unknown-province',
+    });
   });
 
   it('leaves the list with its Province and comes back with it, cover kept', async () => {
@@ -189,12 +248,23 @@ describe('Province Cover', () => {
     await addPhoto(first, '2024-03-02', { name: 'c.jpg', cityId: lanzhou });
     await journal.setProvinceCover('Gansu', picked);
 
-    await env.DB.prepare('UPDATE days SET visible = 0 WHERE trip_id = ? AND city_id = ?').bind(first, lanzhou).run();
-    expect((await journal.listVisitedProvinces()).map((province) => province.name)).toEqual(['Sichuan']);
-    expect(await journal.setProvinceCover('Gansu', picked)).toEqual({ ok: false, error: 'unknown-province' });
+    await env.DB.prepare('UPDATE days SET visible = 0 WHERE trip_id = ? AND city_id = ?')
+      .bind(first, lanzhou)
+      .run();
+    expect((await journal.listVisitedProvinces()).map((province) => province.name)).toEqual([
+      'Sichuan',
+    ]);
+    expect(await journal.setProvinceCover('Gansu', picked)).toEqual({
+      ok: false,
+      error: 'unknown-province',
+    });
 
-    await env.DB.prepare('UPDATE days SET visible = 1 WHERE trip_id = ? AND city_id = ?').bind(first, lanzhou).run();
-    const gansu = (await journal.listVisitedProvinces()).find((province) => province.name === 'Gansu');
+    await env.DB.prepare('UPDATE days SET visible = 1 WHERE trip_id = ? AND city_id = ?')
+      .bind(first, lanzhou)
+      .run();
+    const gansu = (await journal.listVisitedProvinces()).find(
+      (province) => province.name === 'Gansu',
+    );
     expect(gansu).toMatchObject({ coverId: picked, fallback: false });
   });
 
@@ -205,7 +275,9 @@ describe('Province Cover', () => {
     const off = await addPhoto(first, '2024-03-10', { name: 'off.jpg', cityId: chengdu });
     await setProvinceCover(sichuan, off);
 
-    const row = (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
+    const row = (await journal.listVisitedProvinces()).find(
+      (province) => province.name === 'Sichuan',
+    );
 
     expect(row).toMatchObject({ photo: thumb('first', 'a.jpg'), coverId: null, fallback: true });
   });
@@ -219,8 +291,10 @@ describe('Province Cover focal point', () => {
     await journal.setProvinceCover('Sichuan', picked);
     return picked;
   }
-  const sichuanHome = async () => (await journal.getHomeMap()).find((province) => province.name === 'Sichuan');
-  const sichuanAdmin = async () => (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
+  const sichuanHome = async () =>
+    (await journal.getHomeMap()).find((province) => province.name === 'Sichuan');
+  const sichuanAdmin = async () =>
+    (await journal.listVisitedProvinces()).find((province) => province.name === 'Sichuan');
 
   it('is the centre of a new cover', async () => {
     await coverOfSichuan();
@@ -249,8 +323,17 @@ describe('Province Cover focal point', () => {
     await coverOfSichuan();
     await journal.setProvinceCoverFocus('Sichuan', 20, 75);
 
-    for (const [x, y] of [[-1, 50], [50, 101], [100.5, 50], [Number.NaN, 50], [50, Number.POSITIVE_INFINITY]]) {
-      expect(await journal.setProvinceCoverFocus('Sichuan', x, y)).toEqual({ ok: false, error: 'invalid-focus' });
+    for (const [x, y] of [
+      [-1, 50],
+      [50, 101],
+      [100.5, 50],
+      [Number.NaN, 50],
+      [50, Number.POSITIVE_INFINITY],
+    ]) {
+      expect(await journal.setProvinceCoverFocus('Sichuan', x, y)).toEqual({
+        ok: false,
+        error: 'invalid-focus',
+      });
     }
     expect((await sichuanHome())?.focus).toEqual({ x: 20, y: 75 });
   });
@@ -259,7 +342,10 @@ describe('Province Cover focal point', () => {
     const { chengdu, first } = await world();
     await addPhoto(first, '2024-03-01', { name: 'a.jpg', cityId: chengdu });
 
-    expect(await journal.setProvinceCoverFocus('Sichuan', 10, 10)).toEqual({ ok: false, error: 'no-cover' });
+    expect(await journal.setProvinceCoverFocus('Sichuan', 10, 10)).toEqual({
+      ok: false,
+      error: 'no-cover',
+    });
     expect((await sichuanHome())?.focus).toBeUndefined();
     expect((await sichuanAdmin())?.focus).toBeUndefined();
   });
@@ -267,7 +353,10 @@ describe('Province Cover focal point', () => {
   it('is refused for a Province that is not visited', async () => {
     await world();
 
-    expect(await journal.setProvinceCoverFocus('Qinghai', 10, 10)).toEqual({ ok: false, error: 'unknown-province' });
+    expect(await journal.setProvinceCoverFocus('Qinghai', 10, 10)).toEqual({
+      ok: false,
+      error: 'unknown-province',
+    });
   });
 
   it('goes back to the centre when a new cover is set', async () => {

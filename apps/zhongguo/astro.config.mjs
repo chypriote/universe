@@ -72,10 +72,7 @@ const reactSsrOptimizerDeps = [
   ...astroRuntimeOptimizerDeps,
 ];
 
-const browserOnlyOptimizerDeps = [
-  '@astrojs/react/client.js',
-  'react-dom/client',
-];
+const browserOnlyOptimizerDeps = ['@astrojs/react/client.js', 'react-dom/client'];
 
 /** @returns {NonNullable<import('astro').ViteUserConfig['plugins']>[number]} */
 function prebundleCloudflareDevDeps() {

@@ -1,7 +1,17 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
-import { addCity, addDay, addPhoto, addPlan, addPlanDay, addPlanPhoto, addProvince, addTrip, resetDatabase } from './seed.test-helper';
+import {
+  addCity,
+  addDay,
+  addPhoto,
+  addPlan,
+  addPlanDay,
+  addPlanPhoto,
+  addProvince,
+  addTrip,
+  resetDatabase,
+} from './seed.test-helper';
 
 const journal = createJournal(env);
 
@@ -37,7 +47,9 @@ describe('Trip plans', () => {
 
     const cards = await journal.listPlanCards();
 
-    expect(cards.map((card) => [card.slug, card.type, card.link, card.dates])).toEqual([['yunnan', 'plan', '/plans/yunnan', '2 days']]);
+    expect(cards.map((card) => [card.slug, card.type, card.link, card.dates])).toEqual([
+      ['yunnan', 'plan', '/plans/yunnan', '2 days'],
+    ]);
     expect(cards[0].provinces).toEqual(['Yunnan']);
   });
 

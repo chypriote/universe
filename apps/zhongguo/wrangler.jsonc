@@ -6,7 +6,7 @@
   "preview_urls": false,
   // The directory is set by the Astro adapter. No not_found_handling: a path with no static file must reach the Worker (home, trips, gallery and admin render on request).
   "assets": {
-    "html_handling": "drop-trailing-slash"
+    "html_handling": "drop-trailing-slash",
   },
   "vars": { "OWNER_COOKIE_DOMAIN": "nicolastemeni.workers.dev" },
   // Trips, Days, Cities and Photos: the Journal reads them on each request (src/lib/journal).
@@ -16,16 +16,16 @@
       "binding": "DB",
       "database_name": "zhongguo",
       "database_id": "24f1267a-39b4-4d29-a5bc-155504507afc",
-      "migrations_dir": "migrations"
-    }
+      "migrations_dir": "migrations",
+    },
   ],
   "r2_buckets": [
     {
       "binding": "PHOTOS",
-      "bucket_name": "nico-zhongguo-photos"
-    }
+      "bucket_name": "nico-zhongguo-photos",
+    },
   ],
   "secrets": {
-    "required": ["PHOTOS_URL", "OWNER_PASSWORD", "JWT_SECRET"]
-  }
+    "required": ["PHOTOS_URL", "OWNER_PASSWORD", "JWT_SECRET"],
+  },
 }

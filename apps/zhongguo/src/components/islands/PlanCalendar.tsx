@@ -29,10 +29,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
   const [chosenStart, setChosenStart] = useState(startDate);
   const activeStart = isIsoDate(chosenStart) ? chosenStart : startDate;
 
-  const cells = useMemo(
-    () => buildCityCalendarDays(days, activeStart),
-    [activeStart, days],
-  );
+  const cells = useMemo(() => buildCityCalendarDays(days, activeStart), [activeStart, days]);
   const months = useMemo(() => buildCalendarMonths(cells), [cells]);
   const lastDayNumber = days.reduce((max, planDay) => Math.max(max, planDay.day), 1);
   const lastDate = days.length > 0 ? getDayDate(activeStart, lastDayNumber) : activeStart;
@@ -42,9 +39,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
     <div className="mx-auto max-w-5xl space-y-10">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl space-y-3">
-          <span className="eyebrow">
-            Your dates
-          </span>
+          <span className="eyebrow">Your dates</span>
           <h2 className="text-h3 font-serif">Clone this loop onto a calendar</h2>
           <p className="text-muted-foreground font-serif leading-relaxed">
             Pick a start date to see each city on the calendar. This is a booking preview only — the
@@ -53,9 +48,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
         </div>
 
         <label className="block shrink-0 space-y-2">
-          <span className="eyebrow text-muted-foreground">
-            Start date
-          </span>
+          <span className="eyebrow text-muted-foreground">Start date</span>
           <input
             type="date"
             value={activeStart}
@@ -66,7 +59,9 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
       </div>
 
       <p className="text-sm font-sans text-muted-foreground">
-        <span className="font-medium text-foreground">{formatDateRange(activeStart, lastDate)}</span>
+        <span className="font-medium text-foreground">
+          {formatDateRange(activeStart, lastDate)}
+        </span>
         {matchesPublished ? ' · published dates' : ' · shifted from the published start'}
       </p>
 
@@ -117,9 +112,7 @@ export function PlanCalendar({ days, startDate }: PlanCalendarProps) {
                     </span>
                     {cell && (
                       <div className="mt-2 space-y-0.5">
-                        <p className="eyebrow">
-                          Day {cell.day}
-                        </p>
+                        <p className="eyebrow">Day {cell.day}</p>
                         <p className="text-sm font-serif leading-snug text-foreground">
                           {cell.city}
                         </p>

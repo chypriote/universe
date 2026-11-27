@@ -12,11 +12,19 @@ interface Props {
 const { trips } = Astro.props;
 ---
 
-<section id="suggested-trips" class="snap-section py-12 lg:py-10 bamboo-t after:right-auto after:left-[4%] after:-scale-x-100">
+<section
+  id="suggested-trips"
+  class="snap-section py-12 lg:py-10 bamboo-t after:right-auto after:left-[4%] after:-scale-x-100"
+>
   <Panda class="absolute right-[22px] top-1/2 -translate-y-1/2 z-[1] w-20 hidden min-[1400px]:block" />
   <Container>
     <header class="mb-10 reveal">
-      <SectionHeader zh="行程" eyebrow="Itineraries" title="Suggested itineraries" lead="Routes I recommend, day by day." />
+      <SectionHeader
+        zh="行程"
+        eyebrow="Itineraries"
+        title="Suggested itineraries"
+        lead="Routes I recommend, day by day."
+      />
     </header>
 
     {trips.length === 0 ? (
@@ -27,8 +35,15 @@ const { trips } = Astro.props;
           const cover = trip.cover;
 
           return (
-            <article class={`snap-center group flex flex-col gap-5 reveal reveal-delay-${Math.min(index + 1, 5)}`}>
-              <a href={trip.link} tabindex="-1" aria-hidden="true" class:list={['block overflow-hidden', cover && 'mist-strip']}>
+            <article
+              class={`snap-center group flex flex-col gap-5 reveal reveal-delay-${Math.min(index + 1, 5)}`}
+            >
+              <a
+                href={trip.link}
+                tabindex="-1"
+                aria-hidden="true"
+                class:list={['block overflow-hidden', cover && 'mist-strip']}
+              >
                 {cover ? (
                   <img
                     src={cover}
@@ -43,13 +58,26 @@ const { trips } = Astro.props;
                 )}
               </a>
               <h3 class="font-script leading-[0.95] text-4xl sm:text-5xl">
-                <a href={trip.link} class="hover:text-primary transition-colors">{trip.title}</a>
+                <a href={trip.link} class="hover:text-primary transition-colors">
+                  {trip.title}
+                </a>
               </h3>
               <p class="text-muted-foreground leading-relaxed line-clamp-3">{trip.description}</p>
-              <a href={trip.link} class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit self-end mt-auto">
-                <span lang="zh" aria-hidden="true" class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25">行程</span>
+              <a
+                href={trip.link}
+                class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit self-end mt-auto"
+              >
+                <span
+                  lang="zh"
+                  aria-hidden="true"
+                  class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25"
+                >
+                  行程
+                </span>
                 <InkStroke class="absolute left-14 bottom-0 w-[calc(100%-3.5rem)] h-4 text-gold-ink transition-colors group-hover/link:text-primary" />
-                <span class="relative transition-colors group-hover/link:text-primary">Explore<span class="sr-only"> {trip.title}</span></span>
+                <span class="relative transition-colors group-hover/link:text-primary">
+                  Explore<span class="sr-only"> {trip.title}</span>
+                </span>
               </a>
             </article>
           );

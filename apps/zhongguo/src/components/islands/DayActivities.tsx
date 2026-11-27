@@ -18,11 +18,23 @@ type Props = {
 };
 
 /** The Activities of a Day or a Plan Day: visit order, add and remove. Each change is saved at once. */
-export function DayActivities({ url, label, cityIds, activityIds, activities, onChange, onNotice }: Props) {
+export function DayActivities({
+  url,
+  label,
+  cityIds,
+  activityIds,
+  activities,
+  onChange,
+  onNotice,
+}: Props) {
   const [pick, setPick] = useState('');
   const [busy, setBusy] = useState(false);
-  const listed = activityIds.flatMap((id) => activities.find((activity) => activity.id === id) ?? []);
-  const free = activities.filter((activity) => !activityIds.includes(activity.id) && cityIds.includes(activity.cityId));
+  const listed = activityIds.flatMap(
+    (id) => activities.find((activity) => activity.id === id) ?? [],
+  );
+  const free = activities.filter(
+    (activity) => !activityIds.includes(activity.id) && cityIds.includes(activity.cityId),
+  );
 
   async function change(next: number[], notice: string) {
     setBusy(true);
@@ -52,14 +64,30 @@ export function DayActivities({ url, label, cityIds, activityIds, activities, on
       {listed.length === 0 && <p className="text-sm text-muted-foreground">No Activity yet.</p>}
       <ol className="flex flex-col gap-2">
         {listed.map((activity, index) => (
-          <li key={activity.id} className="flex flex-wrap items-center gap-3 border border-border px-3 py-2 text-sm">
+          <li
+            key={activity.id}
+            className="flex flex-wrap items-center gap-3 border border-border px-3 py-2 text-sm"
+          >
             <span className="min-w-48 flex-1">
-              {activity.name} <span lang="zh">{activity.nameZh}</span> <span className="text-muted-foreground">· {activity.city}</span>
+              {activity.name} <span lang="zh">{activity.nameZh}</span>{' '}
+              <span className="text-muted-foreground">· {activity.city}</span>
             </span>
-            <button type="button" className={`${button} grid size-8 place-items-center !p-0`} aria-label={`Move ${activity.name} up`} disabled={busy || index === 0} onClick={() => move(index, -1)}>
+            <button
+              type="button"
+              className={`${button} grid size-8 place-items-center !p-0`}
+              aria-label={`Move ${activity.name} up`}
+              disabled={busy || index === 0}
+              onClick={() => move(index, -1)}
+            >
               <ArrowUp aria-hidden="true" className="size-4" />
             </button>
-            <button type="button" className={`${button} grid size-8 place-items-center !p-0`} aria-label={`Move ${activity.name} down`} disabled={busy || index === listed.length - 1} onClick={() => move(index, 1)}>
+            <button
+              type="button"
+              className={`${button} grid size-8 place-items-center !p-0`}
+              aria-label={`Move ${activity.name} down`}
+              disabled={busy || index === listed.length - 1}
+              onClick={() => move(index, 1)}
+            >
               <ArrowDown aria-hidden="true" className="size-4" />
             </button>
             <button
@@ -67,7 +95,12 @@ export function DayActivities({ url, label, cityIds, activityIds, activities, on
               className={`${button} grid size-8 place-items-center !p-0`}
               aria-label={`Remove ${activity.name}`}
               disabled={busy}
-              onClick={() => void change(activityIds.filter((id) => id !== activity.id), `${activity.name} removed from ${label}`)}
+              onClick={() =>
+                void change(
+                  activityIds.filter((id) => id !== activity.id),
+                  `${activity.name} removed from ${label}`,
+                )
+              }
             >
               <X aria-hidden="true" className="size-4" />
             </button>
@@ -75,7 +108,12 @@ export function DayActivities({ url, label, cityIds, activityIds, activities, on
         ))}
       </ol>
       <div className="flex flex-wrap items-center gap-3">
-        <select className={`${field} min-w-48 flex-1`} aria-label={`Add an Activity to ${label}`} value={pick} onChange={(event) => setPick(event.target.value)}>
+        <select
+          className={`${field} min-w-48 flex-1`}
+          aria-label={`Add an Activity to ${label}`}
+          value={pick}
+          onChange={(event) => setPick(event.target.value)}
+        >
           <option value="">Add an Activity</option>
           {free.map((activity) => (
             <option key={activity.id} value={activity.id}>
@@ -86,7 +124,10 @@ export function DayActivities({ url, label, cityIds, activityIds, activities, on
         <button type="button" className={button} disabled={busy || !pick} onClick={add}>
           Add
         </button>
-        <a href={cityIds[0] ? `/admin/atlas?city=${cityIds[0]}&tab=activities` : '/admin/atlas'} className="text-sm underline">
+        <a
+          href={cityIds[0] ? `/admin/atlas?city=${cityIds[0]}&tab=activities` : '/admin/atlas'}
+          className="text-sm underline"
+        >
           New Activity
         </a>
       </div>

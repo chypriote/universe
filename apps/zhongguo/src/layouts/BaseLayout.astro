@@ -8,7 +8,7 @@ import InkWash from '@/components/InkWash.astro';
 import BambooGrove from '@/components/BambooGrove.astro';
 import GrovePandas from '@/components/GrovePandas.astro';
 import { SITE } from '@/config/site';
-import { Font } from "astro:assets";
+import { Font } from 'astro:assets';
 
 export interface Props {
   title: string;
@@ -23,11 +23,12 @@ export interface Props {
   pandas?: boolean;
 }
 
-const { title, description, image, type, jsonLd, noIndex, canonicalUrl, lang, pandas } = Astro.props;
+const { title, description, image, type, jsonLd, noIndex, canonicalUrl, lang, pandas } =
+  Astro.props;
 const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang={htmlLang}>
   <head>
     <link rel="preconnect" href="https://pagesmith-cdn.com" crossorigin />
@@ -43,109 +44,139 @@ const htmlLang = lang ?? Astro.currentLocale ?? SITE.lang;
       canonicalUrl={canonicalUrl}
     />
     <!-- Mark JS as enabled immediately -->
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
   </head>
-    <body class="relative" data-ps="src/layouts/BaseLayout.astro:4vj8al">
-      <!-- Distant ink mountains behind every page. -->
-      <div class="pointer-events-none fixed inset-x-0 bottom-0 h-[65vh] -z-10 text-foreground opacity-20" aria-hidden="true">
-        <InkWash plum={false} birds={false} class="w-full h-full" />
-      </div>
-      <Navigation />
-      <main data-ps="src/layouts/BaseLayout.astro:yuyoow">
-        <slot />
-      </main>
-      <Footer />
-      <!-- After the footer, so the stalks run on over the ink footer. -->
-      <div id="bamboo-grove" class="pointer-events-none absolute inset-y-0 right-0 hidden min-[1400px]:block text-gold-ink" aria-hidden="true">
-        <BambooGrove class="h-full" />
-        {pandas && <GrovePandas />}
-      </div>
-      <BackToTop />
+  <body class="relative" data-ps="src/layouts/BaseLayout.astro:4vj8al">
+    <!-- Distant ink mountains behind every page. -->
+    <div
+      class="pointer-events-none fixed inset-x-0 bottom-0 h-[65vh] -z-10 text-foreground opacity-20"
+      aria-hidden="true"
+    >
+      <InkWash plum={false} birds={false} class="w-full h-full" />
+    </div>
+    <Navigation />
+    <main data-ps="src/layouts/BaseLayout.astro:yuyoow">
+      <slot />
+    </main>
+    <Footer />
+    <!-- After the footer, so the stalks run on over the ink footer. -->
+    <div
+      id="bamboo-grove"
+      class="pointer-events-none absolute inset-y-0 right-0 hidden min-[1400px]:block text-gold-ink"
+      aria-hidden="true"
+    >
+      <BambooGrove class="h-full" />
+      {pandas && <GrovePandas />}
+    </div>
+    <BackToTop />
 
-      <!-- Animation Styles -->
-      <style is:inline>
-        /* Scroll Reveal - Default: visible (for SEO & no-JS) */
+    <!-- Animation Styles -->
+    <style is:inline>
+      /* Scroll Reveal - Default: visible (for SEO & no-JS) */
+      .reveal,
+      .reveal-left,
+      .reveal-right,
+      .reveal-scale {
+        transition:
+          opacity 0.45s ease-out,
+          transform 0.45s ease-out;
+      }
+
+      /* Only hide when JS is enabled */
+      .js .reveal,
+      .js .reveal-left,
+      .js .reveal-right,
+      .js .reveal-scale {
+        opacity: 0;
+      }
+
+      .js .reveal {
+        transform: translateY(30px);
+      }
+      .js .reveal-left {
+        transform: translateX(-30px);
+      }
+      .js .reveal-right {
+        transform: translateX(30px);
+      }
+      .js .reveal-scale {
+        transform: scale(0.95);
+      }
+
+      /* Revealed state */
+      .js .reveal.active,
+      .js .reveal-left.active,
+      .js .reveal-right.active,
+      .js .reveal-scale.active {
+        opacity: 1;
+        transform: translate(0) scale(1);
+      }
+
+      /* Stagger Delays */
+      .reveal-delay-1 {
+        transition-delay: 0.05s;
+      }
+      .reveal-delay-2 {
+        transition-delay: 0.1s;
+      }
+      .reveal-delay-3 {
+        transition-delay: 0.15s;
+      }
+      .reveal-delay-4 {
+        transition-delay: 0.2s;
+      }
+      .reveal-delay-5 {
+        transition-delay: 0.25s;
+      }
+
+      /* Hover Effects */
+      .hover-scale {
+        transition: transform 0.3s ease;
+      }
+
+      .hover-scale:hover {
+        transform: scale(1.05);
+      }
+
+      /* Reduced Motion Support */
+      @media (prefers-reduced-motion: reduce) {
         .reveal,
         .reveal-left,
         .reveal-right,
-        .reveal-scale {
-          transition: opacity 0.45s ease-out, transform 0.45s ease-out;
-        }
-
-        /* Only hide when JS is enabled */
-        .js .reveal,
-        .js .reveal-left,
-        .js .reveal-right,
-        .js .reveal-scale {
-          opacity: 0;
-        }
-
-        .js .reveal { transform: translateY(30px); }
-        .js .reveal-left { transform: translateX(-30px); }
-        .js .reveal-right { transform: translateX(30px); }
-        .js .reveal-scale { transform: scale(0.95); }
-
-        /* Revealed state */
-        .js .reveal.active,
-        .js .reveal-left.active,
-        .js .reveal-right.active,
-        .js .reveal-scale.active {
-          opacity: 1;
-          transform: translate(0) scale(1);
-        }
-
-        /* Stagger Delays */
-        .reveal-delay-1 { transition-delay: 0.05s; }
-        .reveal-delay-2 { transition-delay: 0.1s; }
-        .reveal-delay-3 { transition-delay: 0.15s; }
-        .reveal-delay-4 { transition-delay: 0.2s; }
-        .reveal-delay-5 { transition-delay: 0.25s; }
-
-        /* Hover Effects */
+        .reveal-scale,
         .hover-scale {
-          transition: transform 0.3s ease;
+          transition: none !important;
+          opacity: 1 !important;
+          transform: none !important;
         }
+      }
+    </style>
 
-        .hover-scale:hover {
-          transform: scale(1.05);
-        }
+    <!-- Scroll Reveal Script -->
+    <script is:inline>
+      // The first batch is what shows on load: it reveals without its stagger delay.
+      let firstBatch = true;
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              if (firstBatch) entry.target.style.transitionDelay = '0s';
+              entry.target.classList.add('active');
+            }
+          });
+          firstBatch = false;
+        },
+        {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px',
+        },
+      );
 
-        /* Reduced Motion Support */
-        @media (prefers-reduced-motion: reduce) {
-          .reveal,
-          .reveal-left,
-          .reveal-right,
-          .reveal-scale,
-          .hover-scale {
-            transition: none !important;
-            opacity: 1 !important;
-            transform: none !important;
-          }
-        }
-      </style>
-
-      <!-- Scroll Reveal Script -->
-      <script is:inline>
-        // The first batch is what shows on load: it reveals without its stagger delay.
-        let firstBatch = true;
-        const revealObserver = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                if (firstBatch) entry.target.style.transitionDelay = '0s';
-                entry.target.classList.add('active');
-              }
-            });
-            firstBatch = false;
-          },
-          {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-          }
-        );
-
-        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale')
-          .forEach((el) => revealObserver.observe(el));
-      </script>
-    </body>
-  </html>
+      document
+        .querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale')
+        .forEach((el) => revealObserver.observe(el));
+    </script>
+  </body>
+</html>

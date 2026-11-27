@@ -16,7 +16,12 @@ if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
   const result = await journal.login(String(form.get('password') ?? ''));
   if (result.ok) {
-    setOwnerToken(Astro.cookies, result.token, Astro.url.protocol === 'https:', env.OWNER_COOKIE_DOMAIN);
+    setOwnerToken(
+      Astro.cookies,
+      result.token,
+      Astro.url.protocol === 'https:',
+      env.OWNER_COOKIE_DOMAIN,
+    );
     return Astro.redirect('/admin', 303);
   }
   error = 'Wrong password';
@@ -42,8 +47,14 @@ if (Astro.request.method === 'POST') {
           class="border border-border bg-surface px-4 py-3 text-base text-foreground"
         />
       </label>
-      {error && <p id="login-error" role="alert" class="text-sm text-error">{error}</p>}
-      <button type="submit" class="btn btn-primary self-start cursor-pointer">Log in</button>
+      {error && (
+        <p id="login-error" role="alert" class="text-sm text-error">
+          {error}
+        </p>
+      )}
+      <button type="submit" class="btn btn-primary self-start cursor-pointer">
+        Log in
+      </button>
     </form>
   </div>
 </AdminLayout>

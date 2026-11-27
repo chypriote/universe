@@ -6,10 +6,10 @@ import { badRequest, jsonBody, respond } from '../_respond';
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
-	const input = await jsonBody<AddCityInput>(request);
-	return input ? respond(await atlas().addCity(input)) : badRequest('invalid-body');
+  const input = await jsonBody<AddCityInput>(request);
+  return input ? respond(await atlas().addCity(input)) : badRequest('invalid-body');
 };
 
 /** Every City with what uses it. */
 export const GET: APIRoute = async () =>
-	Response.json({ ok: true, cities: await atlas().listAdminCities() });
+  Response.json({ ok: true, cities: await atlas().listAdminCities() });

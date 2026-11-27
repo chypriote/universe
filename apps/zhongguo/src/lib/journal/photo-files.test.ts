@@ -9,7 +9,11 @@ const thumb = () => new Uint8Array([1, 2, 3]).buffer;
 
 beforeEach(resetDatabase);
 
-type Uploaded = { ok: boolean; error?: string; photo?: { id: number; url: string; title: string | null } };
+type Uploaded = {
+  ok: boolean;
+  error?: string;
+  photo?: { id: number; url: string; title: string | null };
+};
 
 /** The Photo files rules are the same for a Trip and a plan: each kind is driven through its own Journal methods. */
 type Kind = {
@@ -31,8 +35,17 @@ const trip: Kind = {
     await addTrip({ slug: 'sichuan' });
     return { cityId: await addCity('Chengdu', province) };
   },
-  upload: (name, file, overwrite) => journal.uploadPhoto({ trip: 'sichuan', name, file, thumb: thumb(), date: '2025-03-02', overwrite }),
-  setCity: (id, cityId) => journal.editPhotos({ ids: [id], place: cityId === null ? { onTheWay: true } : { cityId } }),
+  upload: (name, file, overwrite) =>
+    journal.uploadPhoto({
+      trip: 'sichuan',
+      name,
+      file,
+      thumb: thumb(),
+      date: '2025-03-02',
+      overwrite,
+    }),
+  setCity: (id, cityId) =>
+    journal.editPhotos({ ids: [id], place: cityId === null ? { onTheWay: true } : { cityId } }),
   setTitle: (id, title) => journal.editPhotos({ ids: [id], title }),
   remove: async (id) => ({ ok: (await journal.deletePhotos({ ids: [id] })).deleted.includes(id) }),
   photos: async () => (await journal.getAdminTrip('sichuan'))!.photos,
@@ -46,7 +59,8 @@ const plan: Kind = {
     await addPlan({ slug: 'sichuan' });
     return { cityId: await addCity('Chengdu', province) };
   },
-  upload: (name, file, overwrite) => journal.uploadPlanPhoto({ plan: 'sichuan', name, file, thumb: thumb(), overwrite }),
+  upload: (name, file, overwrite) =>
+    journal.uploadPlanPhoto({ plan: 'sichuan', name, file, thumb: thumb(), overwrite }),
   setCity: (id, cityId) => journal.setPlanPhotoCity(id, cityId),
   setTitle: (id, title) => journal.setPlanPhotoTitle(id, title),
   remove: (id) => journal.deletePlanPhoto(id),
@@ -84,9 +98,18 @@ describe.each([trip, plan])('Photo files of $label', (kind) => {
   it('refuses a bad name, a type it does not know and a file that is not an image, writing nothing', async () => {
     await kind.setup();
 
-    expect(await kind.upload('a/lake.jpg', landscape())).toEqual({ ok: false, error: 'invalid-name' });
-    expect(await kind.upload('lake.gif', landscape())).toEqual({ ok: false, error: 'unsupported-type' });
-    expect(await kind.upload('lake.jpg', new Uint8Array([1, 2, 3]).buffer)).toEqual({ ok: false, error: 'unreadable' });
+    expect(await kind.upload('a/lake.jpg', landscape())).toEqual({
+      ok: false,
+      error: 'invalid-name',
+    });
+    expect(await kind.upload('lake.gif', landscape())).toEqual({
+      ok: false,
+      error: 'unsupported-type',
+    });
+    expect(await kind.upload('lake.jpg', new Uint8Array([1, 2, 3]).buffer)).toEqual({
+      ok: false,
+      error: 'unreadable',
+    });
     expect(await keys()).toEqual([]);
   });
 

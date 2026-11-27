@@ -24,21 +24,19 @@ const tab = params.get('tab') as AtlasTab | null;
 ---
 
 <AdminLayout title={city ? city.name : (province?.name ?? 'Atlas')} heading={false}>
-  {
-    province ? (
-      <AdminAtlas
-        client:load
-        provinces={provinces}
-        cities={cities}
-        activities={activities}
-        visited={visited}
-        provinceName={province.name}
-        cityId={city?.id ?? null}
-        photos={photos}
-        tab={tab}
-      />
-    ) : (
-      <p class="text-muted-foreground">There is no Province yet.</p>
-    )
-  }
+  {province ? (
+    <AdminAtlas
+      client:load
+      provinces={provinces}
+      cities={cities}
+      activities={activities}
+      visited={visited}
+      provinceName={province.name}
+      cityId={city?.id ?? null}
+      photos={photos}
+      tab={tab}
+    />
+  ) : (
+    <p class="text-muted-foreground">There is no Province yet.</p>
+  )}
 </AdminLayout>

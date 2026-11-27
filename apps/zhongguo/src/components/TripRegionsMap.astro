@@ -17,7 +17,8 @@ interface Props {
 const { route, regions, aspect, compact = false, centered = false, class: className } = Astro.props;
 
 type Box = [number, number, number, number];
-const points = (d: string) => [...d.matchAll(/(-?[\d.]+)[ ,](-?[\d.]+)/g)].map((m) => [Number(m[1]), Number(m[2])]);
+const points = (d: string) =>
+  [...d.matchAll(/(-?[\d.]+)[ ,](-?[\d.]+)/g)].map((m) => [Number(m[1]), Number(m[2])]);
 // The point of a ring furthest from its edges: a label there sits well inside the province.
 const innerPoint = (ring: number[][], box: Box) => {
   const inside = ([x, y]: number[]) =>
@@ -29,7 +30,13 @@ const innerPoint = (ring: number[][], box: Box) => {
     Math.min(
       ...ring.map(([x1, y1], i) => {
         const [x2, y2] = ring[(i + 1) % ring.length];
-        const t = Math.max(0, Math.min(1, ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / ((x2 - x1) ** 2 + (y2 - y1) ** 2 || 1)));
+        const t = Math.max(
+          0,
+          Math.min(
+            1,
+            ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / ((x2 - x1) ** 2 + (y2 - y1) ** 2 || 1),
+          ),
+        );
         return Math.hypot(x - x1 - t * (x2 - x1), y - y1 - t * (y2 - y1));
       }),
     );
@@ -56,7 +63,12 @@ const visited = CHINA_MAP.regions
     const xs = ring.map(([x]) => x);
     const ys = ring.map(([, y]) => y);
     const box: Box = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
-    return { ...region, box, area: (box[2] - box[0]) * (box[3] - box[1]), c: innerPoint(ring, box) };
+    return {
+      ...region,
+      box,
+      area: (box[2] - box[0]) * (box[3] - box[1]),
+      c: innerPoint(ring, box),
+    };
   });
 const line = route.stops.map((stop) => projectLngLat(stop.lng, stop.lat));
 // A smooth curve through every stop, minor Cities included (Catmull-Rom turned into cubic Béziers).
@@ -71,7 +83,13 @@ const curve = line
   .join(' ');
 
 // Frame the provinces and the route, widened to the aspect ratio.
-const corners = [...visited.flatMap(({ box }) => [[box[0], box[1]], [box[2], box[3]]]), ...line];
+const corners = [
+  ...visited.flatMap(({ box }) => [
+    [box[0], box[1]],
+    [box[2], box[3]],
+  ]),
+  ...line,
+];
 const minX = Math.min(...corners.map(([x]) => x));
 const maxX = Math.max(...corners.map(([x]) => x));
 const minY = Math.min(...corners.map(([, y]) => y));
@@ -97,48 +115,122 @@ const labels = [...visited]
   .map((region) => {
     const half = Math.max(region.zh.length * zhSize, region.name.length * enSize * 1.15) / 2;
     const tall = zhSize + enSize * 1.6;
-    const boxAt = (x: number, y: number): Box => [x - half, y - zhSize / 2, x + half, y - zhSize / 2 + tall];
+    const boxAt = (x: number, y: number): Box => [
+      x - half,
+      y - zhSize / 2,
+      x + half,
+      y - zhSize / 2 + tall,
+    ];
     const spots = [[region.c[0], region.c[1]]];
     for (const step of [0.6, 1.2, 1.8]) {
-      for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+      for (const [dx, dy] of [
+        [0, -1],
+        [0, 1],
+        [-1, 0],
+        [1, 0],
+        [-1, -1],
+        [1, -1],
+        [-1, 1],
+        [1, 1],
+      ]) {
         spots.push([region.c[0] + dx * half * 2 * step, region.c[1] + dy * tall * step]);
       }
     }
-    const fits = (box: Box) => box[0] > x0 && box[2] < x0 + width && box[1] > y0 && box[3] < y0 + height;
-    const [x, y] = spots.find(([x, y]) => fits(boxAt(x, y)) && !placed.some((other) => hit(other, boxAt(x, y)))) ?? region.c;
+    const fits = (box: Box) =>
+      box[0] > x0 && box[2] < x0 + width && box[1] > y0 && box[3] < y0 + height;
+    const [x, y] =
+      spots.find(
+        ([x, y]) => fits(boxAt(x, y)) && !placed.some((other) => hit(other, boxAt(x, y))),
+      ) ?? region.c;
     placed.push(boxAt(x, y));
     return { region, x, y };
   });
 ---
 
-<svg viewBox={`${x0} ${y0} ${width} ${height}`} class:list={['block h-auto', className]} role="img" aria-label={`Map of the provinces: ${regions.join(', ')}`}>
+<svg
+  viewBox={`${x0} ${y0} ${width} ${height}`}
+  class:list={['block h-auto', className]}
+  role="img"
+  aria-label={`Map of the provinces: ${regions.join(', ')}`}
+>
   <defs>
     <filter id="ink-wash-provinces" x="-10%" y="-10%" width="120%" height="120%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="5" result="noise" />
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.02"
+        numOctaves="3"
+        seed="5"
+        result="noise"
+      />
       <feDisplacementMap in="SourceGraphic" in2="noise" scale={unit * 1.2} />
       <feGaussianBlur stdDeviation={unit * 0.35} />
     </filter>
   </defs>
   {CHINA_MAP.regions.map((region) => (
-    <path d={region.d} class="fill-none stroke-foreground/15" stroke-width="1" vector-effect="non-scaling-stroke" />
+    <path
+      d={region.d}
+      class="fill-none stroke-foreground/15"
+      stroke-width="1"
+      vector-effect="non-scaling-stroke"
+    />
   ))}
   <g filter="url(#ink-wash-provinces)">
-    {visited.map((region) => <path d={region.d} class="fill-foreground/[0.13]" />)}
+    {visited.map((region) => (
+      <path d={region.d} class="fill-foreground/[0.13]" />
+    ))}
   </g>
   {labels.map(({ region, x, y }) => (
     <g>
-      <text lang="zh" x={x} y={y} text-anchor="middle" dominant-baseline="central" font-size={zhSize} class="font-brush fill-foreground/25">{region.zh}</text>
-      <text x={x} y={y + zhSize * 0.85} text-anchor="middle" dominant-baseline="central" font-size={enSize} letter-spacing={enSize * 0.2} class="font-serif fill-foreground/80">{region.name.toUpperCase()}</text>
+      <text
+        lang="zh"
+        x={x}
+        y={y}
+        text-anchor="middle"
+        dominant-baseline="central"
+        font-size={zhSize}
+        class="font-brush fill-foreground/25"
+      >
+        {region.zh}
+      </text>
+      <text
+        x={x}
+        y={y + zhSize * 0.85}
+        text-anchor="middle"
+        dominant-baseline="central"
+        font-size={enSize}
+        letter-spacing={enSize * 0.2}
+        class="font-serif fill-foreground/80"
+      >
+        {region.name.toUpperCase()}
+      </text>
     </g>
   ))}
-  <path d={curve} fill="none" class="stroke-primary/80" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="1 4" vector-effect="non-scaling-stroke" />
+  <path
+    d={curve}
+    fill="none"
+    class="stroke-primary/80"
+    stroke-width="1.6"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+    stroke-dasharray="1 4"
+    vector-effect="non-scaling-stroke"
+  />
   {route.cities.map((city) => {
     const [x, y] = projectLngLat(city.lng, city.lat);
     return (
       <g data-route-city={city.name} class="route-pin">
         <circle cx={x} cy={y} r={unit * 1.6} class="fill-transparent" />
         <circle cx={x} cy={y} r={unit * (city.major ? 0.8 : 0.35)} class="route-dot fill-primary" />
-        <text x={x} y={y - unit * 1.3} text-anchor="middle" font-size={unit * (compact ? 2.8 : 1.5)} data-minor={city.major ? undefined : ""} class="route-name font-serif fill-foreground">{city.name}</text>
+        <text
+          x={x}
+          y={y - unit * 1.3}
+          text-anchor="middle"
+          font-size={unit * (compact ? 2.8 : 1.5)}
+          data-minor={city.major ? undefined : ''}
+          class="route-name font-serif fill-foreground"
+        >
+          {city.name}
+        </text>
       </g>
     );
   })}

@@ -29,7 +29,9 @@ export function TripDayGallery({ photos, day, tripTitle }: TripDayGalleryProps) 
     const tiles = Array.from(strip.children) as HTMLElement[];
     // The first photo that is not mostly scrolled out on the left; the last one when scrolled to the end.
     const atEnd = max > 1 && strip.scrollLeft >= max - 1;
-    const index = atEnd ? tiles.length - 1 : tiles.findIndex((tile) => tile.offsetLeft + tile.offsetWidth / 2 > strip.scrollLeft);
+    const index = atEnd
+      ? tiles.length - 1
+      : tiles.findIndex((tile) => tile.offsetLeft + tile.offsetWidth / 2 > strip.scrollLeft);
     setCurrent(Math.max(index, 0));
   }, []);
 
@@ -46,7 +48,10 @@ export function TripDayGallery({ photos, day, tripTitle }: TripDayGalleryProps) 
     const strip = stripRef.current;
     if (!strip) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    strip.scrollBy({ left: direction * strip.clientWidth * 0.8, behavior: reduced ? 'auto' : 'smooth' });
+    strip.scrollBy({
+      left: direction * strip.clientWidth * 0.8,
+      behavior: reduced ? 'auto' : 'smooth',
+    });
   };
 
   // On a phone a lone landscape fills the column instead of being cut by the strip height.

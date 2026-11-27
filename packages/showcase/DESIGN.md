@@ -4,6 +4,8 @@ The design family of the collection apps in Universe, built on the Universe laye
 
 Decided by Nico on 2026-11-23. Tokens: [TOKENS.md](TOKENS.md). Components: [COMPONENTS.md](COMPONENTS.md).
 
+Name design layers and families by their usage, not their visual look.
+
 Visual reference: the [Showcase design-system page](https://claude.ai/artifact/Fdnc2AfpFDeiV5cE7gEVuo) shows the tokens and every component in six themes (Jerseys, Vinyles and Aviary, light and dark). Its source is `design-system/` in this package. It is a picture of this package: when they differ, the code wins. Change `design-system/` in the PR that changes a token, a theme slot or a component, then republish ([docs/design-system-page.md](../../docs/design-system-page.md)).
 
 ## 1. Theme

@@ -46,7 +46,10 @@ export function fitsPlan(/** @type {number[]} */ seasons, /** @type {string} */ 
 /** The first and last start dates searched from this day (YYYY-MM-DD). */
 export function searchRange(/** @type {string} */ today) {
   const soonest = addDays(today, 14);
-  return { first: soonest > FIRST_START ? soonest : FIRST_START, last: addMonths(today, MONTHS_AHEAD) };
+  return {
+    first: soonest > FIRST_START ? soonest : FIRST_START,
+    last: addMonths(today, MONTHS_AHEAD),
+  };
 }
 
 /**
@@ -67,7 +70,12 @@ export function fareWindows(plans, today) {
       for (let start = first; start <= last; start = addDays(start, 1)) {
         if (!(startBits & (1 << (isoWeekday(start) - 1)))) continue;
         if (!fitsPlan(plan.seasons, start)) continue;
-        windows.push({ slug: plan.slug, airport: gateway.code, outbound: start, return: addDays(start, length) });
+        windows.push({
+          slug: plan.slug,
+          airport: gateway.code,
+          outbound: start,
+          return: addDays(start, length),
+        });
       }
     }
   }

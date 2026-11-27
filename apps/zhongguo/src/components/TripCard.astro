@@ -16,41 +16,85 @@ const hasMap = trip.provinces.length > 0 || trip.route.stops.length > 0;
 ---
 
 <article
-  class:list={['snap-center relative flex flex-col gap-6 lg:gap-10', !firstOfType && 'mt-4 pt-10 lg:mt-12 lg:pt-16', className]}
+  class:list={[
+    'snap-center relative flex flex-col gap-6 lg:gap-10',
+    !firstOfType && 'mt-4 pt-10 lg:mt-12 lg:pt-16',
+    className,
+  ]}
   data-trip-type={trip.type}
 >
-  {!firstOfType && <div aria-hidden="true" class="bamboo-b absolute inset-x-0 top-0 after:right-auto after:left-[4%] after:-scale-x-100" />}
+  {!firstOfType && (
+    <div
+      aria-hidden="true"
+      class="bamboo-b absolute inset-x-0 top-0 after:right-auto after:left-[4%] after:-scale-x-100"
+    />
+  )}
   {hasMap && (
     <>
-      <TripRegionsMap route={trip.route} regions={trip.provinces} aspect={1.6} compact class="order-last w-full lg:hidden" />
-      <TripRegionsMap route={trip.route} regions={trip.provinces} aspect={1.9} class:list={['hidden lg:block absolute -right-4 w-[52%] map-fade', firstOfType ? '-top-6' : 'top-10']} />
+      <TripRegionsMap
+        route={trip.route}
+        regions={trip.provinces}
+        aspect={1.6}
+        compact
+        class="order-last w-full lg:hidden"
+      />
+      <TripRegionsMap
+        route={trip.route}
+        regions={trip.provinces}
+        aspect={1.9}
+        class:list={[
+          'hidden lg:block absolute -right-4 w-[52%] map-fade',
+          firstOfType ? '-top-6' : 'top-10',
+        ]}
+      />
     </>
   )}
   <div class="relative flex max-w-xl lg:max-w-[56%] pt-4 lg:min-h-88">
     <div class="flex flex-col gap-4">
       <h2 class="font-script leading-[0.95] text-5xl lg:text-[5rem]">
-        <a href={trip.link} class="hover:text-primary transition-colors">{trip.title}</a>
+        <a href={trip.link} class="hover:text-primary transition-colors">
+          {trip.title}
+        </a>
       </h2>
       {trip.type === 'report' && <span class="eyebrow text-gold-ink">{trip.dates}</span>}
       <p class="text-muted-foreground leading-relaxed">{trip.description}</p>
-      <a href={trip.link} class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit self-end lg:mt-auto">
-        <span lang="zh" aria-hidden="true" class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25">{trip.type === 'plan' ? '行程' : '游记'}</span>
+      <a
+        href={trip.link}
+        class="group/link relative isolate inline-flex items-center min-h-16 pl-16 pr-3 font-serif text-xl w-fit self-end lg:mt-auto"
+      >
+        <span
+          lang="zh"
+          aria-hidden="true"
+          class="absolute left-0 top-1/2 -translate-y-1/2 -z-10 font-brush text-[4.5rem] leading-none text-gold-ink/25"
+        >
+          {trip.type === 'plan' ? '行程' : '游记'}
+        </span>
         <InkStroke class="absolute left-14 bottom-0 w-[calc(100%-3.5rem)] h-4 text-gold-ink transition-colors group-hover/link:text-primary" />
-        <span class="relative transition-colors group-hover/link:text-primary">Explore<span class="sr-only"> {trip.title}</span></span>
+        <span class="relative transition-colors group-hover/link:text-primary">
+          Explore<span class="sr-only"> {trip.title}</span>
+        </span>
       </a>
     </div>
   </div>
 
   {landscape && (
     <div class="relative flex flex-col gap-3 lg:flex-row lg:gap-1.5 lg:h-[clamp(200px,32svh,290px)] lg:mist-strip">
-      <img src={landscape} alt={`${trip.title}, landscape`} class="w-full aspect-video object-cover lg:order-3 lg:w-auto lg:h-full" loading="lazy" />
+      <img
+        src={landscape}
+        alt={`${trip.title}, landscape`}
+        class="w-full aspect-video object-cover lg:order-3 lg:w-auto lg:h-full"
+        loading="lazy"
+      />
       {portraits.length > 0 && (
         <div class="grid grid-cols-4 gap-3 lg:contents">
           {portraits.slice(0, 4).map((photo, index) => (
             <img
               src={photo}
               alt={`${trip.title}, photo ${index + 1}`}
-              class:list={['w-full aspect-[3/4] object-cover lg:aspect-auto lg:h-full lg:flex-1 lg:min-w-0', index < 2 ? 'lg:order-1' : 'lg:order-4']}
+              class:list={[
+                'w-full aspect-[3/4] object-cover lg:aspect-auto lg:h-full lg:flex-1 lg:min-w-0',
+                index < 2 ? 'lg:order-1' : 'lg:order-4',
+              ]}
               loading="lazy"
             />
           ))}

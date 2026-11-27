@@ -24,8 +24,8 @@ import { ArrowUp } from '@lucide/astro';
     };
     const update = () => {
       const show = window.scrollY >= 600 && !coversControls();
-      button.classList.toggle("hidden", !show);
-      button.classList.toggle("flex", show);
+      button.classList.toggle('hidden', !show);
+      button.classList.toggle('flex', show);
     };
     window.addEventListener('scroll', update, { passive: true });
     update();

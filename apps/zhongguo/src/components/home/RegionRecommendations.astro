@@ -21,9 +21,18 @@ const regions: ChinaMapRegion[] = provinces.map((province) => ({
 ---
 
 {regions.length > 0 && (
-  <section id="region-recommendations" class="snap-section py-12 lg:py-10 bamboo-t after:right-auto after:left-[4%] after:-scale-x-100">
+  <section
+    id="region-recommendations"
+    class="snap-section py-12 lg:py-10 bamboo-t after:right-auto after:left-[4%] after:-scale-x-100"
+  >
     <Container>
-      <SectionHeader class="mb-6" zh="山河" eyebrow="Mountains and rivers" title="Provinces" lead="Every province I have visited, each linked to its trip." />
+      <SectionHeader
+        class="mb-6"
+        zh="山河"
+        eyebrow="Mountains and rivers"
+        title="Provinces"
+        lead="Every province I have visited, each linked to its trip."
+      />
       <ChinaMap client:visible regions={regions} idleText="Hover a province" />
     </Container>
   </section>

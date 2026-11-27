@@ -1,0 +1,8 @@
+*.md
+*.mdx
+src/content
+migrations
+public
+worker-configuration.d.ts
+.astro
+dist

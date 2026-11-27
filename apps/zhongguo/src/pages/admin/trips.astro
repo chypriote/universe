@@ -6,7 +6,9 @@ import { journalWorkspace } from '@/lib/journal';
 export const prerender = false;
 
 const journal = journalWorkspace();
-const plans = (await Promise.all((await journal.listAdminPlans()).map((plan) => journal.getAdminPlan(plan.slug)))).filter((plan) => plan !== null);
+const plans = (
+  await Promise.all((await journal.listAdminPlans()).map((plan) => journal.getAdminPlan(plan.slug)))
+).filter((plan) => plan !== null);
 ---
 
 <JournalLayout title="New Trip">

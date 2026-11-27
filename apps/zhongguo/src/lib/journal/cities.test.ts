@@ -1,7 +1,17 @@
 import { env } from 'cloudflare:workers';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createJournal } from './index';
-import { addActivity, addCity, addDay, addPhoto, addProvince, addTrip, resetDatabase, setDayCities, setProvinceCover } from './seed.test-helper';
+import {
+  addActivity,
+  addCity,
+  addDay,
+  addPhoto,
+  addProvince,
+  addTrip,
+  resetDatabase,
+  setDayCities,
+  setProvinceCover,
+} from './seed.test-helper';
 
 const journal = createJournal(env);
 
@@ -24,14 +34,18 @@ describe('Cities of the admin', () => {
     const { chengdu, first } = await world();
     await addDay(first, chengdu, '2024-03-01', { position: 1 });
     await addPhoto(first, '2024-03-01', { name: 'a.jpg', cityId: chengdu });
-    await env.DB.prepare("INSERT INTO trip_hotels (trip_id, city_id, position, name, address, rating) VALUES (?, ?, 1, 'H', 'A', 4)")
+    await env.DB.prepare(
+      "INSERT INTO trip_hotels (trip_id, city_id, position, name, address, rating) VALUES (?, ?, 1, 'H', 'A', 4)",
+    )
       .bind(first, chengdu)
       .run();
     await addActivity('Pandas', chengdu);
 
     const cities = await journal.listAdminCities();
 
-    expect(cities.map((city) => [city.name, city.photos, city.days, city.stays, city.activities])).toEqual([
+    expect(
+      cities.map((city) => [city.name, city.photos, city.days, city.stays, city.activities]),
+    ).toEqual([
       ['Chengdu', 1, 1, 1, 1],
       ['Lanzhou', 0, 0, 0, 0],
     ]);
@@ -58,12 +72,30 @@ describe('Edit City', () => {
   it('saves every field', async () => {
     const { chengdu, gansu } = await world();
 
-    const result = await journal.editCity({ ...input, id: chengdu, name: ' Chengdu City ', nameZh: '成都市', provinceId: gansu, lng: 1, lat: 2, major: false });
+    const result = await journal.editCity({
+      ...input,
+      id: chengdu,
+      name: ' Chengdu City ',
+      nameZh: '成都市',
+      provinceId: gansu,
+      lng: 1,
+      lat: 2,
+      major: false,
+    });
 
     expect(result).toMatchObject({
       ok: true,
       clearedCovers: [],
-      city: { id: chengdu, name: 'Chengdu City', nameZh: '成都市', province: 'Gansu', provinceId: gansu, lng: 1, lat: 2, major: false },
+      city: {
+        id: chengdu,
+        name: 'Chengdu City',
+        nameZh: '成都市',
+        province: 'Gansu',
+        provinceId: gansu,
+        lng: 1,
+        lat: 2,
+        major: false,
+      },
     });
   });
 
@@ -71,17 +103,31 @@ describe('Edit City', () => {
     const { sichuan, chengdu } = await world();
 
     expect((await journal.editCity({ ...input, id: chengdu, provinceId: sichuan })).ok).toBe(true);
-    expect(await journal.editCity({ ...input, id: chengdu, provinceId: sichuan, name: 'Lanzhou' })).toEqual({ ok: false, error: 'name-taken' });
+    expect(
+      await journal.editCity({ ...input, id: chengdu, provinceId: sichuan, name: 'Lanzhou' }),
+    ).toEqual({ ok: false, error: 'name-taken' });
   });
 
   it('refuses an unknown City, a blank name, an unknown Province and a position out of range', async () => {
     const { sichuan, chengdu } = await world();
     const valid = { ...input, id: chengdu, provinceId: sichuan };
 
-    expect(await journal.editCity({ ...valid, id: 9999 })).toEqual({ ok: false, error: 'unknown-city' });
-    expect(await journal.editCity({ ...valid, nameZh: ' ' })).toEqual({ ok: false, error: 'invalid-name' });
-    expect(await journal.editCity({ ...valid, provinceId: 9999 })).toEqual({ ok: false, error: 'unknown-province' });
-    expect(await journal.editCity({ ...valid, lat: 91 })).toEqual({ ok: false, error: 'invalid-position' });
+    expect(await journal.editCity({ ...valid, id: 9999 })).toEqual({
+      ok: false,
+      error: 'unknown-city',
+    });
+    expect(await journal.editCity({ ...valid, nameZh: ' ' })).toEqual({
+      ok: false,
+      error: 'invalid-name',
+    });
+    expect(await journal.editCity({ ...valid, provinceId: 9999 })).toEqual({
+      ok: false,
+      error: 'unknown-province',
+    });
+    expect(await journal.editCity({ ...valid, lat: 91 })).toEqual({
+      ok: false,
+      error: 'invalid-position',
+    });
   });
 
   it('clears the Province Cover of the old Province when it is a Photo of the City', async () => {
@@ -102,8 +148,12 @@ describe('Edit City', () => {
     const other = await addPhoto(first, '2024-03-01', { name: 'a.jpg', cityId: mianyang });
     await setProvinceCover(sichuan, other);
 
-    expect(await journal.editCity({ ...input, id: chengdu, provinceId: gansu })).toMatchObject({ clearedCovers: [] });
-    expect(await journal.editCity({ ...input, id: mianyang, name: 'Mianyang', provinceId: sichuan })).toMatchObject({ clearedCovers: [] });
+    expect(await journal.editCity({ ...input, id: chengdu, provinceId: gansu })).toMatchObject({
+      clearedCovers: [],
+    });
+    expect(
+      await journal.editCity({ ...input, id: mianyang, name: 'Mianyang', provinceId: sichuan }),
+    ).toMatchObject({ clearedCovers: [] });
     const { results } = await env.DB.prepare('SELECT photo_id FROM province_covers').all();
     expect(results).toEqual([{ photo_id: other }]);
   });
@@ -124,7 +174,9 @@ describe('Delete City', () => {
     await addPhoto(first, '2024-03-01', { cityId: withPhoto });
     await addDay(first, chengdu, '2024-03-02', { position: 1 });
     const withRestaurant = await addCity('Restaurant', sichuan);
-    await env.DB.prepare("INSERT INTO trip_restaurants (trip_id, city_id, position, name, address, rating) VALUES (?, ?, 1, 'R', 'A', 4)")
+    await env.DB.prepare(
+      "INSERT INTO trip_restaurants (trip_id, city_id, position, name, address, rating) VALUES (?, ?, 1, 'R', 'A', 4)",
+    )
       .bind(first, withRestaurant)
       .run();
 
@@ -132,7 +184,11 @@ describe('Delete City', () => {
     await addActivity('Temple', withActivity);
 
     const passedThrough = await addCity('Passed', sichuan);
-    await setDayCities(await addDay(first, chengdu, '2024-03-03', { position: 2 }), [passedThrough, chengdu], chengdu);
+    await setDayCities(
+      await addDay(first, chengdu, '2024-03-03', { position: 2 }),
+      [passedThrough, chengdu],
+      chengdu,
+    );
 
     for (const id of [withPhoto, chengdu, withRestaurant, withActivity, passedThrough]) {
       expect(await journal.deleteCity(id)).toEqual({ ok: false, error: 'in-use' });

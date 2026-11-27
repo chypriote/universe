@@ -15,7 +15,8 @@
 		"lint": "eslint .",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
-		"verify": "npm run format:check && npm run lint && npm run check",
+		"check:tokens": "node scripts/check-tokens.mjs",
+		"verify": "npm run format:check && npm run lint && npm run check && npm run check:tokens",
 		"ci": "npm run verify"
 	},
 	"peerDependencies": {
