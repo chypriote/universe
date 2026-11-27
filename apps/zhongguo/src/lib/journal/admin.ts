@@ -1,4 +1,5 @@
 import { editDayRows } from './day-edit';
+import { buildCoverPhotos } from './cover-photos';
 import { TRIP_TABLES } from './tables';
 import { fileNameDate, isDate, readPhotoFile } from './photo-file';
 import type {
@@ -148,6 +149,7 @@ export function orientationOf(photo: { width: number; height: number }): Orienta
 
 /** The Journal functions that write Photos and Cities, and the admin lists they need. */
 export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
+  const coverPhotos = buildCoverPhotos(env, TRIP_TABLES, 'unknown-trip');
   async function all<T>(sql: string, ...params: (string | number)[]): Promise<T[]> {
     const { results } = await env.DB.prepare(sql)
       .bind(...params)
@@ -292,55 +294,6 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     return { ok: true };
   }
 
-  /** The Photos of a Trip among the given ids, with their size. */
-  async function photosOfTrip(tripId: number, ids: number[]) {
-    if (ids.length === 0) return [];
-    return inChunks(ids, (marks, chunk) =>
-      all<{ id: number; width: number; height: number }>(
-        `SELECT id, width, height FROM photos WHERE trip_id = ? AND id IN (${marks})`,
-        tripId,
-        ...chunk,
-      ),
-    );
-  }
-
-  async function setTripCover(slug: string, photoId: number): Promise<SetTripCoverResult> {
-    const trip = await tripBySlug(slug);
-    if (!trip) return { ok: false, error: 'unknown-trip' };
-    const [photo] = await photosOfTrip(trip.id, [photoId]);
-    if (!photo) return { ok: false, error: 'unknown-photo' };
-    if (!fits('trip-cover', photo)) return { ok: false, error: 'not-landscape' };
-    await env.DB.prepare('UPDATE trips SET cover_photo_id = ?, cover_focus_x = 50, cover_focus_y = 50 WHERE id = ?').bind(photoId, trip.id).run();
-    return { ok: true };
-  }
-
-  async function setTripCoverFocus(slug: string, x: number, y: number): Promise<SetTripCoverFocusResult> {
-    const inRange = (value: number) => Number.isFinite(value) && value >= 0 && value <= 100;
-    if (!inRange(x) || !inRange(y)) return { ok: false, error: 'invalid-focus' };
-    const trip = await tripBySlug(slug);
-    if (!trip) return { ok: false, error: 'unknown-trip' };
-    if (trip.cover_photo_id === null) return { ok: false, error: 'no-cover' };
-    await env.DB.prepare('UPDATE trips SET cover_focus_x = ?, cover_focus_y = ? WHERE id = ?').bind(Math.round(x), Math.round(y), trip.id).run();
-    return { ok: true };
-  }
-
-  async function setHighlightPhotos(slug: string, photoIds: number[]): Promise<SetHighlightPhotosResult> {
-    const trip = await tripBySlug(slug);
-    if (!trip) return { ok: false, error: 'unknown-trip' };
-    if (photoIds.length !== 4) return { ok: false, error: 'wrong-count' };
-    if (new Set(photoIds).size !== photoIds.length) return { ok: false, error: 'duplicate-photo' };
-    const photos = await photosOfTrip(trip.id, photoIds);
-    if (photos.length !== photoIds.length) return { ok: false, error: 'unknown-photo' };
-    if (!photos.every((photo) => fits('highlight', photo))) return { ok: false, error: 'not-portrait' };
-    await env.DB.batch([
-      env.DB.prepare('DELETE FROM highlight_photos WHERE trip_id = ?').bind(trip.id),
-      ...photoIds.map((photoId, index) =>
-        env.DB.prepare('INSERT INTO highlight_photos (trip_id, position, photo_id) VALUES (?, ?, ?)').bind(trip.id, index + 1, photoId),
-      ),
-    ]);
-    return { ok: true };
-  }
-
   async function setDayVisible(dayId: number, visible: boolean): Promise<SetDayVisibleResult> {
     const day = await env.DB.prepare('SELECT id FROM days WHERE id = ?').bind(dayId).first();
     if (!day) return { ok: false, error: 'unknown-day' };
@@ -396,23 +349,6 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     }
     const added = await env.DB.prepare('SELECT id FROM days WHERE trip_id = ? AND date = ?').bind(trip.id, input.date).first<{ id: number }>();
     return { ok: true, dayId: added!.id };
-  }
-
-  async function setDayPhotos(dayId: number, photoIds: number[]): Promise<SetDayPhotosResult> {
-    const day = await env.DB.prepare('SELECT id, trip_id FROM days WHERE id = ?')
-      .bind(dayId)
-      .first<{ id: number; trip_id: number }>();
-    if (!day) return { ok: false, error: 'unknown-day' };
-    if (new Set(photoIds).size !== photoIds.length) return { ok: false, error: 'duplicate-photo' };
-    if ((await photosOfTrip(day.trip_id, photoIds)).length !== photoIds.length) return { ok: false, error: 'unknown-photo' };
-    await env.DB.batch([
-      env.DB.prepare('DELETE FROM day_photos WHERE day_id = ?').bind(dayId),
-      ...photoIds.map((photoId) => env.DB.prepare('DELETE FROM day_photos WHERE photo_id = ?').bind(photoId)),
-      ...photoIds.map((photoId, index) =>
-        env.DB.prepare('INSERT INTO day_photos (day_id, position, photo_id) VALUES (?, ?, ?)').bind(dayId, index + 1, photoId),
-      ),
-    ]);
-    return { ok: true };
   }
 
   async function listAdminPhotos(slug: string): Promise<AdminPhoto[] | null> {
@@ -941,11 +877,11 @@ export function buildAdmin(env: AdminEnv, urls: PhotoUrls): AdminMethods {
     editDay,
     addDay,
     getAdminTrip,
-    setDayPhotos,
+    setDayPhotos: coverPhotos.setDayPhotos,
     setDayVisible,
-    setHighlightPhotos,
-    setTripCover,
-    setTripCoverFocus,
+    setHighlightPhotos: coverPhotos.setHighlightPhotos,
+    setTripCover: coverPhotos.setCover,
+    setTripCoverFocus: coverPhotos.setCoverFocus,
     setTripVisible,
     listAdminTrips, listAdminPhotos, listCities,
     listProvinces,

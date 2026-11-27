@@ -1,4 +1,6 @@
 import { orientationOf, type AdminEnv, type PhotoUrls } from './admin';
+import { buildCoverPhotos } from './cover-photos';
+import { PLAN_TABLES } from './tables';
 import { readPhotoFile } from './photo-file';
 import type { AdminPlanPhoto, Journal } from './types';
 
@@ -43,73 +45,11 @@ export async function loadPlanPhotos(env: AdminEnv, urls: PhotoUrls, planId: num
 
 /** The Photos of Trip plans: files under trips/<slug>/ like Trip Photos, rows in the plan tables (ADR 0003). */
 export function buildPlanPhotos(env: AdminEnv, urls: PhotoUrls): PlanPhotoMethods {
+  const cover = buildCoverPhotos(env, PLAN_TABLES, 'unknown-plan');
   const planBySlug = (slug: string) =>
     env.DB.prepare('SELECT id, slug, cover_photo_id, cover_focus_x, cover_focus_y FROM plans WHERE slug = ?')
       .bind(slug)
       .first<{ id: number; slug: string; cover_photo_id: number | null }>();
-
-  /** The Photos of a plan among the given ids, with their size. */
-  async function photosOfPlan(planId: number, ids: number[]) {
-    if (ids.length === 0) return [];
-    const { results } = await env.DB.prepare(
-      `SELECT id, width, height FROM plan_photos WHERE plan_id = ? AND id IN (${ids.map(() => '?').join(',')})`,
-    )
-      .bind(planId, ...ids)
-      .all<{ id: number; width: number; height: number }>();
-    return results;
-  }
-
-  async function setPlanCover(slug: string, photoId: number) {
-    const plan = await planBySlug(slug);
-    if (!plan) return { ok: false as const, error: 'unknown-plan' as const };
-    const [photo] = await photosOfPlan(plan.id, [photoId]);
-    if (!photo) return { ok: false as const, error: 'unknown-photo' as const };
-    if (orientationOf(photo) !== 'landscape') return { ok: false as const, error: 'not-landscape' as const };
-    await env.DB.prepare('UPDATE plans SET cover_photo_id = ?, cover_focus_x = 50, cover_focus_y = 50 WHERE id = ?').bind(photoId, plan.id).run();
-    return { ok: true as const };
-  }
-
-  async function setPlanCoverFocus(slug: string, x: number, y: number) {
-    const inRange = (value: number) => Number.isFinite(value) && value >= 0 && value <= 100;
-    if (!inRange(x) || !inRange(y)) return { ok: false as const, error: 'invalid-focus' as const };
-    const plan = await planBySlug(slug);
-    if (!plan) return { ok: false as const, error: 'unknown-plan' as const };
-    if (plan.cover_photo_id === null) return { ok: false as const, error: 'no-cover' as const };
-    await env.DB.prepare('UPDATE plans SET cover_focus_x = ?, cover_focus_y = ? WHERE id = ?').bind(Math.round(x), Math.round(y), plan.id).run();
-    return { ok: true as const };
-  }
-
-  async function setPlanHighlightPhotos(slug: string, photoIds: number[]) {
-    const plan = await planBySlug(slug);
-    if (!plan) return { ok: false as const, error: 'unknown-plan' as const };
-    if (photoIds.length !== 4) return { ok: false as const, error: 'wrong-count' as const };
-    if (new Set(photoIds).size !== photoIds.length) return { ok: false as const, error: 'duplicate-photo' as const };
-    const photos = await photosOfPlan(plan.id, photoIds);
-    if (photos.length !== photoIds.length) return { ok: false as const, error: 'unknown-photo' as const };
-    if (!photos.every((photo) => orientationOf(photo) === 'portrait')) return { ok: false as const, error: 'not-portrait' as const };
-    await env.DB.batch([
-      env.DB.prepare('DELETE FROM plan_highlight_photos WHERE plan_id = ?').bind(plan.id),
-      ...photoIds.map((photoId, index) =>
-        env.DB.prepare('INSERT INTO plan_highlight_photos (plan_id, position, photo_id) VALUES (?, ?, ?)').bind(plan.id, index + 1, photoId),
-      ),
-    ]);
-    return { ok: true as const };
-  }
-
-  async function setPlanDayPhotos(dayId: number, photoIds: number[]) {
-    const day = await env.DB.prepare('SELECT id, plan_id FROM plan_days WHERE id = ?').bind(dayId).first<{ id: number; plan_id: number }>();
-    if (!day) return { ok: false as const, error: 'unknown-day' as const };
-    if (new Set(photoIds).size !== photoIds.length) return { ok: false as const, error: 'duplicate-photo' as const };
-    if ((await photosOfPlan(day.plan_id, photoIds)).length !== photoIds.length) return { ok: false as const, error: 'unknown-photo' as const };
-    await env.DB.batch([
-      env.DB.prepare('DELETE FROM plan_day_photos WHERE day_id = ?').bind(dayId),
-      ...photoIds.map((photoId) => env.DB.prepare('DELETE FROM plan_day_photos WHERE photo_id = ?').bind(photoId)),
-      ...photoIds.map((photoId, index) =>
-        env.DB.prepare('INSERT INTO plan_day_photos (day_id, position, photo_id) VALUES (?, ?, ?)').bind(dayId, index + 1, photoId),
-      ),
-    ]);
-    return { ok: true as const };
-  }
 
   async function uploadPlanPhoto(input: Parameters<Journal['uploadPlanPhoto']>[0]): ReturnType<Journal['uploadPlanPhoto']> {
     const { name } = input;
@@ -182,5 +122,14 @@ export function buildPlanPhotos(env: AdminEnv, urls: PhotoUrls): PlanPhotoMethod
     return { ok: true as const };
   }
 
-  return { setPlanCover, setPlanCoverFocus, setPlanHighlightPhotos, setPlanDayPhotos, uploadPlanPhoto, setPlanPhotoCity, setPlanPhotoTitle, deletePlanPhoto };
+  return {
+    setPlanCover: cover.setCover,
+    setPlanCoverFocus: cover.setCoverFocus,
+    setPlanHighlightPhotos: cover.setHighlightPhotos,
+    setPlanDayPhotos: cover.setDayPhotos,
+    uploadPlanPhoto,
+    setPlanPhotoCity,
+    setPlanPhotoTitle,
+    deletePlanPhoto,
+  };
 }
