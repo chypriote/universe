@@ -183,16 +183,19 @@
 	{:else if bird}
 		<div class="flex flex-col gap-3">
 			{#if flags.length || bird.songs.length}
-				<ul class="flex flex-wrap gap-1.5" aria-label={label(labels, 'Tags')}>
+				<ul class="mt-2 flex flex-wrap gap-1" aria-label={label(labels, 'Tags')}>
 					{#each flags as flag (flag.code)}
 						<li>
-							<Badge variant={flag.variant as 'default' | 'highlight' | 'success' | 'info'}>
+							<Badge
+								class="px-2 py-0.5 text-xs"
+								variant={flag.variant as 'default' | 'highlight' | 'success' | 'info'}
+							>
 								{label(labels, flag.code)}
 							</Badge>
 						</li>
 					{/each}
 					{#each bird.songs as song (song)}
-						<li><Badge>{song}</Badge></li>
+						<li><Badge class="px-2 py-0.5 text-xs">{song}</Badge></li>
 					{/each}
 				</ul>
 			{/if}
