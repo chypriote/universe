@@ -22,3 +22,8 @@ export function movePicture(items: PictureItem[], from: number, to: number): Pic
 export function removePicture(items: PictureItem[], index: number): PictureItem[] {
 	return items.filter((_, i) => i !== index);
 }
+
+/** The image files of a clipboard or file list; other kinds are ignored. */
+export function imagesOf(files: Iterable<File> | null | undefined): File[] {
+	return [...(files ?? [])].filter((file) => file.type.startsWith('image/'));
+}
