@@ -57,6 +57,7 @@ INSERT OR REPLACE INTO labels (code_name, word) VALUES
 	('RoostedOnly', 'RoostedOnly'),
 	('FlownAll', 'FlownAll'),
 	('FlownOnly', 'FlownOnly'),
+	('FlownNot', 'FlownNot'),
 	('LostAll', 'LostAll'),
 	('LostOnly', 'LostOnly'),
 	('ArchiveBird', 'ArchiveBird'),

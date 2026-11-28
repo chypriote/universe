@@ -26,7 +26,7 @@
 		seen: 'all' | 'only' | 'not';
 		nest: 'all' | 'only' | 'not';
 		roosted: 'all' | 'only';
-		flown: 'all' | 'only';
+		flown: 'all' | 'only' | 'not';
 		lost: 'all' | 'only';
 		search: string;
 	};
@@ -155,7 +155,8 @@
 
 	const flownOptions = $derived([
 		{ value: 'all', label: label(labels, 'FlownAll') },
-		{ value: 'only', label: label(labels, 'FlownOnly') }
+		{ value: 'only', label: label(labels, 'FlownOnly') },
+		{ value: 'not', label: label(labels, 'FlownNot') }
 	]);
 	const lostOptions = $derived([
 		{ value: 'all', label: label(labels, 'LostAll') },
