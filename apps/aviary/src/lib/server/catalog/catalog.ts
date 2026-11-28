@@ -143,6 +143,7 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				nest === 'not' ? eq(birds.nest, false) : undefined,
 				roosted === 'only' ? eq(birds.roosted, true) : undefined,
 				flown === 'only' ? eq(birds.flown, true) : undefined,
+				flown === 'not' ? eq(birds.flown, false) : undefined,
 				lost === 'only' ? eq(birds.lost, true) : undefined
 			];
 			// A month or year Arrival counts as the first day of it, so it sorts with day Arrivals.

@@ -2,6 +2,7 @@ import { catalogFromPlatform } from '#lib/server/catalog';
 import type {
 	BirdView,
 	FlagFilter,
+	FlownFilter,
 	NestFilter,
 	RoostedFilter,
 	SeenFilter
@@ -12,17 +13,18 @@ const positiveInt = (value: string | null) => {
 	return value !== null && Number.isInteger(n) && n > 0 ? n : undefined;
 };
 
-/** The filters in a tab URL: `habitat`, `song`, `seen` (only | not), `nest` (only | not), `roosted`, `flown` and `lost` (only) and `search`. */
+/** The filters in a tab URL: `habitat`, `song`, `seen` (only | not), `nest` (only | not), `roosted`, `flown` (only | not), `lost` (only) and `search`. */
 export function parseFilters(params: URLSearchParams) {
 	const nest = params.get('nest');
 	const seen = params.get('seen');
+	const flown = params.get('flown');
 	return {
 		habitat: positiveInt(params.get('habitat')),
 		song: positiveInt(params.get('song')),
 		seen: (seen === 'only' || seen === 'not' ? seen : 'all') as SeenFilter,
 		nest: (nest === 'only' || nest === 'not' ? nest : 'all') as NestFilter,
 		roosted: (params.get('roosted') === 'only' ? 'only' : 'all') as RoostedFilter,
-		flown: (params.get('flown') === 'only' ? 'only' : 'all') as FlagFilter,
+		flown: (flown === 'only' || flown === 'not' ? flown : 'all') as FlownFilter,
 		lost: (params.get('lost') === 'only' ? 'only' : 'all') as FlagFilter,
 		search: params.get('search')?.trim() ?? ''
 	};
