@@ -33,10 +33,10 @@ Each flag is stored on the Bird and is independent of the others.
 The Owner has seen the Bird. A Bird with a Sighting is always Seen. A Bird can be Seen with no Sighting recorded.
 
 **Flown**:
-The Owner deleted the app, so contact through it ended. Its cause is the Owner; see Lost for the other cause.
+The Bird unmatched the Owner on the app, so contact through it ended. Its cause is the Bird; see Lost for the other cause.
 
 **Lost**:
-The Bird unmatched the Owner on the app, so contact through it ended. Its cause is the Bird. It is not Flown.
+The Owner deleted the app, so contact through it ended. Its cause is the Owner. It is not Flown.
 
 **Roosted**:
 A flag the Owner sets by hand. Never shown on a tile; it only drives the Roosted filter.
