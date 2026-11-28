@@ -154,10 +154,11 @@ describe('listBirds filters', () => {
 			flown: true
 		});
 		const q = { habitat: habitatA, song: songX, search: 'bird' };
-		expect(await names({ view: 'aloft', ...q })).toEqual(['Bird A', 'Bird B']);
-		expect(await names({ view: 'aloft', ...q, nest: 'only' })).toEqual(['Bird A']);
+		// Bird D is Flown but has a Song, so it stays Aloft.
+		expect(await names({ view: 'aloft', ...q })).toEqual(['Bird A', 'Bird B', 'Bird D']);
+		expect(await names({ view: 'aloft', ...q, nest: 'only' })).toEqual(['Bird A', 'Bird D']);
 		expect(await names({ view: 'aloft', ...q, nest: 'not' })).toEqual(['Bird B']);
-		expect(await names({ view: 'grounded', ...q })).toEqual(['Bird D']);
+		expect(await names({ view: 'grounded', ...q })).toEqual([]);
 		expect(await names({ view: 'seen', ...q })).toEqual(['Bird A', 'Bird B', 'Bird D']);
 		expect(await names({ view: 'seen', ...q, nest: 'not' })).toEqual(['Bird B']);
 		expect(await names({ view: 'seen', ...q, roosted: 'only' })).toEqual([]);

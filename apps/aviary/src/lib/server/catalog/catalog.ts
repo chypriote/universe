@@ -54,6 +54,9 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 		)`
 	};
 
+	/** The Bird has at least one Song. */
+	const hasSong = sql`EXISTS (SELECT 1 FROM bird_song bs0 WHERE bs0.bird_id = bird.id)`;
+
 	/** Whether a Bird's name holds the lowercased needle. JS lowercasing folds every script. */
 	const nameHas = (name: string, needle: string) => name.toLowerCase().includes(needle);
 
@@ -119,11 +122,12 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			return Object.fromEntries(rows.map((row) => [row.codeName, row.word]));
 		},
 
-		async listBirds({ view, habitat, song, seen, nest, roosted, search }) {
-			const grounded = or(eq(birds.flown, true), eq(birds.lost, true));
+		async listBirds({ view, habitat, song, seen, nest, roosted, flown, lost, search }) {
+			// Grounded: Flown or Lost, and no Song to write on. Aloft is every other Bird.
+			const grounded = and(or(eq(birds.flown, true), eq(birds.lost, true)), sql`NOT ${hasSong}`);
 			const inView = {
 				flock: undefined,
-				aloft: sql`NOT (${birds.flown} OR ${birds.lost})`,
+				aloft: sql`NOT (${grounded})`,
 				grounded,
 				seen: eq(birds.seen, true)
 			}[view];
@@ -137,7 +141,9 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				seen === 'not' ? eq(birds.seen, false) : undefined,
 				nest === 'only' ? eq(birds.nest, true) : undefined,
 				nest === 'not' ? eq(birds.nest, false) : undefined,
-				roosted === 'only' ? eq(birds.roosted, true) : undefined
+				roosted === 'only' ? eq(birds.roosted, true) : undefined,
+				flown === 'only' ? eq(birds.flown, true) : undefined,
+				lost === 'only' ? eq(birds.lost, true) : undefined
 			];
 			// A month or year Arrival counts as the first day of it, so it sorts with day Arrivals.
 			const arrivalKey = sql`CASE ${birds.arrivalPrecision} WHEN 'year' THEN ${birds.arrival} || '-01-01' WHEN 'month' THEN ${birds.arrival} || '-01' ELSE ${birds.arrival} END`;
@@ -298,6 +304,12 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 			if (change.habitatId != null && !(await exists('habitat', change.habitatId))) {
 				return { ok: false, error: 'bad-habitat' };
 			}
+			const { addSongId, removeSongId } = change;
+			for (const songId of [addSongId, removeSongId]) {
+				if (songId !== undefined && !(await exists('song', songId))) {
+					return { ok: false, error: 'bad-song' };
+				}
+			}
 			// D1 allows 100 bound values per statement.
 			const chunks = Array.from({ length: Math.ceil(unique.length / 50) }, (_, i) =>
 				unique.slice(i * 50, i * 50 + 50)
@@ -320,14 +332,31 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 							seen: sql`${seen ? 1 : 0} OR EXISTS (SELECT 1 FROM sighting s WHERE s.bird_id = bird.id)`
 						})
 			};
-			if (Object.keys(set).length === 0) return { ok: true, updated: 0 };
+			if (Object.keys(set).length === 0 && addSongId === undefined && removeSongId === undefined) {
+				return { ok: true, updated: 0 };
+			}
 			const updatedAt = sql`strftime('%Y-%m-%dT%H:%M:%fZ', 'now')`;
-			const statements: BatchItem<'sqlite'>[] = chunks.map((chunk) =>
+			const statements: BatchItem<'sqlite'>[] = chunks.flatMap((chunk) => [
 				db
 					.update(birds)
 					.set({ ...set, updatedAt })
-					.where(inArray(birds.id, chunk))
-			);
+					.where(inArray(birds.id, chunk)),
+				...(removeSongId === undefined
+					? []
+					: [
+							db
+								.delete(birdSongs)
+								.where(and(inArray(birdSongs.birdId, chunk), eq(birdSongs.songId, removeSongId)))
+						]),
+				...(addSongId === undefined
+					? []
+					: [
+							db
+								.insert(birdSongs)
+								.values(chunk.map((birdId) => ({ birdId, songId: addSongId })))
+								.onConflictDoNothing()
+						])
+			]);
 			await db.batch(statements as [BatchItem<'sqlite'>, ...BatchItem<'sqlite'>[]]);
 			return { ok: true, updated: unique.length };
 		},

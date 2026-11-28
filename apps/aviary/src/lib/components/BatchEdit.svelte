@@ -19,11 +19,13 @@
 	let {
 		birds,
 		habitats,
+		songs,
 		labels,
 		error = null
 	}: {
 		birds: BatchBird[];
 		habitats: ListValue[];
+		songs: ListValue[];
 		labels: Labels;
 		/** Label code name of the last refusal on this form. */
 		error?: string | null;
@@ -43,6 +45,8 @@
 	/** Birds whose thumbnail failed to load; they show initials instead. */
 	let failed = $state<number[]>([]);
 	let habitat = $state('');
+	let addSong = $state('');
+	let removeSong = $state('');
 	let flags = $state<Record<(typeof FLAGS)[number], string>>({
 		seen: '',
 		flown: '',
@@ -56,13 +60,19 @@
 		{ value: 'none', label: label(labels, 'NoHabitat') },
 		...habitats.map((h) => ({ value: String(h.id), label: h.name }))
 	]);
+	const songOptions = $derived([
+		{ value: '', label: label(labels, 'BatchKeep') },
+		...songs.map((s) => ({ value: String(s.id), label: s.name }))
+	]);
 	const flagOptions = $derived([
 		{ value: '', label: label(labels, 'BatchKeep') },
 		{ value: 'on', label: label(labels, 'BatchSet') },
 		{ value: 'off', label: label(labels, 'BatchClear') }
 	]);
 
-	const changed = $derived(habitat !== '' || FLAGS.some((key) => flags[key] !== ''));
+	const changed = $derived(
+		habitat !== '' || addSong !== '' || removeSong !== '' || FLAGS.some((key) => flags[key] !== '')
+	);
 
 	const habitatName = $derived(new Map(habitats.map((h) => [h.id, h.name])));
 
@@ -116,6 +126,8 @@
 	function reset() {
 		selected = [];
 		habitat = '';
+		addSong = '';
+		removeSong = '';
 		for (const key of FLAGS) flags[key] = '';
 	}
 </script>
@@ -143,6 +155,20 @@
 				</span>
 				<Select bind:value={habitat} label={label(labels, 'Habitat')} options={habitatOptions} />
 				<input type="hidden" name="habitat" value={habitat} />
+			</div>
+			<div class="flex flex-col gap-1.5">
+				<span class="text-xs font-bold">{label(labels, 'BatchAddSong')}</span>
+				<Select bind:value={addSong} label={label(labels, 'BatchAddSong')} options={songOptions} />
+				<input type="hidden" name="addSong" value={addSong} />
+			</div>
+			<div class="flex flex-col gap-1.5">
+				<span class="text-xs font-bold">{label(labels, 'BatchRemoveSong')}</span>
+				<Select
+					bind:value={removeSong}
+					label={label(labels, 'BatchRemoveSong')}
+					options={songOptions}
+				/>
+				<input type="hidden" name="removeSong" value={removeSong} />
 			</div>
 			{#each FLAGS as key (key)}
 				{@const look = FLAG_LOOK[key]}

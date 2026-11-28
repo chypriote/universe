@@ -1,12 +1,18 @@
 import { catalogFromPlatform } from '#lib/server/catalog';
-import type { BirdView, NestFilter, RoostedFilter, SeenFilter } from '#lib/server/catalog';
+import type {
+	BirdView,
+	FlagFilter,
+	NestFilter,
+	RoostedFilter,
+	SeenFilter
+} from '#lib/server/catalog';
 
 const positiveInt = (value: string | null) => {
 	const n = Number(value);
 	return value !== null && Number.isInteger(n) && n > 0 ? n : undefined;
 };
 
-/** The filters in a tab URL: `habitat`, `song`, `seen` (only | not), `nest` (only | not), `roosted` (only) and `search`. */
+/** The filters in a tab URL: `habitat`, `song`, `seen` (only | not), `nest` (only | not), `roosted`, `flown` and `lost` (only) and `search`. */
 export function parseFilters(params: URLSearchParams) {
 	const nest = params.get('nest');
 	const seen = params.get('seen');
@@ -16,6 +22,8 @@ export function parseFilters(params: URLSearchParams) {
 		seen: (seen === 'only' || seen === 'not' ? seen : 'all') as SeenFilter,
 		nest: (nest === 'only' || nest === 'not' ? nest : 'all') as NestFilter,
 		roosted: (params.get('roosted') === 'only' ? 'only' : 'all') as RoostedFilter,
+		flown: (params.get('flown') === 'only' ? 'only' : 'all') as FlagFilter,
+		lost: (params.get('lost') === 'only' ? 'only' : 'all') as FlagFilter,
 		search: params.get('search')?.trim() ?? ''
 	};
 }

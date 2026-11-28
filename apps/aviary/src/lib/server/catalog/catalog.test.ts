@@ -164,7 +164,7 @@ beforeEach(async () => {
 const names = (tiles: { name: string }[]) => tiles.map((t) => t.name);
 
 describe('listBirds', () => {
-	it('puts Birds neither Flown nor Lost in Aloft, and Flown or Lost in Grounded', async () => {
+	it('puts Birds neither Flown nor Lost in Aloft, and Flown or Lost with no Song in Grounded', async () => {
 		await seedBird('Bird A');
 		await seedBird('Bird B', { flown: true });
 		await seedBird('Bird C', { lost: true });

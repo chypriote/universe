@@ -20,7 +20,7 @@ When the Bird came, optional. A full day, a month (when the day is unknown) or o
 Where the Bird came from, optional, one per Bird. The values come from a list kept on the Admin page.
 
 **Songs**:
-The set of channels the Owner shares with a Bird. It can be empty. The values come from a list kept on the Admin page.
+The set of channels where the Owner has the Bird and can write to them. It can be empty. Having talked there is not enough. The values come from a list kept on the Admin page.
 
 **Sighting**:
 One time the Owner saw a Bird, with an optional day. A Bird has any number of Sightings. Notes live on the Bird, not on a Sighting.
@@ -33,10 +33,10 @@ Each flag is stored on the Bird and is independent of the others.
 The Owner has seen the Bird. A Bird with a Sighting is always Seen. A Bird can be Seen with no Sighting recorded.
 
 **Flown**:
-The Bird left, or the Owner let it go. The app does not record who.
+The Bird unmatched the Owner on the app, so contact through it ended. Its cause is the Bird; see Lost for the other cause.
 
 **Lost**:
-The Bird still exists but the Owner cannot reach it any more. It is not Flown.
+The Owner deleted the app, so contact through it ended. Its cause is the Owner. It is not Flown.
 
 **Roosted**:
 A flag the Owner sets by hand. Never shown on a tile; it only drives the Roosted filter.
@@ -47,7 +47,7 @@ The Owner saw the Bird many times in a short span. The Owner sets it by hand; it
 ### Views
 
 **Aloft**:
-Every Bird that is neither Flown nor Lost, and not Archived.
+Every Bird that is not Grounded and not Archived. A Flown or Lost Bird with Songs stays Aloft.
 
 **Flock** (tab):
 Every Bird that is not Archived: all of Aloft and Grounded together. The Seen filter narrows it.
@@ -56,7 +56,7 @@ Every Bird that is not Archived: all of Aloft and Grounded together. The Seen fi
 Every Seen Bird that is not Archived, whether Aloft or Grounded. The Nest and Roosted filters narrow it.
 
 **Grounded**:
-Every Bird that is Flown or Lost, and not Archived. Not stored: it follows from the two flags.
+Every Bird that is Flown or Lost, has no Songs, and is not Archived. Not stored: it follows from the flags and the Songs.
 
 ### Archive
 
@@ -66,7 +66,7 @@ A Bird the Owner does not want to see on the pages, for any reason. It is stored
 ### Admin
 
 **Admin page**:
-The page, behind the Owner login, where the Owner keeps the Habitat and Songs lists, changes the Habitat and flags of several Birds at once, and manages the Archived Birds. A value can be added, renamed, or removed after moving every Bird that uses it to another value.
+The page, behind the Owner login, where the Owner keeps the Habitat and Songs lists, changes the Habitat, flags and Songs of several Birds at once, and manages the Archived Birds. A value can be added, renamed, or removed after moving every Bird that uses it to another value.
 
 ### People
 

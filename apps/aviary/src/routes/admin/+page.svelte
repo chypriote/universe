@@ -41,6 +41,7 @@
 			<BatchEdit
 				birds={data.birds}
 				habitats={data.habitats}
+				songs={data.songs}
 				labels={data.labels}
 				error={form && 'batchError' in form ? (form.batchError ?? null) : null}
 			/>
