@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { movePicture, removePicture, type PictureItem } from './picture-list';
+import { imagesOf, movePicture, removePicture, type PictureItem } from './picture-list';
 
 const item = (key: string): PictureItem => ({ key, url: `u-${key}` });
 const keys = (items: PictureItem[]) => items.map((i) => i.key);
@@ -18,5 +18,17 @@ describe('PictureList operations', () => {
 	it('removes a Picture without touching the input', () => {
 		expect(keys(removePicture(list, 1))).toEqual(['a', 'c']);
 		expect(list).toHaveLength(3);
+	});
+});
+
+describe('imagesOf', () => {
+	it('keeps only image files', () => {
+		const png = new File(['x'], 'image.png', { type: 'image/png' });
+		const txt = new File(['x'], 'a.txt', { type: 'text/plain' });
+		expect(imagesOf([txt, png])).toEqual([png]);
+	});
+	it('accepts an empty clipboard', () => {
+		expect(imagesOf(null)).toEqual([]);
+		expect(imagesOf(undefined)).toEqual([]);
 	});
 });

@@ -7,11 +7,11 @@
 	import CropPicture from './CropPicture.svelte';
 	import type { Crop } from '#lib/image-prep';
 	import { label, type Labels } from '#lib/labels';
-	import { movePicture, removePicture, type PictureItem } from '#lib/picture-list';
+	import { imagesOf, movePicture, removePicture, type PictureItem } from '#lib/picture-list';
 
 	/**
 	 * The ordered Pictures of the Bird form, for Add and Edit. Stored Pictures come in with an
-	 * `id` and a `url`; every added file is cropped by the user, then resized, before it joins the list.
+	 * `id` and a `url`; every added or pasted file is cropped by the user, then resized, before it joins the list.
 	 * The first Picture is the tile Picture.
 	 */
 	let {
@@ -30,6 +30,18 @@
 	function add() {
 		const files = [...(input?.files ?? [])];
 		if (input) input.value = '';
+		enqueue(files);
+	}
+
+	/** Ctrl+V anywhere on the page: pasted images join the crop queue like picked files. */
+	function paste(event: ClipboardEvent) {
+		const files = imagesOf(event.clipboardData?.files);
+		if (files.length === 0) return;
+		event.preventDefault();
+		enqueue(files);
+	}
+
+	function enqueue(files: File[]) {
 		if (files.length === 0) return;
 		problem = null;
 		const accepted: File[] = [];
@@ -92,6 +104,8 @@
 
 	const shown = $derived(problem ?? error);
 </script>
+
+<svelte:window onpaste={paste} />
 
 <div class="flex flex-col gap-2">
 	<span class="text-sm font-bold">{label(labels, 'Pictures')}</span>
