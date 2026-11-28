@@ -60,12 +60,16 @@ async function changeBird(
 
 const FLAG_KEYS = ['seen', 'flown', 'lost', 'roosted', 'nest'] as const;
 
-/** Reads the batch form: a blank field keeps the value, `on` and `off` set the flag, `none` clears the Habitat. */
+/** Reads the batch form: a blank field keeps the value, `on` and `off` set the flag, `none` clears the Habitat, `addSong` and `removeSong` hold a Song id. */
 function batchChange(form: FormData): BirdBatchChange {
 	const change: BirdBatchChange = {};
 	const habitat = String(form.get('habitat') ?? '');
 	if (habitat === 'none') change.habitatId = null;
 	else if (habitat !== '') change.habitatId = Number(habitat);
+	for (const field of ['addSong', 'removeSong'] as const) {
+		const value = String(form.get(field) ?? '');
+		if (value !== '') change[`${field}Id`] = Number(value);
+	}
 	for (const key of FLAG_KEYS) {
 		const value = form.get(key);
 		if (value === 'on' || value === 'off') (change.flags ??= {})[key] = value === 'on';
@@ -75,7 +79,8 @@ function batchChange(form: FormData): BirdBatchChange {
 
 const BATCH_REFUSALS = {
 	'not-found': 'SomethingWrong',
-	'bad-habitat': 'BirdHabitatInvalid'
+	'bad-habitat': 'BirdHabitatInvalid',
+	'bad-song': 'BirdSongInvalid'
 } as const;
 
 export const actions: Actions = {

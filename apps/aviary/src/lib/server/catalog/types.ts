@@ -9,7 +9,7 @@ export type { LoginResult };
 /** Code name to display word. A missing word falls back to the code name in the UI. */
 export type Labels = Record<string, string>;
 
-/** The three tabs. Grounded is computed from Flown or Lost; Seen is the Seen flag. */
+/** The tabs. Grounded is computed from Flown or Lost and no Songs; Seen is the Seen flag. */
 export type BirdView = 'flock' | 'aloft' | 'grounded' | 'seen';
 
 /** The Nest filter: every Bird, only Nest Birds, or only Birds not in the Nest. */
@@ -21,6 +21,9 @@ export type SeenFilter = 'all' | 'only' | 'not';
 /** The Roosted filter: every Bird, or only Roosted Birds. */
 export type RoostedFilter = 'all' | 'only';
 
+/** The Flown and Lost filters: every Bird, or only Birds with that flag. */
+export type FlagFilter = 'all' | 'only';
+
 export interface ListBirdsQuery {
 	view: BirdView;
 	/** Habitat id. */
@@ -30,6 +33,8 @@ export interface ListBirdsQuery {
 	seen?: SeenFilter;
 	nest?: NestFilter;
 	roosted?: RoostedFilter;
+	flown?: FlagFilter;
+	lost?: FlagFilter;
 	/** Part of the name, ignoring case. Blank means no search. */
 	search?: string;
 }
@@ -160,14 +165,19 @@ export interface SimilarBird extends BirdTile {
 export type ArchiveResult = { ok: true } | { ok: false; error: 'not-found' };
 export type DeleteForeverResult = { ok: true } | { ok: false; error: 'not-found' | 'not-archived' };
 
-/** What a batch edit changes. A missing field stays as it is; `habitatId: null` clears the Habitat. */
+/**
+ * What a batch edit changes. A missing field stays as it is; `habitatId: null` clears the Habitat.
+ * `addSongId` and `removeSongId` add or remove one Song on every listed Bird.
+ */
 export interface BirdBatchChange {
 	habitatId?: number | null;
+	addSongId?: number;
+	removeSongId?: number;
 	flags?: Partial<BirdFlags>;
 }
 
 export type BatchEditResult =
-	{ ok: true; updated: number } | { ok: false; error: 'not-found' | 'bad-habitat' };
+	{ ok: true; updated: number } | { ok: false; error: 'not-found' | 'bad-habitat' | 'bad-song' };
 
 export interface Catalog {
 	login(password: string): Promise<LoginResult>;

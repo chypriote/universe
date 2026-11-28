@@ -77,8 +77,9 @@ describe('editBird', () => {
 			roosted: true,
 			nest: true
 		});
-		expect(await catalog.listBirds({ view: 'aloft' })).toEqual([]);
-		expect((await catalog.listBirds({ view: 'grounded' }))[0]).toMatchObject({ id });
+		// Flown, but it has a Song, so it stays Aloft.
+		expect((await catalog.listBirds({ view: 'aloft' }))[0]).toMatchObject({ id });
+		expect(await catalog.listBirds({ view: 'grounded' })).toEqual([]);
 	});
 
 	it('clears the Habitat, the Songs and the Arrival', async () => {

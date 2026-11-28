@@ -26,6 +26,8 @@
 		seen: 'all' | 'only' | 'not';
 		nest: 'all' | 'only' | 'not';
 		roosted: 'all' | 'only';
+		flown: 'all' | 'only';
+		lost: 'all' | 'only';
 		search: string;
 	};
 
@@ -52,10 +54,18 @@
 	let seen = $state<string>(untrack(() => filters.seen));
 	let nest = $state<string>(untrack(() => filters.nest));
 	let roosted = $state<string>(untrack(() => filters.roosted));
+	let flown = $state<string>(untrack(() => filters.flown));
+	let lost = $state<string>(untrack(() => filters.lost));
 
 	const searchActive = $derived(search.trim() !== '');
 	const filtersActive = $derived(
-		habitat !== '' || song !== '' || seen !== 'all' || nest !== 'all' || roosted !== 'all'
+		habitat !== '' ||
+			song !== '' ||
+			seen !== 'all' ||
+			nest !== 'all' ||
+			roosted !== 'all' ||
+			flown !== 'all' ||
+			lost !== 'all'
 	);
 	const isFiltering = $derived(searchActive || filtersActive);
 
@@ -65,7 +75,9 @@
 		songValue: string | number | undefined,
 		seenValue: string,
 		nestValue: string,
-		roostedValue: string
+		roostedValue: string,
+		flownValue: string,
+		lostValue: string
 	) {
 		const params = new SvelteURLSearchParams();
 		if (searchValue.trim()) params.set('search', searchValue.trim());
@@ -74,11 +86,13 @@
 		if (seenValue !== 'all') params.set('seen', seenValue);
 		if (nestValue !== 'all') params.set('nest', nestValue);
 		if (roostedValue !== 'all') params.set('roosted', roostedValue);
+		if (flownValue !== 'all') params.set('flown', flownValue);
+		if (lostValue !== 'all') params.set('lost', lostValue);
 		return params.toString();
 	}
 
 	function apply() {
-		const query = queryOf(search, habitat, song, seen, nest, roosted);
+		const query = queryOf(search, habitat, song, seen, nest, roosted, flown, lost);
 		// eslint-disable-next-line svelte/no-navigation-without-resolve -- same page, new query
 		void goto(`${page.url.pathname}${query ? `?${query}` : ''}`, {
 			replace: true,
@@ -95,12 +109,14 @@
 				filters.song,
 				filters.seen,
 				filters.nest,
-				filters.roosted
+				filters.roosted,
+				filters.flown,
+				filters.lost
 			)
 		)
 	);
 	$effect(() => {
-		const wanted = queryOf(search, habitat, song, seen, nest, roosted);
+		const wanted = queryOf(search, habitat, song, seen, nest, roosted, flown, lost);
 		if (wanted === untrack(() => applied)) return;
 		const timer = setTimeout(() => {
 			applied = wanted;
@@ -116,6 +132,8 @@
 		seen = 'all';
 		nest = 'all';
 		roosted = 'all';
+		flown = 'all';
+		lost = 'all';
 	}
 
 	const all = (codeName: string) => [{ value: '', label: label(labels, codeName) }];
@@ -133,6 +151,15 @@
 	const roostedOptions = $derived([
 		{ value: 'all', label: label(labels, 'RoostedAll') },
 		{ value: 'only', label: label(labels, 'RoostedOnly') }
+	]);
+
+	const flownOptions = $derived([
+		{ value: 'all', label: label(labels, 'FlownAll') },
+		{ value: 'only', label: label(labels, 'FlownOnly') }
+	]);
+	const lostOptions = $derived([
+		{ value: 'all', label: label(labels, 'LostAll') },
+		{ value: 'only', label: label(labels, 'LostOnly') }
 	]);
 
 	let open = $state(false);
@@ -186,6 +213,8 @@
 			<Select bind:value={roosted} label={label(labels, 'Roosted')} options={roostedOptions} />
 		{:else}
 			<Select bind:value={seen} label={label(labels, 'Seen')} options={seenOptions} />
+			<Select bind:value={flown} label={label(labels, 'Flown')} options={flownOptions} />
+			<Select bind:value={lost} label={label(labels, 'Lost')} options={lostOptions} />
 		{/if}
 	{/snippet}
 </StickyBar>
