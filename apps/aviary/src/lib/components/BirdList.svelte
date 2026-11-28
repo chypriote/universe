@@ -27,7 +27,7 @@
 		nest: 'all' | 'only' | 'not';
 		roosted: 'all' | 'only';
 		flown: 'all' | 'only' | 'not';
-		lost: 'all' | 'only';
+		lost: 'all' | 'only' | 'not';
 		search: string;
 	};
 
@@ -160,7 +160,8 @@
 	]);
 	const lostOptions = $derived([
 		{ value: 'all', label: label(labels, 'LostAll') },
-		{ value: 'only', label: label(labels, 'LostOnly') }
+		{ value: 'only', label: label(labels, 'LostOnly') },
+		{ value: 'not', label: label(labels, 'LostNot') }
 	]);
 
 	let open = $state(false);

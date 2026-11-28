@@ -60,6 +60,7 @@ INSERT OR REPLACE INTO labels (code_name, word) VALUES
 	('FlownNot', 'FlownNot'),
 	('LostAll', 'LostAll'),
 	('LostOnly', 'LostOnly'),
+	('LostNot', 'LostNot'),
 	('ArchiveBird', 'ArchiveBird'),
 	('Restore', 'Restore'),
 	('DeleteForever', 'DeleteForever'),

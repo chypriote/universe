@@ -21,11 +21,8 @@ export type SeenFilter = 'all' | 'only' | 'not';
 /** The Roosted filter: every Bird, or only Roosted Birds. */
 export type RoostedFilter = 'all' | 'only';
 
-/** The Lost filter: every Bird, or only Birds with that flag. */
-export type FlagFilter = 'all' | 'only';
-
-/** The Flown filter: every Bird, only Flown Birds, or only Birds that are not Flown. */
-export type FlownFilter = 'all' | 'only' | 'not';
+/** The Flown and Lost filters: every Bird, only Birds with that flag, or only Birds without it. */
+export type FlagFilter = 'all' | 'only' | 'not';
 
 export interface ListBirdsQuery {
 	view: BirdView;
@@ -36,7 +33,7 @@ export interface ListBirdsQuery {
 	seen?: SeenFilter;
 	nest?: NestFilter;
 	roosted?: RoostedFilter;
-	flown?: FlownFilter;
+	flown?: FlagFilter;
 	lost?: FlagFilter;
 	/** Part of the name, ignoring case. Blank means no search. */
 	search?: string;

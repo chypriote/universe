@@ -25,11 +25,12 @@ async function insertBird(
 		seen?: boolean;
 		roosted?: boolean;
 		flown?: boolean;
+		lost?: boolean;
 		archived?: boolean;
 	} = {}
 ) {
 	const row = await env.DB.prepare(
-		'INSERT INTO bird (name, habitat_id, nest, seen, roosted, flown, archived) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id'
+		'INSERT INTO bird (name, habitat_id, nest, seen, roosted, flown, lost, archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id'
 	)
 		.bind(
 			name,
@@ -38,6 +39,7 @@ async function insertBird(
 			+!!opts.seen,
 			+!!opts.roosted,
 			+!!opts.flown,
+			+!!opts.lost,
 			+!!opts.archived
 		)
 		.first<{ id: number }>();
@@ -107,6 +109,14 @@ describe('listBirds filters', () => {
 		expect(await names({ view: 'flock', flown: 'all' })).toEqual(['Bird A', 'Bird B']);
 		expect(await names({ view: 'flock', flown: 'only' })).toEqual(['Bird A']);
 		expect(await names({ view: 'flock', flown: 'not' })).toEqual(['Bird B']);
+	});
+
+	it('filters by Lost: all, only, not', async () => {
+		await insertBird('Bird A', { lost: true });
+		await insertBird('Bird B');
+		expect(await names({ view: 'flock', lost: 'all' })).toEqual(['Bird A', 'Bird B']);
+		expect(await names({ view: 'flock', lost: 'only' })).toEqual(['Bird A']);
+		expect(await names({ view: 'flock', lost: 'not' })).toEqual(['Bird B']);
 	});
 
 	it('filters by Roosted: all, only', async () => {
