@@ -144,7 +144,8 @@ export function buildCatalog(env: CatalogEnv): Catalog {
 				roosted === 'only' ? eq(birds.roosted, true) : undefined,
 				flown === 'only' ? eq(birds.flown, true) : undefined,
 				flown === 'not' ? eq(birds.flown, false) : undefined,
-				lost === 'only' ? eq(birds.lost, true) : undefined
+				lost === 'only' ? eq(birds.lost, true) : undefined,
+				lost === 'not' ? eq(birds.lost, false) : undefined
 			];
 			// A month or year Arrival counts as the first day of it, so it sorts with day Arrivals.
 			const arrivalKey = sql`CASE ${birds.arrivalPrecision} WHEN 'year' THEN ${birds.arrival} || '-01-01' WHEN 'month' THEN ${birds.arrival} || '-01' ELSE ${birds.arrival} END`;
